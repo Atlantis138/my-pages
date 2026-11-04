@@ -4,6 +4,7 @@
 
 | 作品 | 文件夹 |
 |---|---|
+| ISEE-3 航迹 | `isee3-trajectory/` |
 | 川藏铁路三维图志 | `sichuan-tibet-railway/` |
 | 珠峰三维地形图 | `everest-terrain/` |
 | 看得见的量子计算 | `quantum-computing/` |

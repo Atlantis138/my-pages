@@ -13,7 +13,7 @@
   --ink:#1c2429; --ink-2:#47545d; --ink-3:#7b8890; --rule:rgba(28,36,41,.13); --rule-2:rgba(28,36,41,.07);
   --cinnabar:#c23a22; --cinnabar-soft:rgba(194,58,34,.12); --rail:#1c2429; --rail-alt:#ffffff;
   --water:#3a83b6; --gold:#b07d1d; --forest:#3f6d4f; --fault:#a3326f; --tunnel:#6b2417; --tunnel-line:#5a1a0e;
-  --halo:rgba(247,248,246,.92); --chip:#e8ebe7; --focus:#1f6fb0;
+  --halo:rgba(247,248,246,.92); --chip:#e8ebe7; --focus:#1f6fb0; --border:#9a4a74;
   --wall-top:#8e7f6c; --wall-bot:#5d5144;
   --f-display:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
   --f-body:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
@@ -27,7 +27,7 @@
   --ink:#e6ebee; --ink-2:#aeb9c0; --ink-3:#7d8a93; --rule:rgba(230,235,238,.14); --rule-2:rgba(230,235,238,.07);
   --cinnabar:#ff6a4b; --cinnabar-soft:rgba(255,106,75,.16); --rail:#e6ebee; --rail-alt:#1a2128;
   --water:#62aee3; --gold:#e0ad4c; --forest:#7fbf8f; --fault:#e070ae; --tunnel:#ff9b7f; --tunnel-line:#2b0b05;
-  --halo:rgba(16,21,26,.9); --chip:#222b33; --focus:#69b4ff;
+  --halo:rgba(16,21,26,.9); --chip:#222b33; --focus:#69b4ff; --border:#e092bb;
   --wall-top:#5b5046; --wall-bot:#2c2620; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -36,7 +36,7 @@
   --ink:#e6ebee; --ink-2:#aeb9c0; --ink-3:#7d8a93; --rule:rgba(230,235,238,.14); --rule-2:rgba(230,235,238,.07);
   --cinnabar:#ff6a4b; --cinnabar-soft:rgba(255,106,75,.16); --rail:#e6ebee; --rail-alt:#1a2128;
   --water:#62aee3; --gold:#e0ad4c; --forest:#7fbf8f; --fault:#e070ae; --tunnel:#ff9b7f; --tunnel-line:#2b0b05;
-  --halo:rgba(16,21,26,.9); --chip:#222b33; --focus:#69b4ff;
+  --halo:rgba(16,21,26,.9); --chip:#222b33; --focus:#69b4ff; --border:#e092bb;
   --wall-top:#5b5046; --wall-bot:#2c2620; color-scheme:dark;
 }
 html,body{height:100%;}
@@ -118,8 +118,13 @@ h1 .rail{display:inline-block; width:64px; height:7px; margin:0 0 9px 10px; vert
 .sw.yl{background:var(--cinnabar)}
 .sw.op{background:repeating-linear-gradient(90deg,var(--rail) 0 6px,var(--rail-alt) 6px 12px); box-shadow:0 0 0 1px var(--rail)}
 .sw.rough{background:repeating-linear-gradient(90deg,var(--cinnabar) 0 3px,transparent 3px 6px); opacity:.85}
-.sw.tun{background:repeating-linear-gradient(90deg,var(--cinnabar) 0 5px,transparent 5px 8px); opacity:.55}
-.sw.br{background:var(--gold)}
+.sw.tun{height:5px; border-radius:0; background:repeating-linear-gradient(90deg,var(--cinnabar) 0 7px,transparent 7px 11px); -webkit-mask:none}
+.sw.tun{background:linear-gradient(var(--paper),var(--paper)) center/100% 1.6px no-repeat, repeating-linear-gradient(90deg,var(--cinnabar) 0 7px,transparent 7px 11px)}
+.sw.br{background:var(--cinnabar); height:4px; box-shadow:0 0 0 1.2px var(--paper),0 0 0 2.6px var(--ink)}
+.sw.kbr{background:var(--cinnabar); height:4px; box-shadow:0 0 0 1.2px var(--paper),0 0 0 3.2px var(--gold)}
+.sw.portal{width:9px; height:9px; border-radius:50%; background:var(--paper); box-shadow:inset 0 0 0 2.2px var(--cinnabar)}
+.sw.nat{height:0; border-top:2px dashed var(--border); box-shadow:0 0 0 3px color-mix(in srgb,var(--border) 18%,transparent); border-radius:0}
+.sw.prov{height:0; border-top:1.5px dashed var(--ink-2); border-radius:0}
 .chip.sk{background:transparent; border:1px dashed var(--ink-3); color:var(--ink-3)}
 dl.kv{display:grid; grid-template-columns:auto 1fr; gap:4px 12px; margin:8px 0 2px; font-size:12.5px}
 dl.kv dt{color:var(--ink-3); white-space:nowrap}
@@ -218,7 +223,8 @@ select{background:var(--panel-solid); border:1px solid var(--rule); border-radiu
 #compass svg{width:30px; height:30px; transition:transform .05s linear}
 #flyhud{position:absolute; left:50%; top:14px; transform:translateX(-50%); background:var(--panel); border:1px solid var(--rule); border-radius:99px; padding:6px 8px 6px 14px; display:flex; align-items:center; gap:10px; z-index:6; font-size:13px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px)}
 #flyhud b{font-family:var(--f-display); letter-spacing:.06em}
-#flyhud .km{font-family:var(--f-num); font-size:15px; color:var(--ink-2)}
+#flyhud .km{font-family:var(--f-num); font-size:15px; color:var(--ink-2); min-width:62px; text-align:right; font-variant-numeric:tabular-nums}
+#flyhud #flyName{min-width:4.2em}
 
 /* ---------- search ---------- */
 #search{position:absolute; top:12px; right:max(328px, calc(env(safe-area-inset-right, 0px) + 316px)); width:260px; z-index:6}
@@ -254,6 +260,11 @@ select{background:var(--panel-solid); border:1px solid var(--rule); border-radiu
 #side.collapsed{bottom:auto}
 #side.collapsed #tabs,#side.collapsed #pane{display:none}
 #side.collapsed #brand{border-bottom:none}
+@media (min-width: 761px){
+  #app.prof-closed #side:not(.collapsed){bottom:16px}
+  #app.prof-closed #hud{bottom:16px}
+  #app.prof-closed #rack{max-height:calc(100% - 40px)}
+}
 @media (max-width: 1100px) and (min-width: 761px){
   #side{width:340px}
   #rack{width:228px}
@@ -289,7 +300,7 @@ select{background:var(--panel-solid); border:1px solid var(--rule); border-radiu
 </style>
 
 <div id="app">
-  <canvas id="gl" tabindex="0" aria-label="川藏铁路沿线三维地形图。左键拖动平移，右键拖动旋转，滚轮缩放。"></canvas>
+  <canvas id="gl" tabindex="0" aria-label="川藏铁路沿线三维地形图。左键拖动平移，右键拖动旋转，滚轮朝光标处缩放，双击飞近。"></canvas>
   <div id="labels" aria-hidden="true"></div>
   <div id="loader"><div>正在构建沿线地形</div></div>
 
@@ -338,7 +349,6 @@ select{background:var(--panel-solid); border:1px solid var(--rule); border-radiu
       <label class="tg"><input type="checkbox" id="L_station" checked><span class="lab">车站</span></label>
       <label class="tg"><input type="checkbox" id="L_bridge" checked><span class="lab">重点桥梁</span></label>
       <label class="tg"><input type="checkbox" id="L_tunnel" checked><span class="lab">重点隧道</span></label>
-      <label class="tg"><input type="checkbox" id="L_branch" checked><span class="lab">波密—然乌铁路</span></label>
     </fieldset>
     <fieldset>
       <legend>地理要素</legend>
@@ -346,7 +356,8 @@ select{background:var(--panel-solid); border:1px solid var(--rule); border-radiu
       <label class="tg"><input type="checkbox" id="L_rname" checked><span class="lab">河流名称</span></label>
       <label class="tg"><input type="checkbox" id="L_peak" checked><span class="lab">山峰与垭口</span></label>
       <label class="tg"><input type="checkbox" id="L_town" checked><span class="lab">城镇聚落</span></label>
-      <label class="tg"><input type="checkbox" id="L_admin" checked><span class="lab">省、市州界</span></label>
+      <label class="tg"><input type="checkbox" id="L_admin" checked><span class="lab">国界与省界</span></label>
+      <label class="tg"><input type="checkbox" id="L_pref" checked><span class="lab">市州界</span></label>
       <label class="tg"><input type="checkbox" id="L_county"><span class="lab">县界</span></label>
       <label class="tg"><input type="checkbox" id="L_region" checked><span class="lab">区划名称</span></label>
     </fieldset>
@@ -374,7 +385,7 @@ select{background:var(--panel-solid); border:1px solid var(--rule); border-radiu
     </div>
     <div id="scale"><span>100 km</span><i style="width:80px"></i></div>
     <div id="readout">移动光标，查看经纬度与高程</div>
-    <div id="attr">线位 © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> 贡献者 · 地形 Copernicus DEM GLO-90、GEBCO</div>
+    <div id="attr">线位、水系 © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> 贡献者 · 地形 Copernicus DEM GLO-90、GEBCO · 国界 Natural Earth</div>
   </div>
 
   <section id="prof" aria-label="沿线纵断面">
@@ -385,8 +396,9 @@ select{background:var(--panel-solid); border:1px solid var(--rule); border-radiu
 
   <div id="flyhud" hidden>
     <span>沿线飞行</span><b id="flyName">成都西</b><span class="km" id="flyKm">0 km</span>
-    <button class="btn" type="button" id="flySpeed">1×</button>
-    <button class="btn" type="button" id="flyStop">停止</button>
+    <button class="btn" type="button" id="flySpeed" aria-label="飞行速度">1×</button>
+    <button class="btn" type="button" id="flyPause"></button>
+    <button class="btn" type="button" id="flyStop">结束</button>
   </div>
   <div id="card" role="dialog" aria-live="polite" hidden></div>
 </div>
@@ -450,10 +462,10 @@ function loadGray(url) {
     im.onerror = function () { rej(new Error(url)); }; im.src = url;
   });
 }
+function getPng(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' ' + r.status); return r.blob(); }).then(decodePng); }
 Promise.all([getJSON('data/atlas.json'), getJSON('data/route.json'), getJSON('data/rivers.json'), getJSON('data/tiles.json'),
-  fetch('data/dem5k.png').then(function (r) { if (!r.ok) throw new Error('data/dem5k.png ' + r.status); return r.blob(); }).then(decodePng),
-  loadGray('data/veg.png'), loadGray('data/geo.png')]).then(function (r) {
-  main(r[0], { route: r[1], rivers: r[2], tiles: r[3], dem: r[4], veg: r[5], geo: r[6] });
+  getPng('data/dem5k.png'), loadGray('data/veg.png'), loadGray('data/geo.png'), loadGray('data/water.png'), getJSON('data/borders.json')]).then(function (r) {
+  main(r[0], { route: r[1], rivers: r[2], tiles: r[3], dem: r[4], veg: r[5], geo: r[6], water: r[7], borders: r[8] });
 }).catch(function (err) {
   fail('数据载入失败：' + (err && err.message || err) + '。若是直接双击打开的本地文件，请在仓库根目录运行 python -m http.server 后访问。');
 });
@@ -461,7 +473,13 @@ Promise.all([getJSON('data/atlas.json'), getJSON('data/route.json'), getJSON('da
 function main(D, A) {
 var RT = A.route;
 /* ---------------- merge generated data (OSM line, elevations, rivers) into the curated atlas */
-D.rivers = A.rivers.rivers; D.riverLabels = A.rivers.labels;
+// rivers (OSM): [class, x0, y0, dx, dy, ...] in units of q degrees from 90°E / 27°N
+D.rivers = A.rivers.rivers.map(function (r) {
+  var q = A.rivers.q, x = 0, y = 0, p = [];
+  for (var i = 1; i < r.length; i += 2) { x += r[i]; y += r[i + 1]; p.push(90 + x * q, 27 + y * q); }
+  return { c: r[0], p: p };
+});
+D.riverLabels = A.rivers.labels;
 if (RT.vegStats) D.vegStats = RT.vegStats;
 D.stations.forEach(function (s) {
   var o = RT.stations[s.s + s.n]; if (!o) return;
@@ -516,7 +534,7 @@ var TH = {};
 function readTheme() {
   var cs = getComputedStyle(document.documentElement);
   var v = function (n) { return cs.getPropertyValue(n).trim(); };
-  ['--sky-top', '--sky-bot', '--paper', '--ink', '--ink-2', '--ink-3', '--cinnabar', '--rail', '--rail-alt', '--water', '--gold', '--fault', '--tunnel', '--tunnel-line', '--halo', '--wall-top', '--wall-bot', '--forest']
+  ['--sky-top', '--sky-bot', '--paper', '--ink', '--ink-2', '--ink-3', '--cinnabar', '--rail', '--rail-alt', '--water', '--gold', '--fault', '--tunnel', '--tunnel-line', '--halo', '--wall-top', '--wall-bot', '--forest', '--border']
     .forEach(function (k) { TH[k.slice(2)] = v(k); });
   var c = new THREE.Color(TH.paper || '#f6f7f5');
   TH.dark = (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) < 0.4;
@@ -526,14 +544,15 @@ function col(k) { var v = TH[k] || '#888888'; var m = /^rgba?\(([^)]+)\)/.exec(v
 
 /* ------------------------------------------------------------------ renderer */
 var canvas = $('#gl');
-var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, stencil: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.setClearColor(0x000000, 0);
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(35, 1, 2.5, 9000);
 var controls = new THREE.MapControls(camera, canvas);
-controls.enableDamping = true; controls.dampingFactor = 0.11; controls.screenSpacePanning = false;
-controls.minDistance = 15; controls.maxDistance = 3400; controls.maxPolarAngle = Math.PI * 0.46; controls.zoomSpeed = 1.15; controls.rotateSpeed = 0.6;
+controls.enableDamping = true; controls.dampingFactor = 0.085; controls.screenSpacePanning = false;
+controls.minDistance = 5; controls.maxDistance = 3400; controls.maxPolarAngle = Math.PI * 0.47; controls.zoomSpeed = 1.0; controls.rotateSpeed = 0.5;
+controls.keyPanSpeed = 22;
 controls.listenToKeyEvents(canvas);
 var EXAG = 3;
 var needs = true;
@@ -566,15 +585,14 @@ function classTex(img, pal) {
   var t = new THREE.DataTexture(a, img.w, img.h, THREE.RGBAFormat);
   t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; t.anisotropy = 4; t.needsUpdate = true; return t;
 }
+// lakes, reservoirs and wide river channels (OSM) as a signed distance field: 0.5 = shoreline
 function waterTex() {
-  var W = 2048, H = Math.round(2048 * 4.5 / 14.2), c = document.createElement('canvas'); c.width = W; c.height = H;
-  var x = c.getContext('2d'); x.fillStyle = '#000'; x.fillRect(0, 0, W, H); x.fillStyle = '#fff';
-  D.lakes.forEach(function (lk) {
-    var p = lk.p; x.beginPath();
-    for (var i = 0; i < p.length; i += 2) { var px = (p[i] - BOX[0]) / (BOX[2] - BOX[0]) * W, py = (BOX[3] - p[i + 1]) / (BOX[3] - BOX[1]) * H; if (i) x.lineTo(px, py); else x.moveTo(px, py); }
-    x.closePath(); x.fill();
-  });
-  var t = new THREE.CanvasTexture(c); t.flipY = false; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter; return t;
+  var img = A.water, gl2 = renderer.capabilities.isWebGL2;
+  var t = new THREE.DataTexture(img.v, img.w, img.h, gl2 ? THREE.RedFormat : THREE.LuminanceFormat);
+  if (gl2) t.internalFormat = 'R8';
+  t.unpackAlignment = 1; t.magFilter = THREE.LinearFilter;
+  t.minFilter = gl2 ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter; t.generateMipmaps = gl2;
+  t.needsUpdate = true; return t;
 }
 
 /* ------------------------------------------------------------------ terrain material */
@@ -606,7 +624,8 @@ var terrainFS = [
   ' else if(mode==2){ vec4 q = texture2D(geoTex, vUv); vec3 gc = q.rgb/max(q.a,0.004); base = mix(hyps(vH), gc, smoothstep(0.2,0.7,q.a)); }',
   ' else { base = plainCol; }',
   ' if(mode==0){ float sn = smoothstep(5050.0,5650.0, vH - slope*900.0); base = mix(base, vec3(0.96,0.97,0.98), sn*0.9); }',
-  ' float w = texture2D(waterTex, vUv).r; base = mix(base, waterCol, smoothstep(0.35,0.65,w)*waterAmt);',
+  ' float ws = texture2D(waterTex, vUv).r; float wa = fwidth(ws)*0.75 + 0.004;',
+  ' base = mix(base, waterCol, smoothstep(0.5-wa, 0.5+wa, ws)*waterAmt);',
   ' float lam = max(dot(n, sunDir), 0.0); float sky = 0.55+0.45*n.y;',
   ' vec3 c = base*(amb*sky + dif*lam); c += (1.0-lam)*vec3(-0.02,0.0,0.035)*amb;',
   ' if(contourOn>0.5){ float q = vH/contourStep; float fw = max(fwidth(q),1e-5); float l = abs(fract(q-0.5)-0.5)/fw;',
@@ -665,6 +684,7 @@ function cellAt(lon, lat) { return cellXY(clamp(Math.floor((lon - 90) / CS), CX0
 
 // tiles
 var TILE = { 1: {}, 2: {} }, TQ = [], TACTIVE = 0, TSTAMP = 0, tilesArrived = false;
+var PREFETCH = [];   // z2 tile names wanted soon (fly-through look-ahead)
 function tileReq(level, name, pri) {
   var t = TILE[level][name];
   if (!t) { t = TILE[level][name] = { level: level, name: name, state: 0, pri: pri, data: null, n: level === 1 ? Z1N : Z2N, used: TSTAMP }; TQ.push(t); }
@@ -693,7 +713,7 @@ function pumpTiles() {
 function evictTiles() {
   [1, 2].forEach(function (lv) {
     var ready = Object.keys(TILE[lv]).map(function (k) { return TILE[lv][k]; }).filter(function (t) { return t.state === 2; });
-    var cap = lv === 1 ? (LOW ? 24 : 48) : (LOW ? 24 : 56);
+    var cap = lv === 1 ? (LOW ? 24 : 48) : (LOW ? 40 : 110);
     if (ready.length <= cap) return;
     ready.sort(function (a, b) { return a.used - b.used; });
     for (var i = 0; i < ready.length - cap; i++) { if (TSTAMP - ready[i].used > 2) delete TILE[lv][ready[i].name]; }
@@ -766,7 +786,7 @@ function gridIndex(nx, ny) {
   return (IDXC[key] = new THREE.BufferAttribute(idx, 1));
 }
 // build a patch mesh. rect: lonA/latN = grid origin (west / north edge of the unclipped tile); k = level
-function buildPatch(rect, k, step, t1, t2, nb, s2) {
+function buildPatch(rect, k, step, t1, t2, nb, s2, stitch) {
   var latN = rect.latN;
   var iA = Math.round((rect.lon0 - rect.lonA) / step), iB = Math.round((rect.lon1 - rect.lonA) / step);
   var jA = Math.round((latN - rect.lat1) / step), jB = Math.round((latN - rect.lat0) / step);
@@ -787,6 +807,13 @@ function buildPatch(rect, k, step, t1, t2, nb, s2) {
       }
       Hr[jj * mx + ii] = h;
     }
+  }
+  // edges shared with a half-resolution neighbour: odd vertices take the mean of their even neighbours,
+  // so the two meshes meet without T-junction cracks
+  if (stitch) {
+    var fixRow = function (jj) { for (var ii = 1; ii < mx - 1; ii++) if ((iA + ii - 1) & 1) Hr[jj * mx + ii] = (Hr[jj * mx + ii - 1] + Hr[jj * mx + ii + 1]) / 2; };
+    var fixCol = function (ii) { for (var jj = 1; jj < my - 1; jj++) if ((jA + jj - 1) & 1) Hr[jj * mx + ii] = (Hr[(jj - 1) * mx + ii] + Hr[(jj + 1) * mx + ii]) / 2; };
+    if (stitch.n) fixRow(1); if (stitch.s) fixRow(my - 2); if (stitch.w) fixCol(1); if (stitch.e) fixCol(mx - 2);
   }
   var n = nx * ny, pos = new Float32Array(n * 3), hh = new Float32Array(n), gr = new Float32Array(n * 2), lo = 1e9, hi = -1e9;
   var sx = step * KX, sz = step * KY;
@@ -816,21 +843,26 @@ function buildCell(c, quick) {
     c.mesh = buildPatch({ lonA: c.lonA, latN: c.latA + CS, lon0: c.lon0, lon1: c.lon1, lat0: c.lat0, lat1: c.lat1 }, 0, G0D, null, null, [], 1);
     scene.add(c.mesh); return;
   }
-  var k = c.lod, t1 = TILE[1][c.bn], t2 = TILE[2][c.n2], s2 = LOW ? 2 : 1;
+  var k = c.lod, t1 = TILE[1][c.bn], t2 = TILE[2][c.n2], s2 = c.res || 2;
   if (k >= 1 && !(t1 && t1.data)) k = c.lod = 0;
   if (k === 2 && !(t2 && t2.data)) k = c.lod = 1;
   c.nb = lowerNb(c);
-  var step = k === 0 ? G0D : k === 1 ? Z1D : Z2D * s2;
-  c.mesh = buildPatch({ lonA: c.lonA, latN: c.latA + CS, lon0: c.lon0, lon1: c.lon1, lat0: c.lat0, lat1: c.lat1 }, k, step, t1, t2, c.nb, s2);
-  scene.add(c.mesh); c.builtLod = k;
+  var step = k === 0 ? G0D : k === 1 ? Z1D : Z2D * s2, stitch = null;
+  if (k === 2 && s2 === 1) {
+    var half = function (dx, dy) { var n = cellXY(c.ix + dx, c.iy + dy); return !!(n && n.lod === 2 && n.res === 2); };
+    stitch = { n: half(0, 1), s: half(0, -1), w: half(-1, 0), e: half(1, 0) };
+  }
+  c.mesh = buildPatch({ lonA: c.lonA, latN: c.latA + CS, lon0: c.lon0, lon1: c.lon1, lat0: c.lat0, lat1: c.lat1 }, k, step, t1, t2, c.nb, s2, stitch);
+  scene.add(c.mesh); c.builtLod = k; c.builtRes = s2;
   markRegion(c.lon0 - 0.12, c.lat0 - 0.12, c.lon1 + 0.12, c.lat1 + 0.12);
 }
 function buildBlock(b) {
   if (!b.mesh) { b.mesh = buildPatch({ lonA: b.lonA, latN: b.latA + 1, lon0: b.lon0, lon1: b.lon1, lat0: b.lat0, lat1: b.lat1 }, 0, G0D, null, null, [], 1); scene.add(b.mesh); }
 }
-function setCellLod(c, k) {
-  if (c.lod === k) return;
-  c.lod = k; c.dirty = true; c.block.dirty = true;
+function setCellLod(c, k, res) {
+  res = k === 2 ? res : 0;
+  if (c.lod === k && (c.res || 0) === res) return;
+  c.lod = k; c.res = res; c.dirty = true; c.block.dirty = true;
   for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) { var n = cellXY(c.ix + dx, c.iy + dy); if (n && n.lod > 0) n.dirty = true; }
   markRegion(c.lon0 - 0.12, c.lat0 - 0.12, c.lon1 + 0.12, c.lat1 + 0.12);
 }
@@ -840,7 +872,9 @@ function selectLod() {
   TSTAMP++;
   camera.updateMatrixWorld(); pmat.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse); frus.setFromProjectionMatrix(pmat);
   var cp = camera.position, Hpx = Math.max(300, canvas.clientHeight || 600), K = Hpx / (2 * Math.tan(camera.fov * Math.PI / 360));
-  var D1 = 5.0 * K / 10, D2 = 0.5 * K / 5;     // switch when a 5 km / 500 m cell spans ~10 / ~5 px
+  // screen-space thresholds: 500 m tiles once a 5 km cell spans ~10 px; 90 m data at 180 m spacing once a
+  // 500 m cell spans ~2.2 px (180 m ≈ 0.8 px), at full 90 m once it spans ~4 px. Tiles out to 1.35× are prefetched.
+  var D1 = 5.0 * K / 10, D2 = 0.5 * K / 2.2, D3 = 0.5 * K / 4;
   var c1 = [], c2 = [];
   for (var q = 0; q < CELLS.length; q++) {
     var c = CELLS[q], x0 = X(c.lon0), x1 = X(c.lon1), z0 = Z(c.lat1), z1 = Z(c.lat0);
@@ -853,8 +887,18 @@ function selectLod() {
   }
   c1.sort(function (a, b) { return a.dist - b.dist; });
   c1 = c1.slice(0, LOW ? 110 : 240);
-  c1.forEach(function (c) { c.want = 1; if (c.has2 && c.dist < D2 * (c.lod === 2 ? 1.15 : 1)) c2.push(c); });
-  c2.slice(0, LOW ? 16 : 36).forEach(function (c) { c.want = 2; });
+  var pre = [];
+  c1.forEach(function (c) {
+    c.want = 1;
+    if (!c.has2) return;
+    if (c.dist < D2 * (c.lod === 2 ? 1.15 : 1)) c2.push(c);
+    else if (c.dist < D2 * 1.35) pre.push(c);
+  });
+  var n3 = 0;
+  c2.slice(0, LOW ? 24 : 72).forEach(function (c) {
+    c.want = 2;
+    c.wres = (!LOW && n3 < 30 && c.dist < D3 * (c.lod === 2 && c.res === 1 ? 1.15 : 1)) ? (n3++, 1) : 2;
+  });
   for (q = 0; q < CELLS.length; q++) {
     c = CELLS[q]; var k = 0;
     if (c.want >= 1) {
@@ -863,8 +907,10 @@ function selectLod() {
     }
     if (k >= 1 && TILE[1][c.bn]) TILE[1][c.bn].used = TSTAMP;
     if (k === 2 && TILE[2][c.n2]) TILE[2][c.n2].used = TSTAMP;
-    setCellLod(c, k);
+    setCellLod(c, k, c.wres);
   }
+  pre.forEach(function (c) { tileReq(2, c.n2, 400 + c.dist); });
+  PREFETCH.forEach(function (n) { tileReq(2, n, 300); }); PREFETCH = [];
   evictTiles(); pumpTiles();
 }
 var BUILDT = {};
@@ -940,10 +986,34 @@ function densify(flat, maxKm) {
   out.push(flat[flat.length - 2], flat[flat.length - 1]);
   return out;
 }
+var STREF = 0;
 function lineMat(o) {
   var m = new THREE.LineMaterial({ color: o.color, linewidth: o.width, transparent: true, opacity: o.opacity == null ? 1 : o.opacity, dashed: !!o.dashed, dashSize: o.dash || 2, gapSize: o.gap || 2, depthWrite: false });
   m.polygonOffset = true; m.polygonOffsetFactor = -1; m.polygonOffsetUnits = -(o.po || 4);
   if (o.xray) m.depthTest = false;
+  if (o.ghost) m.depthFunc = THREE.GreaterDepth;     // drawn only where the terrain hides the line
+  if (m.opacity < 1) {
+    // a translucent line is made of many short overlapping quads (round caps); in far views dozens stack on
+    // one pixel and 10 % opacity turns solid. Each translucent line gets its own stencil value so every pixel
+    // is blended once per line.
+    STREF = STREF % 254 + 1;
+    m.stencilWrite = true; m.stencilRef = STREF; m.stencilFunc = THREE.NotEqualStencilFunc;
+    m.stencilZPass = THREE.ReplaceStencilOp; m.stencilFail = THREE.KeepStencilOp; m.stencilZFail = THREE.KeepStencilOp;
+  }
+  if (o.sink) {
+    /* tunnels: drawn at the estimated rail level inside the mountain. For the depth test only, each end is
+       moved toward the camera along its own view ray (screen position unchanged) by the rock cover above it,
+       lengthened for oblique views. The line then shows through its own overburden, while a ridge standing
+       further in front still hides it. */
+    m.onBeforeCompile = function (sh) {
+      sh.vertexShader = sh.vertexShader
+        .replace('attribute vec3 instanceEnd;', 'attribute vec3 instanceEnd;\nattribute float instanceSinkStart;\nattribute float instanceSinkEnd;\n' +
+          'void sinkToward(inout vec4 v, vec3 w, float d){ vec3 dir = normalize(w - cameraPosition); float f = 1.0 / max(abs(dir.y), 0.3); float L = length(v.xyz); v.xyz *= max(0.02, 1.0 - d * f / max(L, 1e-3)); }')
+        .replace('vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );', 'vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );\n' +
+          'sinkToward(start, (modelMatrix * vec4(instanceStart, 1.0)).xyz, instanceSinkStart);\nsinkToward(end, (modelMatrix * vec4(instanceEnd, 1.0)).xyz, instanceSinkEnd);');
+    };
+    m.customProgramCacheKey = function () { return 'sink'; };
+  }
   m.resolution = RES; return m;
 }
 function Drape(lines, o) {
@@ -1044,6 +1114,11 @@ function railY(sec, km) {
   var a = S.runS[i], b = S.runE[i], u = (km - S.km[a]) / Math.max(1e-9, S.km[b] - S.km[a]);
   return r + lerp(railCorr(S, a), railCorr(S, b), u);
 }
+// rail level, or (surf) the ground above it — the fly-through looks at the ground over a tunnel
+function routeH(sec, km, surf) {
+  if (!surf) return railY(sec, km);
+  var pt = pointAtKm(sec, km); return hAt(pt[0], pt[1]);
+}
 function RailLine(pieces, o) {
   // pieces: [[sec, k0, k1], ...] sampled every <= 0.25 km plus every vertex in between
   this.o = o; var pts = [];
@@ -1065,11 +1140,23 @@ function RailLine(pieces, o) {
 var rails = [];
 RailLine.prototype.update = function () {
   var p = this.pts, n = p.length / 2, a = new Float32Array(Math.max(n, 2) * 3), lift = (this.o.lift || 0.03) + 0.012 * EXAG;
+  var sink = this.o.sink ? new Float32Array(Math.max(n, 2)) : null;
   for (var i = 0; i < n; i++) {
-    var sec = p[i * 2], km = p[i * 2 + 1], pt = pointAtKm(sec, km);
-    a[i * 3] = X(pt[0]); a[i * 3 + 1] = railY(sec, km) * 0.001 * EXAG + lift; a[i * 3 + 2] = Z(pt[1]);
+    var sec = p[i * 2], km = p[i * 2 + 1], pt = pointAtKm(sec, km), ry = railY(sec, km);
+    a[i * 3] = X(pt[0]); a[i * 3 + 1] = ry * 0.001 * EXAG + lift; a[i * 3 + 2] = Z(pt[1]);
+    if (sink) {
+      // rock cover: the highest ground within ~1 km, since the line of sight may graze a neighbouring spur
+      var g = hAt(pt[0], pt[1]), dl = 0.01;
+      g = Math.max(g, hAt(pt[0] + dl, pt[1]), hAt(pt[0] - dl, pt[1]), hAt(pt[0], pt[1] + dl), hAt(pt[0], pt[1] - dl));
+      sink[i] = Math.max(0, g - ry) * 0.001 * EXAG * 1.15 + 0.25 + 0.02 * EXAG;
+    }
   }
   this.geo.setPositions(a);
+  if (sink) {
+    var sb = new THREE.InstancedInterleavedBuffer(sink, 2, 1);
+    this.geo.setAttribute('instanceSinkStart', new THREE.InterleavedBufferAttribute(sb, 1, 0));
+    this.geo.setAttribute('instanceSinkEnd', new THREE.InterleavedBufferAttribute(sb, 1, 1));
+  }
   if (this.o.dashed) this.obj.computeLineDistances();
 };
 RailLine.prototype.show = function (v) { this.obj.visible = v; };
@@ -1099,70 +1186,123 @@ Piers.prototype.update = function () {
   this.geo.setPositions(new Float32Array(a));
 };
 Piers.prototype.show = function (v) { this.obj.visible = v; };
+// tunnel portals: small screen-sized rings at both ends of every tunnel longer than minKm
+function Portals(o) {
+  var pts = [], yl = [];
+  RT.runs.forEach(function (r) {
+    if (r[1] !== 2 || r[3] - r[2] < o.minKm) return;
+    pts.push(r[0], r[2], r[0], r[3]); yl.push(r[0] === 'yl' ? 1 : 0, r[0] === 'yl' ? 1 : 0);
+  });
+  this.pts = pts;
+  this.geo = new THREE.BufferGeometry();
+  this.geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pts.length / 2 * 3), 3));
+  this.geo.setAttribute('yl', new THREE.BufferAttribute(new Float32Array(yl), 1));
+  this.mat = new THREE.ShaderMaterial({
+    uniforms: { size: { value: 7 * renderer.getPixelRatio() }, cYl: { value: col('cinnabar') }, cOp: { value: col('rail') }, cIn: { value: col('halo') }, alpha: { value: 1 } },
+    vertexShader: 'attribute float yl; uniform float size; varying float vYl; void main(){ vYl = yl; vec4 mv = modelViewMatrix*vec4(position,1.0); gl_Position = projectionMatrix*mv; gl_Position.z -= 0.0015*gl_Position.w; gl_PointSize = size; }',
+    fragmentShader: 'uniform vec3 cYl, cOp, cIn; uniform float alpha; varying float vYl; void main(){ float r = length(gl_PointCoord-0.5)*2.0; if(r>1.0) discard; vec3 c = r < 0.48 ? cIn : mix(cOp, cYl, vYl); gl_FragColor = vec4(c, alpha*(1.0-smoothstep(0.85,1.0,r))); }',
+    transparent: true, depthWrite: false
+  });
+  this.obj = new THREE.Points(this.geo, this.mat); this.obj.renderOrder = 12; this.obj.frustumCulled = false;
+  this.update(); scene.add(this.obj); rails.push(this);
+}
+Portals.prototype.update = function () {
+  var p = this.pts, a = this.geo.attributes.position.array, lift = 0.06 + 0.02 * EXAG;
+  for (var i = 0; i < p.length / 2; i++) {
+    var sec = p[i * 2], km = p[i * 2 + 1], pt = pointAtKm(sec, km);
+    a[i * 3] = X(pt[0]); a[i * 3 + 1] = railY(sec, km) * 0.001 * EXAG + lift; a[i * 3 + 2] = Z(pt[1]);
+  }
+  this.geo.attributes.position.needsUpdate = true;
+};
+Portals.prototype.show = function (v) { this.obj.visible = v; };
 // uniform runs of (kind, rough) per section
 var RUNS = [];
 SECS.forEach(function (s) {
   var S = RS[s], n = S.km.length;
   for (var i = 0; i < n - 1;) { var j = i; while (j + 1 < n - 1 && S.kind[j + 1] === S.kind[i] && S.rough[j + 1] === S.rough[i]) j++; RUNS.push({ s: s, kind: S.kind[i], rough: S.rough[i], k0: S.km[i], k1: S.km[j + 1] }); i = j + 1; }
 });
-function pieces(f) { return RUNS.filter(f).map(function (r) { return [r.s, r.k0, r.k1]; }); }
+function pieces(f) { return RUNS.filter(f).map(function (r) { return [r.s, r.k0, r.k1, r.kind === 2]; }); }
 var ROUGH_KM = { cy: 0, yl: 0, ll: 0 }; RUNS.forEach(function (r) { if (r.rough) ROUGH_KM[r.s] += r.k1 - r.k0; });
 
 /* ------------------------------------------------------------------ build overlays */
 var L = {}; // named overlay groups
 function buildOverlays() {
-  // rivers by class
+  // rivers by class (OSM); widths follow the zoom (see hudUpdate)
   var rc = [[], [], [], []];
   D.rivers.forEach(function (r) { rc[r.c].push(r.p); });
   L.river = [0, 1, 2, 3].map(function (c) {
-    return new Drape(rc[c], { color: col('water'), width: [0.8, 1.2, 1.8, 2.7][c], opacity: [0.55, 0.7, 0.85, 0.95][c], order: 2, lift: 0.02, step: 0.6 });
+    return new Drape(rc[c], { color: col('water'), width: RIVER_W[c][0], opacity: [0.6, 0.72, 0.85, 0.95][c], order: 2, lift: 0.02, step: 0.6 });
   });
-  // admin
-  L.prov = new Drape(D.prov, { color: col('ink-2'), width: 1.6, opacity: 0.85, dashed: true, dash: 6, gap: 3, order: 3 });
-  L.pref = new Drape(D.pref, { color: col('ink-2'), width: 1.0, opacity: 0.6, dashed: true, dash: 3, gap: 3, order: 3 });
-  L.county = new Drape(D.county, { color: col('ink-3'), width: 0.7, opacity: 0.5, order: 3 });
+  // boundaries: national (with a faint band), line of actual control, province, prefecture, county
+  // a light underlay under the river lines (a border often follows a river), dashes above them
+  L.natBand = new Drape(A.borders.nat, { color: col('border'), width: 8, opacity: 0.2, order: 1, step: 2 });
+  L.nat = new Drape(A.borders.nat, { color: col('border'), width: 1.8, opacity: 0.95, dashed: true, dash: 5, gap: 2, order: 3, step: 2 });
+  L.provBand = new Drape(D.prov, { color: col('halo'), width: 4, opacity: 0.55, order: 1 });
+  L.prov = new Drape(D.prov, { color: col('ink-2'), width: 1.5, opacity: 0.9, dashed: true, dash: 4, gap: 2.2, order: 3 });
+  L.pref = new Drape(D.pref, { color: col('ink-2'), width: 0.9, opacity: 0.5, dashed: true, dash: 2.5, gap: 2.5, order: 3 });
+  L.county = new Drape(D.county, { color: col('ink-3'), width: 0.7, opacity: 0.45, order: 3 });
   // faults by age
   var fc = [[], [], [], []];
   D.faults.forEach(function (f) { fc[f.a].push(f.p); });
   L.fault = [0, 1, 2, 3].map(function (c) {
     return new Drape(fc[c], { color: col('fault'), width: [2.2, 1.6, 1.1, 0.8][c], opacity: [0.95, 0.75, 0.5, 0.35][c], order: 4 });
   });
-  // railway (OSM): operating sections black/white, YL cinnabar; rough parts dotted; tunnels seen through the terrain
+  /* railway (OSM). Three readings, kept apart by their edges rather than by colour alone:
+       at grade  light halo + solid line            (Ya'an–Nyingchi cinnabar, open sections black/white)
+       bridge    dark casing either side ("═"), key bridges in gold, at the estimated deck level
+       tunnel    hollow dashes at the estimated rail level inside the mountain, seen through its own rock
+                 cover but hidden by ridges in front (lineMat sink); portals marked with rings
+     Where a ridge in front hides the line, a faint thin ghost keeps it traceable. */
   var op = function (r) { return r.s !== 'yl'; }, yl = function (r) { return r.s === 'yl'; };
-  L.opTun = new RailLine(pieces(function (r) { return op(r) && r.kind === 2; }), { color: col('rail'), width: 2.4, opacity: 0.5, dashed: true, dash: 2.5, gap: 1.5, order: 6, xray: true });
-  L.opBase = new RailLine(pieces(function (r) { return op(r) && r.kind !== 2; }), { color: col('rail'), width: 4.6, order: 6, po: 6 });
-  L.opDash = new RailLine(pieces(function (r) { return op(r) && r.kind !== 2; }), { color: col('rail-alt'), width: 2.4, dashed: true, dash: 3, gap: 3, order: 7, po: 7 });
-  L.ylTunHalo = new RailLine(pieces(function (r) { return yl(r) && r.kind === 2; }), { color: col('halo'), width: 6, opacity: 0.35, order: 6, xray: true });
-  L.ylTun = new RailLine(pieces(function (r) { return yl(r) && r.kind === 2 && !r.rough; }), { color: col('cinnabar'), width: 3.0, opacity: 0.8, dashed: true, dash: 3, gap: 1.5, order: 7, xray: true });
-  L.ylTunRough = new RailLine(pieces(function (r) { return yl(r) && r.kind === 2 && r.rough; }), { color: col('cinnabar'), width: 2.2, opacity: 0.55, dashed: true, dash: 1, gap: 1.6, order: 7, xray: true });
-  L.ylHalo = new RailLine(pieces(function (r) { return yl(r) && r.kind !== 2; }), { color: col('halo'), width: 7, opacity: 0.85, order: 8, po: 6 });
-  L.ylCore = new RailLine(pieces(function (r) { return yl(r) && r.kind !== 2 && !r.rough; }), { color: col('cinnabar'), width: 3.6, order: 9, po: 7 });
-  L.ylRough = new RailLine(pieces(function (r) { return yl(r) && r.kind !== 2 && r.rough; }), { color: col('cinnabar'), width: 3.0, dashed: true, dash: 1, gap: 1.4, order: 9, po: 7 });
-  L.piers = new Piers({ color: col('ink-2'), width: 1.6, opacity: 0.9, order: 5, po: 5 });
-  L.branch = new Drape([R.br], { color: col('cinnabar'), width: 2.2, dashed: true, dash: 3, gap: 2.2, order: 7, po: 7, lift: 0.12 });
-  L.tunnel = new RailLine(D.tunnels.map(function (t) { return ['yl', t.k0, t.k1]; }), { color: col('tunnel-line'), width: 3.8, dashed: true, dash: 2, gap: 1.6, order: 10, xray: true, opacity: 0.9 });
+  var open = function (r) { return r.kind !== 2; }, tun = function (r) { return r.kind === 2; };
+  L.ylGhost = new RailLine(pieces(function (r) { return yl(r) && open(r); }), { color: col('cinnabar'), width: 1.5, opacity: 0.32, order: 3, ghost: true });
+  L.opGhost = new RailLine(pieces(function (r) { return op(r) && open(r); }), { color: col('rail'), width: 1.3, opacity: 0.24, order: 3, ghost: true });
+  // tunnel parts hidden by a ridge in front (beyond their own rock cover)
+  L.ylTunGhost = new RailLine(pieces(function (r) { return yl(r) && tun(r); }), { color: col('cinnabar'), width: 1.3, opacity: 0.26, order: 3, ghost: true, sink: true });
+  L.opTunGhost = new RailLine(pieces(function (r) { return op(r) && tun(r); }), { color: col('rail'), width: 1.1, opacity: 0.2, order: 3, ghost: true, sink: true });
   L.bridge = new RailLine(D.bridges.map(function (b) {
     var hit = RT.runs.filter(function (r) { return r[0] === b.s && r[1] === 1 && r[4] === b.osmName; });
     if (b.osm && hit.length) return [b.s, Math.min.apply(null, hit.map(function (r) { return r[2]; })), Math.max.apply(null, hit.map(function (r) { return r[3]; }))];
     return [b.s, b.km - 0.6, b.km + 0.6];
-  }), { color: col('gold'), width: 6.5, order: 11, po: 9, lift: 0.05 });
+  }), { color: col('gold'), width: 11, order: 4, po: 5 });
+  L.brCase = new RailLine(pieces(function (r) { return r.kind === 1; }), { color: col('ink'), width: 8.6, opacity: 0.9, order: 5, po: 5 });
+  L.tunnel = new RailLine(D.tunnels.map(function (t) { return ['yl', t.k0, t.k1, true]; }), { color: col('tunnel'), width: 10, opacity: 0.16, order: 5, po: 5, sink: true });
+  L.opHalo = new RailLine(pieces(function (r) { return op(r) && r.kind !== 2; }), { color: col('halo'), width: 7, opacity: 0.9, order: 6, po: 6 });
+  L.ylHalo = new RailLine(pieces(function (r) { return yl(r) && r.kind !== 2; }), { color: col('halo'), width: 6.6, opacity: 0.92, order: 6, po: 6 });
+  // tunnels: inside the mountain at rail level, seen through their own rock cover; hollow dashes
+  L.opTun = new RailLine(pieces(function (r) { return op(r) && r.kind === 2; }), { color: col('rail'), width: 2.2, opacity: 0.7, dashed: true, dash: 4, gap: 2.2, order: 7, po: 6, sink: true });
+  var ylT = pieces(function (r) { return yl(r) && r.kind === 2 && !r.rough; });
+  L.ylTun = new RailLine(ylT, { color: col('cinnabar'), width: 4.6, opacity: 0.9, dashed: true, dash: 4, gap: 2.2, order: 7, po: 6, sink: true });
+  L.ylTunIn = new RailLine(ylT, { color: col('halo'), width: 1.8, opacity: 0.95, dashed: true, dash: 4, gap: 2.2, order: 8, po: 7, sink: true });
+  L.ylTunRough = new RailLine(pieces(function (r) { return yl(r) && r.kind === 2 && r.rough; }), { color: col('cinnabar'), width: 2.2, opacity: 0.75, dashed: true, dash: 1, gap: 2, order: 7, po: 6, sink: true });
+  L.opBase = new RailLine(pieces(function (r) { return op(r) && r.kind !== 2; }), { color: col('rail'), width: 4.2, order: 7, po: 7 });
+  L.opDash = new RailLine(pieces(function (r) { return op(r) && r.kind !== 2; }), { color: col('rail-alt'), width: 2, dashed: true, dash: 3, gap: 3, order: 8, po: 8 });
+  L.ylCore = new RailLine(pieces(function (r) { return yl(r) && r.kind !== 2 && !r.rough; }), { color: col('cinnabar'), width: 3.4, order: 9, po: 8 });
+  L.ylRough = new RailLine(pieces(function (r) { return yl(r) && r.kind !== 2 && r.rough; }), { color: col('cinnabar'), width: 3, dashed: true, dash: 1, gap: 1.4, order: 9, po: 8 });
+  L.piers = new Piers({ color: col('ink-2'), width: 1.6, opacity: 0.9, order: 5, po: 5 });
+  L.portals = new Portals({ minKm: 0.3 });
 }
-var DASH = [['opDash', 3, 3], ['opTun', 2.5, 1.5], ['ylTun', 3, 1.5], ['ylTunRough', 1, 1.6], ['ylRough', 1, 1.4], ['branch', 3, 2.2], ['tunnel', 2, 1.6], ['prov', 6, 3], ['pref', 3, 3]];
+var RIVER_W = [[0.7, 0.025], [1.0, 0.045], [1.4, 0.09], [2.1, 0.18]];   // [min px, world width km] by class
+var DASH = [['opDash', 3, 3], ['opTun', 4, 2.2], ['ylTun', 4, 2.2], ['ylTunIn', 4, 2.2], ['ylTunRough', 1, 2], ['ylRough', 1, 1.4], ['nat', 5, 2], ['prov', 4, 2.5], ['pref', 2.5, 2.5]];
 function updateDashScale(dist) {
-  var s = clamp(dist / 260, 0.12, 12);
+  var s = clamp(dist / 260, 0.08, 12);
   DASH.forEach(function (a) { var o = L[a[0]]; if (!o) return; o.mat.dashSize = a[1] * s; o.mat.gapSize = a[2] * s; });
 }
 function refreshDrapeColors() {
   if (!L.prov) return;
   L.river.forEach(function (d) { d.mat.color.copy(col('water')); });
-  L.prov.mat.color.copy(col('ink-2')); L.pref.mat.color.copy(col('ink-2')); L.county.mat.color.copy(col('ink-3'));
+  [L.nat, L.natBand].forEach(function (d) { d.mat.color.copy(col('border')); });
+  L.prov.mat.color.copy(col('ink-2')); L.provBand.mat.color.copy(col('halo')); L.pref.mat.color.copy(col('ink-2')); L.county.mat.color.copy(col('ink-3'));
   L.fault.forEach(function (d) { d.mat.color.copy(col('fault')); });
-  L.opBase.mat.color.copy(col('rail')); L.opDash.mat.color.copy(col('rail-alt')); L.opTun.mat.color.copy(col('rail'));
-  L.ylHalo.mat.color.copy(col('halo')); L.ylTunHalo.mat.color.copy(col('halo'));
-  [L.ylCore, L.ylRough, L.ylTun, L.ylTunRough, L.branch].forEach(function (d) { d.mat.color.copy(col('cinnabar')); });
-  L.piers.mat.color.copy(col('ink-2'));
-  L.tunnel.mat.color.copy(col('tunnel-line')); L.bridge.mat.color.copy(col('gold'));
+  [L.opBase, L.opTun, L.opGhost, L.opTunGhost].forEach(function (d) { d.mat.color.copy(col('rail')); });
+  L.opDash.mat.color.copy(col('rail-alt'));
+  [L.ylHalo, L.opHalo, L.ylTunIn].forEach(function (d) { d.mat.color.copy(col('halo')); });
+  [L.ylCore, L.ylRough, L.ylTun, L.ylTunRough, L.ylGhost, L.ylTunGhost].forEach(function (d) { d.mat.color.copy(col('cinnabar')); });
+  L.brCase.mat.color.copy(col('ink')); L.piers.mat.color.copy(col('ink-2'));
+  L.tunnel.mat.color.copy(col('tunnel')); L.bridge.mat.color.copy(col('gold'));
+  var pu = L.portals.mat.uniforms; pu.cYl.value.copy(col('cinnabar')); pu.cOp.value.copy(col('rail')); pu.cIn.value.copy(col('halo'));
 }
+
 // after terrain detail changes, re-seat overlays on the new surface
 var lastSeat = 0;
 function reseat(now) {
@@ -1311,7 +1451,7 @@ function flyTo(lon, lat, r, polar, az, dur) {
   var tx = X(lon), tz = Z(lat), ty = hXZ(tx, tz) * 0.001 * EXAG;
   var p1 = camFrom(tx, ty, tz, r || s.r, polar == null ? Math.min(s.polar, 1.0) : polar, az == null ? s.az : az);
   tween = { t0: performance.now(), dur: reduceMotion ? 1 : (dur || 1500), p0: camera.position.clone(), t0v: controls.target.clone(), p1: p1, t1v: new THREE.Vector3(tx, ty, tz) };
-  stopFly();
+  pauseFly();
 }
 function stepTween(now) {
   var k = clamp((now - tween.t0) / tween.dur, 0, 1), e = easeIO(k);
@@ -1354,34 +1494,70 @@ function overview(instant) {
   } else flyTo(o.lon, o.lat, o.r, o.polar, o.az, 1600);
 }
 
-/* ------------------------------------------------------------------ fly-through */
+/* ------------------------------------------------------------------ fly-through
+   The camera follows the drawn line (rail level, or the ground above a tunnel), from behind and a little to
+   the side, rising over any ridge between it and the look-at point. Pausing keeps the position; interacting
+   with the map pauses; clicking the profile while paused moves the resume point. */
 var fly = null, FLY_SPEEDS = [45, 90, 180], flySpeedIx = 0;
+var ICO_PLAY = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 2 L12 7 L3 12 Z" fill="currentColor"/></svg>';
+var ICO_PAUSE = '<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="3" y="2" width="3" height="10" fill="currentColor"/><rect x="8" y="2" width="3" height="10" fill="currentColor"/></svg>';
+function flyButtons() {
+  var b = $('#bFly'), pz = $('#flyPause');
+  if (!fly) { b.innerHTML = ICO_PLAY + '沿线飞行'; return; }
+  b.innerHTML = fly.paused ? ICO_PLAY + '继续飞行' : ICO_PAUSE + '暂停飞行';
+  pz.innerHTML = fly.paused ? ICO_PLAY + '继续' : ICO_PAUSE + '暂停';
+  pz.setAttribute('aria-label', fly.paused ? '继续飞行' : '暂停飞行');
+}
 function startFly() {
-  closeCard();
-  fly = { K: 0, last: performance.now() };
-  controls.enabled = false; $('#flyhud').hidden = false; $('#bFly').innerHTML = '<svg viewBox="0 0 14 14" aria-hidden="true"><rect x="3" y="2" width="3" height="10" fill="currentColor"/><rect x="8" y="2" width="3" height="10" fill="currentColor"/></svg>暂停飞行';
+  closeCard(); tween = null;
+  if (!fly) fly = { K: 0 };
+  fly.paused = false; fly.last = performance.now(); fly.cam = null; fly.tgt = null; fly.pre = 0;
+  controls.enabled = false; $('#flyhud').hidden = false; flyButtons();
+}
+function pauseFly() {
+  if (!fly || fly.paused) return;
+  fly.paused = true; controls.enabled = true; flyButtons();
 }
 function stopFly() {
-  if (!fly) return; fly = null; controls.enabled = true; $('#flyhud').hidden = true;
-  $('#bFly').innerHTML = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 2 L12 7 L3 12 Z" fill="currentColor"/></svg>沿线飞行';
+  if (!fly) return; fly = null; controls.enabled = true; $('#flyhud').hidden = true; flyButtons(); profCursor(null);
+}
+function lineYAt(K) {
+  var s = secOf(K), km = clamp(K - SEC_OFF[s], 0, CUM[s][CUM[s].length - 1]), e = edgeAt(s, km);
+  return routeH(s, km, RS[s].kind[e[0]] === 2);
 }
 function stepFly(now) {
   var dt = Math.min(0.05, (now - fly.last) / 1000); fly.last = now;
   fly.K += FLY_SPEEDS[flySpeedIx] * dt;
   if (fly.K >= TOTAL) { fly.K = TOTAL; stopFly(); return; }
-  var a = fullAt(fly.K), b = fullAt(Math.min(TOTAL, fly.K + 40)), c0 = fullAt(Math.max(0, fly.K - 55));
-  var tx = X(a.lon), tz = Z(a.lat), ax = X(b.lon), az2 = Z(b.lat), bx = X(c0.lon), bz = Z(c0.lat);
-  var ty = Math.max(hXZ(tx, tz), hXZ(ax, az2)) * 0.001 * EXAG;
-  var tgt = new THREE.Vector3(lerp(tx, ax, 0.6), ty, lerp(tz, az2, 0.6));
-  var dirx = tx - bx, dirz = tz - bz, dl = Math.hypot(dirx, dirz) || 1;
-  var camH = Math.max(hXZ(bx, bz), hXZ(tx, tz)) * 0.001 * EXAG + 34;
-  var pos = new THREE.Vector3(tx - dirx / dl * 62 + dirz / dl * 18, camH, tz - dirz / dl * 62 - dirx / dl * 18);
-  camera.position.lerp(pos, 0.06); controls.target.lerp(tgt, 0.08); camera.lookAt(controls.target);
-  // hud
-  var near = nearestStation(fly.K);
+  var K = fly.K, sc = 0.001 * EXAG, sp = [1, 1.35, 1.8][flySpeedIx];
+  // heading averaged over ±27 km so bends do not swing the camera
+  var hx = 0, hz = 0;
+  for (var i = -4; i <= 4; i++) { var a = fullAt(K + i * 6 - 3), b = fullAt(K + i * 6 + 3); hx += X(b.lon) - X(a.lon); hz += Z(b.lat) - Z(a.lat); }
+  var hl = Math.hypot(hx, hz) || 1; hx /= hl; hz /= hl;
+  var p = fullAt(K), px = X(p.lon), pz = Z(p.lat), py = lineYAt(K) * sc;
+  var q = fullAt(K + 6 * sp), tx = X(q.lon), tz = Z(q.lat), ty = lineYAt(K + 6 * sp) * sc;
+  var back = 30 * sp, side = 9 * sp;
+  var cx = px - hx * back + hz * side, cz = pz - hz * back - hx * side, cy = Math.max(py, ty) + 13 * sp;
+  for (var t = 0; t <= 0.86; t += 0.043) {   // keep the sight line to the target clear of the terrain
+    var g = hXZ(lerp(cx, tx, t), lerp(cz, tz, t)) * sc + 1.2;
+    var need = (g - t * ty) / (1 - t); if (need > cy) cy = need;
+  }
+  var want = new THREE.Vector3(cx, cy, cz), wantT = new THREE.Vector3(tx, ty, tz);
+  if (!fly.cam) { fly.cam = camera.position.clone(); fly.tgt = controls.target.clone(); }
+  var kp = 1 - Math.exp(-dt / 0.55), kt = 1 - Math.exp(-dt / 0.3);
+  var ky = want.y > fly.cam.y ? 1 - Math.exp(-dt / 0.2) : kp;      // climb faster than descend
+  fly.cam.x += (want.x - fly.cam.x) * kp; fly.cam.z += (want.z - fly.cam.z) * kp; fly.cam.y += (want.y - fly.cam.y) * ky;
+  fly.tgt.lerp(wantT, kt);
+  camera.position.copy(fly.cam); controls.target.copy(fly.tgt); camera.lookAt(fly.tgt);
+  // ask for the fine terrain ahead before we get there
+  if (now - fly.pre > 300) {
+    fly.pre = now;
+    for (var dk = 0; dk <= 80; dk += 5) { var f = fullAt(K + dk), c = cellAt(f.lon, f.lat); if (c && c.has2) PREFETCH.push(c.n2); }
+  }
+  var near = nearestStation(K);
   $('#flyName').textContent = near ? near.n : '';
-  $('#flyKm').textContent = nf(fly.K) + ' km';
-  profCursor(fly.K);
+  $('#flyKm').textContent = nf(K) + ' km';
+  profCursor(K);
 }
 
 /* ------------------------------------------------------------------ stations along full route */
@@ -1443,7 +1619,7 @@ function openItem(kind, d, fromMap) {
     h = '<div class="k">' + (d[3] === 'quake' ? '强震' : '巨型滑坡') + '</div><h4>' + esc(d[0]) + '</h4><div class="chips"><span class="chip">' + esc(d[4]) + '</span></div><p>' + esc(d[5]) + '</p><p class="src">震中/位置为约值。</p>';
   } else if (kind === 'river') {
     lon = d.lon; lat = d.lat; r = 300;
-    h = '<div class="k">河流水系</div><h4>' + esc(d.n) + '</h4><p>图中河道据 Copernicus 约500 m 地形以流向与汇流累积量提取；发源于图幅以外的干流在入境处补入上游汇水面积。</p>';
+    h = '<div class="k">河流水系</div><h4>' + esc(d.n) + '</h4><p>河道与湖泊据 OpenStreetMap。线宽按上游河道累计长度分为四级，拉近后随实际河宽加粗。</p>';
   } else if (kind === 'unit') {
     h = d.html; lon = d.lon; lat = d.lat; r = d.r;
   }
@@ -1470,7 +1646,8 @@ var TABS = {
       '<p>雅林段自雅安起，向西经天全、泸定、康定、雅江、巴塘，跨金沙江入藏，再经贡觉、昌都、波密至林芝。线路穿越横断山区“三江”深切峡谷，沿线高差超过4,000 m，最新公开口径中隧道占线路长度的82.6%，桥隧比达93.7%。</p>' +
       '<div class="grp">三个区段</div>' + D.sections.map(secCard).join('') +
       '<div class="grp">图上怎么看</div>' +
-      '<p class="muted"><span class="sw yl"></span>雅林段（在建）　<span class="sw op"></span>已通车区段　<span class="sw tun"></span>隧道（透视）　<span class="sw rough"></span>粗略线位　<span class="sw br"></span>重点桥梁。拖动平移，右键或双指旋转，滚轮或双指缩放；拉近后自动加载约500 m与约90 m的精细地形。点击地名、车站、桥隧可查看详情。</p>' +
+      '<p class="muted"><span class="sw yl"></span>路基段　<span class="sw br"></span>桥梁（深色双边）　<span class="sw tun"></span>隧道（虚线，按推算轨面画在山体内部）　<span class="sw rough"></span>粗略线位　<span class="sw op"></span>已通车区段。被前方山体遮住的线路以淡色细线示意走向。</p>' +
+      '<p class="muted">拖动平移，右键拖动或双指旋转，滚轮或双指缩放（朝光标处缩放），双击飞近该处；拉近后自动加载约500 m、约180 m和约90 m的精细地形。点击地名、车站、桥隧可查看详情。</p>' +
       '<p class="muted">线位、车站与桥隧位置取自 OpenStreetMap（© OpenStreetMap 贡献者），雅林段量得 ' + nf(CUM.yl[CUM.yl.length - 1], 1) + ' km；其中约 ' + nf(ROUGH_KM.yl) + ' km 在 OSM 中注明为初步（preliminary）勾绘，图上以点线显示为“粗略”。轨面高程是按地形与30‰坡度上限推算的，并非设计纵断面。</p>';
   },
   stations: function () {
@@ -1538,9 +1715,11 @@ var TABS = {
     var cal = (RT.calibration || []).map(function (c) { return c.name + '控制值 ' + nf(c.control, c.control % 1 ? 2 : 0) + ' m（未校准推算 ' + nf(c.uncalibrated) + ' m）'; }).join('；');
     return '<h2>资料来源</h2><ul class="list">' + keys.map(function (k) { return '<li style="padding:6px 0;font-size:12.5px;line-height:1.55"><a href="' + esc(SRC[k][1]) + '" target="_blank" rel="noopener">' + esc(SRC[k][0]) + '</a></li>'; }).join('') + '</ul>' +
       '<h2>数据说明</h2><p class="muted">线位、车站、桥梁与隧道：OpenStreetMap（© OpenStreetMap 贡献者，ODbL 许可），2026年11月导出。成雅、雅林、拉林三段按车站顺序拼接为连续线位；OSM 注明为 preliminary 的路段显示为“粗略”。少数在 OSM 中找不到对应的隧道或车站沿用推定位置，并注明“示意”。</p>' +
-      '<p class="muted">地形分三级：全线底图为 GEBCO 2024 的0.05°（约5 km）格网；拉近后加载 Copernicus DEM GLO-90 重采样的约500 m格网，线路两侧15 km内再加载约90 m原始格网，各级交界处高程平滑过渡。Copernicus DEM 为数字表面模型，林区高程含林冠。© DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>' +
+      '<p class="muted">地形分三级：全线底图为 GEBCO 2024 的0.05°（约5 km）格网；拉近后加载 Copernicus DEM GLO-90 重采样的约500 m格网，线路两侧15 km内再加载约90 m原始格网（中距离先以约180 m间隔显示，拉近后换为全分辨率），各级交界处高程平滑过渡。Copernicus DEM 为数字表面模型，林区高程含林冠。© DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>' +
       '<p class="muted">轨面高程为推算：路基段贴合地表，隧道洞口和桥头取90 m地形高程，洞内、桥上在两端之间以最平顺方式连接，并逐100 m限制坡度不超过30‰；以' + esc(cal) + '校准。纵断面中的轨面线与图上桥高、隧道埋深均据此计算，不代表设计纵断面。</p>' +
-      '<p class="muted">河网：据约500 m地形以D8流向与汇流累积量提取。植被：中国1:100万植被图1 km栅格。地质：中国及邻区地质图（geo3al）。断层：GMT中文社区整理的中国活动断层数据。行政界线：仅绘制国内省、市州、县之间的内部界线。资料截至2026年11月。</p>';
+      '<p class="muted">水系：OpenStreetMap 的河流（waterway=river）与湖泊、水库、宽阔河道水面（© OpenStreetMap 贡献者，ODbL）。河流按 OSM 线段的流向拼接成网，以每段上游河道累计长度分级，图幅外流入的干流按名称补入上游长度；累计不足约90 km 的小支流未绘出。面积小于1 km² 的水面未绘出。</p>' +
+      '<p class="muted">国界：按中国政府主张的国界线绘制，线形据 Natural Earth 1:1000万边界数据；中印边界东段界线多在图幅南缘之外。省、市州、县界为国内行政界线。</p>' +
+      '<p class="muted">植被：中国1:100万植被图1 km栅格。地质：中国及邻区地质图（geo3al）。断层：GMT中文社区整理的中国活动断层数据。资料截至2026年11月。</p>';
   }
 };
 var MAPPED_T = ['易贡隧道', '色季拉山隧道', '果拉山隧道', '海子山隧道', '拉月隧道', '伯舒拉岭隧道', '卡子拉山隧道', '康定二号隧道', '高尔寺山隧道', '二郎山隧道'];
@@ -1615,7 +1794,11 @@ function legend() {
   } else if (m === 2) {
     h = '<div>地质年代（中国及邻区地质图）</div><div class="legend-grid" style="margin-top:6px">' + GEO.slice(1).map(function (v) { return '<span><i style="background:rgb(' + v[1].join(',') + ')"></i>' + esc(v[0]) + '</span>'; }).join('') + '</div>';
   } else h = '<div>素白晕渲：仅以光照表现起伏，便于阅读线路与标注。</div>';
-  h += '<div style="margin-top:8px">线路</div><div class="legend-grid" style="margin-top:4px"><span><i class="sw yl" style="width:14px;height:4px"></i>雅林段</span><span><i class="sw op" style="width:14px;height:4px"></i>已通车</span><span><i class="sw tun" style="width:14px;height:4px"></i>隧道（透视）</span><span><i class="sw rough" style="width:14px;height:4px"></i>粗略线位</span></div>';
+  var sw = function (c, t) { return '<span><i class="sw ' + c + '" style="width:16px"></i>' + t + '</span>'; };
+  h += '<div style="margin-top:8px">线路</div><div class="legend-grid" style="margin-top:6px;row-gap:6px">' +
+    sw('yl', '雅林段（在建）') + sw('op', '已通车区段') + sw('br', '桥梁') + sw('kbr', '重点桥梁') + sw('tun', '隧道（山体内）') +
+    '<span><i class="sw portal" style="margin-right:12px"></i>隧道洞口</span>' + sw('rough', '粗略线位') + '</div>' +
+    '<div style="margin-top:8px">界线</div><div class="legend-grid" style="margin-top:6px;row-gap:6px">' + sw('nat', '国界') + sw('prov', '省级界') + '</div>';
   if (LAYER.fault) h += '<div style="margin-top:8px">活动断裂（最新活动时代）</div><div class="legend-grid" style="margin-top:4px"><span><i style="background:var(--fault)"></i>全新世</span><span><i style="background:var(--fault);opacity:.7"></i>晚更新世</span><span><i style="background:var(--fault);opacity:.45"></i>早中更新世</span><span><i style="background:var(--fault);opacity:.3"></i>其他/未知</span></div>';
   $('#legend').innerHTML = h;
 }
@@ -1635,16 +1818,16 @@ function wireLayers() {
   bindToggle('L_contour', function (v) { TU.contourOn.value = v ? 1 : 0; });
   $('#contourStep').addEventListener('change', function () { TU.contourStep.value = +this.value; needs = true; });
   bindToggle('L_grat', function (v) { TU.gratOn.value = v ? 1 : 0; LAYER.grat = v; });
-  bindToggle('L_route', function (v) { ROUTE_ON = v; [L.opBase, L.opDash, L.opTun, L.ylHalo, L.ylCore, L.ylRough, L.ylTun, L.ylTunRough, L.ylTunHalo, L.piers].forEach(function (d) { d.show(v); }); });
+  bindToggle('L_route', function (v) { ROUTE_ON = v; [L.opBase, L.opDash, L.opTun, L.opHalo, L.opGhost, L.opTunGhost, L.ylTunGhost, L.ylTunIn, L.ylHalo, L.ylCore, L.ylRough, L.ylTun, L.ylTunRough, L.ylGhost, L.brCase].forEach(function (d) { d.show(v); }); });
   bindToggle('L_station', function (v) { LAYER.station = v; });
   bindToggle('L_bridge', function (v) { LAYER.bridge = v; L.bridge.show(v); });
   bindToggle('L_tunnel', function (v) { LAYER.tunnel = v; L.tunnel.show(v); });
-  bindToggle('L_branch', function (v) { L.branch.show(v); });
   bindToggle('L_river', function (v) { LAYER.river = v; L.river.forEach(function (d) { d.show(v); }); TU.waterAmt.value = v ? 1 : 0; });
   bindToggle('L_rname', function (v) { LAYER.rname = v; });
   bindToggle('L_peak', function (v) { LAYER.peak = v; });
   bindToggle('L_town', function (v) { LAYER.town = v; });
-  bindToggle('L_admin', function (v) { L.prov.show(v); L.pref.show(v); });
+  bindToggle('L_admin', function (v) { [L.nat, L.natBand, L.prov, L.provBand].forEach(function (d) { d.show(v); }); });
+  bindToggle('L_pref', function (v) { L.pref.show(v); });
   bindToggle('L_county', function (v) { L.county.show(v); });
   bindToggle('L_region', function (v) { LAYER.region = v; });
   bindToggle('L_eco', function (v) { LAYER.eco = v; });
@@ -1721,13 +1904,15 @@ function profCursor(K) {
   CURSOR.w = CURSOR.el.querySelector('.tx').offsetWidth || 90; LAYER.cursor = true; needs = true;
 }
 psvg.addEventListener('pointermove', function (e) {
-  if (!PROF || fly) return; var r = psvg.getBoundingClientRect(); var K = (e.clientX - r.left - PROF.mL) / PROF.pw * TOTAL;
+  if (!PROF || (fly && !fly.paused)) return; var r = psvg.getBoundingClientRect(); var K = (e.clientX - r.left - PROF.mL) / PROF.pw * TOTAL;
   if (K < 0 || K > TOTAL) { profCursor(null); return; } profCursor(K);
 });
-psvg.addEventListener('pointerleave', function () { if (!fly) profCursor(null); });
+psvg.addEventListener('pointerleave', function () { if (!fly) profCursor(null); else profCursor(fly.K); });
 psvg.addEventListener('click', function (e) {
   if (!PROF) return; var r = psvg.getBoundingClientRect(); var K = clamp((e.clientX - r.left - PROF.mL) / PROF.pw * TOTAL, 0, TOTAL);
-  var p = fullAt(K); flyTo(p.lon, p.lat, 220, 0.95);
+  var p = fullAt(K);
+  if (fly) { fly.K = K; profCursor(K); if (!fly.paused) { fly.cam = null; return; } }
+  flyTo(p.lon, p.lat, 220, 0.95);
 });
 
 /* ------------------------------------------------------------------ pointer readout */
@@ -1757,8 +1942,8 @@ canvas.addEventListener('pointermove', function (e) {
 canvas.addEventListener('pointerleave', function () { $('#readout').textContent = '移动光标，查看经纬度与高程'; });
 function doReadout() {
   if (!readPending) return; var p = pick(readPending[0], readPending[1]); readPending = null;
-  var lv = p ? cellAt(p.lon, p.lat).lod : 0;
-  $('#readout').innerHTML = p ? ('<b>' + p.lat.toFixed(3) + '</b>°N　<b>' + p.lon.toFixed(3) + '</b>°E　高程约 <b>' + nf(Math.round(p.h / 10) * 10) + '</b> m <span style="color:var(--ink-3)">' + ['5 km', '500 m', '90 m'][lv] + '</span>') : '移动光标，查看经纬度与高程';
+  var ce = p ? cellAt(p.lon, p.lat) : null, lv = ce ? ce.lod : 0;
+  $('#readout').innerHTML = p ? ('<b>' + p.lat.toFixed(3) + '</b>°N　<b>' + p.lon.toFixed(3) + '</b>°E　高程约 <b>' + nf(Math.round(p.h / 10) * 10) + '</b> m <span style="color:var(--ink-3)">' + (lv === 2 ? (ce.res === 1 ? '90 m' : '180 m') : ['5 km', '500 m'][lv]) + '</span>') : '移动光标，查看经纬度与高程';
 }
 
 /* ------------------------------------------------------------------ hud: compass + scale */
@@ -1773,6 +1958,11 @@ function hudUpdate() {
   updateDashScale(s.r);
   var near = Math.max(400, s.r * 1.3); TU.fogNear.value = near; TU.fogFar.value = near + Math.max(1800, s.r * 2.6);
   if (L.piers) L.piers.obj.visible = ROUTE_ON && s.r < 320;
+  if (L.portals) { L.portals.obj.visible = ROUTE_ON && s.r < 700; L.portals.mat.uniforms.alpha.value = clamp((700 - s.r) / 250, 0, 1); }
+  // rivers: a minimum on-screen width, growing with their real width as the view closes in
+  if (L.river) L.river.forEach(function (d, c) { d.mat.linewidth = clamp(RIVER_W[c][1] / kmpp, RIVER_W[c][0], 2.2 + c * 1.6); });
+  // near plane follows the distance so close-ups do not clip, far views keep depth precision
+  var nr = clamp(s.r * 0.012, 0.15, 2.5); if (Math.abs(nr - camera.near) > camera.near * 0.2) { camera.near = nr; camera.updateProjectionMatrix(); }
 }
 $('#compass').addEventListener('click', function () { var s = sph(); flyTo(LON(controls.target.x), LAT(controls.target.z), s.r, s.polar, 0, 900); });
 $('#bReset').addEventListener('click', function () { closeCard(); overview(false); });
@@ -1781,14 +1971,44 @@ $('#bTilt').addEventListener('click', function () {
   var s = sph(); tilted = !tilted; this.textContent = tilted ? '斜视' : '俯视';
   flyTo(LON(controls.target.x), LAT(controls.target.z), s.r, tilted ? 0.04 : 0.9, s.az, 900);
 });
-$('#bFly').addEventListener('click', function () { if (fly) stopFly(); else startFly(); });
+$('#bFly').addEventListener('click', function () { if (fly && !fly.paused) pauseFly(); else startFly(); });
+$('#flyPause').addEventListener('click', function () { if (fly && !fly.paused) pauseFly(); else startFly(); });
 $('#flyStop').addEventListener('click', stopFly);
 $('#flySpeed').addEventListener('click', function () { flySpeedIx = (flySpeedIx + 1) % 3; this.textContent = ['1×', '2×', '4×'][flySpeedIx]; });
-canvas.addEventListener('pointerdown', function () { if (fly) stopFly(); tween = null; });
-canvas.addEventListener('wheel', function () { if (fly) stopFly(); tween = null; }, { passive: true });
+/* map controls: the orbit / zoom pivot is re-seated on the ground at the centre of the free view whenever an
+   interaction starts (it lies on the view axis, so the view does not jump); the wheel zooms toward the cursor;
+   double-click flies in to the clicked spot. */
+function freeCenter() { var r = canvas.getBoundingClientRect(); return [r.left + (FR.x0 + FR.x1) / 2, r.top + (FR.y0 + FR.y1) / 2]; }
+function anchorTarget() {
+  if (fly && !fly.paused) return;
+  var c = freeCenter(), p = pick(c[0], c[1]); if (!p) return;
+  var x = X(p.lon), z = Z(p.lat), y = p.h * 0.001 * EXAG;
+  if (camera.position.distanceTo(new THREE.Vector3(x, y, z)) < controls.minDistance) return;
+  controls.target.set(x, y, z);
+}
+canvas.addEventListener('pointerdown', function () { pauseFly(); tween = null; anchorTarget(); }, true);
+canvas.addEventListener('wheel', function (e) {
+  pauseFly(); tween = null; anchorTarget();
+  // OrbitControls applies the wheel zoom at once; shift camera and pivot toward the cursor by the same factor
+  var r = camera.position.distanceTo(controls.target), f = e.deltaY < 0 ? Math.pow(0.95, controls.zoomSpeed) : 1 / Math.pow(0.95, controls.zoomSpeed);
+  var r2 = clamp(r * f, controls.minDistance, controls.maxDistance); f = r2 / r;
+  var p = pick(e.clientX, e.clientY); if (!p || Math.abs(1 - f) < 1e-3) return;
+  var P = new THREE.Vector3(X(p.lon), p.h * 0.001 * EXAG, Z(p.lat)), d = P.sub(controls.target).multiplyScalar(1 - f);
+  d.y = 0; controls.target.add(d); camera.position.add(d);
+}, { passive: true, capture: true });
+canvas.addEventListener('dblclick', function (e) {
+  var p = pick(e.clientX, e.clientY); if (!p) return;
+  var s = sph(); flyTo(p.lon, p.lat, Math.max(controls.minDistance * 1.5, s.r * 0.45), Math.min(s.polar, 1.05), s.az, 900);
+});
 $('#rackClose').addEventListener('click', function () { $('#rack').classList.remove('open'); if (!isMobile()) { $('#rack').hidden = true; $('#app').classList.add('rack-closed'); applyViewOffset(); } });
 $('#mlayers').addEventListener('click', function () { var r = $('#rack'); r.hidden = false; r.classList.toggle('open'); if (!isMobile()) { $('#app').classList.remove('rack-closed'); applyViewOffset(); } });
-$('#bProfile').addEventListener('click', function () { var p = $('#prof'); if (isMobile()) { p.classList.toggle('open'); } else { p.hidden = !p.hidden; $('#side').style.bottom = p.hidden ? '16px' : ''; $('#hud').style.bottom = p.hidden ? '16px' : ''; } requestAnimationFrame(function () { buildProfile(); applyViewOffset(); }); });
+$('#bProfile').addEventListener('click', function () {
+  var p = $('#prof');
+  if (isMobile()) p.classList.toggle('open');
+  else { p.hidden = !p.hidden; $('#app').classList.toggle('prof-closed', p.hidden); }
+  this.setAttribute('aria-pressed', (isMobile() ? p.classList.contains('open') : !p.hidden) ? 'true' : 'false');
+  requestAnimationFrame(function () { buildProfile(); applyViewOffset(); });
+});
 $('#mtoggle').addEventListener('click', function () { var s = $('#side'); var o = s.classList.toggle('open'); this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.textContent = o ? '收起资料' : '展开资料'; });
 $('#side').addEventListener('transitionend', function () { if (isMobile()) applyViewOffset(); });
 $('#sideFold').addEventListener('click', function () {
@@ -1816,7 +2036,8 @@ function resize() {
   var w = canvas.clientWidth, h = canvas.clientHeight;
   renderer.setSize(w, h, false); camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix(); applyViewOffset();
   RES.set(w * renderer.getPixelRatio(), h * renderer.getPixelRatio());
-  drapes.forEach(function (d) { d.mat.resolution.copy(RES); }); rails.forEach(function (d) { d.mat.resolution.copy(RES); });
+  drapes.forEach(function (d) { d.mat.resolution.copy(RES); }); rails.forEach(function (d) { if (d.mat.resolution) d.mat.resolution.copy(RES); });
+  if (L.portals) L.portals.mat.uniforms.size.value = 7 * renderer.getPixelRatio();
   buildProfile(); needs = true;
 }
 window.addEventListener('resize', resize);
@@ -1828,10 +2049,10 @@ controls.addEventListener('change', function () {
 });
 function loop(now) {
   requestAnimationFrame(loop);
-  if (fly) stepFly(now);
+  if (fly && !fly.paused) stepFly(now);
   else if (tween) stepTween(now);
   var moved = controls.enabled ? controls.update() : false;
-  if (fly || tween) { moved = true; lodMoved = true; }
+  if ((fly && !fly.paused) || tween) { moved = true; lodMoved = true; }
   // keep the camera above the (now much finer) terrain
   var cp = camera.position, floorY = hXZ(cp.x, cp.z) * 0.001 * EXAG + 0.6;
   if (cp.y < floorY) { cp.y = floorY; camera.lookAt(controls.target); moved = true; }
@@ -1858,7 +2079,7 @@ setTimeout(function () { $('#loader').classList.add('done'); }, 120);
 window.__czReady = true;
 window.__cz = { openItem: openItem, flyTo: flyTo, setMode: setMode, setTab: setTab,
   terrainStats: function () { var n = [0, 0, 0]; CELLS.forEach(function (c) { if (!c.block.merged) n[c.lod]++; }); return { cells: n, tiles1: Object.keys(TILE[1]).length, tiles2: Object.keys(TILE[2]).length, pending: TQ.length + TACTIVE, dirty: CELLS.filter(function (c) { return c.dirty; }).length, buildMs: BUILDT }; },
-  hAt: hAt, H0: H0, cellAt: cellAt, TILE: TILE, railY: railY, profAt: profAt, sec_off: SEC_OFF, L: L };
+  camera: camera, X: X, Z: Z, pick: pick, hAt: hAt, H0: H0, cellAt: cellAt, TILE: TILE, railY: railY, profAt: profAt, sec_off: SEC_OFF, L: L };
 }
 })();
 </script>

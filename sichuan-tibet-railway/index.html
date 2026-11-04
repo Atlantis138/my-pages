@@ -1137,11 +1137,6 @@ function railY(sec, km) {
   var a = S.runS[i], b = S.runE[i], u = (km - S.km[a]) / Math.max(1e-9, S.km[b] - S.km[a]);
   return r + lerp(railCorr(S, a), railCorr(S, b), u);
 }
-// rail level, or (surf) the ground above it — the fly-through looks at the ground over a tunnel
-function routeH(sec, km, surf) {
-  if (!surf) return railY(sec, km);
-  var pt = pointAtKm(sec, km); return hAt(pt[0], pt[1]);
-}
 function RailLine(pieces, o) {
   // pieces: [[sec, k0, k1], ...] sampled every <= 0.25 km plus every vertex in between
   this.o = o; var pts = [], first = [];
@@ -1558,8 +1553,10 @@ function stopFly() {
   if (!fly) return; fly = null; controls.enabled = true; $('#flyhud').hidden = true; flyButtons(); profCursor(null);
 }
 function lineYAt(K) {
-  var s = secOf(K), km = clamp(K - SEC_OFF[s], 0, CUM[s][CUM[s].length - 1]), e = edgeAt(s, km);
-  return routeH(s, km, RS[s].kind[e[0]] === 2);
+  // the estimated rail level, also on bridges and inside tunnels
+  K = clamp(K, 0, TOTAL);
+  var s = secOf(K), km = clamp(K - SEC_OFF[s], 0, CUM[s][CUM[s].length - 1]);
+  return railY(s, km);
 }
 function stepFly(now) {
   var dt = Math.min(0.05, (now - fly.last) / 1000); fly.last = now;
@@ -1570,20 +1567,17 @@ function stepFly(now) {
   var hx = 0, hz = 0;
   for (var i = -4; i <= 4; i++) { var a = fullAt(K + i * 6 - 3), b = fullAt(K + i * 6 + 3); hx += X(b.lon) - X(a.lon); hz += Z(b.lat) - Z(a.lat); }
   var hl = Math.hypot(hx, hz) || 1; hx /= hl; hz /= hl;
-  var p = fullAt(K), px = X(p.lon), pz = Z(p.lat), py = lineYAt(K) * sc;
-  var q = fullAt(K + 6 * sp), tx = X(q.lon), tz = Z(q.lat), ty = lineYAt(K + 6 * sp) * sc;
-  var back = 30 * sp, side = 9 * sp;
-  var cx = px - hx * back + hz * side, cz = pz - hz * back - hx * side, cy = Math.max(py, ty) + 13 * sp;
-  for (var t = 0; t <= 0.86; t += 0.043) {   // keep the sight line to the target clear of the terrain
-    var g = hXZ(lerp(cx, tx, t), lerp(cz, tz, t)) * sc + 1.2;
-    var need = (g - t * ty) / (1 - t); if (need > cy) cy = need;
-  }
+  // chase camera on the line itself: a point on the route behind, a little above rail level, looking at the
+  // rail ahead. No terrain avoidance — inside a tunnel the camera is in the mountain (its faces are culled
+  // from inside) and the tunnel line stays in view.
+  var back = 10 * sp, up = 3.2 * sp, side = 1.5 * sp;
+  var b = fullAt(K - back), q = fullAt(K + 5 * sp);
+  var cx = X(b.lon) + hz * side, cz = Z(b.lat) - hx * side, cy = lineYAt(K - back) * sc + up;
+  var tx = X(q.lon), tz = Z(q.lat), ty = lineYAt(K + 5 * sp) * sc;
   var want = new THREE.Vector3(cx, cy, cz), wantT = new THREE.Vector3(tx, ty, tz);
   if (!fly.cam) { fly.cam = camera.position.clone(); fly.tgt = controls.target.clone(); }
-  var kp = 1 - Math.exp(-dt / 0.55), kt = 1 - Math.exp(-dt / 0.3);
-  var ky = want.y > fly.cam.y ? 1 - Math.exp(-dt / 0.2) : kp;      // climb faster than descend
-  fly.cam.x += (want.x - fly.cam.x) * kp; fly.cam.z += (want.z - fly.cam.z) * kp; fly.cam.y += (want.y - fly.cam.y) * ky;
-  fly.tgt.lerp(wantT, kt);
+  var kp = 1 - Math.exp(-dt / 0.35), kt = 1 - Math.exp(-dt / 0.25);
+  fly.cam.lerp(want, kp); fly.tgt.lerp(wantT, kt);
   camera.position.copy(fly.cam); controls.target.copy(fly.tgt); camera.lookAt(fly.tgt);
   // ask for the fine terrain ahead before we get there
   if (now - fly.pre > 300) {
@@ -2118,7 +2112,7 @@ function loop(now) {
   if ((fly && !fly.paused) || tween) { moved = true; lodMoved = true; }
   // keep the camera above the (now much finer) terrain
   var cp = camera.position, floorY = hXZ(cp.x, cp.z) * 0.001 * EXAG + 0.6;
-  if (cp.y < floorY) { cp.y = floorY; camera.lookAt(controls.target); moved = true; }
+  if (cp.y < floorY && !(fly && !fly.paused)) { cp.y = floorY; camera.lookAt(controls.target); moved = true; }
   terrainTick(now);
   reseat(now);
   var rendered = moved || needs;

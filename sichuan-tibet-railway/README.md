@@ -5,7 +5,7 @@
 ## 数据来源与许可
 
 - **线位、车站、桥梁、隧道，河流与湖泊**：© [OpenStreetMap](https://www.openstreetmap.org/copyright) 贡献者，ODbL 许可。标注为 preliminary 的路段在图上显示为“粗略”。
-- **国界**：[Natural Earth](https://www.naturalearthdata.com/) 1:1000万边界（公有领域）。中印边界东段按中方主张线绘为国界，麦克马洪线一线淡色标为“实际控制线”。
+- **国界**：[Natural Earth](https://www.naturalearthdata.com/) 1:1000万边界（公有领域）。按中国政府主张的国界线绘制。
 - **地形**：[Copernicus DEM GLO-90](https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model)（© DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under COPERNICUS by the European Union and ESA; all rights reserved），重采样为约 500 m 全图和约 90 m 线路两侧 15 km 两级瓦片；全线底图为 GEBCO 2024（约 5 km）。
 - **轨面高程**：按地形和 30‰ 坡度上限推算，并用大渡河特大桥（1,681.48 m）、金沙江特大桥（约 3,000 m）校准，并非设计值。
 - 植被、地质、断层、行政界线及文字资料的出处见页面“来源”页。

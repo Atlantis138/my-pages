@@ -1,11 +1,9 @@
 """International boundaries in the map box from Natural Earth 1:10m (public domain).
 
 Downloads ne_10m_admin_0_boundary_lines_land and ..._disputed_areas (GeoJSON) into raw/ne/ and writes
-data/borders.json {nat:[[lon,lat,...]], lac:[[...]]}:
-  nat  China's boundary as China claims it: China–Bhutan and China–Myanmar boundaries plus the
-       "Chinese claim" lines south of the McMahon Line
-  lac  the line actually separating Chinese and Indian administration east of Bhutan (McMahon Line),
-       drawn faintly as 实际控制线
+data/borders.json {nat:[[lon,lat,...]]}: China's boundary as recognised by China — the China–Bhutan and
+China–Myanmar boundaries plus the "Chinese claim" lines (the McMahon Line, which China does not
+recognise, is left out).
 """
 import json, os, urllib.request
 from shapely.geometry import shape, box
@@ -27,14 +25,13 @@ def load(name):
 
 def main():
     clip = box(*BOX)
-    nat, lac = [], []
+    nat = []
     for ft in load(FILES[0]):
         p, g = ft['properties'], shape(ft['geometry'])
         if not g.intersects(clip): continue
         pair = {p.get('ADM0_LEFT'), p.get('ADM0_RIGHT')}
         if 'China' not in pair: continue
-        if p.get('FCLASS_CN') == 'Unrecognized':
-            if 'India' in pair: lac.append(g)
+        if p.get('FCLASS_CN') == 'Unrecognized':      # lines China does not recognise
             continue
         nat.append(g)
     for ft in load(FILES[1]):
@@ -49,7 +46,7 @@ def main():
             if ln.is_empty or ln.geom_type != 'LineString' or ln.length < 0.02: continue
             out.append([round(v, 3) for xy in ln.simplify(0.002).coords for v in xy])
         return out
-    res = {'nat': flat(nat), 'lac': flat(lac)}
+    res = {'nat': flat(nat)}
     print({k: (len(v), sum(len(x) // 2 for x in v)) for k, v in res.items()})
     dump_json(res, f'{DATA}/borders.json')
 

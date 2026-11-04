@@ -124,7 +124,6 @@ h1 .rail{display:inline-block; width:64px; height:7px; margin:0 0 9px 10px; vert
 .sw.kbr{background:var(--cinnabar); height:4px; box-shadow:0 0 0 1.2px var(--paper),0 0 0 3.2px var(--gold)}
 .sw.portal{width:9px; height:9px; border-radius:50%; background:var(--paper); box-shadow:inset 0 0 0 2.2px var(--cinnabar)}
 .sw.nat{height:0; border-top:2px dashed var(--border); box-shadow:0 0 0 3px color-mix(in srgb,var(--border) 18%,transparent); border-radius:0}
-.sw.lac{height:0; border-top:1.5px dotted var(--border); opacity:.7; border-radius:0}
 .sw.prov{height:0; border-top:1.5px dashed var(--ink-2); border-radius:0}
 .chip.sk{background:transparent; border:1px dashed var(--ink-3); color:var(--ink-3)}
 dl.kv{display:grid; grid-template-columns:auto 1fr; gap:4px 12px; margin:8px 0 2px; font-size:12.5px}
@@ -1001,6 +1000,20 @@ function lineMat(o) {
     m.stencilWrite = true; m.stencilRef = STREF; m.stencilFunc = THREE.NotEqualStencilFunc;
     m.stencilZPass = THREE.ReplaceStencilOp; m.stencilFail = THREE.KeepStencilOp; m.stencilZFail = THREE.KeepStencilOp;
   }
+  if (o.sink) {
+    /* tunnels: drawn at the estimated rail level inside the mountain. For the depth test only, each end is
+       moved toward the camera along its own view ray (screen position unchanged) by the rock cover above it,
+       lengthened for oblique views. The line then shows through its own overburden, while a ridge standing
+       further in front still hides it. */
+    m.onBeforeCompile = function (sh) {
+      sh.vertexShader = sh.vertexShader
+        .replace('attribute vec3 instanceEnd;', 'attribute vec3 instanceEnd;\nattribute float instanceSinkStart;\nattribute float instanceSinkEnd;\n' +
+          'void sinkToward(inout vec4 v, vec3 w, float d){ vec3 dir = normalize(w - cameraPosition); float f = 1.0 / max(abs(dir.y), 0.3); float L = length(v.xyz); v.xyz *= max(0.02, 1.0 - d * f / max(L, 1e-3)); }')
+        .replace('vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );', 'vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );\n' +
+          'sinkToward(start, (modelMatrix * vec4(instanceStart, 1.0)).xyz, instanceSinkStart);\nsinkToward(end, (modelMatrix * vec4(instanceEnd, 1.0)).xyz, instanceSinkEnd);');
+    };
+    m.customProgramCacheKey = function () { return 'sink'; };
+  }
   m.resolution = RES; return m;
 }
 function Drape(lines, o) {
@@ -1101,24 +1114,23 @@ function railY(sec, km) {
   var a = S.runS[i], b = S.runE[i], u = (km - S.km[a]) / Math.max(1e-9, S.km[b] - S.km[a]);
   return r + lerp(railCorr(S, a), railCorr(S, b), u);
 }
-// height (m) at which the route is drawn: the estimated rail level, except in tunnels, which are drawn on
-// the ground above them (a line inside the mountain reads badly from above and through foreground ridges)
+// rail level, or (surf) the ground above it — the fly-through looks at the ground over a tunnel
 function routeH(sec, km, surf) {
   if (!surf) return railY(sec, km);
   var pt = pointAtKm(sec, km); return hAt(pt[0], pt[1]);
 }
 function RailLine(pieces, o) {
-  // pieces: [[sec, k0, k1, surf], ...] sampled every <= 0.25 km plus every vertex in between
-  this.o = o; var pts = [], surf = [];
+  // pieces: [[sec, k0, k1], ...] sampled every <= 0.25 km plus every vertex in between
+  this.o = o; var pts = [];
   pieces.forEach(function (p) {
     var sec = p[0], d = CUM[sec], ks = [p[1]];
     for (var i = 0; i < d.length; i++) if (d[i] > p[1] && d[i] < p[2]) ks.push(d[i]);
     ks.push(p[2]);
     var dense = [ks[0]];
     for (i = 1; i < ks.length; i++) { var n = Math.max(1, Math.ceil((ks[i] - ks[i - 1]) / 0.25)); for (var q = 1; q <= n; q++) dense.push(lerp(ks[i - 1], ks[i], q / n)); }
-    for (i = 0; i < dense.length - 1; i++) { pts.push(sec, dense[i], sec, dense[i + 1]); surf.push(p[3] ? 1 : 0, p[3] ? 1 : 0); }
+    for (i = 0; i < dense.length - 1; i++) { pts.push(sec, dense[i], sec, dense[i + 1]); }
   });
-  this.pts = pts; this.surf = surf;
+  this.pts = pts;
   this.geo = new THREE.LineSegmentsGeometry();
   this.mat = lineMat(o);
   this.obj = new THREE.LineSegments2(this.geo, this.mat);
@@ -1128,12 +1140,23 @@ function RailLine(pieces, o) {
 var rails = [];
 RailLine.prototype.update = function () {
   var p = this.pts, n = p.length / 2, a = new Float32Array(Math.max(n, 2) * 3), lift = (this.o.lift || 0.03) + 0.012 * EXAG;
-  var sl = 0.05 + 0.03 * EXAG;   // draped (tunnel) parts sit a little higher to stay clear of the ground mesh
+  var sink = this.o.sink ? new Float32Array(Math.max(n, 2)) : null;
   for (var i = 0; i < n; i++) {
-    var sec = p[i * 2], km = p[i * 2 + 1], pt = pointAtKm(sec, km), s = this.surf[i];
-    a[i * 3] = X(pt[0]); a[i * 3 + 1] = routeH(sec, km, s) * 0.001 * EXAG + lift + (s ? sl : 0); a[i * 3 + 2] = Z(pt[1]);
+    var sec = p[i * 2], km = p[i * 2 + 1], pt = pointAtKm(sec, km), ry = railY(sec, km);
+    a[i * 3] = X(pt[0]); a[i * 3 + 1] = ry * 0.001 * EXAG + lift; a[i * 3 + 2] = Z(pt[1]);
+    if (sink) {
+      // rock cover: the highest ground within ~1 km, since the line of sight may graze a neighbouring spur
+      var g = hAt(pt[0], pt[1]), dl = 0.01;
+      g = Math.max(g, hAt(pt[0] + dl, pt[1]), hAt(pt[0] - dl, pt[1]), hAt(pt[0], pt[1] + dl), hAt(pt[0], pt[1] - dl));
+      sink[i] = Math.max(0, g - ry) * 0.001 * EXAG * 1.15 + 0.25 + 0.02 * EXAG;
+    }
   }
   this.geo.setPositions(a);
+  if (sink) {
+    var sb = new THREE.InstancedInterleavedBuffer(sink, 2, 1);
+    this.geo.setAttribute('instanceSinkStart', new THREE.InterleavedBufferAttribute(sb, 1, 0));
+    this.geo.setAttribute('instanceSinkEnd', new THREE.InterleavedBufferAttribute(sb, 1, 1));
+  }
   if (this.o.dashed) this.obj.computeLineDistances();
 };
 RailLine.prototype.show = function (v) { this.obj.visible = v; };
@@ -1214,7 +1237,6 @@ function buildOverlays() {
   // a light underlay under the river lines (a border often follows a river), dashes above them
   L.natBand = new Drape(A.borders.nat, { color: col('border'), width: 8, opacity: 0.2, order: 1, step: 2 });
   L.nat = new Drape(A.borders.nat, { color: col('border'), width: 1.8, opacity: 0.95, dashed: true, dash: 5, gap: 2, order: 3, step: 2 });
-  L.lac = new Drape(A.borders.lac, { color: col('border'), width: 1.4, opacity: 0.75, dashed: true, dash: 1.2, gap: 2.2, order: 3, step: 2 });
   L.provBand = new Drape(D.prov, { color: col('halo'), width: 4, opacity: 0.55, order: 1 });
   L.prov = new Drape(D.prov, { color: col('ink-2'), width: 1.5, opacity: 0.9, dashed: true, dash: 4, gap: 2.2, order: 3 });
   L.pref = new Drape(D.pref, { color: col('ink-2'), width: 0.9, opacity: 0.5, dashed: true, dash: 2.5, gap: 2.5, order: 3 });
@@ -1228,27 +1250,31 @@ function buildOverlays() {
   /* railway (OSM). Three readings, kept apart by their edges rather than by colour alone:
        at grade  light halo + solid line            (Ya'an–Nyingchi cinnabar, open sections black/white)
        bridge    dark casing either side ("═"), key bridges in gold, at the estimated deck level
-       tunnel    no halo, long dashes, translucent, drawn on the ground above; portals marked with rings
+       tunnel    hollow dashes at the estimated rail level inside the mountain, seen through its own rock
+                 cover but hidden by ridges in front (lineMat sink); portals marked with rings
      Where a ridge in front hides the line, a faint thin ghost keeps it traceable. */
   var op = function (r) { return r.s !== 'yl'; }, yl = function (r) { return r.s === 'yl'; };
-  var open = function (r) { return r.kind !== 2; };   // ghosts only for the line in the open: a tunnel drawn on a hidden slope zigzags
+  var open = function (r) { return r.kind !== 2; }, tun = function (r) { return r.kind === 2; };
   L.ylGhost = new RailLine(pieces(function (r) { return yl(r) && open(r); }), { color: col('cinnabar'), width: 1.5, opacity: 0.32, order: 3, ghost: true });
   L.opGhost = new RailLine(pieces(function (r) { return op(r) && open(r); }), { color: col('rail'), width: 1.3, opacity: 0.24, order: 3, ghost: true });
+  // tunnel parts hidden by a ridge in front (beyond their own rock cover)
+  L.ylTunGhost = new RailLine(pieces(function (r) { return yl(r) && tun(r); }), { color: col('cinnabar'), width: 1.3, opacity: 0.26, order: 3, ghost: true, sink: true });
+  L.opTunGhost = new RailLine(pieces(function (r) { return op(r) && tun(r); }), { color: col('rail'), width: 1.1, opacity: 0.2, order: 3, ghost: true, sink: true });
   L.bridge = new RailLine(D.bridges.map(function (b) {
     var hit = RT.runs.filter(function (r) { return r[0] === b.s && r[1] === 1 && r[4] === b.osmName; });
     if (b.osm && hit.length) return [b.s, Math.min.apply(null, hit.map(function (r) { return r[2]; })), Math.max.apply(null, hit.map(function (r) { return r[3]; }))];
     return [b.s, b.km - 0.6, b.km + 0.6];
   }), { color: col('gold'), width: 11, order: 4, po: 5 });
   L.brCase = new RailLine(pieces(function (r) { return r.kind === 1; }), { color: col('ink'), width: 8.6, opacity: 0.9, order: 5, po: 5 });
-  L.tunnel = new RailLine(D.tunnels.map(function (t) { return ['yl', t.k0, t.k1, true]; }), { color: col('tunnel'), width: 10, opacity: 0.16, order: 5, po: 5 });
+  L.tunnel = new RailLine(D.tunnels.map(function (t) { return ['yl', t.k0, t.k1, true]; }), { color: col('tunnel'), width: 10, opacity: 0.16, order: 5, po: 5, sink: true });
   L.opHalo = new RailLine(pieces(function (r) { return op(r) && r.kind !== 2; }), { color: col('halo'), width: 7, opacity: 0.9, order: 6, po: 6 });
   L.ylHalo = new RailLine(pieces(function (r) { return yl(r) && r.kind !== 2; }), { color: col('halo'), width: 6.6, opacity: 0.92, order: 6, po: 6 });
-  // tunnels: hollow dashes (outline dash + light core dash in the same phase)
-  L.opTun = new RailLine(pieces(function (r) { return op(r) && r.kind === 2; }), { color: col('rail'), width: 2.2, opacity: 0.7, dashed: true, dash: 4, gap: 2.2, order: 7, po: 6 });
+  // tunnels: inside the mountain at rail level, seen through their own rock cover; hollow dashes
+  L.opTun = new RailLine(pieces(function (r) { return op(r) && r.kind === 2; }), { color: col('rail'), width: 2.2, opacity: 0.7, dashed: true, dash: 4, gap: 2.2, order: 7, po: 6, sink: true });
   var ylT = pieces(function (r) { return yl(r) && r.kind === 2 && !r.rough; });
-  L.ylTun = new RailLine(ylT, { color: col('cinnabar'), width: 4.6, opacity: 0.95, dashed: true, dash: 4, gap: 2.2, order: 7, po: 6 });
-  L.ylTunIn = new RailLine(ylT, { color: col('halo'), width: 1.8, opacity: 1, dashed: true, dash: 4, gap: 2.2, order: 8, po: 7 });
-  L.ylTunRough = new RailLine(pieces(function (r) { return yl(r) && r.kind === 2 && r.rough; }), { color: col('cinnabar'), width: 2.2, opacity: 0.75, dashed: true, dash: 1, gap: 2, order: 7, po: 6 });
+  L.ylTun = new RailLine(ylT, { color: col('cinnabar'), width: 4.6, opacity: 0.9, dashed: true, dash: 4, gap: 2.2, order: 7, po: 6, sink: true });
+  L.ylTunIn = new RailLine(ylT, { color: col('halo'), width: 1.8, opacity: 0.95, dashed: true, dash: 4, gap: 2.2, order: 8, po: 7, sink: true });
+  L.ylTunRough = new RailLine(pieces(function (r) { return yl(r) && r.kind === 2 && r.rough; }), { color: col('cinnabar'), width: 2.2, opacity: 0.75, dashed: true, dash: 1, gap: 2, order: 7, po: 6, sink: true });
   L.opBase = new RailLine(pieces(function (r) { return op(r) && r.kind !== 2; }), { color: col('rail'), width: 4.2, order: 7, po: 7 });
   L.opDash = new RailLine(pieces(function (r) { return op(r) && r.kind !== 2; }), { color: col('rail-alt'), width: 2, dashed: true, dash: 3, gap: 3, order: 8, po: 8 });
   L.ylCore = new RailLine(pieces(function (r) { return yl(r) && r.kind !== 2 && !r.rough; }), { color: col('cinnabar'), width: 3.4, order: 9, po: 8 });
@@ -1257,7 +1283,7 @@ function buildOverlays() {
   L.portals = new Portals({ minKm: 0.3 });
 }
 var RIVER_W = [[0.7, 0.025], [1.0, 0.045], [1.4, 0.09], [2.1, 0.18]];   // [min px, world width km] by class
-var DASH = [['opDash', 3, 3], ['opTun', 4, 2.2], ['ylTun', 4, 2.2], ['ylTunIn', 4, 2.2], ['ylTunRough', 1, 2], ['ylRough', 1, 1.4], ['nat', 5, 2], ['lac', 1.6, 2.4], ['prov', 4, 2.5], ['pref', 2.5, 2.5]];
+var DASH = [['opDash', 3, 3], ['opTun', 4, 2.2], ['ylTun', 4, 2.2], ['ylTunIn', 4, 2.2], ['ylTunRough', 1, 2], ['ylRough', 1, 1.4], ['nat', 5, 2], ['prov', 4, 2.5], ['pref', 2.5, 2.5]];
 function updateDashScale(dist) {
   var s = clamp(dist / 260, 0.08, 12);
   DASH.forEach(function (a) { var o = L[a[0]]; if (!o) return; o.mat.dashSize = a[1] * s; o.mat.gapSize = a[2] * s; });
@@ -1265,13 +1291,13 @@ function updateDashScale(dist) {
 function refreshDrapeColors() {
   if (!L.prov) return;
   L.river.forEach(function (d) { d.mat.color.copy(col('water')); });
-  [L.nat, L.natBand, L.lac].forEach(function (d) { d.mat.color.copy(col('border')); });
+  [L.nat, L.natBand].forEach(function (d) { d.mat.color.copy(col('border')); });
   L.prov.mat.color.copy(col('ink-2')); L.provBand.mat.color.copy(col('halo')); L.pref.mat.color.copy(col('ink-2')); L.county.mat.color.copy(col('ink-3'));
   L.fault.forEach(function (d) { d.mat.color.copy(col('fault')); });
-  [L.opBase, L.opTun, L.opGhost].forEach(function (d) { d.mat.color.copy(col('rail')); });
+  [L.opBase, L.opTun, L.opGhost, L.opTunGhost].forEach(function (d) { d.mat.color.copy(col('rail')); });
   L.opDash.mat.color.copy(col('rail-alt'));
   [L.ylHalo, L.opHalo, L.ylTunIn].forEach(function (d) { d.mat.color.copy(col('halo')); });
-  [L.ylCore, L.ylRough, L.ylTun, L.ylTunRough, L.ylGhost].forEach(function (d) { d.mat.color.copy(col('cinnabar')); });
+  [L.ylCore, L.ylRough, L.ylTun, L.ylTunRough, L.ylGhost, L.ylTunGhost].forEach(function (d) { d.mat.color.copy(col('cinnabar')); });
   L.brCase.mat.color.copy(col('ink')); L.piers.mat.color.copy(col('ink-2'));
   L.tunnel.mat.color.copy(col('tunnel')); L.bridge.mat.color.copy(col('gold'));
   var pu = L.portals.mat.uniforms; pu.cYl.value.copy(col('cinnabar')); pu.cOp.value.copy(col('rail')); pu.cIn.value.copy(col('halo'));
@@ -1620,7 +1646,7 @@ var TABS = {
       '<p>雅林段自雅安起，向西经天全、泸定、康定、雅江、巴塘，跨金沙江入藏，再经贡觉、昌都、波密至林芝。线路穿越横断山区“三江”深切峡谷，沿线高差超过4,000 m，最新公开口径中隧道占线路长度的82.6%，桥隧比达93.7%。</p>' +
       '<div class="grp">三个区段</div>' + D.sections.map(secCard).join('') +
       '<div class="grp">图上怎么看</div>' +
-      '<p class="muted"><span class="sw yl"></span>路基段　<span class="sw br"></span>桥梁（深色双边）　<span class="sw tun"></span>隧道（虚线，画在山体地表上）　<span class="sw rough"></span>粗略线位　<span class="sw op"></span>已通车区段。被前方山体遮住的线路以淡色细线示意走向。</p>' +
+      '<p class="muted"><span class="sw yl"></span>路基段　<span class="sw br"></span>桥梁（深色双边）　<span class="sw tun"></span>隧道（虚线，按推算轨面画在山体内部）　<span class="sw rough"></span>粗略线位　<span class="sw op"></span>已通车区段。被前方山体遮住的线路以淡色细线示意走向。</p>' +
       '<p class="muted">拖动平移，右键拖动或双指旋转，滚轮或双指缩放（朝光标处缩放），双击飞近该处；拉近后自动加载约500 m、约180 m和约90 m的精细地形。点击地名、车站、桥隧可查看详情。</p>' +
       '<p class="muted">线位、车站与桥隧位置取自 OpenStreetMap（© OpenStreetMap 贡献者），雅林段量得 ' + nf(CUM.yl[CUM.yl.length - 1], 1) + ' km；其中约 ' + nf(ROUGH_KM.yl) + ' km 在 OSM 中注明为初步（preliminary）勾绘，图上以点线显示为“粗略”。轨面高程是按地形与30‰坡度上限推算的，并非设计纵断面。</p>';
   },
@@ -1692,7 +1718,7 @@ var TABS = {
       '<p class="muted">地形分三级：全线底图为 GEBCO 2024 的0.05°（约5 km）格网；拉近后加载 Copernicus DEM GLO-90 重采样的约500 m格网，线路两侧15 km内再加载约90 m原始格网（中距离先以约180 m间隔显示，拉近后换为全分辨率），各级交界处高程平滑过渡。Copernicus DEM 为数字表面模型，林区高程含林冠。© DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018 provided under COPERNICUS by the European Union and ESA; all rights reserved.</p>' +
       '<p class="muted">轨面高程为推算：路基段贴合地表，隧道洞口和桥头取90 m地形高程，洞内、桥上在两端之间以最平顺方式连接，并逐100 m限制坡度不超过30‰；以' + esc(cal) + '校准。纵断面中的轨面线与图上桥高、隧道埋深均据此计算，不代表设计纵断面。</p>' +
       '<p class="muted">水系：OpenStreetMap 的河流（waterway=river）与湖泊、水库、宽阔河道水面（© OpenStreetMap 贡献者，ODbL）。河流按 OSM 线段的流向拼接成网，以每段上游河道累计长度分级，图幅外流入的干流按名称补入上游长度；累计不足约90 km 的小支流未绘出。面积小于1 km² 的水面未绘出。</p>' +
-      '<p class="muted">国界：据 Natural Earth 1:1000万边界数据。中印边界东段按中国主张的界线绘为国界（多在图幅南缘之外），印方实际管辖的麦克马洪线一线以淡色点线标为“实际控制线”。省、市州、县界为国内行政界线。</p>' +
+      '<p class="muted">国界：按中国政府主张的国界线绘制，线形据 Natural Earth 1:1000万边界数据；中印边界东段界线多在图幅南缘之外。省、市州、县界为国内行政界线。</p>' +
       '<p class="muted">植被：中国1:100万植被图1 km栅格。地质：中国及邻区地质图（geo3al）。断层：GMT中文社区整理的中国活动断层数据。资料截至2026年11月。</p>';
   }
 };
@@ -1770,9 +1796,9 @@ function legend() {
   } else h = '<div>素白晕渲：仅以光照表现起伏，便于阅读线路与标注。</div>';
   var sw = function (c, t) { return '<span><i class="sw ' + c + '" style="width:16px"></i>' + t + '</span>'; };
   h += '<div style="margin-top:8px">线路</div><div class="legend-grid" style="margin-top:6px;row-gap:6px">' +
-    sw('yl', '雅林段（在建）') + sw('op', '已通车区段') + sw('br', '桥梁') + sw('kbr', '重点桥梁') + sw('tun', '隧道（地表投影）') +
+    sw('yl', '雅林段（在建）') + sw('op', '已通车区段') + sw('br', '桥梁') + sw('kbr', '重点桥梁') + sw('tun', '隧道（山体内）') +
     '<span><i class="sw portal" style="margin-right:12px"></i>隧道洞口</span>' + sw('rough', '粗略线位') + '</div>' +
-    '<div style="margin-top:8px">界线</div><div class="legend-grid" style="margin-top:6px;row-gap:6px">' + sw('nat', '国界') + sw('lac', '实际控制线') + sw('prov', '省级界') + '</div>';
+    '<div style="margin-top:8px">界线</div><div class="legend-grid" style="margin-top:6px;row-gap:6px">' + sw('nat', '国界') + sw('prov', '省级界') + '</div>';
   if (LAYER.fault) h += '<div style="margin-top:8px">活动断裂（最新活动时代）</div><div class="legend-grid" style="margin-top:4px"><span><i style="background:var(--fault)"></i>全新世</span><span><i style="background:var(--fault);opacity:.7"></i>晚更新世</span><span><i style="background:var(--fault);opacity:.45"></i>早中更新世</span><span><i style="background:var(--fault);opacity:.3"></i>其他/未知</span></div>';
   $('#legend').innerHTML = h;
 }
@@ -1792,7 +1818,7 @@ function wireLayers() {
   bindToggle('L_contour', function (v) { TU.contourOn.value = v ? 1 : 0; });
   $('#contourStep').addEventListener('change', function () { TU.contourStep.value = +this.value; needs = true; });
   bindToggle('L_grat', function (v) { TU.gratOn.value = v ? 1 : 0; LAYER.grat = v; });
-  bindToggle('L_route', function (v) { ROUTE_ON = v; [L.opBase, L.opDash, L.opTun, L.opHalo, L.opGhost, L.ylTunIn, L.ylHalo, L.ylCore, L.ylRough, L.ylTun, L.ylTunRough, L.ylGhost, L.brCase].forEach(function (d) { d.show(v); }); });
+  bindToggle('L_route', function (v) { ROUTE_ON = v; [L.opBase, L.opDash, L.opTun, L.opHalo, L.opGhost, L.opTunGhost, L.ylTunGhost, L.ylTunIn, L.ylHalo, L.ylCore, L.ylRough, L.ylTun, L.ylTunRough, L.ylGhost, L.brCase].forEach(function (d) { d.show(v); }); });
   bindToggle('L_station', function (v) { LAYER.station = v; });
   bindToggle('L_bridge', function (v) { LAYER.bridge = v; L.bridge.show(v); });
   bindToggle('L_tunnel', function (v) { LAYER.tunnel = v; L.tunnel.show(v); });
@@ -1800,7 +1826,7 @@ function wireLayers() {
   bindToggle('L_rname', function (v) { LAYER.rname = v; });
   bindToggle('L_peak', function (v) { LAYER.peak = v; });
   bindToggle('L_town', function (v) { LAYER.town = v; });
-  bindToggle('L_admin', function (v) { [L.nat, L.natBand, L.lac, L.prov, L.provBand].forEach(function (d) { d.show(v); }); });
+  bindToggle('L_admin', function (v) { [L.nat, L.natBand, L.prov, L.provBand].forEach(function (d) { d.show(v); }); });
   bindToggle('L_pref', function (v) { L.pref.show(v); });
   bindToggle('L_county', function (v) { L.county.show(v); });
   bindToggle('L_region', function (v) { LAYER.region = v; });

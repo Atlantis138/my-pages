@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Pages</title>
+<style>
+:root{--bg:#f4f5f2;--card:#fff;--ink:#1b2228;--muted:#69747d;--line:#dde1dc;--accent:#c23a22}
+@media (prefers-color-scheme:dark){:root{--bg:#11161b;--card:#182027;--ink:#e5eaee;--muted:#93a0aa;--line:#2a343d;--accent:#ff6a4b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+main{max-width:880px;margin:0 auto;padding:56px 16px 72px}
+h1{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-size:clamp(32px,6vw,44px);margin:0 0 6px;letter-spacing:.04em}
+.sub{color:var(--muted);margin:0 0 36px}
+ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}
+a{display:block;height:100%;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s}
+a:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tag{font-size:12px;color:var(--accent);letter-spacing:.1em}
+h2{font-size:19px;margin:4px 0 6px}
+p{margin:0;color:var(--muted);font-size:14px}
+time{display:block;margin-top:10px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+footer{margin-top:40px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <h1>My Pages</h1>
+  <p class="sub">在 Claude 里随手做的可视化小网页合集。</p>
+  <ul>
+    <li><a href="sichuan-tibet-railway/"><span class="tag">地理 · 三维</span><h2>川藏铁路三维图志</h2><p>成都—雅安—林芝—拉萨线路、桥隧、沿线地形、生态与地质图层。</p><time>2026-11-04</time></a></li>
+    <li><a href="everest-terrain/"><span class="tag">地理 · 三维</span><h2>珠峰三维地形图</h2><p>珠峰地区三维地形，含南北坡攀登路线、冰川与高程剖面。</p><time>2026-11-03</time></a></li>
+    <li><a href="quantum-computing/"><span class="tag">物理 · 交互讲解</span><h2>看得见的量子计算</h2><p>从量子比特到量子门，一步步动手体验的量子计算入门。</p><time>2026-11-01</time></a></li>
+    <li><a href="standard-model/"><span class="tag">物理 · 图谱</span><h2>标准模型粒子图谱</h2><p>十七种基本粒子的交互表格与对数质量阶梯。</p><time>2026-10-31</time></a></li>
+  </ul>
+  <footer>新增作品：在仓库里新建一个文件夹放入 index.html，再在本页加一张卡片即可。</footer>
+</main>
+</body>
+</html>

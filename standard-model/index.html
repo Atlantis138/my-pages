@@ -1,0 +1,284 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>标准模型粒子图谱</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a lab-chart page — the canonical 4×4+1 particle table on the left, a spec sheet on the right, then a log-scale mass ladder spanning 12 orders of magnitude */
+:root{
+  --bg:#eef1f4; --surface:#fbfcfd; --ink:#16202b; --muted:#5b6876; --line:#d3dae2;
+  --quark:#b4433a; --lepton:#1f7a6d; --gauge:#a76c12; --higgs:#6b4bb8;
+  --display:"Noto Serif SC","Songti SC",serif;
+  --body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141a; --surface:#161d25; --ink:#e6ebf0; --muted:#93a1b0; --line:#2a3440;
+  --quark:#e2776c; --lepton:#4fbfae; --gauge:#e0a84a; --higgs:#a58ae6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --surface:#161d25; --ink:#e6ebf0; --muted:#93a1b0; --line:#2a3440;
+  --quark:#e2776c; --lepton:#4fbfae; --gauge:#e0a84a; --higgs:#a58ae6; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px;display:grid;gap:48px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
+h1{font-size:clamp(30px,5vw,46px);font-weight:900;letter-spacing:.02em}
+h2{font-size:22px;font-weight:700}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:62ch;color:var(--muted);margin:12px 0 0}
+.group-eq{font-family:var(--mono);font-size:clamp(15px,2.2vw,19px);margin-top:18px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.group-eq span b{font-weight:600}
+.group-eq .s3{color:var(--quark)} .group-eq .s2{color:var(--lepton)} .group-eq .u1{color:var(--gauge)}
+.group-eq small{font-family:var(--body);color:var(--muted);font-size:13px}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters .label{font-size:13px;color:var(--muted);margin-right:4px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,.cell:focus-visible,.dot:focus-visible{outline:2px solid var(--higgs);outline-offset:2px}
+
+.main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:1fr}}
+
+.table-scroll{overflow-x:auto}
+.chart{display:grid;grid-template-columns:28px repeat(3,minmax(64px,1fr)) 10px minmax(64px,1fr) minmax(64px,1fr);grid-template-rows:auto repeat(4,auto);gap:8px;min-width:470px}
+.colhead{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;letter-spacing:.08em;align-self:end}
+.rowlab{writing-mode:vertical-rl;transform:rotate(180deg);font-size:12px;color:var(--muted);text-align:center;letter-spacing:.2em;align-self:stretch;display:flex;align-items:center;justify-content:center}
+.rowlab.q{color:var(--quark)} .rowlab.l{color:var(--lepton)}
+.cell{position:relative;font:inherit;text-align:left;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 9px 9px;cursor:pointer;display:grid;gap:2px;min-height:104px;transition:opacity .2s,transform .15s,border-color .15s}
+.cell::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;border-radius:8px 8px 0 0;background:var(--c)}
+.cell:hover{transform:translateY(-2px);border-color:var(--c)}
+.cell[aria-pressed="true"]{border-color:var(--c);box-shadow:0 0 0 2px var(--c) inset}
+.cell.dim{opacity:.22}
+.cell .m{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cell .sym{font-family:var(--display);font-size:30px;font-weight:700;line-height:1.1;color:var(--c);margin-top:4px}
+.cell .sym sub{font-size:.5em}
+.cell .nm{font-size:12px}
+.cell .qs{position:absolute;top:9px;right:8px;font-family:var(--mono);font-size:10px;color:var(--muted);text-align:right;line-height:1.35}
+.higgs-slot{grid-column:7;grid-row:2 / span 4;display:flex;align-items:center}
+.higgs-slot .cell{width:100%;min-height:150px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--muted);margin-top:14px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 22px 24px;display:grid;gap:14px;position:sticky;top:calc(16px + env(safe-area-inset-top,0px))}
+@media (max-width:860px){.detail{position:static}}
+.detail .head{display:flex;gap:16px;align-items:center}
+.detail .big{font-family:var(--display);font-size:58px;font-weight:900;line-height:1;color:var(--c);min-width:64px;text-align:center}
+.detail .big sub{font-size:.45em}
+.detail h3{font-size:24px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-size:12px;padding:1px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.tag.cat{color:var(--c);border-color:var(--c)}
+dl.props{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0;font-size:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:12px}
+dl.props dt{color:var(--muted)}
+dl.props dd{margin:0;font-family:var(--mono);font-size:13.5px;font-variant-numeric:tabular-nums;min-width:0}
+dl.props dd.txt{font-family:var(--body);font-size:14px}
+.detail p{margin:0;max-width:62ch}
+.disc{font-size:13px;color:var(--muted)}
+.disc b{color:var(--ink);font-weight:500}
+
+.ladder-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 8px}
+.ladder{display:block;min-width:680px;width:100%;height:auto}
+.ladder text{font-family:var(--mono)}
+.dot{cursor:pointer}
+.dot:hover circle{stroke-width:3}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:72ch}
+
+.beyond{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:12px 28px;margin-top:16px}
+.beyond div{border-top:2px solid var(--line);padding-top:10px;min-width:0}
+.beyond h3{font-size:16px;margin-bottom:4px}
+.beyond p{margin:0;font-size:14px;color:var(--muted)}
+footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion:reduce){.cell{transition:none}.cell:hover{transform:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">粒子物理 · 标准模型</div>
+    <h1>十七种基本粒子</h1>
+    <p class="lede">目前已知的一切普通物质，以及除引力之外的三种基本相互作用，都可以用下面这张表描述。它由一个规范对称群定义，经过半个世纪的实验检验，至今没有被任何对撞机结果推翻。点击任意粒子查看详情。</p>
+    <div class="group-eq" aria-label="标准模型规范群">
+      <span class="s3"><b>SU(3)</b><sub>C</sub></span>×
+      <span class="s2"><b>SU(2)</b><sub>L</sub></span>×
+      <span class="u1"><b>U(1)</b><sub>Y</sub></span>
+      <small>强相互作用 · 弱同位旋 · 弱超荷</small>
+    </div>
+  </header>
+
+  <section>
+    <div class="filters" role="group" aria-label="按相互作用筛选">
+      <span class="label">参与的相互作用：</span>
+      <button class="chip" id="f-all" data-f="all" aria-pressed="true">全部</button>
+      <button class="chip" id="f-strong" data-f="strong" aria-pressed="false">强</button>
+      <button class="chip" id="f-em" data-f="em" aria-pressed="false">电磁</button>
+      <button class="chip" id="f-weak" data-f="weak" aria-pressed="false">弱</button>
+      <button class="chip" id="f-higgs" data-f="higgs" aria-pressed="false">与希格斯耦合</button>
+    </div>
+    <div class="main" style="margin-top:18px">
+      <div>
+        <div class="table-scroll"><div class="chart" id="chart"></div></div>
+        <div class="legend">
+          <span><i style="background:var(--quark)"></i>夸克</span>
+          <span><i style="background:var(--lepton)"></i>轻子</span>
+          <span><i style="background:var(--gauge)"></i>规范玻色子</span>
+          <span><i style="background:var(--higgs)"></i>标量玻色子</span>
+          <span style="font-family:var(--mono)">卡片右上：电荷 / 自旋</span>
+        </div>
+      </div>
+      <aside class="detail" id="detail" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">质量阶梯 · 对数坐标</div>
+    <h2>从不到 1 eV 到 173 GeV</h2>
+    <p class="lede" style="margin-bottom:16px">同一个理论里，最轻和最重的有质量粒子相差超过 11 个数量级。标准模型能容纳这些质量，却无法解释它们为什么是这些数值。</p>
+    <div class="ladder-wrap"><svg class="ladder" id="ladder" viewBox="0 0 900 305" role="img" aria-label="标准模型粒子质量的对数刻度图"></svg></div>
+    <p class="note">光子与胶子质量为零，不在图中。中微子只有上限：振荡实验证明其质量非零，KATRIN 实验给出电子中微子有效质量 &lt; 0.45 eV，宇宙学观测对三种中微子质量之和的约束约为 0.1 eV 量级。图中以箭头表示上限。</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">边界</div>
+    <h2>标准模型没有回答的问题</h2>
+    <div class="beyond">
+      <div><h3>引力</h3><p>广义相对论与量子场论尚未统一，引力子只是假设中的粒子，不在这张表里。</p></div>
+      <div><h3>暗物质与暗能量</h3><p>宇宙约 95% 的能量成分不对应表中的任何粒子。</p></div>
+      <div><h3>中微子质量的来源</h3><p>原始标准模型中中微子无质量。它们为何有质量、又为何如此之轻，需要新的机制。</p></div>
+      <div><h3>物质多于反物质</h3><p>表中已知的 CP 破坏远不足以解释宇宙为何几乎只剩下物质。</p></div>
+      <div><h3>参数从哪来</h3><p>理论里有约 19 个需要实验测定的自由参数（计入中微子还会更多），包括所有质量和混合角。</p></div>
+      <div><h3>为什么是三代</h3><p>LEP 对 Z 玻色子衰变宽度的测量表明轻中微子恰好三种，但没有人知道为什么。</p></div>
+    </div>
+  </section>
+
+  <footer>数值取自粒子数据组（PDG）近年评估值并做了四舍五入；夸克质量为 MS-bar 方案下的近似值（轻夸克在 2 GeV 标度）。</footer>
+</div>
+
+<script>
+const P = [
+ {id:"u",sym:"u",name:"上夸克",cat:"quark",gen:1,mass:"2.16 MeV",ev:2.16e6,q:"+2/3",spin:"1/2",color:"有（红/绿/蓝）",ints:["strong","em","weak","higgs"],
+  desc:"最轻的夸克。质子由两个上夸克和一个下夸克组成，但三个夸克的静质量只占质子质量约 1%，其余来自胶子场与夸克运动的能量。",disc:["1968","SLAC 深度非弹性散射实验"]},
+ {id:"c",sym:"c",name:"粲夸克",cat:"quark",gen:2,mass:"1.27 GeV",ev:1.273e9,q:"+2/3",spin:"1/2",color:"有",ints:["strong","em","weak","higgs"],
+  desc:"由 GIM 机制预言，用来解释为何某些弱衰变被强烈抑制。J/ψ 介子的同时发现引发了所谓的“十一月革命”，使夸克模型被普遍接受。",disc:["1974","布鲁克海文与 SLAC 同时发现 J/ψ"]},
+ {id:"t",sym:"t",name:"顶夸克",cat:"quark",gen:3,mass:"172.6 GeV",ev:1.726e11,q:"+2/3",spin:"1/2",color:"有",ints:["strong","em","weak","higgs"],
+  desc:"已知最重的基本粒子，约等于一个金原子的质量。寿命约 5×10⁻²⁵ 秒，来不及形成强子就衰变了，是唯一能被“裸着”研究的夸克。它与希格斯场的耦合常数接近 1。",disc:["1995","费米实验室 Tevatron（CDF 与 DØ）"]},
+ {id:"d",sym:"d",name:"下夸克",cat:"quark",gen:1,mass:"4.70 MeV",ev:4.70e6,q:"−1/3",spin:"1/2",color:"有",ints:["strong","em","weak","higgs"],
+  desc:"下夸克比上夸克略重，因此中子（udd）比质子（uud）重，自由中子会 β 衰变成质子。若反过来，氢原子将不稳定，宇宙的化学会完全不同。",disc:["1968","SLAC 深度非弹性散射实验"]},
+ {id:"s",sym:"s",name:"奇夸克",cat:"quark",gen:2,mass:"93.5 MeV",ev:9.35e7,q:"−1/3",spin:"1/2",color:"有",ints:["strong","em","weak","higgs"],
+  desc:"含奇夸克的粒子在强作用中大量产生、却只能通过弱作用缓慢衰变，因而被称为“奇异”。中性 K 介子系统中第一次观测到了 CP 破坏（1964）。",disc:["1947","宇宙线中观测到 K 介子"]},
+ {id:"b",sym:"b",name:"底夸克",cat:"quark",gen:3,mass:"4.18 GeV",ev:4.18e9,q:"−1/3",spin:"1/2",color:"有",ints:["strong","em","weak","higgs"],
+  desc:"B 介子工厂利用它精确研究 CP 破坏。希格斯玻色子最主要的衰变方式就是变成一对底夸克，约占 58%。",disc:["1977","费米实验室发现 Υ 介子"]},
+ {id:"e",sym:"e",name:"电子",cat:"lepton",gen:1,mass:"0.511 MeV",ev:5.11e5,q:"−1",spin:"1/2",color:"无",ints:["em","weak","higgs"],
+  desc:"最轻的带电粒子，没有更轻的带电粒子可供衰变，所以绝对稳定。原子的化学性质几乎全部由电子的排布决定。",disc:["1897","J. J. 汤姆孙，阴极射线实验"]},
+ {id:"mu",sym:"μ",name:"μ 子",cat:"lepton",gen:2,mass:"105.7 MeV",ev:1.057e8,q:"−1",spin:"1/2",color:"无",ints:["em","weak","higgs"],
+  desc:"电子的重表亲，寿命 2.2 微秒。高空产生的宇宙线 μ 子能到达地面，是狭义相对论时间膨胀的经典证据。其反常磁矩 g−2 是检验标准模型最精密的量之一。",disc:["1936","安德森与内德梅耶，宇宙线"]},
+ {id:"tau",sym:"τ",name:"τ 子",cat:"lepton",gen:3,mass:"1.777 GeV",ev:1.777e9,q:"−1",spin:"1/2",color:"无",ints:["em","weak","higgs"],
+  desc:"唯一重到可以衰变成强子的轻子，寿命约 2.9×10⁻¹³ 秒。它的发现首次表明存在第三代费米子。",disc:["1975","SLAC，马丁·佩尔团队"]},
+ {id:"ve",sym:"ν",sub:"e",name:"电子中微子",cat:"lepton",gen:1,mass:"< 0.45 eV",ev:0.45,upper:true,q:"0",spin:"1/2",color:"无",ints:["weak"],
+  desc:"只参与弱相互作用，几乎能穿透一切。每秒约有 650 亿个来自太阳的中微子穿过你身体的每平方厘米。中微子振荡证明它们有质量（2015 年诺贝尔物理学奖）。",disc:["1956","柯温与莱因斯，核反应堆实验"]},
+ {id:"vm",sym:"ν",sub:"μ",name:"μ 中微子",cat:"lepton",gen:2,mass:"< 1 eV 量级",ev:0.45,upper:true,q:"0",spin:"1/2",color:"无",ints:["weak"],
+  desc:"“双中微子实验”证明中微子不止一种：μ 中微子撞击物质只产生 μ 子而不产生电子。这项工作获 1988 年诺贝尔奖。",disc:["1962","布鲁克海文 AGS 加速器"]},
+ {id:"vt",sym:"ν",sub:"τ",name:"τ 中微子",cat:"lepton",gen:3,mass:"< 1 eV 量级",ev:0.45,upper:true,q:"0",spin:"1/2",color:"无",ints:["weak"],
+  desc:"最后一个被直接观测到的费米子。实验在核乳胶中寻找它撞出 τ 子留下的短短一段径迹。",disc:["2000","费米实验室 DONUT 实验"]},
+ {id:"g",sym:"g",name:"胶子",cat:"gauge",mass:"0",ev:0,q:"0",spin:"1",color:"有（共 8 种）",ints:["strong"],
+  desc:"强相互作用的媒介。与光子不同，胶子自身带色荷，会彼此作用。这导致了渐近自由（近距离作用变弱）和夸克禁闭（无法分离出单个夸克）。",disc:["1979","DESY PETRA 对撞机，三喷注事件"]},
+ {id:"gamma",sym:"γ",name:"光子",cat:"gauge",mass:"0",ev:0,q:"0",spin:"1",color:"无",ints:["em"],
+  desc:"电磁相互作用的媒介。因为没有质量，电磁力的作用距离是无限的。光、无线电波、X 射线都由它组成。",disc:["1905","爱因斯坦提出光量子；1923 年康普顿散射证实"]},
+ {id:"Z",sym:"Z",name:"Z 玻色子",cat:"gauge",mass:"91.19 GeV",ev:9.119e10,q:"0",spin:"1",color:"无",ints:["weak","higgs"],
+  desc:"传递中性弱相互作用。LEP 对撞机测得的 Z 衰变宽度表明，轻中微子恰好有三种，这是“三代”最直接的证据之一。",disc:["1983","CERN SPS 对撞机，UA1 与 UA2"]},
+ {id:"W",sym:"W",name:"W 玻色子",cat:"gauge",mass:"80.37 GeV",ev:8.037e10,q:"±1",spin:"1",color:"无",ints:["em","weak","higgs"],
+  desc:"带电的弱力媒介，能把一种夸克变成另一种，β 衰变就是通过它发生的。它的质量很大，使弱力的作用距离只有约 10⁻¹⁸ 米。",disc:["1983","CERN SPS 对撞机，UA1 与 UA2"]},
+ {id:"H",sym:"H",name:"希格斯玻色子",cat:"higgs",mass:"125.2 GeV",ev:1.252e11,q:"0",spin:"0",color:"无",ints:["weak","higgs"],
+  desc:"希格斯场遍布真空，其真空期望值约 246 GeV。W、Z 和带电费米子通过与它耦合获得质量，耦合越强，质量越大。它是唯一已知的自旋为 0 的基本粒子。",disc:["2012","CERN LHC，ATLAS 与 CMS"]}
+];
+const CAT = {quark:["夸克","--quark"],lepton:["轻子","--lepton"],gauge:["规范玻色子","--gauge"],higgs:["标量玻色子","--higgs"]};
+const INT = {strong:"强",em:"电磁",weak:"弱",higgs:"希格斯"};
+const byId = Object.fromEntries(P.map(p=>[p.id,p]));
+const symHTML = p => p.sym + (p.sub?`<sub>${p.sub}</sub>`:"");
+
+// layout: rows = up-type, down-type, charged lepton, neutrino; bosons in col 6, Higgs col 7
+const grid = [["u","c","t","g"],["d","s","b","gamma"],["e","mu","tau","Z"],["ve","vm","vt","W"]];
+const rowLabels = [["夸克","q",2],["轻子","l",2]];
+const chart = document.getElementById("chart");
+let selected = "H", filter = "all";
+
+function build(){
+  const heads = ["","I","II","III","","规范玻色子","标量"];
+  heads.forEach((h,i)=>{const d=document.createElement("div");d.className="colhead";d.textContent=h?(i<=3&&i>0?"第 "+h+" 代":h):"";d.style.gridColumn=i+1;d.style.gridRow=1;chart.appendChild(d)});
+  rowLabels.forEach(([t,c,span],k)=>{const d=document.createElement("div");d.className="rowlab "+c;d.textContent=t;d.style.gridColumn=1;d.style.gridRow=`${2+k*2} / span ${span}`;chart.appendChild(d)});
+  grid.forEach((row,r)=>row.forEach((id,c)=>{
+    const col = c<3 ? c+2 : 6;
+    const el = cell(byId[id]); el.style.gridColumn=col; el.style.gridRow=r+2; chart.appendChild(el);
+  }));
+  const hs=document.createElement("div");hs.className="higgs-slot";hs.appendChild(cell(byId.H));chart.appendChild(hs);
+}
+function cell(p){
+  const b=document.createElement("button");
+  b.className="cell";b.id="cell-"+p.id;b.dataset.id=p.id;
+  b.style.setProperty("--c",`var(${CAT[p.cat][1]})`);
+  b.innerHTML=`<span class="m">${p.mass.replace(" 量级","")}</span><span class="sym">${symHTML(p)}</span><span class="nm">${p.name}</span><span class="qs">${p.q}<br>${p.spin}</span>`;
+  b.setAttribute("aria-label",`${p.name}，质量 ${p.mass}，电荷 ${p.q}，自旋 ${p.spin}`);
+  b.addEventListener("click",()=>select(p.id));
+  return b;
+}
+function select(id){
+  selected=id;
+  document.querySelectorAll(".cell").forEach(c=>c.setAttribute("aria-pressed",c.dataset.id===id?"true":"false"));
+  document.querySelectorAll(".dot").forEach(d=>d.querySelector("circle").setAttribute("r",d.dataset.id===id?8:5.5));
+  const p=byId[id], d=document.getElementById("detail");
+  d.style.setProperty("--c",`var(${CAT[p.cat][1]})`);
+  const gen = p.gen?`第 ${["一","二","三"][p.gen-1]} 代`:"—";
+  d.innerHTML=`
+    <div class="head"><div class="big">${symHTML(p)}</div>
+      <div><h3>${p.name}</h3><div class="tags"><span class="tag cat">${CAT[p.cat][0]}</span><span class="tag">${p.spin==="1/2"?"费米子":"玻色子"}</span>${p.gen?`<span class="tag">${gen}</span>`:""}</div></div></div>
+    <dl class="props">
+      <dt>质量</dt><dd>${p.mass}</dd>
+      <dt>电荷</dt><dd>${p.q} e</dd>
+      <dt>自旋</dt><dd>${p.spin} ħ</dd>
+      <dt>色荷</dt><dd class="txt">${p.color}</dd>
+      <dt>相互作用</dt><dd class="txt">${p.ints.map(i=>INT[i]).join(" · ")}</dd>
+    </dl>
+    <p>${p.desc}</p>
+    <div class="disc">发现：<b>${p.disc[0]}</b> · ${p.disc[1]}</div>`;
+}
+function setFilter(f){
+  filter=f;
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.f===f?"true":"false"));
+  document.querySelectorAll(".cell").forEach(c=>{const p=byId[c.dataset.id];c.classList.toggle("dim",f!=="all"&&!p.ints.includes(f))});
+}
+document.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>setFilter(c.dataset.f)));
+
+// mass ladder
+function ladder(){
+  const svg=document.getElementById("ladder"), NS="http://www.w3.org/2000/svg";
+  const x0=110,x1=880,lo=-1,hi=12; // log10 eV
+  const X=v=>x0+(Math.log10(v)-lo)/(hi-lo)*(x1-x0);
+  const lanes=[["quark","夸克",70],["lepton","轻子",140],["gauge","W / Z",205],["higgs","希格斯",255]];
+  const mk=(t,a,txt)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e};
+  const ticks=[[1,"1 eV"],[1e3,"1 keV"],[1e6,"1 MeV"],[1e9,"1 GeV"],[1e12,"1 TeV"]];
+  for(let k=lo;k<=hi;k++){const x=X(10**k);mk("line",{x1:x,x2:x,y1:30,y2:262,stroke:"var(--line)","stroke-width":k%3===0?1.2:.6,"stroke-dasharray":k%3===0?"":"2 4"})}
+  ticks.forEach(([v,l])=>mk("text",{x:X(v),y:22,"text-anchor":"middle","font-size":12,fill:"var(--muted)"},l));
+  lanes.forEach(([c,l,y])=>{mk("text",{x:12,y:y+4,"font-size":12,fill:`var(${CAT[c][1]})`,"font-family":"var(--body)"},l);mk("line",{x1:x0,x2:x1,y1:y,y2:y,stroke:"var(--line)"})});
+  const laneY=Object.fromEntries(lanes.map(([c,,y])=>[c,y]));
+  const offs={u:-1,d:1,s:-1,c:-1,b:1,t:-1,e:-1,mu:-1,tau:-1,ve:-1,vm:1,vt:-1,W:1,Z:-1,H:1};
+  const nuX={ve:0,vm:0,vt:0};
+  P.filter(p=>p.ev>0).forEach(p=>{
+    let y=laneY[p.cat];
+    if(p.upper){y+= {ve:-12,vm:0,vt:12}[p.id];}
+    const x=X(p.ev), col=`var(${CAT[p.cat][1]})`;
+    const g=document.createElementNS(NS,"g");g.setAttribute("class","dot");g.dataset.id=p.id;g.setAttribute("tabindex","0");g.setAttribute("role","button");g.setAttribute("aria-label",`${p.name} ${p.mass}`);
+    svg.appendChild(g);
+    const add=(t,a,txt)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;g.appendChild(e)};
+    if(p.upper){add("line",{x1:x,x2:x-34,y1:y,y2:y,stroke:col,"stroke-width":1.5});add("path",{d:`M${x-34} ${y} l7 -4 v8 z`,fill:col});}
+    add("circle",{cx:x,cy:y,r:5.5,fill:col,stroke:"var(--surface)","stroke-width":2});
+    const label=p.sym+(p.sub?p.sub:"");
+    if(p.upper) add("text",{x:x+10,y:y+4,"font-size":12,fill:"var(--ink)"},label);
+    else { const o=offs[p.id]||-1; add("text",{x:x,y:y+(o<0?-12:21),"text-anchor":"middle","font-size":13,"font-weight":600,fill:"var(--ink)"},label);
+      add("text",{x:x,y:y+(o<0?-26:34),"text-anchor":"middle","font-size":10,fill:"var(--muted)"},p.mass);}
+    g.addEventListener("click",()=>{select(p.id);document.getElementById("detail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"})});
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(p.id)}});
+  });
+}
+build(); ladder(); select(selected);
+</script>
+
+</body></html>

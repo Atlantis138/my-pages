@@ -1,0 +1,1050 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>看得见的量子计算</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;900&display=swap">
+<style>
+/* Layout: the page is one long quantum-circuit wire; each lesson hangs on it as a numbered gate box, with prose + a hands-on lab bench */
+:root{
+  --bg:#EDF1F5; --grid:#E1E7EE; --surface:#FFFFFF; --sunk:#F4F6F9; --ink:#132030; --muted:#566577; --line:#D3DBE4; --wire:#A3B1C1;
+  --q0:#2552D0; --q1:#B3640A; --neg:#C2346A; --on-accent:#FFFFFF;
+  --display:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
+  --body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C121A; --grid:#111923; --surface:#141D28; --sunk:#101821; --ink:#E4EAF1; --muted:#98A7B8; --line:#283545; --wire:#3F5064;
+    --q0:#7C99FF; --q1:#F0A640; --neg:#F06A98; --on-accent:#0C121A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C121A; --grid:#111923; --surface:#141D28; --sunk:#101821; --ink:#E4EAF1; --muted:#98A7B8; --line:#283545; --wire:#3F5064;
+  --q0:#7C99FF; --q1:#F0A640; --neg:#F06A98; --on-accent:#0C121A; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{
+  background-color:var(--bg);color:var(--ink);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;font:16px/1.85 var(--body);
+}
+.progress{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:3px;width:0;background:var(--q0);z-index:20}
+.wrap{max-width:820px;margin:0 auto;padding-block:48px 80px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:72px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.3}
+h1{font-weight:900;font-size:clamp(38px,8vw,62px);line-height:1.15}
+h2{font-weight:600;font-size:clamp(25px,5vw,33px)}
+h3{font-weight:600;font-size:19px;margin-top:6px}
+p{margin:0;max-width:40em}
+strong{font-weight:700}
+.ket{font-family:var(--mono);white-space:nowrap}
+.k0{color:var(--q0);font-weight:600}.k1{color:var(--q1);font-weight:600}.kn{color:var(--neg);font-weight:600}
+.muted{color:var(--muted)}
+.label{font:500 13px/1.5 var(--body);color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:32px;align-items:center}
+@media (max-width:720px){.hero{grid-template-columns:minmax(0,1fr)}}
+.hero-text{display:flex;flex-direction:column;gap:18px}
+.eyebrow{font:500 13px/1.4 var(--mono);letter-spacing:.08em;color:var(--muted)}
+.lead{font-size:18px;color:var(--muted)}
+.hero-fig{margin:0;display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.hero-fig svg{width:100%;max-width:260px;margin:0 auto;display:block}
+.hero-fig figcaption{font-size:13px;color:var(--muted);line-height:1.6}
+.route{display:flex;flex-direction:column;gap:12px}
+.route ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:720px){.route ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.route a{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;line-height:1.35;height:100%}
+.route a:hover{border-color:var(--q0)}
+.route a span{font:700 13px/1 var(--mono);width:24px;height:24px;flex:none;display:grid;place-items:center;border:1.5px solid var(--ink);border-radius:4px}
+
+/* ---------- lessons on a wire ---------- */
+.journey{position:relative;display:flex;flex-direction:column;gap:80px}
+.journey::before{content:"";position:absolute;left:21px;top:10px;bottom:10px;width:2px;background:var(--wire)}
+.lesson{display:grid;grid-template-columns:44px minmax(0,1fr);gap:24px;scroll-margin-top:24px}
+.marker{width:44px;height:44px;border:2px solid var(--ink);background:var(--surface);border-radius:6px;display:grid;place-items:center;
+  font:700 18px/1 var(--mono);position:sticky;top:calc(env(safe-area-inset-top,0px) + 18px);align-self:start;z-index:1}
+.marker.end{background:var(--ink);color:var(--bg)}
+.body{display:flex;flex-direction:column;gap:18px;min-width:0}
+.kicker{font:600 13px/1.4 var(--mono);letter-spacing:.06em;color:var(--q0)}
+.lh{display:flex;flex-direction:column;gap:6px}
+@media (max-width:600px){
+  .journey::before{display:none}
+  .lesson{grid-template-columns:minmax(0,1fr);gap:12px}
+  .marker{position:static;width:36px;height:36px;font-size:15px}
+}
+
+/* ---------- lab bench ---------- */
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px 20px;display:flex;flex-direction:column;gap:16px;min-width:0;box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(20,32,48,.35)}
+.lab-h{display:flex;gap:10px;align-items:center;font:600 13px/1.3 var(--body);color:var(--muted);border-bottom:1px dashed var(--line);padding-bottom:12px}
+.lab-tag{font:700 11px/1 var(--mono);letter-spacing:.08em;background:var(--ink);color:var(--bg);padding:5px 7px;border-radius:4px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:center}
+@media (max-width:660px){.split{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.svgbox{width:100%;max-width:300px;margin:0 auto;display:block}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:500 15px/1 var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:11px 15px;border-radius:10px;cursor:pointer;transition:background .15s,transform .1s}
+.btn:hover{background:color-mix(in srgb,var(--q0) 8%,var(--surface))}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.primary:hover{background:color-mix(in srgb,var(--ink) 85%,var(--q0))}
+.btn:focus-visible,.bit:focus-visible,input:focus-visible,.seg button:focus-visible,.route a:focus-visible{outline:3px solid color-mix(in srgb,var(--q0) 55%,transparent);outline-offset:2px}
+.gate{font:700 20px/1 var(--mono);width:60px;height:56px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.gate small{font:400 11px/1 var(--body);color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--q0)}
+.pbars{display:flex;flex-direction:column;gap:8px}
+.pbar{display:grid;grid-template-columns:48px minmax(0,1fr) 54px;gap:10px;align-items:center;font:500 14px var(--mono);font-variant-numeric:tabular-nums}
+.pbar.wide{grid-template-columns:48px minmax(0,1fr) 104px}
+.pbar .v{text-align:right;white-space:nowrap}
+.track{height:14px;background:color-mix(in srgb,var(--line) 70%,transparent);border-radius:7px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--q0);border-radius:7px;transition:width .35s ease}
+.fill.f1{background:var(--q1)}
+.fill.live{transition:none}
+.formula{font:600 16px/1.5 var(--mono);padding:10px 12px;border-radius:8px;background:var(--sunk);border:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+.status{font-size:15px;color:var(--muted);min-height:1.8em}
+.status strong{color:var(--ink)}
+.chip{display:inline-flex;align-items:center;font:700 14px/1 var(--mono);padding:6px 10px;border-radius:999px;vertical-align:1px}
+.chip.c0{background:var(--q0);color:var(--on-accent)}
+.chip.c1{background:var(--q1);color:var(--on-accent)}
+.strip{display:grid;grid-template-columns:repeat(25,minmax(0,1fr));gap:3px}
+.strip i{aspect-ratio:1;border-radius:2px;background:var(--q0)}
+.strip i.one{background:var(--q1)}
+.readout{display:grid;grid-template-columns:auto auto auto;gap:6px 16px;font:500 15px/1.5 var(--mono);font-variant-numeric:tabular-nums;align-items:baseline;justify-content:start}
+.readout .h{font:500 12px var(--body);color:var(--muted)}
+.splitbar{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--line)}
+.splitbar i{display:block;height:100%}
+.splitbar .s0{background:var(--q0)}.splitbar .s1{background:var(--q1)}
+
+/* ---------- callouts ---------- */
+.try{font-size:15px;line-height:1.75;background:color-mix(in srgb,var(--q1) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--q1) 28%,var(--line));border-radius:12px;padding:12px 16px}
+.try b{color:var(--q1)}
+.key{display:flex;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--q0) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--q0) 26%,var(--line));border-radius:12px;padding:12px 16px}
+.key .kt{font:700 12px/1.4 var(--mono);letter-spacing:.08em;color:var(--q0)}
+.key p{font-size:15.5px}
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start}
+.steps li::before{counter-increment:s;content:counter(s);font:700 13px/1 var(--mono);width:26px;height:26px;display:grid;place-items:center;border-radius:50%;border:1.5px solid var(--ink);margin-top:3px}
+
+/* ---------- lesson specifics ---------- */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:600px){.duo{grid-template-columns:minmax(0,1fr)}}
+.duo .cell{display:flex;flex-direction:column;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;background:var(--sunk)}
+.duo .stage{display:flex;align-items:center;gap:16px;min-height:92px}
+.bit{width:80px;height:80px;border-radius:12px;font:700 40px/1 var(--mono);border:2px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;flex:none}
+.coin{width:80px;height:80px;border-radius:50%;display:grid;place-items:center;font:700 36px/1 var(--mono);color:var(--on-accent);background:var(--q0);
+  box-shadow:inset 0 0 0 5px color-mix(in srgb,var(--surface) 30%,transparent),0 3px 0 color-mix(in srgb,var(--ink) 25%,transparent);flex:none}
+.coin.r1{background:var(--q1)}
+.coin.spin{background:linear-gradient(90deg,var(--q0) 50%,var(--q1) 50%);color:transparent;animation:spin .55s linear infinite}
+.coin.sm{width:68px;height:68px;font-size:30px}
+@keyframes spin{from{transform:perspective(300px) rotateY(0)}to{transform:perspective(300px) rotateY(360deg)}}
+.defs{display:flex;flex-direction:column;gap:10px}
+.defs > div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start}
+.gbox{width:40px;height:40px;border:2px solid var(--ink);border-radius:6px;display:grid;place-items:center;font:700 18px/1 var(--mono);background:var(--surface)}
+.seg{display:inline-flex;align-self:flex-start;max-width:100%;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{font:500 14px/1 var(--body);background:var(--surface);color:var(--ink);border:0;padding:10px 14px;cursor:pointer}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.pair{display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:wrap;padding:6px 0}
+.pair .side{display:flex;flex-direction:column;align-items:center;gap:6px}
+.link{font:500 13px var(--mono);color:var(--muted)}
+.diag{overflow-x:auto}
+.diag svg{width:100%;min-width:290px;max-width:480px;display:block;margin:0 auto}
+.sums{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:560px){.sums{grid-template-columns:minmax(0,1fr)}}
+.sum{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;background:var(--sunk)}
+.sum .eq{font:600 17px var(--mono)}
+.bignum{font:700 clamp(21px,4.6vw,28px)/1.3 var(--mono);color:var(--q0);word-break:break-all;font-variant-numeric:tabular-nums}
+.bignum.alt{color:var(--ink);font-size:clamp(18px,4vw,22px)}
+.numpair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:560px){.numpair{grid-template-columns:minmax(0,1fr)}}
+.kets{display:flex;flex-wrap:wrap;gap:8px}
+.kets span{font:600 14px/1 var(--mono);padding:8px 10px;border-radius:8px;background:color-mix(in srgb,var(--q0) 10%,var(--surface));border:1px solid var(--line);color:var(--q0)}
+canvas{width:100%;height:140px;display:block}
+.marks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.marks li{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px;line-height:1.5;padding:8px 10px;border-radius:8px;border:1px solid var(--line);color:var(--muted)}
+.marks li .n{font:600 14px var(--mono)}
+.marks li .tag{font:500 12px/1 var(--body);padding:5px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.marks li.on{color:var(--ink);background:color-mix(in srgb,var(--q0) 7%,var(--surface))}
+.marks li.on .tag{background:var(--q0);color:var(--on-accent);border-color:var(--q0)}
+.circuit svg{width:100%;max-width:440px;display:block;margin:0 auto}
+.gstat{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end}
+.gstat .big{font:700 34px/1 var(--mono);color:var(--q1);font-variant-numeric:tabular-nums}
+.gstat .mid{font:700 22px/1 var(--mono);font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:0}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:560px){.tiles{grid-template-columns:minmax(0,1fr)}}
+.tiles > div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.tiles h4{margin:0;font:700 16px/1.4 var(--body)}
+.tiles p{font-size:14.5px;color:var(--muted);line-height:1.75}
+.tiles .zo{font:600 12.5px/1.4 var(--mono);color:var(--q0)}
+.hard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:700px){.hard{grid-template-columns:minmax(0,1fr)}}
+.hard > div{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:2px solid var(--ink)}
+.hard h4{margin:0;font:700 16px/1.4 var(--body)}
+.hard p{font-size:14.5px;color:var(--muted);line-height:1.75}
+.pc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:620px){.pc{grid-template-columns:minmax(0,1fr)}}
+.pc > div{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.pc h4{margin:0;font:700 15px/1.4 var(--body);display:flex;align-items:center;gap:8px}
+.pc h4 i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pc ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.7}
+.pc li b{color:var(--ink)}
+.pc li{color:var(--muted)}
+.myths{display:flex;flex-direction:column;gap:12px}
+.myth{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:baseline}
+.myth .t{font:700 12px/1 var(--body);padding:5px 7px;border-radius:5px;white-space:nowrap}
+.myth .t.no{background:color-mix(in srgb,var(--neg) 14%,var(--surface));color:var(--neg)}
+.myth .t.yes{background:color-mix(in srgb,var(--q0) 14%,var(--surface));color:var(--q0)}
+.myth .claim{font-weight:700}
+.myth .fact{color:var(--muted);font-size:15px;line-height:1.75}
+.recap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface);margin:0}
+@media (max-width:560px){.recap{grid-template-columns:minmax(0,1fr)}}
+.recap div{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.recap div:nth-child(odd){border-right:1px solid var(--line)}
+@media (max-width:560px){.recap div:nth-child(odd){border-right:0}}
+.recap dt{font:600 16px var(--display)}
+.recap dt span{font:600 12px var(--mono);color:var(--q0);margin-right:8px}
+.recap dd{margin:0;font-size:15px;color:var(--muted);line-height:1.7}
+.foot{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px;line-height:1.75}
+
+/* ---------- svg parts ---------- */
+.c-ring{fill:none;stroke:var(--line);stroke-width:1.5}
+.c-arc{fill:none;stroke:var(--wire);stroke-width:2}
+.c-axis{stroke:var(--line);stroke-width:1}
+.c-lab{font:600 15px var(--mono);fill:var(--muted)}
+.c-lab.q0{fill:var(--q0)}.c-lab.q1{fill:var(--q1)}
+.c-proj{stroke:var(--muted);stroke-dasharray:3 4;stroke-width:1;opacity:.7}
+.c-a{stroke:var(--q0);stroke-width:6;stroke-linecap:round}
+.c-b{stroke:var(--q1);stroke-width:6;stroke-linecap:round}
+.c-arrow{stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.c-head{fill:var(--ink)}
+.c-mirror{stroke:var(--neg);stroke-width:2;stroke-dasharray:7 5}
+.c-quarter{fill:color-mix(in srgb,var(--q0) 6%,transparent);stroke:none}
+.c-deg{font:500 12px var(--mono);fill:var(--muted)}
+.d-hd{font:500 13px var(--body);fill:var(--muted)}
+.d-pos{stroke:var(--q0);stroke-width:2.5}
+.d-neg{stroke:var(--neg);stroke-width:2.5;stroke-dasharray:7 5}
+.d-amp{font:700 14px var(--mono);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:6px;stroke-linejoin:round}
+.d-amp.n{fill:var(--neg)}
+.d-n0{fill:var(--surface);stroke:var(--q0);stroke-width:2.5}
+.d-n1{fill:var(--surface);stroke:var(--q1);stroke-width:2.5}
+.d-strong{fill:color-mix(in srgb,var(--q0) 18%,var(--surface));stroke:var(--q0);stroke-width:3.5}
+.d-strong1{fill:color-mix(in srgb,var(--q1) 20%,var(--surface));stroke:var(--q1);stroke-width:3.5}
+.d-ghost{fill:var(--surface);stroke:var(--wire);stroke-width:2;stroke-dasharray:3 4}
+.d-nt{font:600 13px var(--mono);fill:var(--ink)}
+.d-nt.g{fill:var(--muted)}
+.d-res{font:700 14px var(--mono);fill:var(--ink)}
+.d-res.g{fill:var(--muted)}
+.ci-wire{stroke:var(--ink);stroke-width:2}
+.ci-box{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.ci-t{font:700 15px var(--mono);fill:var(--ink)}
+.ci-l{font:600 14px var(--mono);fill:var(--ink)}
+.ci-dot{fill:var(--ink)}
+.ci-band{fill:color-mix(in srgb,var(--q1) 14%,transparent);stroke:var(--q1);stroke-width:1.5;stroke-dasharray:4 4}
+.ci-step{font:500 12.5px var(--body);fill:var(--muted)}
+.ci-step.on{fill:var(--q1);font-weight:700}
+.g-base{stroke:var(--ink);stroke-width:1.5}
+.g-mean{stroke:var(--neg);stroke-width:1.5;stroke-dasharray:6 5}
+.g-mlab{font:600 12px var(--body);fill:var(--neg);paint-order:stroke;stroke:var(--surface);stroke-width:4px}
+.g-bar{fill:var(--q0)}
+.g-bar.t{fill:var(--q1)}
+.g-bar.neg{fill:var(--neg)}
+.g-ghost{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:3 3}
+.g-num{font:600 14px var(--mono);fill:var(--muted)}
+.g-tnum{font:700 14px var(--mono);fill:var(--on-accent)}
+.g-tdot{fill:var(--q1)}
+.g-hit{fill:none;stroke:var(--ink);stroke-width:2.5}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .coin.spin{animation:none}
+  .fill,.btn{transition:none}
+}
+</style>
+
+<div class="progress" id="prog" aria-hidden="true"></div>
+<div class="wrap">
+
+<header class="hero">
+  <div class="hero-text">
+    <div class="eyebrow">一页读懂 · 九个可以动手的实验</div>
+    <h1>量子计算，<br>拆开来看</h1>
+    <p class="lead">量子计算机不是一台更快的普通电脑，它换了一种存储和处理信息的方式。这一页不推公式，从一枚硬币出发，用箭头、路径和柱子，一步步搭出一个真正的量子算法。</p>
+    <p class="muted" style="font-size:15px">每一课只多一个新概念，并且都建立在上一课的基础上。建议按顺序读：先看文字，再在实验台上动手，最后看“要点”。全程约 30 分钟。</p>
+  </div>
+  <figure class="hero-fig">
+    <svg id="heroSvg" viewBox="-150 -140 300 280" role="img" aria-label="一个量子比特的状态箭头在缓慢转动，测量概率随之变化"></svg>
+    <div class="pbars">
+      <div class="pbar"><span class="k0">P(0)</span><div class="track"><div class="fill live" id="hF0"></div></div><span class="v" id="hP0"></span></div>
+      <div class="pbar"><span class="k1">P(1)</span><div class="track"><div class="fill f1 live" id="hF1"></div></div><span class="v" id="hP1"></span></div>
+    </div>
+    <figcaption>一个量子比特：箭头指向哪里，决定了测量时得到 0 和 1 的概率。读完第 3 课，你就能看懂这张图。</figcaption>
+  </figure>
+</header>
+
+<nav class="route" aria-label="学习路线">
+  <h2 style="font-size:22px">学习路线</h2>
+  <ol>
+    <li><a href="#bit"><span>1</span>比特与量子比特</a></li>
+    <li><a href="#superpose"><span>2</span>叠加：一根箭头</a></li>
+    <li><a href="#measure"><span>3</span>测量与概率</a></li>
+    <li><a href="#gates"><span>4</span>量子门</a></li>
+    <li><a href="#interfere"><span>5</span>干涉</a></li>
+    <li><a href="#many"><span>6</span>多个量子比特</a></li>
+    <li><a href="#entangle"><span>7</span>纠缠</a></li>
+    <li><a href="#search"><span>8</span>量子搜索算法</a></li>
+    <li><a href="#real"><span>9</span>真实的量子计算机</a></li>
+  </ol>
+</nav>
+
+<main class="journey">
+
+<!-- 1 ------------------------------------------------------------ -->
+<section class="lesson" id="bit">
+  <div class="marker" aria-hidden="true">1</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 1 课 · 起点</div><h2>从开关到旋转的硬币</h2></header>
+    <p>普通电脑里的一切，照片、文字、视频，最终都存成一长串 0 和 1。每一位叫一个<strong>比特</strong>（bit）。比特就像一个开关：要么关（0），要么开（1），任何时刻都是确定的。</p>
+    <p>量子计算机的基本单位叫<strong>量子比特</strong>（qubit）。先打个比方：它像一枚在桌上旋转的硬币。转着的时候，说不清它是正面还是反面，它同时带着两面的成分；只有拍下去看一眼，它才变成确定的一面。这个“看一眼”，在量子力学里叫<strong>测量</strong>。</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 1</span>比特和量子比特，各点一下</div>
+      <div class="duo">
+        <div class="cell">
+          <h3 style="margin:0">经典比特</h3>
+          <div class="stage">
+            <button class="bit" id="heroBit" aria-label="经典比特，当前为 0，点击切换">0</button>
+            <p class="label">点它切换。无论何时看，它都只有一个确定的值。</p>
+          </div>
+        </div>
+        <div class="cell">
+          <h3 style="margin:0">量子比特（比喻）</h3>
+          <div class="stage">
+            <div class="coin spin" id="heroCoin" aria-live="polite">?</div>
+            <p class="label">旋转时同时带着 0 和 1 的成分。测量后才倒成确定的一面。</p>
+          </div>
+          <button class="btn primary" id="heroMeasure">测量（看一眼）</button>
+        </div>
+      </div>
+      <p class="status" id="heroNote">硬币正在旋转：此刻它既不是 0，也不是 1。</p>
+    </div>
+    <h3>这个比喻哪里不准</h3>
+    <p>真实的旋转硬币，每一刻其实都有确定的朝向，只是我们没看清。量子比特不一样：在测量之前，它<strong>确实没有</strong>确定的 0 或 1，这不是“我们不知道”，而是“它本来就没定”。</p>
+    <p>更重要的是，量子比特的两种成分带有<strong>正负号</strong>，正负可以互相抵消，硬币完全没有这种性质。第 5 课会看到，这正是量子计算的力量来源。所以硬币只是帮你入门，下一课换一种更准确的画法。</p>
+    <div class="key"><span class="kt">要点</span><p>比特任何时刻只有一个确定的值。量子比特在测量前可以同时带有 0 和 1 的成分，测量时才变成确定的 0 或 1。</p></div>
+  </div>
+</section>
+
+<!-- 2 ------------------------------------------------------------ -->
+<section class="lesson" id="superpose">
+  <div class="marker" aria-hidden="true">2</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 2 课 · 更准确的画法</div><h2>叠加：把量子比特画成一根箭头</h2></header>
+    <p>画一个圆，从圆心伸出一根长度为 1 的箭头。规定：箭头朝右，代表确定的 <span class="ket k0">|0⟩</span>；箭头朝上，代表确定的 <span class="ket k1">|1⟩</span>。</p>
+    <p>符号 <span class="ket">| ⟩</span> 只是一个标签，表示“这是一个量子状态”，<span class="ket">|0⟩</span> 读作“状态 0”就行。</p>
+    <p>箭头斜着指，就是 0 和 1 的<strong>叠加</strong>。给箭头打两束光，它在横轴上的影子长度记作 <strong class="k0">a</strong>，在竖轴上的影子长度记作 <strong class="k1">b</strong>。这两个数叫<strong>振幅</strong>。于是状态可以写成：</p>
+    <div class="formula" style="align-self:flex-start">|ψ⟩ = <span class="k0">a</span>|0⟩ + <span class="k1">b</span>|1⟩</div>
+    <p>意思就是“含有 a 份的 0 和 b 份的 1”（<span class="ket">|ψ⟩</span> 读作“psi”，是状态的名字）。</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 2</span>拖动箭头，看两个影子怎么变</div>
+      <div class="split">
+        <svg class="svgbox" id="ampSvg" viewBox="-150 -140 300 280" role="img" aria-label="可拖动角度的状态箭头及其在两条轴上的投影"></svg>
+        <div class="col">
+          <label class="label" for="ampAngle">箭头角度：<span class="mono" id="ampDeg">30°</span></label>
+          <input type="range" id="ampAngle" min="0" max="90" value="30" step="1">
+          <div class="formula" id="ampKet"></div>
+          <div class="readout" aria-live="polite">
+            <span class="h">振幅</span><span class="h">数值</span><span class="h">平方</span>
+            <span class="k0">a</span><span id="ampA"></span><span id="ampA2"></span>
+            <span class="k1">b</span><span id="ampB"></span><span id="ampB2"></span>
+          </div>
+          <div class="col" style="gap:6px">
+            <div class="splitbar"><i class="s0" id="ampS0"></i><i class="s1" id="ampS1"></i></div>
+            <span class="label">a² + b² = <span class="mono" id="ampSum">1.00</span>，无论角度怎么变，永远是 1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p>为什么 a² + b² 总等于 1？看图：两个影子和箭头正好围成一个直角三角形，箭头是斜边，长度为 1。这就是勾股定理。这个“平方和等于 1”马上会在下一课派上大用场。</p>
+    <p>这根箭头也不完全是比喻。光子（光的最小单位）的<strong>偏振方向</strong>就可以这样画：水平偏振当作 <span class="ket">|0⟩</span>，竖直偏振当作 <span class="ket">|1⟩</span>，斜着 45° 的偏振就是两者等量的叠加。</p>
+    <div class="key"><span class="kt">要点</span><p>量子比特的状态 = 一根长度为 1 的箭头。它在两个方向上的影子 a、b 叫振幅，总满足 a² + b² = 1。箭头斜着就是叠加。</p></div>
+  </div>
+</section>
+
+<!-- 3 ------------------------------------------------------------ -->
+<section class="lesson" id="measure">
+  <div class="marker" aria-hidden="true">3</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 3 课 · 怎么读出结果</div><h2>测量：箭头倒向一边</h2></header>
+    <p>箭头本身是看不见的。我们能做的只有<strong>测量</strong>，而一次测量只会给出一个答案：0 或 1。</p>
+    <ol class="steps">
+      <li><p><strong>结果是随机的，但概率由箭头决定。</strong>得到 0 的概率是 <span class="k0">a²</span>，得到 1 的概率是 <span class="k1">b²</span>。上一课的 a² + b² = 1，正好保证两个概率加起来是 100%。这条规则叫<strong>玻恩规则</strong>。</p></li>
+      <li><p><strong>测量会改变状态。</strong>测完之后，箭头不再斜着，而是直接倒在得到的那根轴上，这叫<strong>塌缩</strong>。原来的 a 和 b 就此丢失，之后再测多少次，都只会得到同一个结果。</p></li>
+    </ol>
+    <p>拿光子来说：测量就像让它穿过一片水平方向的偏振片，穿过去记为 0，被挡住记为 1。45° 偏振的光子，有一半机会穿过去；而穿过去的光子，偏振就变成了水平，这就是塌缩。</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 3</span>准备一个量子比特，然后测量它</div>
+      <div class="split">
+        <svg class="svgbox" id="supSvg" viewBox="-150 -140 300 280" role="img" aria-label="被测量的量子比特状态箭头"></svg>
+        <div class="col">
+          <label class="label" for="supAngle">箭头角度：<span class="mono" id="supDeg">45°</span></label>
+          <input type="range" id="supAngle" min="0" max="90" value="45" step="1">
+          <div class="pbars">
+            <div class="pbar"><span class="k0">P(0)</span><div class="track"><div class="fill" id="supF0"></div></div><span class="v" id="supP0"></span></div>
+            <div class="pbar"><span class="k1">P(1)</span><div class="track"><div class="fill f1" id="supF1"></div></div><span class="v" id="supP1"></span></div>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="supOnce">测量一次</button>
+            <button class="btn" id="supMany">准备 100 个，各测一次</button>
+          </div>
+        </div>
+      </div>
+      <p class="status" id="supMsg" aria-live="polite">拖动滑块准备一个量子比特，再试试测量。</p>
+      <div class="strip" id="supStrip" hidden></div>
+    </div>
+    <p>那怎么才能知道一根箭头原来的角度？只能把同样的量子比特<strong>重新准备</strong>很多份，每份测一次，看 0 和 1 各占多少。注意是重新准备，而不是复制：量子力学不允许把一个未知的量子状态原样复制一份，这叫<strong>不可克隆定理</strong>。</p>
+    <div class="try"><b>试一试：</b>拖到 45°，准备 100 个，大约一半 0、一半 1。拖到 30°，0 的概率是 75%。拖到 0°，永远是 0，这时叠加消失，量子比特就和普通比特一样了。</div>
+    <div class="key"><span class="kt">要点</span><p>测量只给出 0 或 1，概率是振幅的平方。测完箭头塌缩，原来的振幅信息丢失。要了解一个状态，只能反复准备、反复测量，看统计结果。</p></div>
+  </div>
+</section>
+
+<!-- 4 ------------------------------------------------------------ -->
+<section class="lesson" id="gates">
+  <div class="marker" aria-hidden="true">4</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 4 课 · 怎么改变量子比特</div><h2>量子门：对着镜子翻转箭头</h2></header>
+    <p>普通电脑用“与”“或”“非”这样的逻辑门改变比特。量子计算机用<strong>量子门</strong>改变量子比特，在我们的图里，就是让箭头换个方向。量子门有两条规矩：</p>
+    <ol class="steps">
+      <li><p><strong>箭头长度始终是 1。</strong>否则概率加起来就不是 100% 了。</p></li>
+      <li><p><strong>每一步都能倒着做回去。</strong>量子门不会丢失信息（会丢信息的是测量）。</p></li>
+    </ol>
+    <p>先认识一个新情况：箭头也可以指向左边或下面。这时振幅是<strong>负数</strong>，比如 −0.71。负号不影响概率，因为 (−0.71)² 和 0.71² 一样都是 0.5。看起来负号没用，但它是下一课的主角。</p>
+    <p>最常用的三个量子门，在这张图里恰好都像一面镜子：箭头以红色虚线为镜面，翻到对面去。</p>
+    <div class="defs">
+      <div><span class="gbox">X</span><p><strong>X 门（翻面）</strong>：把 <span class="ket k0">|0⟩</span> 和 <span class="ket k1">|1⟩</span> 对调，相当于经典的“非”门。镜子是 45° 斜线。</p></div>
+      <div><span class="gbox">Z</span><p><strong>Z 门（改符号）</strong>：把 <span class="ket k1">|1⟩</span> 那一份的振幅变号，0.71 变成 −0.71。镜子是横轴。它不改变任何概率。</p></div>
+      <div><span class="gbox">H</span><p><strong>H 门（Hadamard 门，对半分）</strong>：把 <span class="ket">|0⟩</span> 变成 0.71<span class="ket">|0⟩</span> + 0.71<span class="ket">|1⟩</span>，把 <span class="ket">|1⟩</span> 变成 0.71<span class="ket">|0⟩</span> − 0.71<span class="ket">|1⟩</span>。镜子是 22.5° 斜线。</p></div>
+    </div>
+    <p class="label">这里的 0.71 是 1/√2 的近似值，0.71² ≈ 0.5，也就是“一半”。</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 4</span>按下量子门，看箭头怎么翻</div>
+      <div class="split">
+        <div class="col" style="gap:6px">
+          <svg class="svgbox" id="gSvg" viewBox="-150 -140 300 280" role="img" aria-label="量子门作用下的状态箭头，红色虚线为镜面"></svg>
+          <p class="label" id="gMirrorCap" style="text-align:center;min-height:1.5em"></p>
+        </div>
+        <div class="col">
+          <div class="formula" id="gKet"></div>
+          <div class="pbars">
+            <div class="pbar"><span class="k0">P(0)</span><div class="track"><div class="fill" id="gF0"></div></div><span class="v" id="gP0"></span></div>
+            <div class="pbar"><span class="k1">P(1)</span><div class="track"><div class="fill f1" id="gF1"></div></div><span class="v" id="gP1"></span></div>
+          </div>
+          <div class="row">
+            <button class="btn gate" data-gate="X">X<small>翻面</small></button>
+            <button class="btn gate" data-gate="Z">Z<small>改符号</small></button>
+            <button class="btn gate" data-gate="H">H<small>对半分</small></button>
+            <button class="btn" id="gReset">回到 |0⟩</button>
+          </div>
+          <div class="label">按过的门：<span class="mono" id="gLog">（无）</span></div>
+        </div>
+      </div>
+      <p class="status" id="gMsg" aria-live="polite"></p>
+    </div>
+    <div class="try"><b>试一试：</b>① 从 <span class="ket">|0⟩</span> 按一次 H，得到一半一半的叠加；再按一次 H，又回到确定的 <span class="ket">|0⟩</span>。② 回到 <span class="ket">|0⟩</span>，按 H → Z → H，结果变成确定的 <span class="ket">|1⟩</span>。Z 明明不改变概率，为什么夹在中间就把结果变了？下一课揭晓。</div>
+    <div class="key"><span class="kt">要点</span><p>量子门改变箭头方向但不改变长度，而且可以撤销。X 对调 0 和 1，Z 改变 |1⟩ 的符号，H 制造（或消除）一半一半的叠加。振幅可以是负数。</p></div>
+  </div>
+</section>
+
+<!-- 5 ------------------------------------------------------------ -->
+<section class="lesson" id="interfere">
+  <div class="marker" aria-hidden="true">5</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 5 课 · 核心窍门</div><h2>干涉：正负号的抵消</h2></header>
+    <p>为什么按两次 H 会回到 <span class="ket">|0⟩</span>？换个角度看：把 H 门想成一个<strong>岔路口</strong>，每经过一次，状态就分成“去 <span class="ket">|0⟩</span>”和“去 <span class="ket">|1⟩</span>”两条路。两次 H，就是两层岔路。</p>
+    <p>沿着这些路算振幅，只需要两条规则：</p>
+    <ol class="steps">
+      <li><p><strong>沿一条路走，振幅相乘。</strong>每过一个 H 门乘 0.71；其中只有“从 <span class="ket">|1⟩</span> 走到 <span class="ket">|1⟩</span>”这一种走法要额外乘 −1（这就是上一课 H 门定义里的那个减号）。</p></li>
+      <li><p><strong>几条路到达同一个结果，振幅相加。</strong>加完再平方，才是这个结果的概率。</p></li>
+    </ol>
+    <p>因为振幅能正能负，相加时就有两种情况：同号相加会变大，叫<strong>相长干涉</strong>；异号相加会抵消，叫<strong>相消干涉</strong>。这和两列水波相遇一样：波峰叠波峰，浪更高；波峰遇波谷，水面变平。</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 5</span>两次 H 门的所有路径</div>
+      <div class="seg" role="group" aria-label="中间是否插入 Z 门">
+        <button id="ifNo" aria-pressed="true">H → H</button>
+        <button id="ifZ" aria-pressed="false">H → Z → H</button>
+      </div>
+      <figure style="margin:0" class="diag">
+        <svg id="ifSvg" viewBox="0 0 360 286" role="img" aria-label="两层岔路的振幅图：每条路径的振幅相乘，到达同一终点的振幅相加"></svg>
+      </figure>
+      <div class="legend"><span><i style="background:var(--q0)"></i>正振幅的路</span><span><i style="background:var(--neg)"></i>负振幅的路（虚线）</span><span>线上的数 = 走到这里累计的振幅</span></div>
+      <div class="sums" id="ifSums"></div>
+      <p class="status" id="ifMsg"></p>
+    </div>
+    <p>硬币的比喻在这里彻底失效了。普通的概率只能是正数，几种可能性加在一起只会更大，永远不会抵消。正是“振幅可以为负”这一点，让量子计算机和“随机抛硬币”有了本质区别。</p>
+    <p>量子算法的核心，就是精心安排这些路径：<strong>让通向错误答案的路径互相抵消，让通向正确答案的路径互相加强</strong>。最后一测量，正确答案就有很大概率出现。第 8 课会看到一个完整的例子。</p>
+    <div class="key"><span class="kt">要点</span><p>振幅沿路径相乘、在终点相加。正负抵消叫相消干涉，同号加强叫相长干涉。量子算法就是靠干涉，把概率集中到正确答案上。</p></div>
+  </div>
+</section>
+
+<!-- 6 ------------------------------------------------------------ -->
+<section class="lesson" id="many">
+  <div class="marker" aria-hidden="true">6</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 6 课 · 从一个到很多个</div><h2>多个量子比特：数量翻倍再翻倍</h2></header>
+    <p>两个量子比特放在一起，测量结果可能有 4 种：<span class="ket">|00⟩</span>、<span class="ket">|01⟩</span>、<span class="ket">|10⟩</span>、<span class="ket">|11⟩</span>。左边那位是第一个量子比特，右边那位是第二个，比如 <span class="ket">|01⟩</span> 表示“第一个是 0，第二个是 1”。</p>
+    <p>要完整描述这两个量子比特，就要给这 4 种结果各配一个振幅，规则和单个时一样：平方是概率，所有平方加起来等于 1。</p>
+    <p>每多一个量子比特，可能的结果就翻一倍：3 个有 8 种，4 个有 16 种，<strong>n 个有 2ⁿ 种，振幅也就有 2ⁿ 个</strong>。</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 6</span>拖动滑块，增加量子比特</div>
+      <label class="label" for="nQ">量子比特数量：<span class="mono" id="nVal">3</span> 个</label>
+      <input type="range" id="nQ" min="1" max="300" value="3" step="1">
+      <div class="numpair">
+        <div class="col" style="gap:2px"><span class="label">描述它需要的振幅个数（2ⁿ）</span><div class="bignum" id="nNum"></div></div>
+        <div class="col" style="gap:2px"><span class="label">用普通电脑完整存下，约需内存</span><div class="bignum alt" id="nMem"></div></div>
+      </div>
+      <div id="nKets" class="kets"></div>
+      <canvas id="nCanvas" hidden aria-label="振幅数量示意点阵"></canvas>
+      <p class="label" id="nCap"></p>
+      <ul class="marks" id="nMarks"></ul>
+      <p class="label">内存按最直接的存法估算：每个振幅约 16 字节（一般情况下振幅是复数，要存两个小数）。</p>
+    </div>
+    <p>这就是普通电脑很难模拟量子计算机的原因：每多一个量子比特，要存的数字就翻一倍。几十个量子比特，就足以让最大的超级计算机吃力。</p>
+    <p>不过要当心一个流行说法：“n 个量子比特能同时计算 2ⁿ 个答案”。振幅确实有 2ⁿ 个，可是第 3 课说过，测量只会给出<strong>一个</strong>结果，其余的全部丢失。想利用这片巨大的空间，只能靠第 5 课的干涉。</p>
+    <div class="key"><span class="kt">要点</span><p>n 个量子比特有 2ⁿ 种可能结果，需要 2ⁿ 个振幅来描述，普通电脑模拟它的代价随 n 指数增长。但测量一次仍然只得到一个结果。</p></div>
+  </div>
+</section>
+
+<!-- 7 ------------------------------------------------------------ -->
+<section class="lesson" id="entangle">
+  <div class="marker" aria-hidden="true">7</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 7 课 · 多个量子比特之间</div><h2>纠缠：两个量子比特绑在一起</h2></header>
+    <h3>先学一个新的门：CNOT</h3>
+    <p>前面的门都只作用在一个量子比特上。<strong>CNOT（受控非门）</strong>作用在两个量子比特上，一个叫控制位 A，一个叫目标位 B。规则很简单：<strong>如果 A 是 1，就把 B 翻面；如果 A 是 0，B 不动。</strong></p>
+    <p>如果 A 是确定的 0 或 1，CNOT 就是个普通的条件开关。有趣的是 A 处在叠加中的时候：A 同时带着 0 和 1 的成分，于是“翻”和“不翻”两种情况<strong>同时发生</strong>。下面一步一步看。</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 7a</span>用 H 和 CNOT 制造纠缠</div>
+      <figure style="margin:0" class="circuit">
+        <svg id="ciSvg" viewBox="0 0 360 160" role="img" aria-label="量子线路：A 先经过 H 门，再作为控制位对 B 做 CNOT"></svg>
+      </figure>
+      <div class="seg" role="group" aria-label="选择步骤" id="ciSeg">
+        <button data-step="0" aria-pressed="true">开始</button>
+        <button data-step="1" aria-pressed="false">H 之后</button>
+        <button data-step="2" aria-pressed="false">CNOT 之后</button>
+      </div>
+      <div class="formula" id="ciKet"></div>
+      <div class="pbars" id="ciBars"></div>
+      <p class="status" id="ciMsg" aria-live="polite"></p>
+      <div class="row"><button class="btn" id="ciPrev">上一步</button><button class="btn primary" id="ciNext">下一步</button></div>
+    </div>
+    <p>最后的状态 <span class="ket">0.71|00⟩ + 0.71|11⟩</span> 里，只剩“都是 0”和“都是 1”两种可能。它没法拆成“A 自己的一根箭头”加上“B 自己的一根箭头”：单说 A 是什么状态，已经没有意义了。这就是<strong>纠缠</strong>。</p>
+    <h3>把它们分开，再测量</h3>
+    <p>把这对纠缠的量子比特，一个送到北京，一个送到上海，两边同时测量。和“两枚互不相关的硬币”对比一下：</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 7b</span>两地同时测量</div>
+      <div class="seg" role="group" aria-label="硬币类型">
+        <button id="modeBell" aria-pressed="true">纠缠的一对</button>
+        <button id="modeInd" aria-pressed="false">互不相关的两个</button>
+      </div>
+      <div class="pair">
+        <div class="side"><div class="coin sm spin" id="coinA">?</div><span class="label">北京的 A</span></div>
+        <span class="link" id="linkTxt">∿ 纠缠 ∿</span>
+        <div class="side"><div class="coin sm spin" id="coinB">?</div><span class="label">上海的 B</span></div>
+      </div>
+      <div class="row" style="justify-content:center">
+        <button class="btn primary" id="entOnce">两边同时测量</button>
+        <button class="btn" id="entMany">再测 100 对</button>
+        <button class="btn" id="entClear">清空</button>
+      </div>
+      <div class="pbars" id="entBars"></div>
+      <p class="status" id="entMsg" aria-live="polite">点击测量，看看两边的结果。</p>
+    </div>
+    <p>纠缠的一对：每一边单独看，都是 50/50 的随机，可两边的结果<strong>永远相同</strong>。互不相关的两个：四种组合都会出现。</p>
+    <h3>会不会只是事先约好了？</h3>
+    <p>你可能会想：这和把一双手套分装进两个盒子有什么区别？打开一个看到左手，自然知道另一个是右手，结果早在出发前就定了。</p>
+    <p>只沿同一个方向测量，确实分辨不出来。1964 年，物理学家贝尔想出了检验办法：让两边各自随机换用不同的测量方向（相当于把第 3 课的偏振片转个角度），再统计两边结果的一致程度。任何“事先约好”的方案，这个一致程度都有一个上限；量子力学预言纠缠会超过这个上限。几十年来的实验一次次证实了量子力学的预言，相关实验工作获得了 2022 年诺贝尔物理学奖。</p>
+    <p>但纠缠<strong>不能</strong>用来超光速传消息：北京这边看到的永远只是随机的 0 和 1，在和上海对照结果之前，得不到任何信息。它真正的用处，是让很多量子比特协同起来，形成普通比特表达不了的关联。</p>
+    <div class="key"><span class="kt">要点</span><p>H 加 CNOT 就能制造纠缠：两个量子比特单独看都随机，合起来看完全相关，而且这种关联无法用“事先约好”来解释。纠缠不能传递信息。</p></div>
+  </div>
+</section>
+
+<!-- 8 ------------------------------------------------------------ -->
+<section class="lesson" id="search">
+  <div class="marker" aria-hidden="true">8</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 8 课 · 把前面的拼起来</div><h2>一个完整的算法：量子搜索</h2></header>
+    <p>3 个量子比特有 8 种结果（000 到 111）。把它们想象成 <strong>8 个盒子</strong>，其中一个藏着答案。普通电脑只能一个个打开检查，平均大约要开一半，也就是 4 个左右。</p>
+    <p><strong>Grover 搜索算法</strong>是这样做的：</p>
+    <ol class="steps">
+      <li><p><strong>准备：</strong>对 3 个量子比特各做一次 H 门，得到 8 种结果的均匀叠加。每个振幅都是 0.35（即 1/√8），概率都是 12.5%。</p></li>
+      <li><p><strong>标记：</strong>用一个“检查答案”的线路，把答案那一格的振幅变成负数（就像 Z 门）。概率是平方，所以单看这一步，什么都没变。</p></li>
+      <li><p><strong>绕平均值翻转：</strong>以所有振幅的平均值为镜子，每一格翻到镜子另一侧，离镜子的距离不变。答案那一格原本远在镜子下方，翻上去就变得最高；其余各格只比镜子高一点，翻下去就变矮。这一步本质上是一次精心设计的干涉。</p></li>
+      <li><p><strong>重复</strong>第 2、3 步合适的轮数，然后测量。</p></li>
+    </ol>
+    <p>你可能会问：能“标记答案”，不就已经知道答案了吗？其实不然。<strong>检查</strong>一个答案对不对，往往比<strong>找到</strong>它容易得多。比如数独：检查一份填好的答案是否正确，几秒钟的事；从头解出来就难多了。Grover 算法只需要“会检查”，不需要事先知道答案在哪。</p>
+    <div class="lab">
+      <div class="lab-h"><span class="lab-tag">实验 8</span>8 个盒子的振幅</div>
+      <div class="gstat">
+        <div><div class="label">答案被测到的概率</div><div class="big" id="grP">12.5%</div></div>
+        <div><div class="label">其他每个盒子</div><div class="mid" id="grO">12.5%</div></div>
+        <div><div class="label">已完成轮数</div><div class="mid" id="grR">0</div></div>
+      </div>
+      <svg id="grSvg" viewBox="0 0 400 252" style="width:100%;max-width:560px;display:block;margin:0 auto" role="img" aria-label="8 个盒子的振幅柱状图，橙色为答案，红色虚线为平均值"></svg>
+      <div class="legend"><span><i style="background:var(--q1)"></i>答案（真实计算中看不到，这里为了演示标出）</span><span><i style="background:var(--neg)"></i>负振幅</span><span><i style="border:1px dashed var(--muted)"></i>上一步的样子</span></div>
+      <div class="row">
+        <button class="btn primary" id="grMark">① 标记</button>
+        <button class="btn primary" id="grDiff">② 绕平均值翻转</button>
+        <button class="btn" id="grMeasure">测量</button>
+        <button class="btn" id="grReset">重来</button>
+      </div>
+      <p class="status" id="grMsg" aria-live="polite"></p>
+    </div>
+    <div class="try"><b>试一试：</b>按 ①②①② 做两轮，概率升到约 95%。再做第三轮，概率反而掉下去：放大有一个最佳轮数，转过头会转回来。另外，开局不做任何操作直接测量，就是普通的瞎猜。</div>
+    <p>盒子越多，优势越明显：100 万个盒子，普通方法平均要检查约 50 万次，Grover 大约 800 轮就够（轮数约为盒子数的平方根）。这叫<strong>平方级加速</strong>，很可观，但并不是“一步就找到”。</p>
+    <div class="key"><span class="kt">要点</span><p>Grover 算法 = H 门制造均匀叠加 + 反复“标记、翻转”。每一轮都用干涉把答案的振幅放大一点。它只需要会检查答案，搜索速度提升到平方根级别。</p></div>
+  </div>
+</section>
+
+<!-- 9 ------------------------------------------------------------ -->
+<section class="lesson" id="real">
+  <div class="marker" aria-hidden="true">9</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">第 9 课 · 走出图纸</div><h2>真实的量子计算机</h2></header>
+    <h3>量子比特用什么做</h3>
+    <p>任何有两个可以区分的状态、又能维持叠加的微小物理系统，都可以拿来当量子比特。几条主要路线：</p>
+    <div class="tiles">
+      <div><h4>超导电路</h4><span class="zo">0 / 1 = 电路的两个能量状态</span><p>芯片上的微型电路，冷却到比外太空还冷得多的约百分之一开尔文时，电流毫无阻力，表现出量子行为。用微波脉冲来做量子门。</p></div>
+      <div><h4>离子阱</h4><span class="zo">0 / 1 = 离子的两个能级</span><p>用电磁场把单个带电原子悬在真空中，一字排开，再用激光照射来做量子门。</p></div>
+      <div><h4>中性原子</h4><span class="zo">0 / 1 = 原子的两个能级</span><p>用聚焦的激光像镊子一样夹住单个原子，排成阵列，也用激光操作。</p></div>
+      <div><h4>光子</h4><span class="zo">0 / 1 = 水平 / 竖直偏振</span><p>就是第 2、3 课里的偏振。光子跑得快、不怕热，但让两个光子相互作用很难。</p></div>
+    </div>
+    <h3>难在哪里</h3>
+    <div class="hard">
+      <div><h4>太脆弱</h4><p>量子比特只要和外界发生一点点作用，比如热、振动、杂散的电磁场，叠加和纠缠就会慢慢消散，这叫<strong>退相干</strong>。计算必须赶在它消散之前做完。</p></div>
+      <div><h4>会出错</h4><p>每个量子门都有一点误差，步骤一多就会累积。解决办法是<strong>量子纠错</strong>：用许多个物理量子比特合成一个更可靠的“逻辑量子比特”，代价可能是上百甚至上千比 1。</p></div>
+      <div><h4>难扩大</h4><p>量子比特越多，布线、控制和互相干扰的问题就越复杂。比特的数量和质量要同时提高，才能运行真正有用的算法。</p></div>
+    </div>
+    <h3>擅长什么，不擅长什么</h3>
+    <div class="pc">
+      <div>
+        <h4><i style="background:var(--q0)"></i>已知有明显优势</h4>
+        <ul>
+          <li><b>分解大数</b>：Shor 算法比已知最好的经典方法快得多。如今常用的 RSA 等加密依赖“分解大数很难”，所以密码学界已经在推广能抵御量子计算的新加密方法。</li>
+          <li><b>模拟分子和材料</b>：自然界本身遵循量子规律，用量子系统去模拟它更自然，有望帮助研究药物、电池和催化剂。</li>
+          <li><b>搜索类问题</b>：Grover 算法带来平方级加速。</li>
+        </ul>
+      </div>
+      <div>
+        <h4><i style="background:var(--neg)"></i>优势有限或尚无定论</h4>
+        <ul>
+          <li><b>日常任务</b>：看视频、打字、玩游戏，普通电脑更快、更便宜、更稳定。</li>
+          <li><b>海量数据处理</b>：把大量数据装进量子比特、再读出来，本身就很慢，往往会吃掉优势。</li>
+          <li><b>优化与机器学习</b>：研究很多，但能否稳定胜过最好的经典方法，目前还没有定论。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="key"><span class="kt">要点</span><p>量子计算机更像一种专用工具，而不是更快的电脑。它最大的挑战是让脆弱的量子比特又多、又准、又能坚持足够久。</p></div>
+  </div>
+</section>
+
+<!-- end ------------------------------------------------------------ -->
+<section class="lesson" id="myths">
+  <div class="marker end" aria-hidden="true">✓</div>
+  <div class="body">
+    <header class="lh"><div class="kicker">收尾</div><h2>常见误解</h2></header>
+    <div class="myths">
+      <div class="myth"><span class="t no">误解</span><span class="claim">量子计算机同时尝试所有答案，所以什么都算得快。</span><span class="t yes">实际</span><span class="fact">叠加里确实有 2ⁿ 个振幅，但测量只给一个结果（第 3、6 课）。只有能设计出巧妙干涉的问题才会变快（第 5、8 课）。</span></div>
+      <div class="myth"><span class="t no">误解</span><span class="claim">叠加就是“不知道它是 0 还是 1”。</span><span class="t yes">实际</span><span class="fact">“不知道”是普通的概率，只能相加不能抵消。叠加的振幅带正负号，会发生干涉，这是两者的根本区别（第 1、5 课）。</span></div>
+      <div class="myth"><span class="t no">误解</span><span class="claim">纠缠可以实现超光速通信。</span><span class="t yes">实际</span><span class="fact">单独一边看到的永远是随机结果，必须用普通方式对照后才能发现关联（第 7 课）。</span></div>
+      <div class="myth"><span class="t no">误解</span><span class="claim">量子计算机将来会取代手机和电脑。</span><span class="t yes">实际</span><span class="fact">它更像专用的协处理器，只在少数问题上有优势，日常计算仍然是普通电脑的天下（第 9 课）。</span></div>
+      <div class="myth"><span class="t no">误解</span><span class="claim">量子比特数量越多，计算机就越强。</span><span class="t yes">实际</span><span class="fact">质量同样关键：错误率多低、叠加能保持多久、比特之间能否灵活连接。数量多而错误多，也算不了有用的东西（第 9 课）。</span></div>
+    </div>
+
+    <h2 style="margin-top:28px">一页回顾</h2>
+    <dl class="recap">
+      <div><dt><span>01</span>量子比特</dt><dd>测量前可以同时带有 0 和 1 的成分。</dd></div>
+      <div><dt><span>02</span>叠加</dt><dd>状态是一根长度为 1 的箭头，影子 a、b 叫振幅，a² + b² = 1。</dd></div>
+      <div><dt><span>03</span>测量</dt><dd>只给出 0 或 1，概率是振幅的平方；测完箭头塌缩。</dd></div>
+      <div><dt><span>04</span>量子门</dt><dd>翻转箭头但不改变长度，可以撤销。振幅可以为负。</dd></div>
+      <div><dt><span>05</span>干涉</dt><dd>振幅沿路径相乘、在终点相加，正负会抵消。这是加速的来源。</dd></div>
+      <div><dt><span>06</span>多比特</dt><dd>n 个量子比特有 2ⁿ 个振幅，但测量只给出一个结果。</dd></div>
+      <div><dt><span>07</span>纠缠</dt><dd>H + CNOT 让两个量子比特的结果绑在一起，单独看仍随机。</dd></div>
+      <div><dt><span>08</span>Grover 搜索</dt><dd>反复“标记、翻转”，用干涉把答案的概率放大。</dd></div>
+    </dl>
+    <p class="foot">说明：为了直观，本页的箭头只画了振幅为实数（正数或负数）的情况。完整描述一个量子比特，振幅一般是复数，要用三维的“布洛赫球”来画；正负号在那里推广成了“相位”。但本页建立的直觉，包括概率是振幅的平方、正负能抵消、测量会塌缩，在完整理论里都同样成立。</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PI=Math.PI, R2=Math.SQRT1_2;
+const num=(x,d=2)=>{const v=Math.abs(x)<5e-4?0:x;const s=Math.abs(v).toFixed(d);return (v<0?'−':'')+s;};
+const pct=x=>{if(x>0.9995)return '100%';if(x<0.0005)return '0%';return (x*100).toFixed(1).replace(/\.0$/,'')+'%';};
+function animate(from,to,dur,frame,done){
+  if(reduce){frame(to);done&&done();return;}
+  const t0=performance.now();
+  function step(t){const k=Math.min(1,(t-t0)/dur);const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;frame(from+(to-from)*e);if(k<1)requestAnimationFrame(step);else done&&done();}
+  requestAnimationFrame(step);
+}
+
+/* reading progress */
+const prog=$('#prog');
+function onScroll(){const h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h>0?Math.min(100,scrollY/h*100):0)+'%';}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* ---------- state circle ---------- */
+function circleSVG(a,b,opt={}){
+  const R=100,x=R*a,y=-R*b,neg=opt.neg!==false;let s='';
+  if(opt.quarter)s+=`<path d="M0 0 L${R} 0 A${R} ${R} 0 0 0 0 ${-R} Z" class="c-quarter"/>`;
+  s+=`<circle cx="0" cy="0" r="${R}" class="c-ring"/>`;
+  if(opt.quarter)s+=`<path d="M${R} 0 A${R} ${R} 0 0 0 0 ${-R}" class="c-arc"/>`;
+  s+=`<line x1="-122" y1="0" x2="122" y2="0" class="c-axis"/><line x1="0" y1="-122" x2="0" y2="122" class="c-axis"/>`;
+  s+=`<text x="106" y="-9" class="c-lab q0">|0⟩</text><text x="9" y="-108" class="c-lab q1">|1⟩</text>`;
+  if(neg)s+=`<text x="-106" y="-9" text-anchor="end" class="c-lab q0">−|0⟩</text><text x="9" y="124" class="c-lab q1">−|1⟩</text>`;
+  if(opt.mirror!=null){
+    const m=opt.mirror*PI/180,mx=138*Math.cos(m),my=-138*Math.sin(m);
+    s+=`<line x1="${-mx}" y1="${-my}" x2="${mx}" y2="${my}" class="c-mirror"/>`;
+  }
+  s+=`<line x1="${x}" y1="${y}" x2="${x}" y2="0" class="c-proj"/><line x1="${x}" y1="${y}" x2="0" y2="${y}" class="c-proj"/>`;
+  if(Math.abs(x)>1)s+=`<line x1="0" y1="0" x2="${x}" y2="0" class="c-a"/>`;
+  if(Math.abs(y)>1)s+=`<line x1="0" y1="0" x2="0" y2="${y}" class="c-b"/>`;
+  if(opt.deg!=null)s+=`<text x="${Math.abs(x)>40?x/2:x+8}" y="${Math.abs(x)>40?18:y/2}" class="c-deg" text-anchor="middle">${opt.deg}°</text>`;
+  const t=Math.atan2(y,x),L=16,w=.42,bx=x-11*Math.cos(t),by=y-11*Math.sin(t);
+  s+=`<line x1="0" y1="0" x2="${bx}" y2="${by}" class="c-arrow"/>`;
+  s+=`<polygon points="${x},${y} ${x-L*Math.cos(t-w)},${y-L*Math.sin(t-w)} ${x-L*Math.cos(t+w)},${y-L*Math.sin(t+w)}" class="c-head"/>`;
+  s+=`<circle cx="0" cy="0" r="4" class="c-head"/>`;
+  return s;
+}
+function ketHTML(a,b){
+  const op=b<-5e-4?'−':'+';
+  return `|ψ⟩ = <span class="k0">${num(a)}</span>|0⟩ ${op} <span class="k1">${Math.abs(b).toFixed(2)}</span>|1⟩`;
+}
+function setBars(p0,ids){
+  $(ids[0]).style.width=(p0*100)+'%';$(ids[1]).style.width=((1-p0)*100)+'%';
+  $(ids[2]).textContent=pct(p0);$(ids[3]).textContent=pct(1-p0);
+}
+
+/* ---------- hero: rotating qubit ---------- */
+const heroSvg=$('#heroSvg');let hT=0.55,hLast=null,hVis=true,hRunning=false;
+function heroDraw(t){const a=Math.cos(t),b=Math.sin(t);heroSvg.innerHTML=circleSVG(a,b);setBars(a*a,['#hF0','#hF1','#hP0','#hP1']);}
+function heroLoop(ts){
+  if(!hVis){hRunning=false;hLast=null;return;}
+  if(hLast!=null)hT+=(ts-hLast)/1000*0.45;hLast=ts;heroDraw(hT);requestAnimationFrame(heroLoop);
+}
+heroDraw(hT);
+if(!reduce){
+  hRunning=true;requestAnimationFrame(heroLoop);
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es=>{hVis=es[0].isIntersecting;if(hVis&&!hRunning){hRunning=true;requestAnimationFrame(heroLoop);}}).observe(heroSvg);
+  }
+}
+
+/* ---------- lesson 1 ---------- */
+const hBit=$('#heroBit');let bit=0;
+hBit.onclick=()=>{bit^=1;hBit.textContent=bit;hBit.setAttribute('aria-label',`经典比特，当前为 ${bit}，点击切换`);};
+const hCoin=$('#heroCoin'),hBtn=$('#heroMeasure'),hNote=$('#heroNote');let hSpin=true,hCount=[0,0];
+hBtn.onclick=()=>{
+  if(hSpin){
+    const r=Math.random()<.5?0:1;hCount[r]++;hCoin.classList.remove('spin');hCoin.classList.toggle('r1',r===1);hCoin.textContent=r;
+    hBtn.textContent='让它再转起来';
+    hNote.innerHTML=`测到了 <strong>${r}</strong>。到目前为止：0 出现 ${hCount[0]} 次，1 出现 ${hCount[1]} 次。多试几次，会发现两者大约各占一半。`;hSpin=false;
+  }else{
+    hCoin.classList.add('spin');hCoin.classList.remove('r1');hCoin.textContent='?';
+    hBtn.textContent='测量（看一眼）';hNote.textContent='硬币又转起来了：此刻它既不是 0，也不是 1。';hSpin=true;
+  }
+};
+
+/* ---------- lesson 2: amplitudes ---------- */
+const aSl=$('#ampAngle'),aSvg=$('#ampSvg');
+function ampDraw(){
+  const d=+aSl.value,t=d*PI/180,a=Math.cos(t),b=Math.sin(t);
+  aSvg.innerHTML=circleSVG(a,b,{quarter:true,neg:false});
+  $('#ampDeg').textContent=d+'°';$('#ampKet').innerHTML=ketHTML(a,b);
+  $('#ampA').textContent=a.toFixed(2);$('#ampB').textContent=b.toFixed(2);
+  $('#ampA2').textContent=(a*a).toFixed(2);$('#ampB2').textContent=(b*b).toFixed(2);
+  $('#ampS0').style.width=(a*a*100)+'%';$('#ampS1').style.width=(b*b*100)+'%';
+  $('#ampSum').textContent=(a*a+b*b).toFixed(2);
+}
+aSl.oninput=ampDraw;ampDraw();
+
+/* ---------- lesson 3: measurement ---------- */
+const sSvg=$('#supSvg'),sSl=$('#supAngle'),sMsg=$('#supMsg'),sStrip=$('#supStrip');let sBusy=false;
+function sDraw(deg){
+  const t=deg*PI/180,a=Math.cos(t),b=Math.sin(t);
+  sSvg.innerHTML=circleSVG(a,b,{quarter:true,neg:false});
+  setBars(a*a,['#supF0','#supF1','#supP0','#supP1']);
+}
+sSl.oninput=()=>{$('#supDeg').textContent=sSl.value+'°';sDraw(+sSl.value);sMsg.textContent='新的量子比特已准备好。';sStrip.hidden=true;};
+$('#supOnce').onclick=()=>{
+  if(sBusy)return;const deg=+sSl.value,p0=Math.cos(deg*PI/180)**2;
+  const r=Math.random()<p0?0:1;sBusy=true;sStrip.hidden=true;
+  animate(deg,r?90:0,450,sDraw,()=>{sBusy=false;});
+  sMsg.innerHTML=`测量结果：<span class="chip c${r}">${r}</span>　箭头塌缩到了 <strong>|${r}⟩</strong>，此刻 P(${r}) = 100%，原来的角度信息丢失了。动一下滑块，就是重新准备一个。`;
+};
+$('#supMany').onclick=()=>{
+  if(sBusy)return;const deg=+sSl.value;sDraw(deg);const p0=Math.cos(deg*PI/180)**2;let c1=0,cells='';
+  for(let i=0;i<100;i++){const r=Math.random()<p0?0:1;c1+=r;cells+=`<i class="${r?'one':''}"></i>`;}
+  sStrip.innerHTML=cells;sStrip.hidden=false;
+  sMsg.innerHTML=`重新准备了 100 个 ${deg}° 的量子比特，各测一次：<strong class="k0">${100-c1} 个 0</strong>，<strong class="k1">${c1} 个 1</strong>。理论概率是 ${pct(p0)} 对 ${pct(1-p0)}，每次重做数字都会略有波动。`;
+};
+sDraw(45);
+
+/* ---------- lesson 4: gates ---------- */
+const GATE={X:{beta:45,cap:'X 门的镜子：45° 斜线'},Z:{beta:0,cap:'Z 门的镜子：横轴'},H:{beta:22.5,cap:'H 门的镜子：22.5° 斜线'}};
+let gTh=0,gLog=[],gBusy=false,gMirror=null;
+const gSvg=$('#gSvg');
+function gDraw(th){
+  const a=Math.cos(th),b=Math.sin(th);
+  gSvg.innerHTML=circleSVG(a,b,{mirror:gMirror});
+  $('#gKet').innerHTML=ketHTML(a,b);
+  setBars(a*a,['#gF0','#gF1','#gP0','#gP1']);
+}
+function gDescribe(){
+  const a=Math.cos(gTh),b=Math.sin(gTh);let t;
+  if(Math.abs(b)<1e-6)t=a>0?'现在是确定的 <strong>|0⟩</strong>，测量一定得到 0。':'现在是 <strong>−|0⟩</strong>。负号不影响概率，测量仍然一定得到 0。';
+  else if(Math.abs(a)<1e-6)t=b>0?'现在是确定的 <strong>|1⟩</strong>，测量一定得到 1。':'现在是 <strong>−|1⟩</strong>。负号不影响概率，测量仍然一定得到 1。';
+  else t=`现在是一半一半的叠加，两个振幅符号${a*b>0?'相同':'相反'}。测量得到 0 或 1 的概率各 50%。`;
+  const last=gLog.join('');
+  if(last.endsWith('HH'))t+=' 两次 H 互相抵消，又回到了按 H 之前的状态。';
+  if(last.endsWith('HZH')&&Math.abs(a)<1e-6&&b>0)t+=' 中间的 Z 改了一个符号，结果就从 |0⟩ 变成了 |1⟩。';
+  if(last.endsWith('XX'))t+=' 翻面两次，等于没翻。';
+  $('#gMsg').innerHTML=t;
+  $('#gLog').textContent=gLog.length?gLog.slice(-14).join(' → '):'（无）';
+}
+document.querySelectorAll('[data-gate]').forEach(btn=>btn.onclick=()=>{
+  if(gBusy)return;const g=GATE[btn.dataset.gate];
+  const from=gTh,target=2*g.beta*PI/180-gTh,d=Math.atan2(Math.sin(target-from),Math.cos(target-from));
+  gMirror=g.beta;$('#gMirrorCap').textContent=g.cap;gBusy=true;
+  animate(from,from+d,520,gDraw,()=>{
+    let th=Math.round((from+d)/(PI/8))*(PI/8);th=Math.atan2(Math.sin(th),Math.cos(th));
+    gTh=th;gBusy=false;gLog.push(btn.dataset.gate);gDraw(gTh);gDescribe();
+  });
+});
+$('#gReset').onclick=()=>{if(gBusy)return;gTh=0;gLog=[];gMirror=null;$('#gMirrorCap').textContent='';gDraw(0);gDescribe();};
+gDraw(0);gDescribe();
+
+/* ---------- lesson 5: interference ---------- */
+let ifZ=false;
+const ampTxt=v=>{const s=v<0?'−':'+',m=Math.abs(v);if(Math.abs(m-.5)<1e-6)return s+'½';if(Math.abs(m-R2)<1e-6)return s+'0.71';if(m<1e-6)return '0';return s+m.toFixed(2);};
+function ifDraw(){
+  const X=[38,180,322],Y=[86,222],r=20;
+  const mid=[R2,ifZ?-R2:R2];
+  const p=(i,j)=>mid[i]*R2*(i===1&&j===1?-1:1);
+  const f=[p(0,0)+p(1,0),p(0,1)+p(1,1)];
+  let lines='',labels='',nodes='';
+  function edge(x1,y1,x2,y2,amp,t){
+    const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L;
+    const sx=x1+ux*r,sy=y1+uy*r,ex=x2-ux*r,ey=y2-uy*r,lx=sx+(ex-sx)*t,ly=sy+(ey-sy)*t;
+    lines+=`<line x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" class="${amp<0?'d-neg':'d-pos'}"/>`;
+    labels+=`<text x="${lx}" y="${ly+5}" text-anchor="middle" class="d-amp${amp<0?' n':''}">${ampTxt(amp)}</text>`;
+  }
+  edge(X[0],Y[0],X[1],Y[0],R2,.5);
+  edge(X[0],Y[0],X[1],Y[1],R2,.5);
+  edge(X[1],Y[0],X[2],Y[0],p(0,0),.5);
+  edge(X[1],Y[0],X[2],Y[1],p(0,1),.3);
+  edge(X[1],Y[1],X[2],Y[0],p(1,0),.3);
+  edge(X[1],Y[1],X[2],Y[1],p(1,1),.5);
+  let s=`<text x="${X[0]}" y="20" class="d-hd" text-anchor="middle">开始</text>`;
+  s+=`<text x="${X[1]}" y="20" class="d-hd" text-anchor="middle">${ifZ?'H 再 Z 之后':'第一次 H 后'}</text>`;
+  s+=`<text x="${X[2]}" y="20" class="d-hd" text-anchor="middle">第二次 H 后</text>`;
+  nodes+=`<circle cx="${X[0]}" cy="${Y[0]}" r="${r}" class="d-n0"/><text x="${X[0]}" y="${Y[0]+5}" class="d-nt" text-anchor="middle">|0⟩</text>`;
+  nodes+=`<text x="${X[0]}" y="${Y[0]-30}" class="d-amp" text-anchor="middle">1</text>`;
+  nodes+=`<circle cx="${X[1]}" cy="${Y[0]}" r="${r}" class="d-n0"/><text x="${X[1]}" y="${Y[0]+5}" class="d-nt" text-anchor="middle">|0⟩</text>`;
+  nodes+=`<circle cx="${X[1]}" cy="${Y[1]}" r="${r}" class="d-n1"/><text x="${X[1]}" y="${Y[1]+5}" class="d-nt" text-anchor="middle">|1⟩</text>`;
+  nodes+=`<text x="${X[1]}" y="${Y[0]-30}" class="d-amp" text-anchor="middle">${ampTxt(mid[0])}</text>`;
+  nodes+=`<text x="${X[1]}" y="${Y[1]+42}" class="d-amp${ifZ?' n':''}" text-anchor="middle">${ifZ?'Z 改号 → −0.71':'+0.71'}</text>`;
+  [0,1].forEach(j=>{
+    const big=Math.abs(f[j])>.5,cls=big?(j?'d-strong1':'d-strong'):'d-ghost';
+    nodes+=`<circle cx="${X[2]}" cy="${Y[j]}" r="22" class="${cls}"/><text x="${X[2]}" y="${Y[j]+5}" class="d-nt${big?'':' g'}" text-anchor="middle">|${j}⟩</text>`;
+    const ty=j?Y[1]+44:Y[0]-30;
+    nodes+=`<text x="${X[2]}" y="${ty}" class="d-res${big?'':' g'}" text-anchor="middle">${big?'100%':'0%'}</text>`;
+  });
+  $('#ifSvg').innerHTML=s+lines+labels+nodes;
+  const term=(v,first)=>{const t=ampTxt(v);return first?t:(t[0]==='−'?' − ':' + ')+t.slice(1);};
+  $('#ifSums').innerHTML=[0,1].map(j=>{
+    const a1=p(0,j),a2=p(1,j),tot=f[j],big=Math.abs(tot)>.5;
+    return `<div class="sum"><span class="label">到达 <span class="ket ${j?'k1':'k0'}">|${j}⟩</span> 的两条路</span><span class="eq">${term(a1,true)}${term(a2,false)} = <span class="${big?(j?'k1':'k0'):'kn'}">${big?'1':'0'}</span></span><span class="label">${big?'同号相加，相长干涉：概率 1² = 100%':'正负抵消，相消干涉：概率 0² = 0%'}</span></div>`;
+  }).join('');
+  $('#ifMsg').innerHTML=ifZ?'Z 把中间 |1⟩ 的振幅改成了负数，于是从它出发的两条路符号都反了过来。现在被抵消的是 <strong>|0⟩</strong>，留下的是 <strong>|1⟩</strong>。这就是上一课 H → Z → H 得到 |1⟩ 的原因。':'从 |1⟩ 走到 |1⟩ 的那条路带着负号，正好抵消了另一条去 |1⟩ 的路。所以两次 H 之后，只剩下 <strong>|0⟩</strong>。';
+}
+function ifSet(z){ifZ=z;$('#ifNo').setAttribute('aria-pressed',!z);$('#ifZ').setAttribute('aria-pressed',z);ifDraw();}
+$('#ifNo').onclick=()=>ifSet(false);$('#ifZ').onclick=()=>ifSet(true);ifDraw();
+
+/* ---------- lesson 6: many qubits ---------- */
+const nSl=$('#nQ'),cv=$('#nCanvas');
+const MARKS=[
+  [10,'1,024 个振幅，约 16 KB','任何电脑都轻松存下'],
+  [20,'约 100 万个，约 16 MB','手机也存得下'],
+  [30,'约 10 亿个，约 16 GB','大约是一台普通笔记本电脑的全部内存'],
+  [40,'约 1 万亿个，约 16 TB','要好几台大型服务器的内存合起来'],
+  [50,'约 1000 万亿个，约 16 PB','与世界顶级超级计算机的全部内存相当，甚至更多'],
+  [266,'超过 10⁸⁰ 个','比可观测宇宙中原子总数的常见估计还多']
+];
+function sci(s){return `≈ ${s[0]}.${s.slice(1,3)} × 10<sup>${s.length-1}</sup>`;}
+function fmtBig(n){const s=(2n**BigInt(n)).toString();return n<=60?s.replace(/\B(?=(\d{3})+(?!\d))/g,','):sci(s);}
+function memStr(n){
+  const e=n+4,units=['字节','KB','MB','GB','TB','PB','EB','ZB','YB'],u=Math.floor(e/10);
+  if(u<units.length)return `${2**(e%10)} ${units[u]}`;
+  return sci((2n**BigInt(e)).toString())+' 字节';
+}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function drawDots(n){
+  const total=2**Math.min(n,40),count=Math.min(total,4096);
+  const dpr=window.devicePixelRatio||1,W=cv.clientWidth||600,H=140;
+  cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext('2d');c.scale(dpr,dpr);c.clearRect(0,0,W,H);
+  const cols=Math.max(1,Math.ceil(Math.sqrt(count*W/H))),rows=Math.ceil(count/cols),cw=W/cols,ch=H/rows,rr=Math.max(.6,Math.min(cw,ch)*.36);
+  c.fillStyle=css('--q0');
+  for(let i=0;i<count;i++){const x=(i%cols+.5)*cw,y=(Math.floor(i/cols)+.5)*ch;c.beginPath();c.arc(x,y,rr,0,7);c.fill();}
+}
+function nDraw(){
+  const n=+nSl.value;$('#nVal').textContent=n;$('#nNum').innerHTML=fmtBig(n);$('#nMem').innerHTML=memStr(n);
+  const kets=$('#nKets');
+  if(n<=4){
+    kets.hidden=false;cv.hidden=true;
+    let h='';for(let i=0;i<2**n;i++)h+=`<span>|${i.toString(2).padStart(n,'0')}⟩</span>`;
+    kets.innerHTML=h;$('#nCap').textContent=`每个格子是一种可能的测量结果，各自配一个振幅。${n} 个量子比特一共 ${2**n} 种。`;
+  }else{
+    kets.hidden=true;cv.hidden=false;drawDots(n);
+    $('#nCap').textContent=n<=12?`每个点代表一个振幅，共 ${(2**n).toLocaleString('en-US')} 个。`:'这里最多只画得下 4,096 个点，真实数量远远超出画面。';
+  }
+  $('#nMarks').innerHTML=MARKS.map(([k,a,b])=>`<li class="${n>=k?'on':''}"><span class="n">${k} 个</span><span>${a}：${b}</span><span class="tag">${n>=k?'已越过':'未到'}</span></li>`).join('');
+}
+nSl.oninput=nDraw;addEventListener('resize',()=>{if(!cv.hidden)drawDots(+nSl.value);});
+
+/* ---------- lesson 7a: CNOT ---------- */
+const CI=[
+  {amp:[1,0,0,0],ket:'|00⟩',msg:'两个量子比特都从 0 开始，状态是 <strong>|00⟩</strong>。只有一种可能，概率 100%。'},
+  {amp:[R2,0,R2,0],ket:'0.71|00⟩ + 0.71|10⟩',msg:'对 A 做 H：A 变成一半 0、一半 1，B 仍然是 0。注意，这时<strong>还没有纠缠</strong>：不管 A 是什么，B 都确定是 0，两者互不影响。'},
+  {amp:[R2,0,0,R2],ket:'0.71|00⟩ + 0.71|11⟩',msg:'做 CNOT：在 |10⟩ 这一份里，A 是 1，于是 B 被翻成 1，变成 <strong>|11⟩</strong>；在 |00⟩ 这一份里，A 是 0，B 不动。现在 A 和 B 的结果被绑在了一起。'}
+];
+let cs=0;
+function ciDraw(){
+  const sx=[90,190,296];let s='';
+  s+=`<rect x="${sx[cs]-30}" y="16" width="60" height="114" rx="6" class="ci-band"/>`;
+  s+=`<text x="8" y="50" class="ci-l">A</text><text x="26" y="50" class="ci-l">|0⟩</text>`;
+  s+=`<text x="8" y="110" class="ci-l">B</text><text x="26" y="110" class="ci-l">|0⟩</text>`;
+  s+=`<line x1="60" y1="45" x2="350" y2="45" class="ci-wire"/><line x1="60" y1="105" x2="350" y2="105" class="ci-wire"/>`;
+  s+=`<rect x="124" y="27" width="36" height="36" rx="4" class="ci-box"/><text x="142" y="51" class="ci-t" text-anchor="middle">H</text>`;
+  s+=`<line x1="238" y1="45" x2="238" y2="93" class="ci-wire"/><circle cx="238" cy="45" r="6" class="ci-dot"/>`;
+  s+=`<circle cx="238" cy="105" r="13" class="ci-box"/><line x1="225" y1="105" x2="251" y2="105" class="ci-wire"/><line x1="238" y1="92" x2="238" y2="118" class="ci-wire"/>`;
+  ['开始','H 之后','CNOT 之后'].forEach((t,i)=>{s+=`<text x="${sx[i]}" y="150" text-anchor="middle" class="ci-step${i===cs?' on':''}">${t}</text>`;});
+  $('#ciSvg').innerHTML=s;
+  const st=CI[cs];$('#ciKet').innerHTML='|ψ⟩ = '+st.ket;
+  $('#ciBars').innerHTML=['00','01','10','11'].map((k,i)=>{
+    const a=st.amp[i],p=a*a,same=k[0]===k[1];
+    return `<div class="pbar wide"><span>|${k}⟩</span><div class="track"><div class="fill ${same?'':'f1'}" style="width:${p*100}%"></div></div><span class="v">${a?a.toFixed(2):'0'} · ${pct(p)}</span></div>`;
+  }).join('');
+  $('#ciMsg').innerHTML=st.msg;
+  document.querySelectorAll('#ciSeg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.step===cs));
+  $('#ciPrev').disabled=cs===0;$('#ciNext').disabled=cs===2;
+}
+document.querySelectorAll('#ciSeg button').forEach(b=>b.onclick=()=>{cs=+b.dataset.step;ciDraw();});
+$('#ciPrev').onclick=()=>{if(cs>0){cs--;ciDraw();}};$('#ciNext').onclick=()=>{if(cs<2){cs++;ciDraw();}};
+ciDraw();
+
+/* ---------- lesson 7b: entanglement measurement ---------- */
+let bell=true,tally={'00':0,'01':0,'10':0,'11':0},eBusy=false;
+const cA=$('#coinA'),cB=$('#coinB');
+function sample(){if(bell)return Math.random()<.5?'00':'11';return (Math.random()<.5?'0':'1')+(Math.random()<.5?'0':'1');}
+function land(el,r){el.classList.remove('spin');el.classList.toggle('r1',r==='1');el.textContent=r;}
+function spinBoth(){[cA,cB].forEach(el=>{el.classList.add('spin');el.classList.remove('r1');el.textContent='?';});}
+function eBars(){
+  const tot=Object.values(tally).reduce((x,y)=>x+y,0);
+  $('#entBars').innerHTML=Object.keys(tally).map(k=>{
+    const p=tot?tally[k]/tot:0,cls=k[0]===k[1]?'':'f1';
+    return `<div class="pbar"><span>|${k}⟩</span><div class="track"><div class="fill ${cls}" style="width:${p*100}%"></div></div><span class="v">${tally[k]}</span></div>`;
+  }).join('');
+  return tot;
+}
+function eSummary(){
+  const tot=eBars();if(!tot)return;
+  const same=tally['00']+tally['11'],a1=tally['10']+tally['11'];
+  $('#entMsg').innerHTML=`共测了 ${tot} 对。北京的 A 单独看：${tot-a1} 个 0，${a1} 个 1，是随机的。两边结果相同的有 <strong>${same} / ${tot}</strong>${bell?'，一次都没有错开。':'，只是碰巧，大约一半。'}`;
+}
+function eClear(){tally={'00':0,'01':0,'10':0,'11':0};spinBoth();eBars();$('#entMsg').textContent='点击测量，看看两边的结果。';}
+$('#entOnce').onclick=()=>{
+  if(eBusy)return;const r=sample();spinBoth();eBusy=true;
+  setTimeout(()=>{land(cA,r[0]);land(cB,r[1]);tally[r]++;eSummary();eBusy=false;},reduce?0:650);
+};
+$('#entMany').onclick=()=>{if(eBusy)return;let r;for(let i=0;i<100;i++){r=sample();tally[r]++;}land(cA,r[0]);land(cB,r[1]);eSummary();};
+$('#entClear').onclick=eClear;
+function setMode(b){bell=b;$('#modeBell').setAttribute('aria-pressed',b);$('#modeInd').setAttribute('aria-pressed',!b);$('#linkTxt').textContent=b?'∿ 纠缠 ∿':'各转各的';eClear();}
+$('#modeBell').onclick=()=>setMode(true);$('#modeInd').onclick=()=>setMode(false);
+eBars();
+
+/* ---------- lesson 8: Grover ---------- */
+const N=8;let amp,prev=null,target,rounds,lastOp,hit=null,measured=false;
+const grSvg=$('#grSvg');
+function grDraw(){
+  if(!amp)return;
+  const base=118,sc=100,bw=34,gap=48,x0=21;let s='';
+  const mean=amp.reduce((x,y)=>x+y,0)/N;
+  amp.forEach((v,i)=>{
+    const h=Math.abs(v)*sc,x=x0+i*gap,y=v>=0?base-h:base;
+    const cls=v<0?'neg':(i===target?'t':'');
+    s+=`<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(h,0.5)}" rx="3" class="g-bar ${cls}"/>`;
+  });
+  if(prev)prev.forEach((v,i)=>{
+    if(Math.abs(v-amp[i])<1e-9)return;
+    const h=Math.abs(v)*sc,x=x0+i*gap,y=v>=0?base-h:base;
+    s+=`<rect x="${x+1}" y="${y}" width="${bw-2}" height="${Math.max(h,0.5)}" rx="3" class="g-ghost"/>`;
+  });
+  s+=`<line x1="10" y1="${base}" x2="390" y2="${base}" class="g-base"/>`;
+  if(!measured){const my=base-mean*sc;s+=`<line x1="10" y1="${my}" x2="390" y2="${my}" class="g-mean"/><text x="12" y="${my-6}" class="g-mlab">平均值（镜子）</text>`;}
+  amp.forEach((v,i)=>{
+    const x=x0+i*gap+bw/2;
+    if(i===target)s+=`<circle cx="${x}" cy="232" r="12" class="g-tdot"/><text x="${x}" y="237" text-anchor="middle" class="g-tnum">${i+1}</text>`;
+    else s+=`<text x="${x}" y="237" text-anchor="middle" class="g-num">${i+1}</text>`;
+    if(hit===i)s+=`<rect x="${x-bw/2-4}" y="216" width="${bw+8}" height="32" rx="6" class="g-hit"/>`;
+  });
+  grSvg.innerHTML=s;
+  $('#grP').textContent=pct(amp[target]**2);
+  $('#grO').textContent=measured?'—':pct(amp[(target+1)%N]**2);
+  $('#grR').textContent=rounds;
+  $('#grMark').disabled=measured;$('#grDiff').disabled=measured;$('#grMeasure').disabled=measured;
+}
+const grMsg=t=>{$('#grMsg').innerHTML=t;};
+function grReset(){
+  target=Math.floor(Math.random()*N);amp=Array(N).fill(1/Math.sqrt(N));prev=null;rounds=0;lastOp=null;hit=null;measured=false;grDraw();
+  grMsg(`已对 3 个量子比特做好 H 门，8 个盒子振幅相同。答案在第 <strong>${target+1}</strong> 号盒子（橙色）。现在测量，猜中的机会只有 12.5%。先按 ① 标记。`);
+}
+$('#grMark').onclick=()=>{
+  prev=amp.slice();amp[target]*=-1;lastOp='mark';hit=null;grDraw();
+  grMsg(amp[target]<0?'答案的振幅变成了负数，但平方后概率没变。注意红色虚线（平均值）也跟着降低了一点。接着按 ②，以这条虚线为镜子翻转。':'又把它翻回了正数，相当于撤销了标记。标记之后应该接 ② 翻转。');
+};
+$('#grDiff').onclick=()=>{
+  prev=amp.slice();const m=amp.reduce((x,y)=>x+y,0)/N;amp=amp.map(v=>2*m-v);
+  if(lastOp==='mark')rounds++;lastOp='diff';hit=null;grDraw();
+  const p=amp[target]**2;
+  if(rounds===1&&p>.7)grMsg(`答案那一格从镜子下方远远翻了上去，其他各格被压低。答案的概率升到 <strong>${pct(p)}</strong>。再做一轮 ①②。`);
+  else if(rounds===2&&p>.9)grMsg(`两轮后达到 <strong>${pct(p)}</strong>。现在测量，大概率直接拿到答案。也可以试试再多做一轮会怎样。`);
+  else if(rounds>=3)grMsg(`第 ${rounds} 轮后，答案的概率是 <strong>${pct(p)}</strong>。8 个盒子的最佳轮数是 2，转过头就会回落。`);
+  else grMsg(`当前答案的概率是 <strong>${pct(p)}</strong>。按 ① 标记、② 翻转 的顺序交替进行，效果最好。`);
+};
+$('#grMeasure').onclick=()=>{
+  let r=Math.random(),k=0;for(;k<N;k++){r-=amp[k]**2;if(r<=0)break;}k=Math.min(k,N-1);
+  const pBefore=amp[target]**2;
+  prev=null;hit=k;amp=amp.map((v,i)=>i===k?1:0);measured=true;grDraw();
+  grMsg((k===target?`打开了第 ${k+1} 号盒子：<strong>找到了！</strong>${rounds===0?'这次纯属运气。':''}`:`打开了第 ${k+1} 号盒子：没找到。测量前答案的概率是 ${pct(pBefore)}，不到 100% 就有可能失手，重来一次即可。`)+' 测量后状态已经塌缩，要再试请按“重来”。');
+};
+$('#grReset').onclick=grReset;
+grReset();
+nDraw();
+
+const redrawTheme=()=>{if(!cv.hidden)drawDots(+nSl.value);};
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redrawTheme);
+new MutationObserver(redrawTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,1753 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>珠峰三维地形图</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;900&display=swap">
+<style>
+/* Layout concept: a full-bleed relief model as the stage; chart-style instrument panels float over it
+   (layer & route panel on the left, view tools and point card on the right, elevation profile docked at the foot).
+   On phones the panel becomes a bottom sheet. */
+:root{
+  --bg:#e7ecf0;
+  --sky-top:#b9cfe2;
+  --sky-horizon:#edf1f3;
+  --panel:rgba(250,251,252,.90);
+  --panel-solid:#f7f9fa;
+  --fg:#101820;
+  --muted:#5a6674;
+  --faint:#8b96a3;
+  --line:rgba(16,24,32,.12);
+  --chip:#e2e8ed;
+  --accent:#0b6b82;
+  --accent-ink:#ffffff;
+  --south:#e85d0c;
+  --north:#3049e0;
+  --danger:#c42840;
+  --outline:#ffffff;
+  --contour:#3b2c1e;
+  --font-display:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
+  --font-body:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --radius:8px;
+  --shadow:0 10px 30px rgba(18,34,52,.16);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#081017; --sky-top:#03070b; --sky-horizon:#1a2836; --panel:rgba(13,20,28,.88); --panel-solid:#111a23;
+    --fg:#e3e9ef; --muted:#93a0ae; --faint:#66727f; --line:rgba(227,233,239,.12); --chip:#1b2631;
+    --accent:#55c3da; --accent-ink:#03161c; --south:#ff8a3c; --north:#8494ff; --danger:#ff5d73;
+    --outline:#0b1218; --contour:#1c1510; --shadow:0 12px 32px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#081017; --sky-top:#03070b; --sky-horizon:#1a2836; --panel:rgba(13,20,28,.88); --panel-solid:#111a23;
+  --fg:#e3e9ef; --muted:#93a0ae; --faint:#66727f; --line:rgba(227,233,239,.12); --chip:#1b2631;
+  --accent:#55c3da; --accent-ink:#03161c; --south:#ff8a3c; --north:#8494ff; --danger:#ff5d73;
+  --outline:#0b1218; --contour:#1c1510; --shadow:0 12px 32px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:border-box}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:14px;line-height:1.55;overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+#app{position:relative;height:100%;overflow:hidden}
+#stage{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-horizon) 62%,var(--sky-horizon) 100%)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;font-family:var(--font-body)}
+
+/* ---------- 3D labels ---------- */
+.lb{position:absolute;left:0;top:0;will-change:transform;white-space:nowrap;transition:opacity .18s;pointer-events:none}
+.lb.off{opacity:0!important;visibility:hidden}
+.lb .tx{display:inline-flex;flex-direction:column;align-items:center;gap:0;pointer-events:auto;cursor:pointer;
+  text-shadow:0 0 3px var(--panel-solid),0 0 2px var(--panel-solid),0 0 6px var(--panel-solid)}
+.lb.occ{opacity:.28}
+.lb-peak{transform-origin:50% 100%}
+.lb-peak .tx{transform:translate(-50%,-100%);padding-bottom:7px;position:relative}
+.lb-peak .tx::after{content:"";position:absolute;left:50%;bottom:0;width:9px;height:7px;margin-left:-4.5px;background:var(--fg);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.lb-peak .nm{font-family:var(--font-display);font-weight:600;font-size:13px;line-height:1.15}
+.lb-peak.major .nm{font-size:17px;font-weight:900;letter-spacing:.04em}
+.lb-peak .en{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;line-height:1.2}
+.lb-peak .al{font-family:var(--font-data);font-size:11px;font-weight:500;color:var(--fg);line-height:1.25}
+.lb-glacier .tx,.lb-face .tx,.lb-valley .tx{transform:translate(-50%,-50%)}
+.lb-glacier .nm{font-style:italic;color:var(--accent);font-size:12.5px;letter-spacing:.18em;font-weight:500}
+.lb-valley .nm{font-style:italic;color:var(--accent);font-size:12px;letter-spacing:.22em}
+.lb-face .nm{font-family:var(--font-display);color:var(--muted);font-size:12px;letter-spacing:.3em;font-weight:600}
+.lb-village .tx,.lb-lake .tx{transform:translate(-5px,-50%);flex-direction:row;align-items:center;gap:5px}
+.lb-village .tx::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--panel-solid);border:2px solid var(--fg);flex:none}
+.lb-lake .tx::before{content:"";width:9px;height:6px;border-radius:50%;background:#4aa3c8;flex:none}
+.lb-village .nm,.lb-lake .nm{font-size:12px;font-weight:500}
+.lb-village .al,.lb-lake .al{font-family:var(--font-data);font-size:10.5px;color:var(--muted)}
+.lb-region .tx{transform:translate(-50%,-50%);align-items:center}
+.lb-region .nm{font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:.5em;color:var(--fg);opacity:.75}
+.lb-region .en{font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase}
+
+.kp{position:absolute;left:0;top:0;will-change:transform;pointer-events:none;transition:opacity .18s}
+.kp.off{opacity:0;visibility:hidden}
+.kp .dot{position:absolute;left:0;top:0;transform:translate(-50%,-50%);min-width:22px;height:22px;padding:0 5px;border-radius:11px;
+  display:grid;place-items:center;font-family:var(--font-data);font-size:10.5px;font-weight:600;color:#fff;background:var(--rc);
+  border:2px solid var(--outline);box-shadow:0 1px 4px rgba(0,0,0,.25);pointer-events:auto;cursor:pointer;line-height:1}
+.kp.mini .dot{min-width:10px;width:10px;height:10px;padding:0;font-size:0;border-width:1.5px}
+.kp.occ .dot{opacity:.45}
+.kp .kn{position:absolute;left:15px;top:0;transform:translateY(-50%);font-size:11.5px;font-weight:500;white-space:nowrap;pointer-events:auto;cursor:pointer;
+  text-shadow:0 0 3px var(--panel-solid),0 0 2px var(--panel-solid),0 0 6px var(--panel-solid)}
+.kp .kn b{font-family:var(--font-data);font-weight:500;color:var(--muted);margin-left:4px;font-size:10.5px}
+.kp.mini .kn,.kp.notext .kn{display:none}
+.kp.sel .dot{outline:3px solid var(--rc);outline-offset:2px}
+#probe{position:absolute;left:0;top:0;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:2.5px solid var(--outline);background:var(--rc,var(--accent));
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--rc,var(--accent)) 35%,transparent);pointer-events:none;will-change:transform}
+
+/* ---------- UI shell ---------- */
+#ui{position:absolute;inset:0;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px}
+.frame{position:relative;height:100%}
+.frame>*{pointer-events:auto}
+.glass{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+
+.brand{position:absolute;left:0;top:0;width:340px;padding:14px 16px 12px}
+.brand .eyebrow{font-family:var(--font-data);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.brand h1{margin:2px 0 4px;font-family:var(--font-display);font-weight:900;font-size:26px;letter-spacing:.06em;line-height:1.15;text-wrap:balance}
+.brand h1 small{font-family:var(--font-data);font-weight:500;font-size:15px;letter-spacing:0;margin-left:8px;color:var(--accent)}
+.brand .coords{font-family:var(--font-data);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+#panel{position:absolute;left:0;top:118px;bottom:0;width:340px;display:flex;flex-direction:column;overflow:hidden}
+.tabs{display:flex;gap:2px;padding:6px;border-bottom:1px solid var(--line);flex:none}
+.tab{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:6px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.tab span{font-family:var(--font-data);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-top:2px}
+.tab[aria-selected="true"]{background:var(--chip);color:var(--fg)}
+.tab[aria-selected="true"] span{color:var(--accent)}
+.pane{flex:1;overflow:auto;padding:14px 16px 18px;min-height:0;overscroll-behavior:contain}
+.pane[hidden]{display:none}
+.sec{display:grid;gap:8px;margin-bottom:18px}
+.sec:last-child{margin-bottom:0}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--fg)}
+.sec-h em{font-style:normal;font-family:var(--font-data);font-weight:500;font-size:9.5px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+
+.basemaps{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bm{position:relative;border:1px solid var(--line);background:transparent;border-radius:7px;padding:8px 9px 8px 34px;text-align:left;cursor:pointer;display:grid;line-height:1.3;min-width:0}
+.bm i{position:absolute;left:8px;top:9px;width:18px;height:18px;border-radius:4px;border:1px solid var(--line)}
+.bm b{font-size:12.5px;font-weight:600}
+.bm small{font-size:10.5px;color:var(--muted)}
+.bm[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.sw-terrain{background:linear-gradient(135deg,#f1f4f7 0 45%,#8d8178 45% 70%,#6c6a4c 70%)}
+.sw-sat{background:linear-gradient(135deg,#f4f6fa 0 40%,#8a6f5a 40% 62%,#5c6782 62%)}
+.sw-hyp{background:linear-gradient(180deg,#f7d8e3,#dfe6ef,#a9b4c2,#a7836a,#b39a6b,#5d7a4e)}
+.sw-slope{background:linear-gradient(90deg,#2f7d6d,#8fbf6a,#f2d15c,#f29b3c,#dc4f3a,#7a1f3d)}
+
+.toggles{display:grid;gap:1px;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.tg{display:flex;align-items:center;gap:10px;padding:8px 10px;background:color-mix(in srgb,var(--panel-solid) 60%,transparent);cursor:pointer;min-width:0}
+.tg input{position:absolute;opacity:0;pointer-events:none}
+.tg .sw{flex:none;width:30px;height:17px;border-radius:9px;background:var(--chip);border:1px solid var(--line);position:relative;transition:background .15s}
+.tg .sw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:var(--faint);transition:transform .15s,background .15s}
+.tg input:checked+.sw{background:var(--accent);border-color:var(--accent)}
+.tg input:checked+.sw::after{transform:translateX(13px);background:var(--accent-ink)}
+.tg input:focus-visible+.sw{outline:2px solid var(--accent);outline-offset:2px}
+.tg .t{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.3}
+.tg .t b{font-weight:500;font-size:13px}
+.tg .t small{font-size:10.5px;color:var(--muted)}
+.tg .key{flex:none;width:18px;height:4px;border-radius:2px}
+
+.range{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;font-size:12.5px}
+.range output{font-family:var(--font-data);font-size:11.5px;min-width:42px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent);min-width:0}
+
+.legend{display:grid;gap:6px;font-size:11px}
+.legend .bar{height:10px;border-radius:3px;border:1px solid var(--line)}
+.legend .ticks{display:flex;justify-content:space-between;font-family:var(--font-data);font-size:10px;color:var(--muted)}
+.legend .classes{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+.legend .classes div{display:grid;gap:3px;font-family:var(--font-data);font-size:9.5px;color:var(--muted);text-align:center}
+.legend .classes i{height:10px;border-radius:2px}
+.legend p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+
+/* route cards */
+.rcard{border:1px solid var(--line);border-radius:8px;overflow:hidden;--rc:var(--south)}
+.rcard[data-route="north"]{--rc:var(--north)}
+.rcard-h{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border:0;background:transparent;width:100%;text-align:left}
+.rcard-h .bar{width:4px;align-self:stretch;border-radius:2px;background:var(--rc)}
+.rcard-h b{display:block;font-size:14px;font-weight:700}
+.rcard-h small{display:block;font-size:11px;color:var(--muted)}
+.rcard-h .chev{font-family:var(--font-data);color:var(--muted);font-size:12px}
+.rcard[aria-current="true"]{border-color:color-mix(in srgb,var(--rc) 55%,var(--line))}
+.rcard[aria-current="true"] .rcard-h{background:color-mix(in srgb,var(--rc) 9%,transparent)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.stats div{background:var(--panel-solid);padding:7px 9px;display:grid;line-height:1.25;min-width:0}
+.stats small{font-size:10px;color:var(--muted)}
+.stats b{font-family:var(--font-data);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
+.rmeta{padding:9px 12px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);display:grid;gap:3px}
+.rmeta strong{color:var(--fg);font-weight:500}
+.klist{list-style:none;margin:0;padding:4px 0;border-top:1px solid var(--line)}
+.klist li button{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;width:100%;border:0;background:transparent;padding:6px 12px;text-align:left;cursor:pointer}
+.klist li button:hover{background:var(--chip)}
+.klist .code{font-family:var(--font-data);font-size:10.5px;font-weight:600;color:#fff;background:var(--rc);border-radius:9px;text-align:center;padding:1px 0}
+.klist .nm{font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.klist .al{font-family:var(--font-data);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.klist li button[aria-current="true"]{background:color-mix(in srgb,var(--rc) 12%,transparent)}
+.btnrow{display:flex;gap:6px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--panel-solid);border-radius:6px;padding:6px 10px;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn svg{width:14px;height:14px}
+
+/* places */
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:1px;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.plist button{display:grid;grid-template-columns:1fr auto;gap:8px;width:100%;border:0;background:color-mix(in srgb,var(--panel-solid) 60%,transparent);padding:7px 10px;text-align:left;cursor:pointer;align-items:baseline}
+.plist button:hover{background:var(--chip)}
+.plist .nm{font-size:13px;min-width:0}
+.plist .nm small{color:var(--muted);font-size:10.5px;margin-left:6px;letter-spacing:.04em}
+.plist .al{font-family:var(--font-data);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* info */
+.facts{width:100%;border-collapse:collapse;font-size:12px}
+.facts th,.facts td{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+.facts th{font-weight:500;color:var(--muted);white-space:nowrap;font-size:11.5px}
+.facts td.n{font-family:var(--font-data);font-variant-numeric:tabular-nums;white-space:nowrap}
+.facts thead th{color:var(--fg);font-weight:700}
+.facts .s{color:var(--south);font-weight:700}
+.facts .no{color:var(--north);font-weight:700}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:7px}
+.prose{font-size:12.5px;color:var(--muted);line-height:1.65;margin:0}
+.prose b{color:var(--fg);font-weight:500}
+.prose a{color:var(--accent)}
+
+/* right side */
+#views{position:absolute;right:0;top:0;display:flex;flex-direction:row-reverse;gap:6px;align-items:center}
+.vbar{display:flex;flex-direction:row;padding:4px;gap:2px}
+.vbtn{border:0;background:transparent;border-radius:6px;padding:6px 10px;font-size:12.5px;cursor:pointer;text-align:left;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.vbtn:hover{background:var(--chip)}
+.vbtn[aria-pressed="true"]{background:var(--chip);color:var(--accent);font-weight:600}
+.vbtn kbd{display:none;font-family:var(--font-data);font-size:9.5px;color:var(--faint);letter-spacing:.1em;margin-left:auto}
+#compass{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0}
+#compass svg{width:40px;height:40px;transition:transform .05s linear}
+
+#card{position:absolute;right:0;top:60px;width:340px;max-height:calc(100% - 60px - 228px);display:flex;flex-direction:column;overflow:hidden;--rc:var(--accent)}
+#card[hidden]{display:none}
+.card-h{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:12px 12px 10px 14px;border-bottom:1px solid var(--line)}
+.card-h .badge{font-family:var(--font-data);font-weight:600;font-size:12px;color:#fff;background:var(--rc);border-radius:12px;min-width:30px;padding:3px 7px;text-align:center;margin-top:3px}
+.card-h h2{margin:0;font-family:var(--font-display);font-weight:600;font-size:18px;line-height:1.3;text-wrap:balance}
+.card-h .en{font-size:11px;color:var(--muted);letter-spacing:.05em}
+.xbtn{border:0;background:transparent;cursor:pointer;width:28px;height:28px;border-radius:6px;display:grid;place-items:center;color:var(--muted)}
+.xbtn:hover{background:var(--chip);color:var(--fg)}
+.card-b{padding:12px 14px 14px;overflow:auto;display:grid;gap:10px;min-height:0}
+.alt-big{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.alt-big b{font-family:var(--font-data);font-size:28px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.alt-big span{font-family:var(--font-data);font-size:12px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:12px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-family:var(--font-data);font-size:11.5px;font-variant-numeric:tabular-nums}
+.card-b p{margin:0;font-size:13px;line-height:1.7}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:11px;padding:2px 8px;border-radius:10px;background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 30%,transparent)}
+.chip.info{background:var(--chip);color:var(--muted);border-color:var(--line)}
+.card-f{display:flex;gap:6px;padding:10px 14px;border-top:1px solid var(--line)}
+.card-f .btn{flex:1;justify-content:center}
+
+/* profile */
+#profile{position:absolute;left:356px;right:0;bottom:0;height:176px;display:flex;flex-direction:column;--rc:var(--south)}
+#profile[data-route="north"]{--rc:var(--north)}
+.pf-h{display:flex;align-items:center;gap:10px;padding:8px 10px 0 12px;flex-wrap:wrap}
+.pf-h .ttl{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+.pf-h .ttl i{width:10px;height:10px;border-radius:2px;background:var(--rc)}
+.pf-h .seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.pf-h .seg button{border:0;background:transparent;padding:3px 10px;font-size:12px;cursor:pointer}
+.pf-h .seg button[aria-pressed="true"]{background:var(--chip);font-weight:600}
+.pf-h .read{margin-left:auto;font-family:var(--font-data);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pf-body{flex:1;min-height:0;position:relative}
+.pf-body svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.pf-body text{font-family:var(--font-data);font-size:10px;fill:var(--muted)}
+.pf-body .kl{font-family:var(--font-body);font-size:10.5px;fill:var(--fg);font-weight:500}
+
+#readout{position:absolute;left:356px;bottom:186px;padding:5px 10px;font-family:var(--font-data);font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--fg);display:flex;gap:12px;align-items:center;white-space:nowrap}
+#readout[hidden]{display:none}
+#readout span{color:var(--muted)}
+#scale{position:absolute;right:0;bottom:186px;padding:5px 10px 6px;font-family:var(--font-data);font-size:10.5px;color:var(--muted);display:grid;justify-items:start;gap:3px}
+#scale .sb{height:5px;border:1.5px solid var(--fg);border-top:0;min-width:10px}
+
+#loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);z-index:20;transition:opacity .4s}
+#loading.done{opacity:0;pointer-events:none}
+#loading .box{display:grid;gap:10px;justify-items:center;text-align:center;padding:24px}
+#loading h2{margin:0;font-family:var(--font-display);font-weight:900;font-size:28px;letter-spacing:.12em}
+#loading p{margin:0;font-family:var(--font-data);font-size:12px;color:var(--muted)}
+#loading .prog{width:200px;height:3px;background:var(--chip);border-radius:2px;overflow:hidden}
+#loading .prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+
+.mob-toggle{display:none}
+
+/* ---------- narrower desktops ---------- */
+@media (max-width:1180px){
+  #card{width:300px}
+}
+@media (max-width:980px){
+  .brand{width:300px}
+  #panel{width:300px}
+  #profile{left:316px}
+  #readout{left:316px}
+  .vbtn .lbl{display:none}
+  .vbtn{padding:7px 9px}
+}
+
+/* ---------- phones ---------- */
+@media (max-width:760px){
+  #ui{padding-block:10px}
+  .brand{width:auto;right:110px;padding:9px 12px 8px}
+  .brand h1{font-size:19px;margin:0}
+  .brand h1 small{font-size:12px;margin-left:6px}
+  .brand .eyebrow,.brand .coords{display:none}
+  #views{top:0}
+  .vbar{display:none}
+  .vbar.open{display:flex;flex-direction:column;position:absolute;right:0;top:52px;z-index:3}
+  .mob-toggle{display:grid;width:52px;height:46px;place-items:center;cursor:pointer;border-radius:var(--radius);font-size:11px;font-weight:600}
+  #panel{top:auto;left:0;right:0;width:auto;bottom:0;height:auto;max-height:56%;border-radius:12px}
+  #panel.collapsed .pane{display:none}
+  #panel .tabs{border-bottom:0}
+  #panel:not(.collapsed) .tabs{border-bottom:1px solid var(--line)}
+  #profile{display:none}
+  #profile.in-panel{display:flex;position:relative;left:auto;right:auto;bottom:auto;height:170px;border:1px solid var(--line);border-radius:8px;box-shadow:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+  #readout{left:0;right:auto;bottom:auto;top:56px;font-size:10.5px;gap:8px;padding:4px 8px}
+  #scale{display:none}
+  #card{left:0;right:0;width:auto;top:auto;bottom:0;max-height:62%;z-index:4;border-radius:12px}
+  .lb-peak .nm{font-size:12px}
+  .lb-peak.major .nm{font-size:14px}
+  .lb-peak .en{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+
+<div id="app">
+  <div id="stage">
+    <canvas id="gl" aria-label="珠峰地区三维地形，可拖动旋转、滚轮缩放" tabindex="0"></canvas>
+    <div id="labels"></div>
+  </div>
+
+  <div id="ui"><div class="frame">
+    <header class="brand glass">
+      <div class="eyebrow">Qomolangma · Sagarmatha · Everest</div>
+      <h1>珠穆朗玛峰<small>8848.86 m</small></h1>
+      <div class="coords">27°59′17″N 86°55′31″E · 中尼边界 · 喜马拉雅山脉</div>
+    </header>
+
+    <aside id="panel" class="glass">
+      <div class="tabs" role="tablist" aria-label="面板">
+        <button class="tab" role="tab" id="t-layers" aria-controls="p-layers" aria-selected="true">图层<span>Layers</span></button>
+        <button class="tab" role="tab" id="t-routes" aria-controls="p-routes" aria-selected="false">路线<span>Routes</span></button>
+        <button class="tab" role="tab" id="t-places" aria-controls="p-places" aria-selected="false">地名<span>Places</span></button>
+        <button class="tab" role="tab" id="t-info" aria-controls="p-info" aria-selected="false">资料<span>Notes</span></button>
+      </div>
+
+      <section class="pane" id="p-layers" role="tabpanel" aria-labelledby="t-layers">
+        <div class="sec">
+          <h3 class="sec-h">底图 <em>Base map</em></h3>
+          <div class="basemaps" id="basemaps">
+            <button class="bm" data-layer="0" aria-pressed="true"><i class="sw-terrain"></i><b>地貌晕渲</b><small>冰雪 · 岩石 · 植被</small></button>
+            <button class="bm" data-layer="1" aria-pressed="false"><i class="sw-sat"></i><b>卫星影像</b><small>Landsat 7 · 2000</small></button>
+            <button class="bm" data-layer="2" aria-pressed="false"><i class="sw-hyp"></i><b>分层设色</b><small>海拔色带</small></button>
+            <button class="bm" data-layer="3" aria-pressed="false"><i class="sw-slope"></i><b>坡度分析</b><small>六级坡度</small></button>
+          </div>
+          <div class="legend" id="legend"></div>
+        </div>
+
+        <div class="sec">
+          <h3 class="sec-h">叠加图层 <em>Overlays</em></h3>
+          <div class="toggles">
+            <label class="tg"><input type="checkbox" id="o-south" checked><span class="sw"></span><span class="t"><b>南坡路线</b><small>东南山脊 · 尼泊尔一侧</small></span><span class="key" style="background:var(--south)"></span></label>
+            <label class="tg"><input type="checkbox" id="o-north" checked><span class="sw"></span><span class="t"><b>北坡路线</b><small>东北山脊 · 中国西藏一侧</small></span><span class="key" style="background:var(--north)"></span></label>
+            <label class="tg"><input type="checkbox" id="o-keys" checked><span class="sw"></span><span class="t"><b>营地与关键点</b><small>编号 S1–S13 · N1–N15</small></span></label>
+            <label class="tg"><input type="checkbox" id="o-labels" checked><span class="sw"></span><span class="t"><b>地名标注</b><small>山峰 · 冰川 · 村落 · 山壁</small></span></label>
+            <label class="tg"><input type="checkbox" id="o-contours"><span class="sw"></span><span class="t"><b>等高线</b><small>首曲线 100 m · 计曲线 500 m</small></span></label>
+            <label class="tg"><input type="checkbox" id="o-glacier"><span class="sw"></span><span class="t"><b>冰川范围</b><small>RGI 6.0 冰川轮廓（核心区）</small></span></label>
+            <label class="tg"><input type="checkbox" id="o-death"><span class="sw"></span><span class="t"><b>8000 米以上</b><small>“死亡地带”海拔范围</small></span></label>
+          </div>
+        </div>
+
+        <div class="sec">
+          <h3 class="sec-h">显示 <em>Display</em></h3>
+          <label class="range" for="r-exag">垂直夸张<input type="range" id="r-exag" min="1" max="2.5" step="0.1" value="1.2"><output id="v-exag">1.2×</output></label>
+          <label class="range" for="r-sunaz">光照方位<input type="range" id="r-sunaz" min="0" max="359" step="1" value="135"><output id="v-sunaz">135°</output></label>
+          <label class="range" for="r-sunel">光照高度<input type="range" id="r-sunel" min="6" max="80" step="1" value="38"><output id="v-sunel">38°</output></label>
+          <div class="toggles">
+            <label class="tg"><input type="checkbox" id="o-rotate"><span class="sw"></span><span class="t"><b>自动环绕</b><small>围绕当前中心缓慢旋转</small></span></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="pane" id="p-routes" role="tabpanel" aria-labelledby="t-routes" hidden>
+        <div class="sec" id="routeCards"></div>
+        <div class="sec" id="profileSlot"></div>
+      </section>
+
+      <section class="pane" id="p-places" role="tabpanel" aria-labelledby="t-places" hidden>
+        <div id="placeLists"></div>
+      </section>
+
+      <section class="pane" id="p-info" role="tabpanel" aria-labelledby="t-info" hidden>
+        <div class="sec">
+          <h3 class="sec-h">南北坡对比 <em>Compare</em></h3>
+          <div class="tablewrap">
+            <table class="facts">
+              <thead><tr><th></th><th class="s">南坡</th><th class="no">北坡</th></tr></thead>
+              <tbody>
+                <tr><th>起点</th><td>大本营 5364 m，自卢卡拉徒步约 8–10 天</td><td>大本营 5200 m，公路可达</td></tr>
+                <tr><th>主要难点</th><td>昆布冰瀑、洛子壁、希拉里台阶</td><td>北坳冰壁、大风口、第二台阶</td></tr>
+                <tr><th>最高营地</th><td>南坳 7906 m</td><td>突击营地 8300 m</td></tr>
+                <tr><th>冲顶日</th><td>爬升约 940 m，路程较短</td><td>爬升约 550 m，但山脊横切长</td></tr>
+                <tr><th>环境</th><td>相对温和，冰瀑客观风险高</td><td>更冷、风更大，冰崩风险较低</td></tr>
+                <tr><th>首登</th><td>1953 年 英国队<br>希拉里、丹增·诺尔盖</td><td>1960 年 中国队<br>王富洲、贡布、屈银华</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sec">
+          <h3 class="sec-h">高程测量 <em>Height</em></h3>
+          <div class="tablewrap">
+            <table class="facts">
+              <tbody>
+                <tr><td class="n">1955</td><td>印度测量局三角测量</td><td class="n">8848 m</td></tr>
+                <tr><td class="n">1975</td><td>中国国家测绘局</td><td class="n">8848.13 m</td></tr>
+                <tr><td class="n">2005</td><td>中国（岩石面高程）</td><td class="n">8844.43 m</td></tr>
+                <tr><td class="n">2020</td><td>中国、尼泊尔联合公布（雪面高程）</td><td class="n">8848.86 m</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sec">
+          <h3 class="sec-h">数据说明 <em>Data</em></h3>
+          <p class="prose"><b>地形：</b>NASA Earthdata 来源的高程数据（经 GitHub 项目 jebowe3/Mt-Everest-NGM-1988-3D 发布的瓦片解码），重采样为 25 m 网格。原始数据会把尖锐峰顶削低约 70–180 m，因此按公布高程，对主要山峰、南坳、两条山脊上的关键点以及沿途村落做了局部平滑校正。</p>
+          <p class="prose"><b>影像：</b>Landsat 7 ETM+ 真彩色，2000 年 10 月 30 日，30 m（USGS，经 GlacioHack/geoutils-data），仅覆盖中部区域。</p>
+          <p class="prose"><b>冰川：</b>Randolph Glacier Inventory 6.0（CC BY 4.0），仅含与影像范围相交的冰川。</p>
+          <p class="prose"><b>路线与关键点：</b>依据公开攀登资料手工绘制，表示通常走向；各营地海拔为常用公布值，地形剖面由高程数据计算。实际路线每季随冰雪条件调整。<b>本图仅供学习参考，不能用于实地导航。</b></p>
+        </div>
+      </section>
+    </aside>
+
+    <div id="views">
+      <button class="mob-toggle glass" id="viewsToggle" aria-expanded="false" aria-controls="vbar">视角</button>
+      <button id="compass" class="glass" aria-label="指北：将视角转回正北" title="指北">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-opacity=".25"/><path d="M20 4 L25 20 L20 17 L15 20 Z" fill="var(--danger)"/><path d="M20 36 L15 20 L20 23 L25 20 Z" fill="currentColor" fill-opacity=".45"/><text x="20" y="13.5" text-anchor="middle" font-size="7" font-family="IBM Plex Mono, monospace" font-weight="600" fill="#fff">N</text></svg>
+      </button>
+      <div class="vbar glass" id="vbar" role="group" aria-label="视角预设"></div>
+    </div>
+
+    <section id="card" class="glass" hidden aria-live="polite"></section>
+
+    <div id="readout" class="glass" hidden></div>
+    <div id="scale" class="glass"><div class="sb" id="sbBar"></div><div id="sbTxt">1 km</div></div>
+
+    <section id="profile" class="glass" data-route="south">
+      <div class="pf-h">
+        <div class="ttl"><i></i><span id="pfTitle">南坡 · 地形剖面</span></div>
+        <div class="seg" role="group" aria-label="选择路线">
+          <button data-r="south" aria-pressed="true">南坡</button>
+          <button data-r="north" aria-pressed="false">北坡</button>
+        </div>
+        <button class="btn" id="flyBtn" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3 L13 8 L4 13 Z" fill="currentColor"/></svg><span>沿线飞行</span></button>
+        <div class="read" id="pfRead"></div>
+      </div>
+      <div class="pf-body" id="pfBody"></div>
+    </section>
+  </div></div>
+
+  <div id="loading"><div class="box">
+    <h2>珠穆朗玛</h2>
+    <div class="prog"><i id="progBar"></i></div>
+    <p id="progTxt">正在载入高程数据…</p>
+  </div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/lines/LineSegmentsGeometry.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/lines/LineGeometry.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/lines/LineMaterial.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/lines/LineSegments2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/lines/Line2.js"></script>
+<script>
+(() => {
+'use strict';
+
+/* ================= Data ================= */
+const META = {nx:1004, ny:1397, res:25, x0:-12540.84871836678, y1:17454.06983128225, lon0:86.9175, lat0:28.0025, kx:98359.59779111376, ky:110819.49099226906, sat:[0,273,906,1058]};
+const HB = 3600;               // vertical scaling base (m)
+const STEP = 2;                // mesh decimation (50 m)
+
+const PLACES = [
+  {id:'everest', t:'peak', zh:'珠穆朗玛峰', en:'Everest', lat:27.9890, lon:86.9255, alt:8848.86, pri:10, major:true,
+   note:'世界最高峰，坐落在中国与尼泊尔边界的主山脊上。藏语称“珠穆朗玛”，尼泊尔语称“萨加玛塔”（Sagarmatha）。峰顶岩层为奥陶纪石灰岩，含有海洋生物化石。', fa:'1953 年 5 月 29 日（南坡）· 1960 年 5 月 25 日（北坡）'},
+  {id:'lhotse', t:'peak', zh:'洛子峰', en:'Lhotse', lat:27.9617, lon:86.9323, alt:8516, pri:9, major:true,
+   note:'世界第四高峰，经南坳与珠峰相连。常规路线与珠峰南坡共用至洛子壁，再转入洛子峰大雪槽登顶。', fa:'1956 年 5 月 18 日 · 瑞士队 Ernst Reiss、Fritz Luchsinger'},
+  {id:'nuptse', t:'peak', zh:'努子峰', en:'Nuptse', lat:27.9676, lon:86.8868, alt:7861, pri:8,
+   note:'“努子”藏语意为“西峰”。其北壁与珠峰西南壁夹出西冰斗，是南坡路线的南侧屏障。', fa:'1961 年 · 英国队'},
+  {id:'changtse', t:'peak', zh:'章子峰', en:'Changtse', lat:28.0246, lon:86.9148, alt:7543, pri:8,
+   note:'珠峰北侧卫峰，“章子”意为“北峰”。它与珠峰北山脊之间的鞍部即北坳，北坡路线由此登上山脊。'},
+  {id:'pumori', t:'peak', zh:'普莫里峰', en:'Pumori', lat:28.0158, lon:86.8276, alt:7161, pri:7,
+   note:'名字意为“未出嫁的女儿”，由马洛里命名。位于南坡大本营西侧，南麓的卡拉帕塔是眺望珠峰的经典观景点。', fa:'1962 年 · 德国—瑞士队'},
+  {id:'amadablam', t:'peak', zh:'阿玛达布朗峰', en:'Ama Dablam', lat:27.8618, lon:86.8604, alt:6812, pri:7,
+   note:'意为“母亲的项链”，昆布地区最具辨识度的山峰之一，常规路线为西南山脊。', fa:'1961 年 3 月'},
+  {id:'baruntse', t:'peak', zh:'巴伦孜峰', en:'Baruntse', lat:27.8721, lon:86.9794, alt:7129, pri:6,
+   note:'位于洛子峰东南，介于伊姆加谷与巴伦谷之间。', fa:'1954 年 · 新西兰队'},
+  {id:'island', t:'peak', zh:'岛峰', en:'Island Peak', lat:27.9204, lon:86.9351, alt:6189, pri:6,
+   note:'又称 Imja Tse，从楚孔看去像冰海中的孤岛而得名。1953 年英国珠峰队为适应高海拔在此首登，如今是热门的徒步攀登山峰。'},
+  {id:'kalapatthar', t:'peak', zh:'卡拉帕塔', en:'Kala Patthar', lat:27.9987, lon:86.8271, alt:5644, pri:6, viewpoint:true,
+   note:'意为“黑色岩石”，普莫里南山脊上的山包。可以正面观赏珠峰西南壁与昆布冰瀑，是南坡徒步的终点观景台。'},
+
+  {id:'khumbu', t:'glacier', zh:'昆布冰川', en:'Khumbu Glacier', lat:27.9600, lon:86.8370, pri:7,
+   note:'发源于西冰斗，经昆布冰瀑跌落后折向西南。下段覆盖厚厚的碎石表碛，南坡大本营就扎在冰川表面。'},
+  {id:'rongbuk', t:'glacier', zh:'绒布冰川', en:'Rongbuk Glacier', lat:28.0780, lon:86.8670, pri:7,
+   note:'珠峰北麓的主要冰川，由中绒布、西绒布与东绒布冰川汇成，向北流入绒布河谷。'},
+  {id:'wrongbuk', t:'glacier', zh:'西绒布冰川', en:'W. Rongbuk Glacier', lat:28.0510, lon:86.8290, pri:5,
+   note:'源自普莫里与努拉山口一带，向东汇入绒布冰川。'},
+  {id:'erongbuk', t:'glacier', zh:'东绒布冰川', en:'E. Rongbuk Glacier', lat:28.0690, lon:86.9285, pri:7,
+   note:'北坡传统路线沿其侧碛与冰面槽谷上行。冰面发育成片的冰塔林，是北坡最有特色的冰川景观。'},
+  {id:'kangshung', t:'glacier', zh:'嘎玛冰川', en:'Kangshung Glacier', lat:27.9870, lon:86.9850, pri:6,
+   note:'位于珠峰东壁（康雄壁）脚下，向东流入嘎玛沟。'},
+  {id:'cwm', t:'valley', zh:'西冰斗', en:'Western Cwm', lat:27.9815, lon:86.8930, pri:7,
+   note:'珠峰、洛子峰与努子峰围成的冰川谷地，长约 4 km。晴天时冰雪反光强烈，白天异常炎热。'},
+
+  {id:'swface', t:'face', zh:'西南壁', en:'Southwest Face', lat:27.9845, lon:86.9135, pri:5,
+   note:'1975 年英国队（领队 Chris Bonington）首次从西南壁登顶。'},
+  {id:'nface', t:'face', zh:'北壁', en:'North Face', lat:27.9990, lon:86.9185, pri:5,
+   note:'北壁有大雪槽（诺顿雪槽）与霍恩宾雪槽等著名路线。'},
+  {id:'eface', t:'face', zh:'康雄壁', en:'Kangshung Face', lat:27.9855, lon:86.9440, pri:5,
+   note:'珠峰东壁，冰崩频繁、攀登者极少。1983 年美国队首次从东壁登顶。'},
+  {id:'lface', t:'face', zh:'洛子壁', en:'Lhotse Face', lat:27.9675, lon:86.9205, pri:4,
+   note:'洛子峰西壁，高约 1100 m 的冰雪坡，南坡路线在此设三号营地。'},
+
+  {id:'gorakshep', t:'village', zh:'戈拉克谢普', en:'Gorak Shep', lat:27.9806, lon:86.8289, alt:5164, pri:5,
+   note:'前往南坡大本营前的最后一处茶馆聚落，徒步者多在此住宿后登卡拉帕塔。'},
+  {id:'lobuche', t:'village', zh:'罗布切', en:'Lobuche', lat:27.9483, lon:86.8103, alt:4940, pri:4,
+   note:'昆布冰川西侧侧碛旁的茶馆村，海拔接近 5000 m。'},
+  {id:'pheriche', t:'village', zh:'佩里切', en:'Pheriche', lat:27.8945, lon:86.8196, alt:4371, pri:4,
+   note:'设有喜马拉雅救援协会（HRA）医疗站，专门处理高原病。'},
+  {id:'dingboche', t:'village', zh:'丁波切', en:'Dingboche', lat:27.8925, lon:86.8314, alt:4410, pri:4,
+   note:'伊姆加谷口的村庄，徒步者常在此停留一天适应海拔。'},
+  {id:'chukhung', t:'village', zh:'楚孔', en:'Chhukung', lat:27.9044, lon:86.8714, alt:4730, pri:4,
+   note:'通往岛峰与洛子峰南壁方向的最后一个村落。'},
+  {id:'pangboche', t:'village', zh:'庞波切', en:'Pangboche', lat:27.8572, lon:86.7944, alt:3985, pri:3,
+   note:'昆布地区历史最悠久的寺院之一坐落于此。'},
+  {id:'imja', t:'lake', zh:'伊姆加湖', en:'Imja Tsho', lat:27.8985, lon:86.9250, alt:5010, pri:4,
+   note:'岛峰南侧的冰川湖，上世纪 60 年代以来随冰川退缩迅速扩大。'},
+
+  {id:'cn', t:'region', zh:'中 国', en:'China · Xizang', lat:28.1250, lon:86.9600, pri:3},
+  {id:'np', t:'region', zh:'尼泊尔', en:'Nepal · Khumbu', lat:27.8750, lon:86.9000, pri:3},
+];
+
+const ROUTES = {
+  south:{
+    zh:'南坡 · 东南山脊', en:'South Col – Southeast Ridge', side:'尼泊尔 · 索卢昆布', code:'S',
+    first:'1953 年 5 月 29 日，英国队（领队 John Hunt）的埃德蒙·希拉里与丹增·诺尔盖首次登顶。',
+    season:'春季 4–5 月为主，冲顶窗口多在 5 月中下旬。整个探险通常需要 6–9 周。',
+    pts:[[28.0060,86.8590,'s_ebc'],[28.0035,86.8628],[28.0002,86.8668,'s_icefall'],[27.9958,86.8712],[27.9915,86.8762],
+      [27.9872,86.8818,'s_c1'],[27.9852,86.8890],[27.9822,86.9001,'s_c2'],[27.9796,86.9065],[27.9772,86.9115,'s_lface'],
+      [27.9734,86.9199,'s_c3'],[27.9732,86.9255,'s_yellow'],[27.9748,86.9288,'s_geneva'],[27.9750,86.9321,'s_c4'],[27.9778,86.9308],
+      [27.9806,86.9290],[27.9832,86.9274,'s_balcony'],[27.9846,86.9260],[27.9857,86.9252,'s_ssummit'],[27.9868,86.9251,'s_hstep'],[27.9890,86.9255,'summit']],
+    keys:{
+      s_ebc:{zh:'南坡大本营', en:'Everest Base Camp', alt:'5364', short:'大本营', camp:true,
+        d:'扎在昆布冰川碎石表面的营地，春季帐篷沿冰川绵延一公里以上。从卢卡拉徒步而来通常需要 8–10 天（含适应日）。', tags:['高原反应']},
+      s_icefall:{zh:'昆布冰瀑', en:'Khumbu Icefall', alt:'5400–6000',
+        d:'冰川从西冰斗边缘跌落形成的冰瀑，冰塔和裂缝每天都在移动。夏尔巴“冰瀑医生”（Icefall Doctors）每季架设铝梯和路绳。登山者尽量在凌晨低温时通过，减少冰塔崩塌的风险。2014 年 4 月的冰崩造成 16 人遇难。', tags:['冰塔崩塌','暗裂缝','冰崩'], leg:'大本营 → C1 约 5–8 小时'},
+      s_c1:{zh:'一号营地', en:'Camp 1', alt:'6065', short:'C1', camp:true,
+        d:'位于冰瀑顶端、西冰斗入口的平缓雪原，四周是巨大的横向裂缝，需要多段梯子通过。', tags:['裂缝'], leg:'大本营 → C1 约 5–8 小时'},
+      s_c2:{zh:'二号营地', en:'Camp 2 / ABC', alt:'6400', short:'C2', camp:true,
+        d:'西冰斗中段、西南壁脚下侧碛上的营地，南坡的“前进营地”，设有厨房帐。适应期内登山者往返于此。', tags:['强烈日照'], leg:'C1 → C2 约 2–4 小时'},
+      s_lface:{zh:'洛子壁脚', en:'Lhotse Face (bergschrund)', alt:'约 6700',
+        d:'西冰斗尽头。跨过冰川顶部的大裂缝（背隙）后进入洛子壁：一面坡度 40–50°、以蓝冰为主的冰雪坡。', tags:['落石','滑坠']},
+      s_c3:{zh:'三号营地', en:'Camp 3', alt:'约 7160', short:'C3', camp:true,
+        d:'在洛子壁上凿出的狭窄冰台，帐篷紧贴陡坡，夜间行走必须挂在路绳上。多数人从这里开始使用补充氧气。', tags:['滑坠','落石'], leg:'C2 → C3 约 4–7 小时'},
+      s_yellow:{zh:'黄色带', en:'Yellow Band', alt:'约 7600',
+        d:'横贯珠峰与洛子峰的黄褐色岩带，由大理岩、千枚岩和片岩构成。穿着冰爪攀爬岩石，全程依靠固定路绳。', tags:['混合地形']},
+      s_geneva:{zh:'日内瓦岬', en:'Geneva Spur', alt:'约 7850',
+        d:'南坳下方的黑色岩石扶壁，由 1952 年瑞士探险队命名。翻过它即进入南坳。', tags:['混合地形']},
+      s_c4:{zh:'四号营地 · 南坳', en:'Camp 4 · South Col', alt:'7906', short:'南坳 C4', camp:true,
+        d:'珠峰与洛子峰之间多风的碎石鞍部。冲顶一般在夜里 21:00–23:00 出发。', tags:['强风','缺氧','失温'], leg:'C3 → C4 约 4–6 小时'},
+      s_balcony:{zh:'阳台', en:'The Balcony', alt:'8400',
+        d:'东南山脊上的一处小平台，登山者在此休息、更换氧气瓶，通常在日出前后到达。', tags:['死亡地带']},
+      s_ssummit:{zh:'南峰', en:'South Summit', alt:'8749',
+        d:'东南山脊上的前峰。之后是一段两侧悬空的雪檐横切：东侧是康雄壁，西侧是西南壁。', tags:['雪檐','暴露']},
+      s_hstep:{zh:'希拉里台阶', en:'Hillary Step', alt:'约 8790',
+        d:'原为约 12 m 高的近垂直岩阶，以首登者希拉里命名。2015 年尼泊尔地震后外形明显改变，现多为陡雪坡，但仍是冲顶日的拥堵点。', tags:['拥堵','暴露']},
+      summit:{zh:'顶峰', en:'Summit', alt:'8848.86',
+        d:'从南坳出发，冲顶通常需要 7–10 小时，下撤回南坳还需 3–6 小时。2020 年中国与尼泊尔联合公布的雪面高程为 8848.86 m。', tags:['死亡地带','关门时间'], leg:'南坳 → 顶峰 约 7–10 小时'}
+    }
+  },
+  north:{
+    zh:'北坡 · 东北山脊', en:'North Col – Northeast Ridge', side:'中国 · 西藏定日县', code:'N',
+    first:'1960 年 5 月 25 日，中国登山队王富洲、贡布、屈银华首次从北坡登顶。1975 年中国队再登，潘多成为首位从北坡登顶的女性。',
+    season:'春季 4–5 月为主。大本营公路可达，物资由牦牛运往前进营地。整个探险通常需要 6–8 周。',
+    pts:[[28.1414,86.8514,'n_bc'],[28.1330,86.8560],[28.1220,86.8605],[28.1100,86.8650],[28.1035,86.8720],[28.1010,86.8850],
+      [28.0995,86.9000],[28.0975,86.9150],[28.0930,86.9230],[28.0880,86.9250],[28.0835,86.9240,'n_ic'],[28.0700,86.9265],
+      [28.0580,86.9310],[28.0480,86.9390],[28.0400,86.9500],[28.0345,86.9575,'n_abc'],[28.0310,86.9480],[28.0265,86.9380],
+      [28.0230,86.9320,'n_wall'],[28.0195,86.9260],[28.0172,86.9222,'n_col'],[28.0140,86.9255],[28.0108,86.9272],[28.0084,86.9283,'n_windy'],
+      [28.0063,86.9301],[28.0043,86.9308,'n_c2'],[28.0013,86.9328],[27.9983,86.9336,'n_c3'],[27.9960,86.9318,'n_exit'],[27.9945,86.9310],
+      [27.9930,86.9299,'n_step1'],[27.9919,86.9288,'n_mushroom'],[27.9908,86.9278,'n_step2'],[27.9899,86.9268,'n_step3'],[27.9895,86.9262,'n_pyramid'],[27.9890,86.9255,'summit']],
+    keys:{
+      n_bc:{zh:'珠峰大本营（北坡）', en:'North Base Camp', alt:'5200', short:'大本营', camp:true,
+        d:'公路可达的登山大本营，位于绒布冰川末端以北的河谷平地，绒布寺在其北面约 8 km。登山者营地略低，约 5150 m。', tags:['高原反应','大风']},
+      n_ic:{zh:'过渡营地', en:'Interim Camp', alt:'5800', short:'过渡营地', camp:true,
+        d:'沿东绒布冰川上行途中的中转营地，多数人在此住一晚再前往前进营地。附近冰面上耸立着高大的冰塔林。', leg:'大本营 → 过渡营地 约 5–7 小时'},
+      n_abc:{zh:'前进营地', en:'Advanced Base Camp', alt:'6500', short:'ABC', camp:true,
+        d:'东绒布冰川源头侧碛上的营地，也是牦牛运输的终点。中方记为 6500 m，国外资料多记 6400 m。', tags:['高原反应'], leg:'过渡营地 → 前进营地 约 5–7 小时'},
+      n_wall:{zh:'北坳冰壁', en:'North Col Wall', alt:'6600–7000',
+        d:'北坳东侧高约 400 m 的冰雪坡，坡度 40–50°，全程架设路绳。新雪之后有雪崩风险。', tags:['雪崩','裂缝']},
+      n_col:{zh:'北坳营地', en:'North Col', alt:'7028', short:'北坳 C1', camp:true,
+        d:'章子峰与北山脊之间的鞍部，营地扎在冰雪平台上。中方营地编号为 C1。', tags:['裂缝','强风'], leg:'前进营地 → 北坳 约 4–6 小时'},
+      n_windy:{zh:'大风口', en:'Windy ridge', alt:'约 7450',
+        d:'北山脊上最暴露的一段，西风越过北壁扑向山脊，常年大风，是失温和冻伤的高发区。', tags:['强风','冻伤']},
+      n_c2:{zh:'7790 营地', en:'Camp 2 (7790 m)', alt:'7790', short:'C2', camp:true,
+        d:'北山脊碎石坡上的倾斜营地，帐篷常需用石块垒出平台。', tags:['强风'], leg:'北坳 → 7790 约 5–7 小时'},
+      n_c3:{zh:'突击营地', en:'Camp 3 (8300 m)', alt:'8300', short:'C3', camp:true,
+        d:'北坡最高的营地，建在北壁倾斜的岩屑坡上。冲顶通常在午夜前后出发。', tags:['死亡地带','缺氧'], leg:'7790 → 8300 约 4–6 小时'},
+      n_exit:{zh:'黄色带 · 出口裂缝', en:'Exit Cracks', alt:'约 8400',
+        d:'从突击营地斜向上穿过黄色带，经一系列岩缝（出口裂缝）登上东北山脊。', tags:['混合地形','夜间攀登']},
+      n_step1:{zh:'第一台阶', en:'First Step', alt:'约 8500',
+        d:'东北山脊上的第一道岩阶，技术难度不大，但要在极高海拔攀爬岩石。', tags:['死亡地带']},
+      n_mushroom:{zh:'蘑菇石', en:'Mushroom Rock', alt:'约 8550',
+        d:'山脊上形似蘑菇的岩石，常用作休息和更换氧气瓶的地点。'},
+      n_step2:{zh:'第二台阶', en:'Second Step', alt:'约 8610',
+        d:'北坡最大的难点：约 30 m 高的岩壁，顶端有数米近乎垂直的岩段，各资料记录的海拔在 8577–8680 m 之间。1960 年屈银华脱掉高山靴、踩着刘连满的肩膀攀上岩壁；1975 年中国登山队在此架设金属梯，俗称“中国梯”。', tags:['垂直岩壁','拥堵']},
+      n_step3:{zh:'第三台阶', en:'Third Step', alt:'约 8690',
+        d:'约 10 m 高的岩坡，技术难度较低，但非常消耗体力。', tags:['死亡地带']},
+      n_pyramid:{zh:'顶峰雪坡', en:'Summit snowfield', alt:'约 8750',
+        d:'金字塔形的雪坡。登上后沿山脊向右横切，绕过岩角即到顶峰。', tags:['暴露']},
+      summit:{zh:'顶峰', en:'Summit', alt:'8848.86',
+        d:'从 8300 m 突击营地出发，冲顶通常需要 8–10 小时。北坡冲顶日在 8000 m 以上停留时间长，气温低、风大。', tags:['死亡地带','关门时间'], leg:'突击营地 → 顶峰 约 8–10 小时'}
+    }
+  }
+};
+
+const VIEWS = [
+  {id:'overview', zh:'全景', lat:28.000, lon:86.912, alt:5600, az:205, el:33, dist:31},
+  {id:'south', zh:'南坡', lat:27.986, lon:86.896, alt:6300, az:238, el:24, dist:11},
+  {id:'north', zh:'北坡', lat:28.040, lon:86.915, alt:6300, az:346, el:24, dist:15},
+  {id:'east', zh:'东壁', lat:27.985, lon:86.932, alt:7000, az:82, el:20, dist:10},
+  {id:'summit', zh:'顶峰', lat:27.9885, lon:86.9262, alt:8500, az:212, el:24, dist:3.6},
+  {id:'top', zh:'俯视', lat:28.000, lon:86.915, alt:5600, az:180, el:89, dist:40},
+];
+
+/* ================= Helpers ================= */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const lerp = (a,b,t) => a + (b-a)*t;
+const ease = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('qml.'+k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('qml.'+k, JSON.stringify(v)); }catch(e){} }
+};
+const ll2m = (lat,lon) => ({x:(lon-META.lon0)*META.kx, y:(lat-META.lat0)*META.ky});
+const m2ll = (x,y) => ({lat:META.lat0 + y/META.ky, lon:META.lon0 + x/META.kx});
+const m2g = (x,y) => ({c:(x-META.x0)/META.res, r:(META.y1-y)/META.res});
+function dms(v, pos, neg){
+  const s = v<0 ? neg : pos; v = Math.abs(v);
+  const d = Math.floor(v), mf = (v-d)*60, m = Math.floor(mf), sec = Math.round((mf-m)*60);
+  return `${d}°${String(m).padStart(2,'0')}′${String(sec).padStart(2,'0')}″${s}`;
+}
+const fmtAlt = h => String(Math.round(h));
+const DIRS = ['北','东北','东','东南','南','西南','西','西北'];
+
+/* ================= State ================= */
+const S = {
+  layer: store.get('layer', 0),
+  exag: store.get('exag', 1.2),
+  sunAz: store.get('sunAz', 135), sunEl: store.get('sunEl', 38),
+  show: Object.assign({south:true, north:true, keys:true, labels:true, contours:false, glacier:false, death:false, rotate:false}, store.get('show', {})),
+  route: store.get('route', 'south'),
+  sel: null,
+  fly: null,
+};
+S.show.rotate = false;
+
+let H = null;        // Float32Array heights (m)
+let MH = null;       // decimated mesh heights
+let MNX = 0, MNY = 0;
+const NX = META.nx, NY = META.ny;
+
+function hAt(c, r){ // bilinear on full DEM
+  c = clamp(c, 0, NX-1.001); r = clamp(r, 0, NY-1.001);
+  const c0 = Math.floor(c), r0 = Math.floor(r), tc = c-c0, tr = r-r0, i = r0*NX + c0;
+  return lerp(lerp(H[i], H[i+1], tc), lerp(H[i+NX], H[i+NX+1], tc), tr);
+}
+function mhAt(c, r){ // bilinear on the rendered mesh grid
+  const mc = clamp(c/STEP, 0, MNX-1.001), mr = clamp(r/STEP, 0, MNY-1.001);
+  const c0 = Math.floor(mc), r0 = Math.floor(mr), tc = mc-c0, tr = mr-r0, i = r0*MNX + c0;
+  return lerp(lerp(MH[i], MH[i+1], tc), lerp(MH[i+MNX], MH[i+MNX+1], tc), tr);
+}
+const inGrid = (c,r) => c>=0 && r>=0 && c<=NX-1 && r<=NY-1;
+const yOf = h => (h - HB) * S.exag / 1000;
+function worldFromLL(lat, lon, lift=0){
+  const m = ll2m(lat, lon), g = m2g(m.x, m.y);
+  const h = mhAt(g.c, g.r);
+  return new THREE.Vector3(m.x/1000, yOf(h) + lift, -m.y/1000);
+}
+function terrainYAtWorld(x, z){
+  const g = m2g(x*1000, -z*1000);
+  if(!inGrid(g.c, g.r)) return null;
+  return yOf(mhAt(g.c, g.r));
+}
+
+/* ================= Loading ================= */
+const prog = (f, t) => { $('#progBar').style.width = (f*100).toFixed(0)+'%'; if(t) $('#progTxt').textContent = t; };
+async function loadBitmap(url){
+  const res = await fetch(url);
+  if(!res.ok) throw new Error(`${url} 无法载入（HTTP ${res.status}）`);
+  const blob = await res.blob();
+  try { return await createImageBitmap(blob, {colorSpaceConversion:'none', premultiplyAlpha:'none'}); }
+  catch(e){
+    return await new Promise((ok, bad) => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => bad(new Error(url+' 解码失败')); im.src = URL.createObjectURL(blob); });
+  }
+}
+function pixelsOf(img){
+  const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+  const g = c.getContext('2d', {willReadFrequently:true}); g.drawImage(img, 0, 0);
+  return g.getImageData(0, 0, c.width, c.height).data;
+}
+
+/* ================= Three setup ================= */
+const canvas = $('#gl');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
+} catch(e) { renderer = null; }
+if(!renderer || !renderer.capabilities.isWebGL2){
+  $('#progTxt').textContent = '当前浏览器不支持 WebGL 2，无法显示三维地形。请换用新版 Chrome、Edge、Safari 或 Firefox。';
+  return;
+}
+renderer.setClearColor(0x000000, 0);
+const DPR_CAP = matchMedia('(max-width:760px)').matches ? 1.75 : 2;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, DPR_CAP));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1, 0.02, 400);
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = 0.085;
+controls.minDistance = 0.35; controls.maxDistance = 70;
+controls.maxPolarAngle = Math.PI*0.492;
+controls.rotateSpeed = 0.55; controls.zoomSpeed = 0.9; controls.panSpeed = 0.8;
+controls.autoRotateSpeed = 0.45;
+
+let terrain, skirt, terrainMat, skirtMat, normalTex, auxTex, heightTex, satTex;
+const routeObjs = {};
+
+const VS = `
+varying vec3 vWorld;
+void main(){
+  vec4 wp = modelMatrix * vec4(position, 1.0);
+  vWorld = wp.xyz;
+  gl_Position = projectionMatrix * viewMatrix * wp;
+}`;
+const FS = `
+precision highp float;
+precision highp int;
+uniform sampler2D tHeight;
+uniform sampler2D tNormal;
+uniform sampler2D tAux;
+uniform sampler2D tSat;
+uniform vec2 uGrid;
+uniform vec4 uSatRect;
+uniform float uX0, uY1, uRes;
+uniform int uLayer;
+uniform float uContours, uGlacier, uDeath;
+uniform vec3 uSun;
+uniform vec3 uFog;
+uniform float uFogK;
+uniform vec3 uContourCol;
+uniform vec3 uDanger;
+uniform vec3 uAccent;
+varying vec3 vWorld;
+
+float hFetch(ivec2 p){
+  p = clamp(p, ivec2(0), ivec2(uGrid) - 1);
+  vec4 t = texelFetch(tHeight, p, 0);
+  return (floor(t.r*255.0+0.5)*256.0 + floor(t.g*255.0+0.5))/10.0 + 3000.0;
+}
+float heightAt(vec2 g){
+  vec2 f = floor(g); vec2 t = g - f; ivec2 p = ivec2(f);
+  float a = hFetch(p), b = hFetch(p+ivec2(1,0)), c = hFetch(p+ivec2(0,1)), d = hFetch(p+ivec2(1,1));
+  return mix(mix(a,b,t.x), mix(c,d,t.x), t.y);
+}
+float hash(vec2 p){ p = fract(p*vec2(123.34, 456.21)); p += dot(p, p+45.32); return fract(p.x*p.y); }
+float vnoise(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
+  return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y);
+}
+float fbm(vec2 p){ float s = 0.0, a = 0.5; for(int i=0;i<4;i++){ s += a*vnoise(p); p *= 2.07; a *= 0.5; } return s; }
+
+vec3 ramp(float h){
+  vec3 c = vec3(0.365,0.478,0.306);
+  c = mix(c, vec3(0.541,0.541,0.353), smoothstep(3800.0, 4400.0, h));
+  c = mix(c, vec3(0.702,0.604,0.420), smoothstep(4400.0, 5000.0, h));
+  c = mix(c, vec3(0.655,0.514,0.416), smoothstep(5000.0, 5500.0, h));
+  c = mix(c, vec3(0.557,0.549,0.576), smoothstep(5500.0, 6000.0, h));
+  c = mix(c, vec3(0.663,0.706,0.761), smoothstep(6000.0, 6500.0, h));
+  c = mix(c, vec3(0.780,0.827,0.878), smoothstep(6500.0, 7000.0, h));
+  c = mix(c, vec3(0.875,0.902,0.937), smoothstep(7000.0, 7500.0, h));
+  c = mix(c, vec3(0.945,0.914,0.949), smoothstep(7500.0, 8000.0, h));
+  c = mix(c, vec3(0.969,0.839,0.878), smoothstep(8000.0, 8500.0, h));
+  c = mix(c, vec3(1.0), smoothstep(8500.0, 8849.0, h));
+  return c;
+}
+vec3 slopeCol(float s){
+  if(s < 15.0) return vec3(0.184,0.490,0.427);
+  if(s < 30.0) return vec3(0.561,0.749,0.416);
+  if(s < 40.0) return vec3(0.949,0.820,0.361);
+  if(s < 50.0) return vec3(0.949,0.608,0.235);
+  if(s < 60.0) return vec3(0.863,0.310,0.227);
+  return vec3(0.478,0.122,0.239);
+}
+vec3 terrainAlbedo(float h, float slope, vec3 n, float glac, vec2 wp){
+  float nz = fbm(wp*1.3);
+  float nz2 = vnoise(wp*7.0);
+  vec3 rock = mix(vec3(0.50,0.45,0.40), vec3(0.32,0.30,0.29), smoothstep(0.30, 0.75, nz));
+  rock *= 0.92 + 0.16*nz2;
+  rock = mix(rock, vec3(0.58,0.49,0.38), smoothstep(5300.0, 4500.0, h)*0.55);
+  float veg = smoothstep(4700.0, 4150.0, h + nz*150.0) * (1.0 - smoothstep(24.0, 40.0, slope));
+  rock = mix(rock, vec3(0.43,0.44,0.30), veg*0.8);
+  float north = clamp(-n.z*2.2, -1.0, 1.0);
+  float snowline = 5500.0 - 280.0*north;
+  float snow = smoothstep(snowline-140.0, snowline+260.0, h + (nz-0.5)*360.0);
+  snow *= 1.0 - smoothstep(49.0, 63.0, slope + (nz2-0.5)*10.0);
+  vec3 snowC = mix(vec3(0.86,0.90,0.95), vec3(0.95,0.96,0.98), smoothstep(0.0, 1.0, n.y));
+  float ice = smoothstep(0.35, 0.65, glac);
+  float debris = ice * smoothstep(5600.0, 5250.0, h + (nz-0.5)*260.0);
+  vec3 iceC = mix(vec3(0.76,0.86,0.93), vec3(0.93,0.95,0.98), smoothstep(5600.0, 6400.0, h));
+  vec3 col = mix(rock, snowC, snow);
+  col = mix(col, iceC, ice*(1.0-debris)*(1.0 - smoothstep(56.0, 66.0, slope)));
+  vec3 deb = mix(vec3(0.55,0.51,0.47), vec3(0.40,0.38,0.36), nz);
+  deb = mix(deb, vec3(0.72,0.80,0.86), smoothstep(0.78, 0.92, nz2)*0.7);
+  col = mix(col, deb, debris);
+  return col;
+}
+
+void main(){
+  vec2 g = vec2((vWorld.x*1000.0 - uX0)/uRes, (uY1 + vWorld.z*1000.0)/uRes);
+  vec2 uv = (g + 0.5)/uGrid;
+  vec3 n = normalize(texture(tNormal, uv).rgb*2.0 - 1.0);
+  vec4 aux = texture(tAux, uv);
+  float glac = aux.r;
+  float slope = aux.g*90.0;
+  float ao = 0.55 + aux.b*0.6;
+  float h = heightAt(g);
+
+  float diff = max(dot(n, uSun), 0.0);
+  float sky = 0.55 + 0.45*n.y;
+  vec3 light = vec3(1.0,0.975,0.93)*diff*1.02 + vec3(0.60,0.68,0.80)*sky*0.50;
+
+  vec3 col;
+  if(uLayer == 1){
+    vec2 s = (g - uSatRect.xy)/(uSatRect.zw - uSatRect.xy);
+    float e = min(min(g.x-uSatRect.x, uSatRect.z-g.x), min(g.y-uSatRect.y, uSatRect.w-g.y));
+    float w = smoothstep(0.0, 18.0, e);
+    vec3 sat = texture(tSat, clamp(s, 0.0, 1.0)).rgb;
+    vec3 satLit = sat * (0.80 + 0.32*diff) * mix(1.0, ao, 0.5);
+    vec3 alb = terrainAlbedo(h, slope, n, glac, vWorld.xz);
+    vec3 base = alb * light * ao;
+    base = mix(vec3(dot(base, vec3(0.333))), base, 0.35);
+    col = mix(base, satLit, w);
+  } else if(uLayer == 2){
+    col = ramp(h) * (0.42 + 0.7*diff) * mix(1.0, ao, 0.6) + ramp(h)*0.12;
+  } else if(uLayer == 3){
+    col = slopeCol(slope) * (0.55 + 0.55*diff) * mix(1.0, ao, 0.5);
+  } else {
+    vec3 alb = terrainAlbedo(h, slope, n, glac, vWorld.xz);
+    col = alb * light * ao;
+  }
+
+  if(uDeath > 0.5){
+    float fw = max(fwidth(h), 0.01);
+    float above = smoothstep(7995.0, 8005.0, h);
+    col = mix(col, uDanger, above*0.32);
+    float ln = 1.0 - smoothstep(0.6, 1.6, abs(h-8000.0)/fw);
+    col = mix(col, uDanger, ln*0.95);
+  }
+  if(uGlacier > 0.5){
+    float fwg = max(fwidth(glac), 0.002);
+    float edge = 1.0 - smoothstep(0.7, 1.7, abs(glac-0.5)/fwg);
+    col = mix(col, uAccent, smoothstep(0.45,0.55,glac)*0.20);
+    col = mix(col, uAccent, edge*0.9);
+  }
+  if(uContours > 0.5){
+    float fw = max(fwidth(h), 0.01);
+    float dmin = abs(fract(h/100.0 + 0.5) - 0.5)*100.0/fw;
+    float dmaj = abs(fract(h/500.0 + 0.5) - 0.5)*500.0/fw;
+    float lmin = (1.0 - smoothstep(0.45, 1.25, dmin)) * (1.0 - smoothstep(22.0, 45.0, fw));
+    float lmaj = 1.0 - smoothstep(0.75, 1.9, dmaj);
+    col = mix(col, uContourCol, max(lmin*0.38, lmaj*0.72));
+  }
+
+  float dist = length(vWorld - cameraPosition);
+  float fog = 1.0 - exp(-pow(dist*uFogK, 1.5));
+  col = mix(col, uFog, clamp(fog, 0.0, 0.88));
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+}`;
+
+const SKIRT_VS = `
+attribute float aH;
+varying float vH; varying float vT;
+attribute float aT;
+void main(){ vH = aH; vT = aT; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`;
+const SKIRT_FS = `
+precision highp float;
+uniform vec3 uTop; uniform vec3 uBot;
+varying float vH; varying float vT;
+void main(){
+  vec3 c = mix(uBot, uTop, vT);
+  float fw = max(fwidth(vH), 0.01);
+  float d = abs(fract(vH/250.0 + 0.5) - 0.5)*250.0/fw;
+  c *= 1.0 - 0.18*(1.0 - smoothstep(0.5, 1.4, d));
+  gl_FragColor = vec4(c, 1.0);
+}`;
+
+/* ---------- build textures ---------- */
+function buildNormalTex(){
+  const data = normalTex.image.data, e = S.exag, R = META.res;
+  for(let r=0; r<NY; r++){
+    const ru = Math.max(0, r-1), rd = Math.min(NY-1, r+1);
+    for(let c=0; c<NX; c++){
+      const cl = Math.max(0, c-1), cr = Math.min(NX-1, c+1);
+      const gx = (H[r*NX+cr] - H[r*NX+cl]) / ((cr-cl)*R);
+      const gz = (H[rd*NX+c] - H[ru*NX+c]) / ((rd-ru)*R);   // +row = south = +z
+      let nx = -gx*e, ny = 1, nz = -gz*e; const L = Math.hypot(nx, ny, nz);
+      const i = (r*NX+c)*4;
+      data[i] = (nx/L*0.5+0.5)*255; data[i+1] = (ny/L*0.5+0.5)*255; data[i+2] = (nz/L*0.5+0.5)*255; data[i+3] = 255;
+    }
+  }
+  normalTex.needsUpdate = true;
+}
+function buildAuxTex(glacierPx){
+  const data = new Uint8Array(NX*NY*4), R = META.res;
+  // blurred height for ambient occlusion
+  const tmp = new Float32Array(NX*NY), blur = new Float32Array(NX*NY), k = 9;
+  for(let r=0; r<NY; r++){ let s=0, n=0; const o=r*NX;
+    for(let c=-k; c<NX; c++){ if(c+k<NX){ s+=H[o+c+k]; n++; } if(c-k-1>=0){ s-=H[o+c-k-1]; n--; } if(c>=0) tmp[o+c]=s/n; } }
+  for(let c=0; c<NX; c++){ let s=0, n=0;
+    for(let r=-k; r<NY; r++){ if(r+k<NY){ s+=tmp[(r+k)*NX+c]; n++; } if(r-k-1>=0){ s-=tmp[(r-k-1)*NX+c]; n--; } if(r>=0) blur[r*NX+c]=s/n; } }
+  for(let r=0; r<NY; r++){
+    const ru = Math.max(0, r-1), rd = Math.min(NY-1, r+1);
+    for(let c=0; c<NX; c++){
+      const cl = Math.max(0, c-1), cr = Math.min(NX-1, c+1), i = r*NX+c;
+      const gx = (H[r*NX+cr] - H[r*NX+cl]) / ((cr-cl)*R), gz = (H[rd*NX+c] - H[ru*NX+c]) / ((rd-ru)*R);
+      const slope = Math.atan(Math.hypot(gx, gz))*180/Math.PI;
+      const ao = clamp(0.62 + (H[i]-blur[i])/420, 0, 1);
+      data[i*4] = glacierPx[i*4]; data[i*4+1] = slope/90*255; data[i*4+2] = ao*255; data[i*4+3] = 255;
+    }
+  }
+  auxTex = new THREE.DataTexture(data, NX, NY, THREE.RGBAFormat, THREE.UnsignedByteType);
+  auxTex.magFilter = THREE.LinearFilter; auxTex.minFilter = THREE.LinearMipmapLinearFilter; auxTex.generateMipmaps = true;
+  auxTex.needsUpdate = true;
+}
+
+/* ---------- terrain mesh ---------- */
+function buildTerrain(){
+  MNX = Math.floor((NX-1)/STEP)+1; MNY = Math.floor((NY-1)/STEP)+1;
+  MH = new Float32Array(MNX*MNY);
+  for(let r=0; r<MNY; r++) for(let c=0; c<MNX; c++) MH[r*MNX+c] = H[(r*STEP)*NX + c*STEP];
+  const pos = new Float32Array(MNX*MNY*3);
+  for(let r=0; r<MNY; r++) for(let c=0; c<MNX; c++){
+    const i = (r*MNX+c)*3;
+    pos[i] = (META.x0 + c*STEP*META.res)/1000;
+    pos[i+2] = -(META.y1 - r*STEP*META.res)/1000;
+  }
+  const idx = new Uint32Array((MNX-1)*(MNY-1)*6); let k = 0;
+  for(let r=0; r<MNY-1; r++) for(let c=0; c<MNX-1; c++){
+    const a = r*MNX+c, b = a+1, d = a+MNX, e = d+1;
+    idx[k++]=a; idx[k++]=d; idx[k++]=b; idx[k++]=b; idx[k++]=d; idx[k++]=e;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setIndex(new THREE.BufferAttribute(idx, 1));
+  terrain = new THREE.Mesh(geo, terrainMat);
+  terrain.frustumCulled = false;
+  scene.add(terrain);
+
+  // skirt around the model block
+  const ring = [];
+  for(let c=0; c<MNX; c++) ring.push([0, c]);
+  for(let r=1; r<MNY; r++) ring.push([r, MNX-1]);
+  for(let c=MNX-2; c>=0; c--) ring.push([MNY-1, c]);
+  for(let r=MNY-2; r>=0; r--) ring.push([r, 0]);
+  const n = ring.length;
+  const sp = new Float32Array(n*2*3), sh = new Float32Array(n*2), st = new Float32Array(n*2), si = [];
+  ring.forEach(([r,c], j) => {
+    const x = (META.x0 + c*STEP*META.res)/1000, z = -(META.y1 - r*STEP*META.res)/1000;
+    sp.set([x,0,z, x,0,z], j*6);
+    sh[j*2] = MH[r*MNX+c]; sh[j*2+1] = 3300; st[j*2] = 1; st[j*2+1] = 0;
+    if(j < n-1){ const a = j*2, b = a+1, cc = a+2, d = a+3; si.push(a,b,cc, cc,b,d); }
+  });
+  const sg = new THREE.BufferGeometry();
+  sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+  sg.setAttribute('aH', new THREE.BufferAttribute(sh, 1));
+  sg.setAttribute('aT', new THREE.BufferAttribute(st, 1));
+  sg.setIndex(si);
+  skirt = new THREE.Mesh(sg, skirtMat);
+  skirt.frustumCulled = false;
+  scene.add(skirt);
+  applyExag();
+}
+function applyExag(){
+  const p = terrain.geometry.attributes.position.array;
+  for(let i=0; i<MNX*MNY; i++) p[i*3+1] = yOf(MH[i]);
+  terrain.geometry.attributes.position.needsUpdate = true;
+  terrain.geometry.computeBoundingSphere();
+  const sp = skirt.geometry.attributes.position.array, sh = skirt.geometry.attributes.aH.array;
+  for(let j=0; j<sh.length; j++) sp[j*3+1] = yOf(sh[j]);
+  skirt.geometry.attributes.position.needsUpdate = true;
+}
+
+/* ---------- routes ---------- */
+function densify(pts, step=15){
+  const P = pts.map(p => { const m = ll2m(p[0], p[1]); return [m.x, m.y]; });
+  const ext = [[2*P[0][0]-P[1][0], 2*P[0][1]-P[1][1]], ...P, [2*P[P.length-1][0]-P[P.length-2][0], 2*P[P.length-1][1]-P[P.length-2][1]]];
+  const out = [], keyIdx = {};
+  for(let i=0; i<P.length-1; i++){
+    const p0=ext[i], p1=ext[i+1], p2=ext[i+2], p3=ext[i+3];
+    const seg = Math.hypot(p2[0]-p1[0], p2[1]-p1[1]), n = Math.max(2, Math.floor(seg/step));
+    if(pts[i][2]) keyIdx[pts[i][2]] = out.length;
+    for(let j=0; j<n; j++){
+      const t = j/n, t2 = t*t, t3 = t2*t;
+      out.push([0,1].map(a => 0.5*((2*p1[a]) + (-p0[a]+p2[a])*t + (2*p0[a]-5*p1[a]+4*p2[a]-p3[a])*t2 + (-p0[a]+3*p1[a]-3*p2[a]+p3[a])*t3)));
+    }
+  }
+  out.push(P[P.length-1]); keyIdx[pts[pts.length-1][2]] = out.length-1;
+  const d = [0], h = [];
+  out.forEach((q,i) => { const g = m2g(q[0], q[1]); h.push(hAt(g.c, g.r)); if(i) d.push(d[i-1] + Math.hypot(q[0]-out[i-1][0], q[1]-out[i-1][1])); });
+  return {xy:out, d, h, keyIdx};
+}
+function routeStats(R){
+  let gain = 0, above = 0;
+  for(let i=1; i<R.h.length; i++){ const dh = R.h[i]-R.h[i-1]; if(dh>0) gain += dh; if(R.h[i] >= 8000) above += R.d[i]-R.d[i-1]; }
+  return {len:R.d[R.d.length-1], gain, above, top:Math.max(...R.h), start:R.h[0]};
+}
+function routePositions(R, lift){
+  const arr = new Float32Array(R.xy.length*3);
+  R.xy.forEach((q,i) => { const g = m2g(q[0], q[1]); arr[i*3] = q[0]/1000; arr[i*3+1] = yOf(mhAt(g.c, g.r)) + lift; arr[i*3+2] = -q[1]/1000; });
+  return arr;
+}
+function buildRoutes(){
+  for(const id of ['south','north']){
+    const R = ROUTES[id]; R.line = densify(R.pts); R.stats = routeStats(R.line);
+    const geo = new THREE.LineGeometry();
+    const mk = (opts) => { const m = new THREE.LineMaterial(Object.assign({color:0xffffff, linewidth:4, transparent:true, depthWrite:false}, opts)); m.resolution.set(innerWidth, innerHeight); return m; };
+    const halo = mk({linewidth:7.5, opacity:0.95});
+    const main = mk({linewidth:3.6});
+    const hidden = mk({linewidth:2.4, opacity:0.55, dashed:true, dashSize:0.07, gapSize:0.05});
+    hidden.depthFunc = THREE.GreaterDepth;
+    const lines = [halo, main, hidden].map((m, i) => { const l = new THREE.Line2(geo, m); l.frustumCulled = false; l.renderOrder = 2+i; scene.add(l); return l; });
+    routeObjs[id] = {geo, halo, main, hidden, lines};
+  }
+  updateRouteGeometry();
+}
+function updateRouteGeometry(){
+  for(const id of ['south','north']){
+    const o = routeObjs[id]; o.geo.setPositions(routePositions(ROUTES[id].line, 0.014*Math.max(1, S.exag*0.8)));
+    o.lines.forEach(l => l.computeLineDistances());
+  }
+}
+
+/* ---------- theme ---------- */
+const col3 = (v, fb) => { try { return new THREE.Color(v || fb); } catch(e){ return new THREE.Color(fb); } };
+function applyTheme(){
+  const sky = col3(css('--sky-horizon'), '#edf1f3');
+  const dark = (sky.r+sky.g+sky.b)/3 < 0.4;
+  if(terrainMat){
+    terrainMat.uniforms.uFog.value.copy(sky);
+    terrainMat.uniforms.uFogK.value = dark ? 0.0125 : 0.0105;
+    terrainMat.uniforms.uContourCol.value.copy(col3(css('--contour'), '#3b2c1e'));
+    terrainMat.uniforms.uDanger.value.copy(col3(css('--danger'), '#c42840'));
+    terrainMat.uniforms.uAccent.value.copy(col3(css('--accent'), '#0b6b82'));
+    skirtMat.uniforms.uTop.value.copy(dark ? col3('#2a2f35') : col3('#7c766f'));
+    skirtMat.uniforms.uBot.value.copy(dark ? col3('#0d1218') : col3('#3a3836'));
+  }
+  for(const id in routeObjs){
+    const o = routeObjs[id], c = col3(css('--'+id), id==='south' ? '#e85d0c' : '#3049e0');
+    o.main.color.copy(c); o.hidden.color.copy(c);
+    o.halo.color.copy(col3(css('--outline'), '#ffffff'));
+  }
+  needsRender = true;
+}
+
+/* ================= Labels ================= */
+const labelsEl = $('#labels');
+const LBL = [];   // {el, tx, place|key, pos, pri, kind, w, h, route}
+function mkLabel(p){
+  const el = document.createElement('div');
+  el.className = `lb lb-${p.t}` + (p.major ? ' major' : '');
+  const alt = p.alt ? `<span class="al">${p.alt}</span>` : '';
+  if(p.t === 'peak') el.innerHTML = `<span class="tx" role="button" tabindex="-1"><span class="nm">${p.zh}</span>${p.pri>=8?`<span class="en">${p.en}</span>`:''}${alt}</span>`;
+  else if(p.t === 'region') el.innerHTML = `<span class="tx"><span class="nm">${p.zh}</span><span class="en">${p.en}</span></span>`;
+  else el.innerHTML = `<span class="tx" role="button" tabindex="-1"><span class="nm">${p.zh}</span>${alt}</span>`;
+  labelsEl.appendChild(el);
+  const tx = el.querySelector('.tx');
+  if(p.t !== 'region') tx.addEventListener('click', () => selectPlace(p.id, true));
+  return {el, tx, ref:p, kind:'place', pri:p.pri, lift: p.t==='peak' ? 0.004 : 0.02};
+}
+function mkKey(routeId, kid, idx){
+  const R = ROUTES[routeId], k = R.keys[kid];
+  const el = document.createElement('div');
+  el.className = 'kp'; el.style.setProperty('--rc', `var(--${routeId})`);
+  el.innerHTML = `<span class="dot" role="button" tabindex="-1" aria-label="${k.zh}">${R.code}${idx}</span><span class="kn">${k.short || k.zh}<b>${k.alt}</b></span>`;
+  labelsEl.appendChild(el);
+  const open = () => selectKey(routeId, kid, true);
+  el.querySelector('.dot').addEventListener('click', open);
+  el.querySelector('.kn').addEventListener('click', open);
+  return {el, ref:k, kid, route:routeId, kind:'key', pri: k.camp ? 9.5 : 8.6, idx, lift:0.02};
+}
+function buildLabels(){
+  for(const p of PLACES) LBL.push(mkLabel(p));
+  for(const id of ['south','north']){
+    const R = ROUTES[id]; let i = 0;
+    R.order = R.pts.filter(p => p[2]).map(p => p[2]);
+    R.order.forEach(kid => { i++; R.keys[kid].code = R.code + i; R.keys[kid].i = i; if(kid !== 'summit') LBL.push(Object.assign(mkKey(id, kid, i), {})); });
+  }
+  placeLabels();
+}
+function placeLabels(){
+  for(const L of LBL){
+    if(L.kind === 'place') L.pos = worldFromLL(L.ref.lat, L.ref.lon, L.lift);
+    else { const R = ROUTES[L.route], q = R.line.xy[R.line.keyIdx[L.kid]], ll = m2ll(q[0], q[1]); L.pos = worldFromLL(ll.lat, ll.lon, L.lift); }
+  }
+  labelDirty = true;
+}
+function measureLabels(){
+  LBL.forEach(L => { const r = (L.kind==='key' ? L.el.querySelector('.kn') : L.tx).getBoundingClientRect(); if(r.width){ L.w = r.width; L.h = r.height; } });
+}
+function occluded(p){
+  const c = camera.position, steps = 36;
+  for(let i=2; i<steps; i++){
+    const t = i/steps; if(t > 0.965) break;
+    const x = c.x+(p.x-c.x)*t, y = c.y+(p.y-c.y)*t, z = c.z+(p.z-c.z)*t;
+    const ty = terrainYAtWorld(x, z);
+    if(ty !== null && ty > y + 0.006) return true;
+  }
+  return false;
+}
+let labelDirty = true, occFrame = 0;
+const tmpV = new THREE.Vector3();
+function updateLabels(){
+  const W = canvas.clientWidth, Hh = canvas.clientHeight;
+  const doOcc = labelDirty || (occFrame++ % 3 === 0);
+  const placed = [];
+  const camDist = camera.position.distanceTo(controls.target);
+  const items = LBL.map(L => {
+    const vis = L.kind === 'key'
+      ? (S.show.keys && S.show[L.route])
+      : (S.show.labels);
+    if(!vis){ return {L, show:false}; }
+    tmpV.copy(L.pos).project(camera);
+    if(tmpV.z > 1 || tmpV.z < -1 || Math.abs(tmpV.x) > 1.15 || Math.abs(tmpV.y) > 1.15) return {L, show:false};
+    const x = (tmpV.x+1)/2*W, y = (1-tmpV.y)/2*Hh;
+    const d = camera.position.distanceTo(L.pos);
+    let lim = 999;
+    if(L.kind === 'place'){
+      const p = L.ref.pri;
+      lim = p>=9 ? 999 : p>=7 ? 46 : p>=6 ? 30 : p>=5 ? 22 : p>=4 ? 17 : 26;
+      if(L.ref.t === 'region') lim = camDist > 14 ? 999 : 0;
+    }
+    if(d > lim) return {L, show:false};
+    if(doOcc) L.occ = occluded(L.pos);
+    return {L, show:true, x, y, d};
+  });
+  items.sort((a,b) => (b.L.pri - a.L.pri) || ((a.d||0) - (b.d||0)));
+  for(const it of items){
+    const L = it.L;
+    if(!it.show){ L.el.classList.add('off'); continue; }
+    L.el.classList.remove('off');
+    L.el.style.transform = `translate(${it.x.toFixed(1)}px,${it.y.toFixed(1)}px)`;
+    if(L.kind === 'key'){
+      L.el.classList.toggle('occ', !!L.occ);
+      const box = {x:it.x-11, y:it.y-11, w:22, h:22};
+      const hit = placed.some(b => !(box.x+box.w < b.x || b.x+b.w < box.x || box.y+box.h < b.y || b.y+b.h < box.y));
+      L.el.classList.toggle('mini', hit && !L.el.classList.contains('sel'));
+      if(!hit) placed.push(box);
+      const tb = {x:it.x+13, y:it.y-9, w:L.w||60, h:18};
+      const thit = hit || L.occ || placed.some(b => !(tb.x+tb.w < b.x || b.x+b.w < tb.x || tb.y+tb.h < b.y || b.y+b.h < tb.y));
+      L.el.classList.toggle('notext', thit && !L.el.classList.contains('sel'));
+      if(!thit) placed.push(tb);
+    } else {
+      if(L.occ && L.ref.pri < 9){ L.el.classList.add('off'); continue; }
+      L.el.classList.toggle('occ', !!L.occ);
+      const w = L.w || 60, h = L.h || 20;
+      let box;
+      if(L.ref.t === 'peak') box = {x:it.x-w/2, y:it.y-h, w, h};
+      else if(L.ref.t === 'village' || L.ref.t === 'lake') box = {x:it.x-6, y:it.y-h/2, w, h};
+      else box = {x:it.x-w/2, y:it.y-h/2, w, h};
+      const hit = placed.some(b => !(box.x+box.w+3 < b.x || b.x+b.w+3 < box.x || box.y+box.h+2 < b.y || b.y+b.h+2 < box.y));
+      if(hit && L.ref.pri < 10){ L.el.classList.add('off'); continue; }
+      placed.push(box);
+    }
+  }
+  labelDirty = false;
+}
+
+/* ================= Camera helpers ================= */
+function viewPose(v){
+  const t = worldFromLL(v.lat, v.lon, 0); t.y = yOf(v.alt);
+  const az = v.az*Math.PI/180, el = v.el*Math.PI/180;
+  const off = new THREE.Vector3(Math.sin(az)*Math.cos(el), Math.sin(el), -Math.cos(az)*Math.cos(el)).multiplyScalar(v.dist*portraitK());
+  return {target:t, pos:t.clone().add(off)};
+}
+function portraitK(){ const a = canvas.clientWidth/Math.max(1, canvas.clientHeight); return a < 1 ? Math.min(1.9, 0.62/a + 0.4) : 1; }
+let anim = null;
+function flyTo(pose, dur=1500){
+  stopFly();
+  anim = {t0:performance.now(), dur, p0:camera.position.clone(), t0v:controls.target.clone(), p1:pose.pos, t1:pose.target};
+  needsRender = true;
+}
+function flyToPoint(p, dist=2.6, elDeg){
+  const cur = camera.position.clone().sub(controls.target);
+  const az = Math.atan2(cur.x, -cur.z);
+  const el = elDeg !== undefined ? elDeg*Math.PI/180 : clamp(Math.asin(cur.y/cur.length()), 0.3, 0.9);
+  const off = new THREE.Vector3(Math.sin(az)*Math.cos(el), Math.sin(el), -Math.cos(az)*Math.cos(el)).multiplyScalar(dist*portraitK());
+  flyTo({target:p.clone(), pos:p.clone().add(off)});
+}
+function setViewButton(id){ $$('#vbar .vbtn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === id))); }
+
+/* ================= Selection / card ================= */
+const card = $('#card');
+function closeCard(){
+  card.hidden = true; S.sel = null; if(b_isMobile()) updateViewOffset();
+  LBL.forEach(L => L.el.classList.remove('sel'));
+  $$('.klist button').forEach(b => b.removeAttribute('aria-current'));
+  labelDirty = true; needsRender = true;
+}
+function selectKey(routeId, kid, fly){
+  const R = ROUTES[routeId], k = R.keys[kid], i = R.line.keyIdx[kid];
+  S.sel = {type:'key', route:routeId, kid};
+  if(S.route !== routeId) setRoute(routeId);
+  const q = R.line.xy[i], ll = m2ll(q[0], q[1]), dem = R.line.h[i];
+  const order = R.order, pos = order.indexOf(kid);
+  const prev = order[pos-1], next = order[pos+1];
+  card.style.setProperty('--rc', `var(--${routeId})`);
+  card.innerHTML = `
+    <div class="card-h"><span class="badge">${k.code}</span>
+      <div><h2>${k.zh}</h2><div class="en">${k.en} · ${R.zh}</div></div>
+      <button class="xbtn" aria-label="关闭" data-x>✕</button></div>
+    <div class="card-b">
+      <div class="alt-big"><b>${k.alt}</b><span>m · 公布海拔</span></div>
+      <dl class="kv">
+        <dt>坐标</dt><dd>${dms(ll.lat,'N','S')} ${dms(ll.lon,'E','W')}</dd>
+        <dt>距起点</dt><dd>${(R.line.d[i]/1000).toFixed(1)} km（沿线）</dd>
+        <dt>DEM 高程</dt><dd>${fmtAlt(dem)} m</dd>
+        ${k.leg ? `<dt>用时参考</dt><dd>${k.leg}</dd>` : ''}
+      </dl>
+      <p>${k.d}</p>
+      ${k.tags ? `<div class="chips">${k.tags.map(t => `<span class="chip">${t}</span>`).join('')}</div>` : ''}
+    </div>
+    <div class="card-f">
+      <button class="btn" data-nav="${prev||''}" ${prev?'':'disabled'}>‹ 上一点</button>
+      <button class="btn primary" data-fly>飞到此处</button>
+      <button class="btn" data-nav="${next||''}" ${next?'':'disabled'}>下一点 ›</button>
+    </div>`;
+  card.hidden = false; if(b_isMobile()) updateViewOffset();
+  card.querySelector('[data-x]').onclick = closeCard;
+  const kdist = kid.includes('bc') ? 6.5 : (k.camp ? 4.6 : 3.8);
+  card.querySelector('[data-fly]').onclick = () => flyToPoint(worldFromLL(ll.lat, ll.lon, 0), kdist);
+  card.querySelectorAll('[data-nav]').forEach(b => b.onclick = () => b.dataset.nav && selectKey(routeId, b.dataset.nav, true));
+  LBL.forEach(L => L.el.classList.toggle('sel', L.kind==='key' && L.route===routeId && L.kid===kid));
+  $$('.klist button').forEach(b => { if(b.dataset.r===routeId && b.dataset.k===kid) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
+  if(b_isMobile()) { panel.classList.add('collapsed'); }
+  setProbe(routeId, i);
+  if(fly) flyToPoint(worldFromLL(ll.lat, ll.lon, 0), kdist);
+  labelDirty = true; needsRender = true;
+}
+const TYPE_ZH = {peak:'山峰', glacier:'冰川', valley:'冰川谷地', face:'山壁', village:'村落', lake:'冰川湖'};
+function selectPlace(id, fly){
+  const p = PLACES.find(x => x.id === id); if(!p) return;
+  S.sel = {type:'place', id};
+  const dem = (() => { const m = ll2m(p.lat, p.lon), g = m2g(m.x, m.y); return hAt(g.c, g.r); })();
+  card.style.setProperty('--rc', 'var(--accent)');
+  card.innerHTML = `
+    <div class="card-h"><span class="badge">${TYPE_ZH[p.t]||''}</span>
+      <div><h2>${p.zh}</h2><div class="en">${p.en}</div></div>
+      <button class="xbtn" aria-label="关闭" data-x>✕</button></div>
+    <div class="card-b">
+      ${p.alt ? `<div class="alt-big"><b>${p.alt}</b><span>m</span></div>` : ''}
+      <dl class="kv">
+        <dt>坐标</dt><dd>${dms(p.lat,'N','S')} ${dms(p.lon,'E','W')}</dd>
+        <dt>DEM 高程</dt><dd>${fmtAlt(dem)} m</dd>
+        ${p.fa ? `<dt>首登</dt><dd>${p.fa}</dd>` : ''}
+      </dl>
+      ${p.note ? `<p>${p.note}</p>` : ''}
+    </div>
+    <div class="card-f"><button class="btn primary" data-fly>飞到此处</button></div>`;
+  card.hidden = false; if(b_isMobile()) updateViewOffset();
+  card.querySelector('[data-x]').onclick = closeCard;
+  const go = () => flyToPoint(worldFromLL(p.lat, p.lon, 0), p.t==='peak' ? (p.alt > 8000 ? 7 : 5.5) : 6.5);
+  card.querySelector('[data-fly]').onclick = go;
+  LBL.forEach(L => L.el.classList.remove('sel'));
+  if(b_isMobile()) panel.classList.add('collapsed');
+  hideProbe();
+  if(fly) go();
+  needsRender = true;
+}
+
+/* ================= Panel UI ================= */
+const panel = $('#panel');
+const b_isMobile = () => matchMedia('(max-width:760px)').matches;
+function setTab(id){
+  $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t.id === id)));
+  $$('.pane').forEach(p => p.hidden = p.getAttribute('aria-labelledby') !== id);
+}
+$$('.tab').forEach(t => t.addEventListener('click', () => {
+  const was = t.getAttribute('aria-selected') === 'true';
+  if(b_isMobile()){
+    if(was && !panel.classList.contains('collapsed')){ panel.classList.add('collapsed'); return; }
+    panel.classList.remove('collapsed');
+  }
+  setTab(t.id);
+}));
+
+function renderLegend(){
+  const el = $('#legend');
+  if(S.layer === 2){
+    el.innerHTML = `<div class="bar" style="background:linear-gradient(90deg,#5d7a4e 0%,#8a8a5a 12%,#b39a6b 24%,#a7836a 34%,#8e8c93 44%,#a9b4c2 54%,#c7d3e0 64%,#dfe6ef 74%,#f1e9f2 84%,#f7d6e0 93%,#ffffff 100%)"></div>
+      <div class="ticks"><span>3800</span><span>5000</span><span>6000</span><span>7000</span><span>8000</span><span>8849 m</span></div>`;
+  } else if(S.layer === 3){
+    const cls = [['#2f7d6d','<15°'],['#8fbf6a','15–30'],['#f2d15c','30–40'],['#f29b3c','40–50'],['#dc4f3a','50–60'],['#7a1f3d','>60°']];
+    el.innerHTML = `<div class="classes">${cls.map(c => `<div><i style="background:${c[0]}"></i>${c[1]}</div>`).join('')}</div>
+      <p>30°–45° 是积雪最易失稳的坡度区间；洛子壁、北坳冰壁约 40–50°。</p>`;
+  } else if(S.layer === 1){
+    el.innerHTML = `<p>Landsat 7 ETM+ 真彩色影像（2000-10-30，30 m），覆盖范围约 27.92°–28.10°N，范围外以灰调地貌补齐。</p>`;
+  } else {
+    el.innerHTML = `<p>按海拔、坡度与坡向推算冰雪覆盖，冰川范围取自 RGI 6.0。低处冰川表面的碎石覆盖以灰褐色表示。</p>`;
+  }
+}
+function setLayer(n){
+  S.layer = n; store.set('layer', n);
+  $$('#basemaps .bm').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.layer === n)));
+  if(terrainMat) terrainMat.uniforms.uLayer.value = n;
+  renderLegend(); needsRender = true;
+}
+$$('#basemaps .bm').forEach(b => b.addEventListener('click', () => setLayer(+b.dataset.layer)));
+
+const TG = {south:'o-south', north:'o-north', keys:'o-keys', labels:'o-labels', contours:'o-contours', glacier:'o-glacier', death:'o-death', rotate:'o-rotate'};
+function applyShow(){
+  if(terrainMat){
+    terrainMat.uniforms.uContours.value = S.show.contours ? 1 : 0;
+    terrainMat.uniforms.uGlacier.value = S.show.glacier ? 1 : 0;
+    terrainMat.uniforms.uDeath.value = S.show.death ? 1 : 0;
+  }
+  for(const id in routeObjs) routeObjs[id].lines.forEach(l => l.visible = S.show[id]);
+  controls.autoRotate = S.show.rotate;
+  labelDirty = true; needsRender = true;
+}
+for(const k in TG){
+  const inp = document.getElementById(TG[k]); inp.checked = !!S.show[k];
+  inp.addEventListener('change', () => { S.show[k] = inp.checked; const s = Object.assign({}, S.show); delete s.rotate; store.set('show', s); applyShow(); });
+}
+
+const rx = $('#r-exag'), ra = $('#r-sunaz'), re = $('#r-sunel');
+rx.value = S.exag; ra.value = S.sunAz; re.value = S.sunEl;
+let exagTimer = 0;
+function syncOutputs(){ $('#v-exag').textContent = (+S.exag).toFixed(1)+'×'; $('#v-sunaz').textContent = S.sunAz+'°'; $('#v-sunel').textContent = S.sunEl+'°'; }
+function sunVec(){
+  const az = S.sunAz*Math.PI/180, el = S.sunEl*Math.PI/180;
+  return new THREE.Vector3(Math.sin(az)*Math.cos(el), Math.sin(el), -Math.cos(az)*Math.cos(el)).normalize();
+}
+rx.addEventListener('input', () => {
+  const old = S.exag; S.exag = +rx.value; syncOutputs(); store.set('exag', S.exag);
+  if(!terrain) return;
+  const f = (S.exag/old);
+  // keep the camera framing the same terrain point
+  controls.target.y = (controls.target.y)*f; camera.position.y = camera.position.y*f;
+  applyExag(); updateRouteGeometry(); placeLabels();
+  clearTimeout(exagTimer); exagTimer = setTimeout(buildNormalTex, 60);
+  needsRender = true;
+});
+ra.addEventListener('input', () => { S.sunAz = +ra.value; syncOutputs(); store.set('sunAz', S.sunAz); if(terrainMat) terrainMat.uniforms.uSun.value.copy(sunVec()); needsRender = true; });
+re.addEventListener('input', () => { S.sunEl = +re.value; syncOutputs(); store.set('sunEl', S.sunEl); if(terrainMat) terrainMat.uniforms.uSun.value.copy(sunVec()); needsRender = true; });
+syncOutputs();
+
+/* views */
+const vbar = $('#vbar');
+vbar.innerHTML = VIEWS.map((v,i) => `<button class="vbtn" data-v="${v.id}" aria-pressed="false" title="${v.zh}视角（快捷键 ${i+1}）"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">${viewIcon(v.id)}</svg><span class="lbl">${v.zh}</span><kbd>${i+1}</kbd></button>`).join('');
+function viewIcon(id){
+  const s = 'fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"';
+  switch(id){
+    case 'overview': return `<path ${s} d="M1 13 L5.5 6 L8 9.5 L10.5 4 L15 13 Z"/>`;
+    case 'south': return `<path ${s} d="M2 13 L8 3 L14 13"/><path ${s} d="M8 16 V11" />`;
+    case 'north': return `<path ${s} d="M2 13 L8 3 L14 13"/><path ${s} d="M8 0.5 V3" />`;
+    case 'east': return `<path ${s} d="M2 13 L8 3 L14 13"/><path ${s} d="M15.5 8 H12" />`;
+    case 'summit': return `<path ${s} d="M3 14 L8 2 L13 14"/><circle cx="8" cy="2.5" r="1.4" fill="currentColor"/>`;
+    default: return `<rect ${s} x="2" y="2" width="12" height="12" rx="1.5"/><path ${s} d="M2 8 H14 M8 2 V14"/>`;
+  }
+}
+vbar.addEventListener('click', e => {
+  const b = e.target.closest('.vbtn'); if(!b) return;
+  const v = VIEWS.find(x => x.id === b.dataset.v); flyTo(viewPose(v)); setViewButton(v.id);
+  if(b_isMobile()){ vbar.classList.remove('open'); $('#viewsToggle').setAttribute('aria-expanded','false'); }
+});
+$('#viewsToggle').addEventListener('click', () => { const o = vbar.classList.toggle('open'); $('#viewsToggle').setAttribute('aria-expanded', String(o)); });
+addEventListener('keydown', e => {
+  if(e.target.closest('input,textarea')) return;
+  const n = +e.key; if(n>=1 && n<=VIEWS.length){ flyTo(viewPose(VIEWS[n-1])); setViewButton(VIEWS[n-1].id); }
+  if(e.key === 'Escape') { closeCard(); stopFly(); }
+});
+$('#compass').addEventListener('click', () => {
+  const t = controls.target.clone(), off = camera.position.clone().sub(t);
+  const hz = Math.hypot(off.x, off.z);
+  flyTo({target:t, pos:new THREE.Vector3(t.x, t.y + off.y, t.z + hz)}, 900);
+});
+
+/* route cards */
+function renderRouteCards(){
+  const wrap = $('#routeCards');
+  wrap.innerHTML = ['south','north'].map(id => {
+    const R = ROUTES[id], st = R.stats;
+    return `<article class="rcard" data-route="${id}" aria-current="${S.route===id}">
+      <button class="rcard-h" data-sel="${id}"><span class="bar"></span><span><b>${R.zh}</b><small>${R.en} · ${R.side}</small></span><span class="chev">${S.route===id?'●':'○'}</span></button>
+      <div class="stats">
+        <div><small>沿线长度</small><b>${(st.len/1000).toFixed(1)} km</b></div>
+        <div><small>累计爬升</small><b>${fmtAlt(st.gain)} m</b></div>
+        <div><small>8000 m 以上</small><b>${(st.above/1000).toFixed(1)} km</b></div>
+      </div>
+      <div class="rmeta"><div><strong>首登</strong> ${R.first}</div><div><strong>季节</strong> ${R.season}</div></div>
+      <ol class="klist">${R.order.map(kid => { const k = R.keys[kid]; return `<li><button data-r="${id}" data-k="${kid}"><span class="code">${k.code}</span><span class="nm">${k.zh}</span><span class="al">${k.alt}</span></button></li>`; }).join('')}</ol>
+    </article>`;
+  }).join('');
+  wrap.querySelectorAll('[data-sel]').forEach(b => b.onclick = () => { setRoute(b.dataset.sel); flyTo(viewPose(VIEWS.find(v => v.id === b.dataset.sel))); setViewButton(b.dataset.sel); });
+  wrap.querySelectorAll('.klist button').forEach(b => b.onclick = () => selectKey(b.dataset.r, b.dataset.k, true));
+}
+function setRoute(id){
+  S.route = id; store.set('route', id);
+  $$('.rcard').forEach(c => { c.setAttribute('aria-current', String(c.dataset.route === id)); c.querySelector('.chev').textContent = c.dataset.route === id ? '●' : '○'; });
+  $('#profile').dataset.route = id;
+  $$('.pf-h .seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.r === id)));
+  $('#pfTitle').textContent = (id === 'south' ? '南坡' : '北坡') + ' · 地形剖面';
+  if(!S.show[id]){ S.show[id] = true; document.getElementById(TG[id]).checked = true; applyShow(); }
+  drawProfile();
+}
+$$('.pf-h .seg button').forEach(b => b.addEventListener('click', () => { stopFly(); setRoute(b.dataset.r); }));
+
+/* places list */
+function renderPlaces(){
+  const groups = [
+    ['山峰', 'Peaks', p => p.t === 'peak'],
+    ['冰川与谷地', 'Glaciers', p => p.t === 'glacier' || p.t === 'valley'],
+    ['山壁', 'Faces', p => p.t === 'face'],
+    ['村落与湖泊', 'Villages', p => p.t === 'village' || p.t === 'lake'],
+  ];
+  $('#placeLists').innerHTML = groups.map(([zh, en, f]) => {
+    const items = PLACES.filter(f).sort((a,b) => (b.alt||0)-(a.alt||0));
+    return `<div class="sec"><h3 class="sec-h">${zh} <em>${en}</em></h3><ul class="plist">${items.map(p => `<li><button data-p="${p.id}"><span class="nm">${p.zh}<small>${p.en}</small></span><span class="al">${p.alt ? fmtAlt(p.alt)+' m' : ''}</span></button></li>`).join('')}</ul></div>`;
+  }).join('');
+  $$('#placeLists [data-p]').forEach(b => b.onclick = () => selectPlace(b.dataset.p, true));
+}
+
+/* ================= Profile ================= */
+const pfBody = $('#pfBody');
+let pf = null;
+function drawProfile(){
+  const R = ROUTES[S.route]; if(!R || !R.line) return;
+  const W = pfBody.clientWidth, Hh = pfBody.clientHeight; if(W < 50 || Hh < 40) return;
+  const m = {l:46, r:14, t:16, b:22};
+  const L = R.line, D = L.d[L.d.length-1];
+  const y0 = 5000, y1 = 9000;
+  const X = d => m.l + d/D*(W-m.l-m.r), Y = h => m.t + (1-(h-y0)/(y1-y0))*(Hh-m.t-m.b);
+  const stepN = Math.max(1, Math.floor(L.d.length/500));
+  let path = '';
+  for(let i=0; i<L.d.length; i+=stepN) path += (i?'L':'M') + X(L.d[i]).toFixed(1) + ' ' + Y(L.h[i]).toFixed(1);
+  path += 'L' + X(D).toFixed(1) + ' ' + Y(L.h[L.h.length-1]).toFixed(1);
+  const area = path + `L${X(D).toFixed(1)} ${Y(y0)}L${X(0)} ${Y(y0)}Z`;
+  let grid = '';
+  for(let h=5000; h<=9000; h+=500){
+    const y = Y(h).toFixed(1), major = h % 1000 === 0;
+    grid += `<line x1="${m.l}" x2="${W-m.r}" y1="${y}" y2="${y}" stroke="currentColor" stroke-opacity="${h===8000?0:(major?.14:.07)}"/>`;
+    if(major) grid += `<text x="${m.l-6}" y="${(+y+3.5).toFixed(1)}" text-anchor="end">${h}</text>`;
+  }
+  const km = D/1000, tick = km > 15 ? 2 : 1;
+  for(let k=0; k<=km+0.001; k+=tick) grid += `<text x="${X(k*1000).toFixed(1)}" y="${Hh-6}" text-anchor="middle">${k}${k===0?'':''}</text>`;
+  grid += `<text x="${W-m.r}" y="${Hh-6}" text-anchor="end" style="opacity:.0">km</text>`;
+  const y8 = Y(8000).toFixed(1);
+  grid += `<line x1="${m.l}" x2="${W-m.r}" y1="${y8}" y2="${y8}" stroke="var(--danger)" stroke-dasharray="4 3" stroke-opacity=".8"/><text x="${W-m.r-2}" y="${(+y8-4).toFixed(1)}" text-anchor="end" style="fill:var(--danger)">8000 m</text>`;
+  let marks = '', lastX = -99;
+  R.order.forEach(kid => {
+    const k = R.keys[kid], i = L.keyIdx[kid], x = X(L.d[i]), y = Y(L.h[i]);
+    marks += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${k.camp||kid==='summit'?4:2.6}" fill="${k.camp||kid==='summit'?'var(--rc)':'var(--panel-solid)'}" stroke="var(--rc)" stroke-width="1.6"/>`;
+    if((k.camp || kid === 'summit') && x - lastX > 34){ marks += `<text class="kl" x="${(x < m.l+20 ? x-3 : x).toFixed(1)}" y="${(y-8).toFixed(1)}" text-anchor="${x > W-60 ? 'end' : (x < m.l+20 ? 'start' : 'middle')}">${kid==='summit'?'顶峰':(k.short||k.zh)}</text>`; lastX = x; }
+  });
+  pfBody.innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" role="img" aria-label="${R.zh} 海拔剖面，横轴为距离（公里），纵轴为海拔（米）" style="color:var(--fg)">
+    <defs><linearGradient id="pfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--rc)" stop-opacity=".38"/><stop offset="1" stop-color="var(--rc)" stop-opacity=".03"/></linearGradient></defs>
+    ${grid}
+    <path d="${area}" fill="url(#pfg)"/>
+    <path d="${path}" fill="none" stroke="var(--rc)" stroke-width="2" stroke-linejoin="round"/>
+    ${marks}
+    <g id="pfCursor" style="display:none"><line y1="${m.t}" y2="${Hh-m.b}" stroke="currentColor" stroke-opacity=".45"/><circle r="4.5" fill="var(--rc)" stroke="var(--outline)" stroke-width="2"/></g>
+    <rect id="pfHit" x="${m.l}" y="0" width="${W-m.l-m.r}" height="${Hh}" fill="transparent" style="cursor:crosshair"/>
+  </svg>`;
+  pf = {R, X, Y, D, m, W, Hh};
+  const hit = $('#pfHit', pfBody);
+  const onMove = e => {
+    const r = pfBody.getBoundingClientRect(); const x = clamp(e.clientX - r.left, m.l, W-m.r);
+    const d = (x-m.l)/(W-m.l-m.r)*D; showAtDistance(d);
+  };
+  hit.addEventListener('pointermove', onMove);
+  hit.addEventListener('pointerdown', e => { stopFly(); onMove(e); });
+  hit.addEventListener('pointerleave', () => { if(!S.fly){ hideProbe(); $('#pfCursor', pfBody).style.display = 'none'; $('#pfRead').textContent = ''; } });
+  hit.addEventListener('click', e => {
+    const r = pfBody.getBoundingClientRect(); const d = (clamp(e.clientX - r.left, m.l, W-m.r)-m.l)/(W-m.l-m.r)*D;
+    const i = idxAtDistance(pf.R.line, d), q = pf.R.line.xy[i], ll = m2ll(q[0], q[1]);
+    flyToPoint(worldFromLL(ll.lat, ll.lon, 0), 4.2);
+  });
+}
+function idxAtDistance(L, d){ let lo = 0, hi = L.d.length-1; while(hi-lo > 1){ const mid = (lo+hi)>>1; if(L.d[mid] < d) lo = mid; else hi = mid; } return hi; }
+function showAtDistance(d){
+  if(!pf) return;
+  const L = pf.R.line, i = idxAtDistance(L, d);
+  const cur = $('#pfCursor', pfBody); if(!cur) return;
+  cur.style.display = '';
+  const x = pf.X(L.d[i]), y = pf.Y(L.h[i]);
+  cur.querySelector('line').setAttribute('x1', x); cur.querySelector('line').setAttribute('x2', x);
+  cur.querySelector('circle').setAttribute('cx', x); cur.querySelector('circle').setAttribute('cy', y);
+  let near = '', best = 1e9;
+  pf.R.order.forEach(kid => { const dd = Math.abs(L.d[L.keyIdx[kid]] - L.d[i]); if(dd < best){ best = dd; near = kid; } });
+  const nk = best < 250 ? ` · ${pf.R.keys[near].code} ${pf.R.keys[near].zh}` : '';
+  $('#pfRead').textContent = `${(L.d[i]/1000).toFixed(2)} km · ${fmtAlt(L.h[i])} m${nk}`;
+  setProbe(S.route, i);
+}
+
+/* probe marker in 3D */
+const probe = document.createElement('div'); probe.id = 'probe'; probe.style.display = 'none'; labelsEl.appendChild(probe);
+let probeAt = null;
+function setProbe(routeId, i){
+  const R = ROUTES[routeId], q = R.line.xy[i], ll = m2ll(q[0], q[1]);
+  probeAt = worldFromLL(ll.lat, ll.lon, 0.016); probe.style.setProperty('--rc', `var(--${routeId})`); probe.style.display = ''; needsRender = true;
+}
+function hideProbe(){ probeAt = null; probe.style.display = 'none'; }
+
+/* ================= Fly-along ================= */
+const flyBtn = $('#flyBtn');
+function startFly(){
+  const R = ROUTES[S.route]; closeCard(); anim = null;
+  const D = R.line.d[R.line.d.length-1];
+  S.fly = {route:S.route, s:0, speed: D/(S.route==='south' ? 55 : 80), last:performance.now()};
+  controls.autoRotate = false;
+  flyBtn.setAttribute('aria-pressed','true'); flyBtn.querySelector('span').textContent = '停止飞行';
+  flyBtn.querySelector('svg').innerHTML = '<rect x="4" y="3.5" width="3" height="9" fill="currentColor"/><rect x="9" y="3.5" width="3" height="9" fill="currentColor"/>';
+}
+function stopFly(){
+  if(!S.fly) return;
+  S.fly = null; controls.autoRotate = S.show.rotate;
+  flyBtn.setAttribute('aria-pressed','false'); flyBtn.querySelector('span').textContent = '沿线飞行';
+  flyBtn.querySelector('svg').innerHTML = '<path d="M4 3 L13 8 L4 13 Z" fill="currentColor"/>';
+}
+flyBtn.addEventListener('click', () => S.fly ? stopFly() : startFly());
+function routePointAt(R, d){
+  const L = R.line, i = idxAtDistance(L, clamp(d, 0, L.d[L.d.length-1]));
+  const q = L.xy[i], g = m2g(q[0], q[1]);
+  return new THREE.Vector3(q[0]/1000, yOf(mhAt(g.c, g.r)), -q[1]/1000);
+}
+function stepFly(now){
+  const F = S.fly, R = ROUTES[F.route], D = R.line.d[R.line.d.length-1];
+  const dt = Math.min(0.05, (now - F.last)/1000); F.last = now;
+  F.s += F.speed*dt;
+  if(F.s >= D){ F.s = D; stopFly(); }
+  const p = routePointAt(R, F.s), ahead = routePointAt(R, F.s + 900), behind = routePointAt(R, F.s - 900);
+  const dir = ahead.clone().sub(behind); dir.y = 0; if(dir.lengthSq() < 1e-6) dir.set(0,0,-1); dir.normalize();
+  const side = new THREE.Vector3(-dir.z, 0, dir.x);
+  const camGoal = p.clone().addScaledVector(dir, -1.9).addScaledVector(side, 0.9); camGoal.y = Math.max(p.y + 0.95, (terrainYAtWorld(camGoal.x, camGoal.z) ?? 0) + 0.45);
+  const tgtGoal = routePointAt(R, F.s + 350);
+  const k = 1 - Math.exp(-dt*2.2);
+  camera.position.lerp(camGoal, k); controls.target.lerp(tgtGoal, k);
+  if(pf && pf.R === R) showAtDistance(F.s);
+}
+
+/* ================= Picking & readout ================= */
+const ray = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+const readout = $('#readout');
+function pickTerrain(clientX, clientY){
+  const r = canvas.getBoundingClientRect();
+  ndc.set(((clientX - r.left)/r.width)*2-1, -((clientY - r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc, camera);
+  const o = ray.ray.origin, d = ray.ray.direction;
+  let t = 0, prevT = 0, step = 0.02, prevAbove = true;
+  for(let i=0; i<1400 && t < 160; i++){
+    const x = o.x+d.x*t, y = o.y+d.y*t, z = o.z+d.z*t;
+    const ty = terrainYAtWorld(x, z);
+    if(ty !== null && y <= ty){
+      let a = prevT, b = t;
+      for(let k=0; k<14; k++){ const mt = (a+b)/2; const yy = o.y+d.y*mt, tt = terrainYAtWorld(o.x+d.x*mt, o.z+d.z*mt); if(tt !== null && yy <= tt) b = mt; else a = mt; }
+      return new THREE.Vector3(o.x+d.x*b, o.y+d.y*b, o.z+d.z*b);
+    }
+    prevT = t; step = Math.max(0.012, t*0.006); t += step;
+  }
+  return null;
+}
+let hoverReq = null;
+function showReadout(p){
+  if(!p){ readout.hidden = true; return; }
+  const xm = p.x*1000, ym = -p.z*1000, g = m2g(xm, ym), ll = m2ll(xm, ym), h = hAt(g.c, g.r);
+  const i = Math.round(clamp(g.r,0,NY-1))*NX + Math.round(clamp(g.c,0,NX-1));
+  const c = Math.round(clamp(g.c,1,NX-2)), r = Math.round(clamp(g.r,1,NY-2));
+  const gx = (H[r*NX+c+1]-H[r*NX+c-1])/(2*META.res), gn = (H[(r-1)*NX+c]-H[(r+1)*NX+c])/(2*META.res);
+  const slope = Math.atan(Math.hypot(gx, gn))*180/Math.PI;
+  const aspect = (Math.atan2(-gx, -gn)*180/Math.PI + 360) % 360;
+  readout.innerHTML = `<span>N</span>${ll.lat.toFixed(5)}° <span>E</span>${ll.lon.toFixed(5)}° <span>海拔</span>${fmtAlt(h)} m <span>坡度</span>${slope.toFixed(0)}°${slope > 3 ? ` <span>朝向</span>${DIRS[Math.round(aspect/45)%8]}` : ''}`;
+  readout.hidden = false;
+}
+canvas.addEventListener('pointermove', e => {
+  if(e.pointerType !== 'mouse' || e.buttons) return;
+  const cx = e.clientX, cy = e.clientY;
+  if(hoverReq) return;
+  hoverReq = requestAnimationFrame(() => { hoverReq = null; showReadout(pickTerrain(cx, cy)); });
+});
+canvas.addEventListener('pointerleave', () => { readout.hidden = true; });
+let downAt = null;
+canvas.addEventListener('pointerdown', e => { downAt = {x:e.clientX, y:e.clientY, t:performance.now()}; stopFly(); anim = null; });
+canvas.addEventListener('pointerup', e => {
+  if(!downAt) return;
+  const moved = Math.hypot(e.clientX-downAt.x, e.clientY-downAt.y);
+  if(moved < 5 && e.pointerType !== 'mouse'){ showReadout(pickTerrain(e.clientX, e.clientY)); clearTimeout(readout._t); readout._t = setTimeout(() => readout.hidden = true, 4000); }
+  downAt = null;
+});
+canvas.addEventListener('dblclick', e => { const p = pickTerrain(e.clientX, e.clientY); if(p) flyToPoint(p, Math.max(1.2, camera.position.distanceTo(controls.target)*0.55)); });
+controls.addEventListener('start', () => { setViewButton(''); });
+
+/* ================= Scale bar & compass ================= */
+const sbBar = $('#sbBar'), sbTxt = $('#sbTxt'), compSvg = $('#compass svg');
+function updateHud(){
+  const off = camera.position.clone().sub(controls.target);
+  const heading = Math.atan2(-off.x, off.z);
+  compSvg.style.transform = `rotate(${(-heading*180/Math.PI).toFixed(1)}deg)`;
+  // pixels per km at target
+  const right = new THREE.Vector3().crossVectors(camera.up, off).normalize();
+  const a = controls.target.clone().project(camera), b = controls.target.clone().add(right).project(camera);
+  const pxPerKm = Math.abs(b.x - a.x)/2*canvas.clientWidth;
+  if(!isFinite(pxPerKm) || pxPerKm <= 0) return;
+  const nice = [0.1,0.2,0.5,1,2,5,10,20];
+  let km = nice.find(n => n*pxPerKm >= 60) || 20;
+  sbBar.style.width = (km*pxPerKm).toFixed(0)+'px';
+  sbTxt.textContent = km < 1 ? `${km*1000} m` : `${km} km`;
+}
+
+/* ================= Render loop ================= */
+let needsRender = true;
+function updateViewOffset(){
+  const w = canvas.clientWidth, h = canvas.clientHeight; if(!w || !h) return;
+  if(!b_isMobile()){ const pw = panel.getBoundingClientRect().width + 16; camera.setViewOffset(w, h, -Math.round(pw/2), 72, w, h); }
+  else camera.setViewOffset(w, h, 0, card.hidden ? 26 : Math.round(h*0.25), w, h);
+  camera.updateProjectionMatrix(); labelDirty = true; needsRender = true;
+}
+function resize(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w/h;
+  updateViewOffset();
+  for(const id in routeObjs) ['halo','main','hidden'].forEach(k => routeObjs[id][k].resolution.set(w, h));
+  measureLabels();
+  drawProfile(); labelDirty = true; needsRender = true;
+}
+new ResizeObserver(() => resize()).observe(canvas);
+new ResizeObserver(() => drawProfile()).observe(pfBody);
+controls.addEventListener('change', () => { needsRender = true; labelDirty = true; });
+
+function keepAboveGround(){
+  const ty = terrainYAtWorld(camera.position.x, camera.position.z);
+  if(ty !== null && camera.position.y < ty + 0.12) camera.position.y = ty + 0.12;
+  const lim = 22;
+  controls.target.x = clamp(controls.target.x, -lim, lim); controls.target.z = clamp(controls.target.z, -lim, lim);
+}
+function frame(now){
+  requestAnimationFrame(frame);
+  let active = needsRender || controls.autoRotate || !!S.fly || !!anim;
+  if(anim){
+    const t = clamp((now - anim.t0)/anim.dur, 0, 1), k = ease(t);
+    camera.position.lerpVectors(anim.p0, anim.p1, k); controls.target.lerpVectors(anim.t0v, anim.t1, k);
+    // arc upward a little during long flights
+    camera.position.y += Math.sin(Math.PI*k) * Math.min(3, anim.p0.distanceTo(anim.p1)*0.12);
+    if(t >= 1) anim = null;
+  }
+  if(S.fly) stepFly(now);
+  const changed = controls.update();
+  if(!active && !changed) return;
+  keepAboveGround();
+  renderer.render(scene, camera);
+  updateLabels();
+  if(probeAt){
+    tmpV.copy(probeAt).project(camera);
+    if(tmpV.z < 1){ probe.style.display = ''; probe.style.transform = `translate(${((tmpV.x+1)/2*canvas.clientWidth).toFixed(1)}px,${((1-tmpV.y)/2*canvas.clientHeight).toFixed(1)}px)`; }
+    else probe.style.display = 'none';
+  }
+  updateHud();
+  needsRender = false;
+}
+
+/* theme listeners */
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme','class','style']});
+
+/* mobile placement of the profile */
+function placeProfile(){
+  const prof = $('#profile');
+  if(b_isMobile()){ if(prof.parentElement !== $('#profileSlot')){ $('#profileSlot').appendChild(prof); prof.classList.add('in-panel'); } }
+  else if(prof.parentElement !== $('.frame')){ $('.frame').appendChild(prof); prof.classList.remove('in-panel'); }
+  drawProfile();
+}
+matchMedia('(max-width:760px)').addEventListener('change', () => { placeProfile(); if(!b_isMobile()) panel.classList.remove('collapsed'); });
+
+/* ================= Boot ================= */
+async function boot(){
+  prog(0.05, '正在载入高程数据…');
+  const [hImg, gImg, sImg] = await Promise.all([
+    loadBitmap('height.png').then(x => { prog(0.45, '正在载入冰川与影像…'); return x; }),
+    loadBitmap('glacier.png'),
+    loadBitmap('landsat.jpg'),
+  ]);
+  prog(0.6, '正在构建地形网格…');
+  await new Promise(r => setTimeout(r, 20));
+  const hp = pixelsOf(hImg);
+  if(hImg.width !== NX || hImg.height !== NY) throw new Error('高程数据尺寸不符');
+  H = new Float32Array(NX*NY);
+  const hdata = new Uint8Array(NX*NY*4);
+  for(let i=0; i<NX*NY; i++){ H[i] = (hp[i*4]*256 + hp[i*4+1])/10 + 3000; hdata[i*4] = hp[i*4]; hdata[i*4+1] = hp[i*4+1]; hdata[i*4+3] = 255; }
+  heightTex = new THREE.DataTexture(hdata, NX, NY, THREE.RGBAFormat, THREE.UnsignedByteType);
+  heightTex.magFilter = heightTex.minFilter = THREE.NearestFilter; heightTex.generateMipmaps = false; heightTex.needsUpdate = true;
+  normalTex = new THREE.DataTexture(new Uint8Array(NX*NY*4), NX, NY, THREE.RGBAFormat, THREE.UnsignedByteType);
+  normalTex.magFilter = THREE.LinearFilter; normalTex.minFilter = THREE.LinearMipmapLinearFilter; normalTex.generateMipmaps = true;
+  buildNormalTex();
+  buildAuxTex(pixelsOf(gImg));
+  satTex = new THREE.Texture(sImg); satTex.flipY = false; satTex.minFilter = THREE.LinearMipmapLinearFilter; satTex.magFilter = THREE.LinearFilter;
+  satTex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy()); satTex.needsUpdate = true;
+  prog(0.8, '正在着色…');
+
+  terrainMat = new THREE.ShaderMaterial({
+    vertexShader: VS, fragmentShader: FS,
+    uniforms: {
+      tHeight:{value:heightTex}, tNormal:{value:normalTex}, tAux:{value:auxTex}, tSat:{value:satTex},
+      uGrid:{value:new THREE.Vector2(NX, NY)}, uSatRect:{value:new THREE.Vector4(...META.sat)},
+      uX0:{value:META.x0}, uY1:{value:META.y1}, uRes:{value:META.res},
+      uLayer:{value:S.layer}, uContours:{value:0}, uGlacier:{value:0}, uDeath:{value:0},
+      uSun:{value:sunVec()}, uFog:{value:new THREE.Color()}, uFogK:{value:0.011},
+      uContourCol:{value:new THREE.Color()}, uDanger:{value:new THREE.Color()}, uAccent:{value:new THREE.Color()},
+    }
+  });
+  skirtMat = new THREE.ShaderMaterial({ vertexShader:SKIRT_VS, fragmentShader:SKIRT_FS, uniforms:{uTop:{value:new THREE.Color()}, uBot:{value:new THREE.Color()}} });
+  buildTerrain();
+  buildRoutes();
+  buildLabels();
+  renderRouteCards();
+  renderPlaces();
+  renderLegend();
+  setLayer(S.layer);
+  applyShow();
+  applyTheme();
+  placeProfile();
+  setRoute(S.route);
+  resize();
+  const v0 = viewPose(VIEWS[0]);
+  camera.position.copy(v0.pos); controls.target.copy(v0.target); controls.update();
+  setViewButton('overview');
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measureLabels(); labelDirty = true; needsRender = true; });
+  prog(1, '完成');
+  requestAnimationFrame(frame);
+  setTimeout(() => $('#loading').classList.add('done'), 150);
+  if(b_isMobile()) panel.classList.add('collapsed');
+}
+boot().catch(err => {
+  console.error(err);
+  $('#progTxt').textContent = '载入失败：' + (err && err.message ? err.message : err) + '。请刷新页面重试。';
+});
+})();
+</script>
+
+</body></html>

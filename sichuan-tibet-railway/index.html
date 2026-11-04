@@ -422,7 +422,21 @@ if (!window.THREE || !THREE.MapControls || !THREE.LineMaterial) {
 
 /* ------------------------------------------------------------------ data loading */
 function getJSON(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); }); }
-function getBin(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' ' + r.status); return r.arrayBuffer(); }); }
+function decodePng(blob) {
+  function px(src) {
+    var c = document.createElement('canvas'); c.width = src.width; c.height = src.height;
+    var x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(src, 0, 0);
+    return x.getImageData(0, 0, c.width, c.height).data;
+  }
+  function viaImg() {
+    return new Promise(function (res, rej) {
+      var u = URL.createObjectURL(blob), im = new Image();
+      im.onload = function () { URL.revokeObjectURL(u); res(px(im)); }; im.onerror = function () { URL.revokeObjectURL(u); rej(new Error('decode')); }; im.src = u;
+    });
+  }
+  if (!window.createImageBitmap) return viaImg();
+  return createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }).then(px, viaImg);
+}
 function loadGray(url) {
   return new Promise(function (res, rej) {
     var im = new Image();
@@ -437,7 +451,8 @@ function loadGray(url) {
   });
 }
 Promise.all([getJSON('data/atlas.json'), getJSON('data/route.json'), getJSON('data/rivers.json'), getJSON('data/tiles.json'),
-  getBin('data/dem5k.bin'), loadGray('data/veg.png'), loadGray('data/geo.png')]).then(function (r) {
+  fetch('data/dem5k.png').then(function (r) { if (!r.ok) throw new Error('data/dem5k.png ' + r.status); return r.blob(); }).then(decodePng),
+  loadGray('data/veg.png'), loadGray('data/geo.png')]).then(function (r) {
   main(r[0], { route: r[1], rivers: r[2], tiles: r[3], dem: r[4], veg: r[5], geo: r[6] });
 }).catch(function (err) {
   fail('数据载入失败：' + (err && err.message || err) + '。若是直接双击打开的本地文件，请在仓库根目录运行 python -m http.server 后访问。');
@@ -475,7 +490,8 @@ function srcLinks(keys) {
 }
 
 /* ------------------------------------------------------------------ geo + base DEM (GEBCO 5 km) */
-var DEM = new Int16Array(A.dem);
+var DEM = new Int16Array(A.dem.length / 4);
+for (var di = 0; di < DEM.length; di++) DEM[di] = A.dem[di * 4] * 256 + A.dem[di * 4 + 1] - 1000;   // GEBCO 5 km, same encoding as the tiles
 var dm = D.dem, BOX = D.box;
 var LON_C = 97.4, LAT_C = 30.05, KX = 111.32 * Math.cos(LAT_C * Math.PI / 180), KY = 110.95;
 function X(lon) { return (lon - LON_C) * KX; }
@@ -655,21 +671,6 @@ function tileReq(level, name, pri) {
   if (t.state === 0) t.pri = Math.min(t.pri, pri);
   t.used = TSTAMP;
   return t.state === 2 ? t : null;
-}
-function decodePng(blob) {
-  function px(src) {
-    var c = document.createElement('canvas'); c.width = src.width; c.height = src.height;
-    var x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(src, 0, 0);
-    return x.getImageData(0, 0, c.width, c.height).data;
-  }
-  function viaImg() {
-    return new Promise(function (res, rej) {
-      var u = URL.createObjectURL(blob), im = new Image();
-      im.onload = function () { URL.revokeObjectURL(u); res(px(im)); }; im.onerror = function () { URL.revokeObjectURL(u); rej(new Error('decode')); }; im.src = u;
-    });
-  }
-  if (!window.createImageBitmap) return viaImg();
-  return createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }).then(px, viaImg);
 }
 function pumpTiles() {
   if (!TQ.length || TACTIVE >= 6) return;

@@ -9,11 +9,6 @@
 | `quantum-computing/` | 看得见的量子计算 | 2026-11-01 |
 | `standard-model/` | 标准模型粒子图谱 | 2026-10-31 |
 
-## 在线浏览
-
-在仓库 Settings → Pages 中，Source 选择 `Deploy from a branch`，分支选 `main`、目录选 `/ (root)`，保存后几分钟即可通过
-`https://<你的用户名>.github.io/my-pages/` 访问。
-
 ## 本地打开
 
 直接双击各文件夹里的 `index.html` 即可（需联网加载字体和 CDN 上的脚本库）。

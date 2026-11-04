@@ -309,10 +309,10 @@ body.has-expanded{overflow:hidden}
           <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--pen-red)" stroke-width="2.4" stroke-linecap="round"/></svg><span>已经飞过的路径</span>
           <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--ink-2)" stroke-width="1.2" opacity=".55"/></svg><span>还没飞到的部分</span>
           <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--pen-blue)" stroke-width="1.2" stroke-dasharray="4 4"/></svg><span>月球轨道</span>
-          <svg viewBox="0 0 42 14" aria-hidden="true"><circle cx="21" cy="7" r="6" fill="var(--sheet)" stroke="var(--pen-blue)" stroke-width="1.4"/><text x="21" y="10" text-anchor="middle" font-size="8.5" font-family="var(--f-mono)" fill="var(--ink)">5</text></svg><span>第几次月球借力</span>
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="9" x2="41" y2="9" stroke="var(--pen-red)" stroke-width="1.6"/><circle cx="18" cy="9" r="4" fill="none" stroke="var(--pen-blue)" stroke-width="1.4"/><circle cx="18" cy="9" r="1.4" fill="var(--pen-blue)"/><text x="26" y="6" font-size="8.5" font-family="var(--f-mono)" fill="var(--ink)">5</text></svg><span>第几次月球借力</span>
         </div>
         <p>地月段用<strong>日地旋转坐标系</strong>：坐标轴跟着地球绕太阳转，太阳永远在左边，地球固定在中心，晕轨道和磁尾的形状才看得清。1984 年以后换成以太阳为中心的<strong>日心黄道坐标系</strong>。</p>
-        <p class="hint">拖动旋转，滚轮或双指缩放，Shift 加拖动或右键平移。下方时间轴可拖动或播放，按阶段分段缩放；播放经过借力和近地点时会自动放慢。天体尺寸已放大。</p>
+        <p class="hint">拖动旋转，滚轮或双指缩放，Shift 加拖动或右键平移。下方时间轴可拖动或播放，按阶段分段缩放；播放经过月球借力时会稍稍放慢。拉近后天体按真实大小显示，远景时画成最小可见尺寸。</p>
         <p class="hint keys">快捷键：<kbd>空格</kbd> 播放／暂停　<kbd>←</kbd><kbd>→</kbd> 逐步　<kbd>[</kbd><kbd>]</kbd> 上／下一个事件　<kbd>1</kbd>–<kbd>8</kbd> 跳到阶段　<kbd>F</kbd> 跟随探测器　<kbd>R</kbd> 复位视角。地址栏会记住当前时刻，可直接分享。</p>
       </div>
 
@@ -449,7 +449,7 @@ body.has-expanded{overflow:hidden}
       <p>1978 年 8 月到 1987 年 2 月的轨道来自 NASA 空间物理数据中心保存的 ISEE-3 逐小时星历（约 4.8 万个 GSE 位置）。我在包含太阳、地球、月球引力的模型里，每隔 6 到 12 小时用前后一天的数据做一次稳健的局部定轨，再把相邻的弹道段平滑拼接；太阳和月球位置取自 JPL DE 星历。原始文件有两处系统误差，已经改正：每年 1 月初的 7 到 12 天里，坐标系整体错转了 0.25°（1981、1985 年为 0.77°），像是当年处理时日期算差了；1978 年 9 月还混进了另一份轨道解。GSE 坐标轴另有约 20″ 的系统偏差，由第 5 次借力前后的数据确定。</p>
       <p style="margin-top:10px">几项独立检验都与史料吻合：只用借力前或只用借力后的数据定轨，推得的第 5 次借力都在 18:44 UT、月面以上约 120 km（史料 119.4 km）；磁尾最远处为 1983 年 6 月 30 日的 237 个地球半径；与 JPL 的彗星星历比较，ICE 于 1985 年 9 月 11 日 11:02 UT 最接近 G–Z 彗核，1986 年 3 月 25 日距哈雷彗星 2,810 万 km。</p>
       <p style="margin-top:10px">1987 年以后没有公开的定轨数据。我把 JPL 对 2014 年轨道的事后解（ICE，编号 -111）在含八大行星和月球的引力模型里向前反推，到 1987 年 2 月与 NSSDC 星历只差约 9 万 km（0.0006 AU），说明这 27 年间它基本在无动力飞行；1987—2014 年就取这条反推轨道。NSSDC 另有一份 1984—1997 年的日心坐标预报，与之相差约 0.01 AU。2014 年的地月段直接取 JPL Horizons。彗星轨道取 JPL 在相遇时刻的密切根数。</p>
-      <p style="margin-top:10px">图中的距离和速度读数来自上述重建，天体尺寸均已放大。重建脚本和数据在仓库的 <code>recon/</code> 目录里。</p>
+      <p style="margin-top:10px">图中的距离和速度读数来自上述重建。轨道按真实位置绘制；天体拉近后为真实大小，远景时为了看得见，画成固定的最小尺寸。重建脚本和数据在仓库的 <code>recon/</code> 目录里。</p>
     </div>
     <div>
       <h2>资料来源</h2>
@@ -524,15 +524,9 @@ function interp(tr, t) {
 }
 const rawE = t => interp(TE, t), rawR = t => interp(TR, t);
 function speedAt(tr, t) { const i = idxAt(tr, t), j = Math.min(i + 1, tr.n - 1), h = tr.t[j] - tr.t[i], k = h > 0 ? clamp((t - tr.t[i]) / h, 0, 1) : 0; return tr.v[i] + (tr.v[j] - tr.v[i]) * k; }
-const EARTH_TRUE = 0.0637, EARTH_EX = 0.22, MOON_TRUE = 0.01737, MOON_EX = 0.1;
-// bodies are drawn enlarged; push nearby path points out so flybys keep their proportions
-function lift(p, c, rt, rx, R0) {
-  const dx = p[0] - c[0], dy = p[1] - c[1], dz = p[2] - c[2], L = Math.hypot(dx, dy, dz);
-  if (L >= R0 || L < 1e-9) return p;
-  const n = L <= rt ? rx * L / rt : rx + (R0 - rx) * Math.pow((L - rt) / (R0 - rt), 0.653), k = n / L;
-  return [c[0] + dx * k, c[1] + dy * k, c[2] + dz * k];
-}
-const shown = (p, t) => lift(lift(p, moon(t), MOON_TRUE, MOON_EX, 0.5), [0, 0, 0], EARTH_TRUE, EARTH_EX, 0.9);
+const EARTH_TRUE = 0.063781, MOON_TRUE = 0.017374;   // true radii (units of 100 000 km)
+// Paths are drawn at their true positions. Bodies are drawn at true size, but never smaller than a few pixels.
+const shown = p => p;
 const LS = TRACK.LS, PER = TRACK.PER;      // lunar swingby times; perigee passes [t, km] (days since 1978-01-01 UT)
 const T_FLY14 = TRACK.T14;
 function mapped(tr) { const P = new Float64Array(tr.n * 3);
@@ -540,32 +534,6 @@ function mapped(tr) { const P = new Float64Array(tr.n * 3);
   return { t: tr.t, p: P, n: tr.n }; }
 const pathE = mapped(TE), pathR = mapped(TR);
 const lsPts = LS.map(t => shown(rawE(t), t));
-// Near a flyby the drawn path is re-expressed relative to the Moon's *current* position before the
-// enlargement, so the swing-by arc wraps the (moving) Moon instead of trailing where it used to be.
-const FLY_IN = 0.6, FLY_OUT = 1.2;
-function flyW(t, tFly, ti) { return (1 - smooth(FLY_IN, FLY_OUT, Math.abs(t - tFly))) * (1 - smooth(0.3, 1.0, Math.abs(ti - tFly))); }
-function warped(tr, i, t, tFly) {
-  const ti = tr.t[i], w = flyW(t, tFly, ti), raw = [tr.p[3 * i], tr.p[3 * i + 1], tr.p[3 * i + 2]];
-  if (w <= 0) return null;
-  const tau = ti + (t - ti) * w, m0 = moon(ti), m1 = moon(tau);
-  return shown([raw[0] + m1[0] - m0[0], raw[1] + m1[1] - m0[1], raw[2] + m1[2] - m0[2]], tau);
-}
-function drawnPath(path, tr, t, flys) {
-  const act = flys.filter(f => Math.abs(t - f) < FLY_OUT);
-  if (!act.length) return path.p;
-  const P = path.p.slice();
-  for (const f of act) {
-    const i0 = idxAt(tr, f - 1.05), i1 = Math.min(tr.n - 1, idxAt(tr, f + 1.05) + 1);
-    for (let i = i0; i <= i1; i++) { const q = warped(tr, i, t, f); if (q) { P[3 * i] = q[0]; P[3 * i + 1] = q[1]; P[3 * i + 2] = q[2]; } }
-  }
-  return P;
-}
-function lsPoint(k, t) {
-  const f = LS[k], w = flyW(t, f, f);
-  if (w <= 0) return lsPts[k];
-  const tau = f + (t - f) * w, raw = rawE(f), m0 = moon(f), m1 = moon(tau);
-  return shown([raw[0] + m1[0] - m0[0], raw[1] + m1[1] - m0[1], raw[2] + m1[2] - m0[2]], tau);
-}
 
 /* ================= Heliocentric model (ecliptic, 10 units = 1 AU) ================= */
 const JD0 = 2443509.5, KG = 0.01720209895;
@@ -657,9 +625,10 @@ const EVENTS = [
   { t: T('2014-09-14'), win: 3, d: '2014-09-16', x: '最后一次收到信号' },
 ];
 for (const e of EVENTS) if (e.at === undefined) e.at = e.t;
-// playback slows down around close passes so they don't flash by
-const FOCUS = [...LS.slice(0, 4).map(t => [t, 0.7, 0.4]), [LS[4], 0.35, 0.09], ...PER.map(p => [p[0], 0.5, 0.35]), [T('2014-08-09T03:01'), 0.4, 0.3], [T_FLY14, 0.5, 0.2], [T('1978-08-12T15:12'), 0.8, 0.3]];
-const nearFocus = t => { let k = 0; for (const [tf, w] of FOCUS) { const x = (t - tf) / w; if (x * x < 9) k = Math.max(k, Math.exp(-x * x)); } return k; };
+// playback eases off a little around the lunar flybys: [time, width (days), max days per second at 1x]
+const FOCUS = [...LS.slice(0, 4).map(t => [t, 0.5, 1.2]), [LS[4], 0.3, 0.35], [T_FLY14, 0.4, 0.6]];
+const TIMEPTS = [...LS, ...PER.map(p => p[0]), T('2014-08-09T03:01'), T_FLY14];
+const nearFocus = t => TIMEPTS.some(tf => Math.abs(t - tf) < 1);
 
 /* ================= DOM ================= */
 const $ = id => document.getElementById(id);
@@ -859,10 +828,10 @@ const PRESET = {
   tail: () => ({ tx: -1, ty: 0.3, tz: 0, dist: 42, az: -92, el: 60 }),
   escape: t => {
     const m = moon(Math.min(t, LS[4] + 0.3));
-    const near = { tx: m[0], ty: m[1], tz: 0, dist: 2.6, az: -58, el: 24 };
+    const near = { tx: m[0], ty: m[1], tz: m[2], dist: 1.8, az: -58, el: 24 };
     const mid = { tx: m[0] * 0.75, ty: m[1] * 0.75, tz: 0, dist: 11, az: -80, el: 38 };
     const far = { tx: -22, ty: 10, tz: 0, dist: 72, az: -92, el: 56 };
-    return lerpCam(lerpCam(mid, near, smooth(LS[4] - 6, LS[4] - 0.35, t)), far, smooth(LS[4] + 0.35, LS[4] + 15, t));
+    return lerpCam(lerpCam(mid, near, smooth(LS[4] - 8, LS[4] - 0.5, t)), far, smooth(LS[4] + 0.5, LS[4] + 16, t));
   },
   gz: () => ({ tx: 3.5, ty: 1, tz: 0, dist: 35, az: -68, el: 46 }),
   halley: () => ({ tx: -4.5, ty: -3.5, tz: 0, dist: 34, az: -64, el: 50 }),
@@ -979,13 +948,20 @@ function renderE(g, t) {
     seg3([x, 0, -0.55], [x, 0, 0.55], ink, 1.2, 0.85);
     placeTag(name, [x, 0, 0], name, '', 8, 12);
   }
+  // bodies first (true size, with a minimum on-screen radius), so paths stay visible across them
+  const sun = [-1, 0, 0];
+  const m = moon(t);
+  const eb = body([0, 0, 0], EARTH_TRUE, sun, C.sheet, C['pen-blue'], 5, 0.55);
+  const mb = body(m, MOON_TRUE, sun, C.sheet, C.ink, 3.5, 0.55);
+  placeTag('earth', [0, 0, 0], '地球', 'zh', (eb ? eb.r : 4) * 0.8 + 6, (eb ? eb.r : 4) * 0.8 + 6);
+  if (!(eb && mb && Math.hypot(eb.x - mb.x, eb.y - mb.y) < 60)) placeTag('moon', m, '月球', 'zh faint', -((mb ? mb.r : 3) * 0.6 + 3), (mb ? mb.r : 3) + 13);
   // trajectories
   const ghost = C['ink-2'];
   const iE = idxAt(pathE, t);
-  const PE = ret ? pathE.p : drawnPath(pathE, TE, t, LS);
+  const PE = pathE.p;
   if (ret) {
     poly(PE, 0, pathE.n - 1, ghost, 1, 0.16);
-    const iR = idxAt(pathR, t), PR = drawnPath(pathR, TR, t, [T_FLY14]);
+    const iR = idxAt(pathR, t), PR = pathR.p;
     poly(PR, 0, pathR.n - 1, ghost, 1.2, 0.5);
     const cur = shown(rawR(t), t);
     poly(PR, 0, iR, C['pen-red'], 2.4, 1);
@@ -997,18 +973,17 @@ function renderE(g, t) {
   // lunar swingby markers
   if (g.id === 'tail' || g.id === 'escape') {
     LS.forEach((tl, i) => {
-      const p = lsPoint(i, t), done = t >= tl;
-      const o = dot2(p, 7.5, C.sheet, C['pen-blue'], 1.4);
-      if (o) { ctx.globalAlpha = (done ? 1 : 0.55) * gAlpha; ctx.fillStyle = C.ink; ctx.fillText(String(i + 1), o.x, o.y + 0.5); }
+      if (Math.abs(t - tl) < 0.6 && cam.dist < 8) return;   // close-up of a flyby: the Moon itself is the marker
+      const p = lsPts[i], done = t >= tl;
+      // a small ring on the path, the number set beside it so the path stays visible
+      const o = dot2(p, 4.5, null, C['pen-blue'], 1.4);
+      if (o) {
+        ctx.globalAlpha = (done ? 1 : 0.55) * gAlpha; ctx.fillStyle = C['pen-blue'];
+        ctx.beginPath(); ctx.arc(o.x, o.y, 1.6, 0, TAU); ctx.fill();
+        ctx.fillStyle = C.ink; ctx.fillText(String(i + 1), o.x + 9, o.y - 8);
+      }
     });
   }
-  // bodies
-  const sun = [-1, 0, 0];
-  const m = moon(t);
-  const eb = body([0, 0, 0], EARTH_EX, sun, C.sheet, C['pen-blue'], 4, 0.55);
-  const mb = body(m, MOON_EX, sun, C.sheet, C.ink, 3, 0.55);
-  placeTag('earth', [0, 0, 0], '地球', 'zh', (eb ? eb.r : 4) * 0.8 + 6, (eb ? eb.r : 4) * 0.8 + 6);
-  if (!(eb && mb && Math.hypot(eb.x - mb.x, eb.y - mb.y) < 60)) placeTag('moon', m, '月球', 'zh faint', -((mb ? mb.r : 3) * 0.6 + 3), (mb ? mb.r : 3) + 13);
   // spacecraft
   const sc = ret ? shown(rawR(t), t) : shown(rawE(t), t);
   if (!ret) seg3([PE[iE * 3], PE[iE * 3 + 1], PE[iE * 3 + 2]], sc, C['pen-red'], 2.2, 1);
@@ -1092,7 +1067,7 @@ function renderH(g, t) {
 
 function updateHUD(g, t, frame) {
   hud('dDate', isoDate(t));
-  const showTime = nearFocus(t) > 0.02 || g.id === 'escape' || (g.id === 'return' && Math.abs(t - T_FLY14) < 3);
+  const showTime = nearFocus(t) || g.id === 'escape' || (g.id === 'return' && Math.abs(t - T_FLY14) < 3);
   const tm = $('dTime'); if (tm.hidden === showTime) tm.hidden = !showTime;
   if (showTime) hud('dTime', new Date(D0 + t * 864e5).toISOString().slice(11, 16) + ' UT');
   hudHTML('dPhase', `${g.n} · <span>${g.name}</span>`);
@@ -1224,7 +1199,7 @@ function pan(dx, dy) {
   const s = DIST / focal;
   cam.tx -= (B.r[0] * dx - B.u[0] * dy) * s; cam.ty -= (B.r[1] * dx - B.u[1] * dy) * s; cam.tz -= (B.r[2] * dx - B.u[2] * dy) * s;
 }
-const minDist = () => SEG[segIdx].id === 'escape' ? 0.6 : 1.5;
+const minDist = () => SEG[segIdx].id === 'escape' || SEG[segIdx].id === 'return' ? 0.15 : 0.4;
 const maxDist = () => 260;
 sheet.addEventListener('wheel', e => {
   e.preventDefault();

@@ -18,12 +18,37 @@ def arc(i):
         lo=GT[i-1] if i>0 else T_LAUNCH; hi=GT[i+1] if i+1<len(GT) else GT[i]+1
         _arc[i]=Arc(GT[i],G[i][1],min(lo,GT[i]-0.01),max(hi,GT[i]+0.01))
     return _arc[i]
-def state(t):
+def blended(t):
     if t<=GT[0]: return arc(0)(t)[0]
     if t>=GT[-1]: return arc(len(GT)-1)(min(t,GT[-1]+1))[0]
     i=np.searchsorted(GT,t)-1; a,b=GT[i],GT[i+1]
+    if i in BREAK: return arc(i)(t)[0] if t<BREAK[i][0] else arc(i+1)(t)[0]
     k=(t-a)/(b-a); w=k*k*(3-2*k)
     return (1-w)*arc(i)(t)[0]+w*arc(i+1)(t)[0]
+# --- data-segment breaks: the NSSDC file switches orbit solutions every couple of weeks, and at some
+# switches neighbouring arcs disagree by 0.2–50 thousand km (mostly in Z). Short blends there make kinks,
+# so at each such break the two sides are kept apart and the jump is shared out smoothly over up to ±12 days
+# (narrower near close approaches, so flyby and perigee geometry is untouched).
+CLOSE=[jd_iso(x) for x in ('1983-03-30T18:00','1983-04-23T23:00','1983-09-27T18:00','1983-10-21T16:30','1983-12-22T18:44',
+       '1982-10-17','1982-12-22T12:00','1983-04-02T22:30','1983-04-20T20:40','1983-10-01T09:00','1983-10-17T22:00')]
+BREAK={}
+for i in range(len(GT)-1):
+    a,b=GT[i],GT[i+1]
+    if a>jd_iso('1984-01-31') or b-a>3: continue
+    tt=np.linspace(a,b,7); d=np.linalg.norm(arc(i)(tt)[:,:3]-arc(i+1)(tt)[:,:3],axis=1).max()
+    if d<150: continue
+    tb=(a+b)/2; J=arc(i+1)(tb)[0][:3]-arc(i)(tb)[0][:3]
+    L=min(12.0,max(0.75,min(abs(tb-c) for c in CLOSE)-1.5))
+    BREAK[i]=(tb,J,L)
+print('breaks',len(BREAK),'largest %.0f km'%max(np.linalg.norm(v[1]) for v in BREAK.values()))
+BRK=sorted(BREAK.values(),key=lambda x:x[0])
+def state(t):
+    s=blended(t).copy()
+    for tb,J,L in BRK:
+        if abs(t-tb)>=L: continue
+        k=np.clip((t-(tb-L))/(2*L),0,1); w=k*k*(3-2*k)
+        s[:3]+=J*(w-(1.0 if t>=tb else 0.0))
+    return s
 # launch: back-propagate the first arc until it reaches the injection region
 s1=arc(0)(GT[0])[0]
 ev=lambda t,y: np.linalg.norm(y[:3])-6700; ev.terminal=True
@@ -80,13 +105,13 @@ def simplify(P,tol):
         if D[j]>1: keep[a+1+j]=True; stack+=[(a,a+1+j),(a+1+j,b)]
     return np.where(keep)[0]
 dM=np.linalg.norm(S[:,:3]-MOON(ts),axis=1); dE=np.linalg.norm(S[:,:3],axis=1)
-tol=np.where(dM<30000,0.00015,np.where(dE<80000,0.0003,0.0012))
+tol=np.where(dM<30000,0.0001,np.where(dE<80000,0.0002,0.0005))
 # also keep enough points in time for smooth playback interpolation (max 1.5 d apart)
 keep=simplify(P,tol)
 kk=set(keep.tolist())|set(np.where(np.abs(ts-LS[4]['t'])<0.12)[0].tolist()); last=ts[0]
 for i,t in enumerate(ts):
     if i in kk: last=t
-    elif t-last>1.5: kk.add(i); last=t
+    elif t-last>0.5: kk.add(i); last=t
 keep=np.array(sorted(kk))
 print('E kept',len(keep))
 E=[]

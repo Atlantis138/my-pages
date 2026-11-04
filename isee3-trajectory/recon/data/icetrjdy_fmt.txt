@@ -1,0 +1,38 @@
+File: ICETRJDY_FMT.txt                            Version: NSSDC 12/22/98 JFC
+-----------------------------------------------------------------------------                                                      
+
+ICE (old ISEE-3) Predicted Heliocentric Coordinates: Daily Values for 
+1984 - 1997
+
+Data File: ICETRJA.asc
+
+Data Parameters:
+
+ YY DDD  RAD.AU  SECLAT  SECLON  HELLAT  HELLON  HILLON
+
+Parameter Description:
+
+YY = YEAR
+DDD= INTEGER DAY OF YEAR (1= JAN. 1)
+RAD.AU= HELIOSPHERIC RADIAL DISTANCE IN AU
+SECLAT= SOLAR ECLIPTIC LATITUDE IN DEGREES
+SECLON= SOLAR ECLIPTIC LONGITUDE IN DEGREES
+HELLAT= SOLAR HELIOGRAPHIC LATITUDE IN DEGREES
+HELLON= SOLAR HELIOGRAPHIC LONGITUDE IN DEGREES
+HILLON= SOLAR HELIOGRAPHIC INERTIAL LONGITUDE IN DEGREES WITH RESPECT TO
+        ASCENDING NODE OF SOLAR EQUATOR ON THE ECLIPTIC
+
+Data Source:
+
+These data were obtained from running the program HELICOOR in the public
+directory NSSDCA::ANON_DIR:[ACTIVE.HELIO]. These data are based on
+predicted trajectories calculated with the GTDS code by the NSSDC Satellite
+Situation Center and converted to solar ecliptic and heliographic coordinates
+by the HELIOCOOR program. The HELICOOR code was written by R. Parthasarathy.
+The program GENTRJCON added the HILLON longitude.
+
+Note that the solar ecliptic coordinates are given with respect to true
+equinox and ecliptic of date. The solar ascending node was located at
+ecliptic longitude +74.367 degrees as of 1 Jan. 1900 at 1200 UT; this
+longitude increases by 1.4 degrees/century.
+

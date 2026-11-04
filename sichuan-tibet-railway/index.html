@@ -1562,21 +1562,21 @@ function stepFly(now) {
   var dt = Math.min(0.05, (now - fly.last) / 1000); fly.last = now;
   fly.K += FLY_SPEEDS[flySpeedIx] * dt;
   if (fly.K >= TOTAL) { fly.K = TOTAL; stopFly(); return; }
-  var K = fly.K, sc = 0.001 * EXAG, sp = [1, 1.35, 1.8][flySpeedIx];
+  var K = fly.K, sc = 0.001 * EXAG, sp = [1, 1.25, 1.5][flySpeedIx];
   // heading averaged over ±27 km so bends do not swing the camera
   var hx = 0, hz = 0;
   for (var i = -4; i <= 4; i++) { var a = fullAt(K + i * 6 - 3), b = fullAt(K + i * 6 + 3); hx += X(b.lon) - X(a.lon); hz += Z(b.lat) - Z(a.lat); }
   var hl = Math.hypot(hx, hz) || 1; hx /= hl; hz /= hl;
-  // chase camera on the line itself: a point on the route behind, a little above rail level, looking at the
-  // rail ahead. No terrain avoidance — inside a tunnel the camera is in the mountain (its faces are culled
-  // from inside) and the tunnel line stays in view.
-  var back = 10 * sp, up = 3.2 * sp, side = 1.5 * sp;
-  var b = fullAt(K - back), q = fullAt(K + 5 * sp);
-  var cx = X(b.lon) + hz * side, cz = Z(b.lat) - hx * side, cy = lineYAt(K - back) * sc + up;
-  var tx = X(q.lon), tz = Z(q.lat), ty = lineYAt(K + 5 * sp) * sc;
+  // high oblique chase: look at the moving point on the line (rail level, also on bridges and in tunnels)
+  // from ~45 km back and above, ~38° down, swung 25° off the direction of travel so the line reads ahead
+  var R = 45 * sp, pitch = 0.66, swing = 0.44;
+  var bx = hx * Math.cos(swing) - hz * Math.sin(swing), bz = hz * Math.cos(swing) + hx * Math.sin(swing);
+  var q = fullAt(K + 2 * sp), tx = X(q.lon), tz = Z(q.lat), ty = lineYAt(K + 2 * sp) * sc;
+  var cx = tx - bx * R * Math.cos(pitch), cz = tz - bz * R * Math.cos(pitch);
+  var cy = Math.max(ty + R * Math.sin(pitch), hXZ(cx, cz) * sc + 4);
   var want = new THREE.Vector3(cx, cy, cz), wantT = new THREE.Vector3(tx, ty, tz);
   if (!fly.cam) { fly.cam = camera.position.clone(); fly.tgt = controls.target.clone(); }
-  var kp = 1 - Math.exp(-dt / 0.35), kt = 1 - Math.exp(-dt / 0.25);
+  var kp = 1 - Math.exp(-dt / 0.9), kt = 1 - Math.exp(-dt / 0.35);
   fly.cam.lerp(want, kp); fly.tgt.lerp(wantT, kt);
   camera.position.copy(fly.cam); controls.target.copy(fly.tgt); camera.lookAt(fly.tgt);
   // ask for the fine terrain ahead before we get there
@@ -1930,7 +1930,7 @@ function profCursor(K) {
   var p = fullAt(K), e = profAt(K), ns = nearestStation(K);
   var sec = { cy: '成雅段', yl: '雅林段', ll: '拉林段' }[e.s];
   ptip.innerHTML = esc(sec) + '　<b>' + nf(K) + '</b> km　地表 <b>' + m10(e.g) + '</b> m　轨面（推算）<b>' + m10(e.r) + '</b> m　近 ' + esc(ns.n);
-  CURSOR.x = X(p.lon); CURSOR.z = Z(p.lat); CURSOR.h = hXZ(CURSOR.x, CURSOR.z); CURSOR.el.querySelector('.tx').textContent = sec + ' ' + nf(K) + ' km';
+  CURSOR.x = X(p.lon); CURSOR.z = Z(p.lat); CURSOR.h = lineYAt(K);   // on the line (rail level), not on the ground CURSOR.el.querySelector('.tx').textContent = sec + ' ' + nf(K) + ' km';
   CURSOR.w = CURSOR.el.querySelector('.tx').offsetWidth || 90; LAYER.cursor = true; needs = true;
 }
 psvg.addEventListener('pointermove', function (e) {
@@ -2112,7 +2112,7 @@ function loop(now) {
   if ((fly && !fly.paused) || tween) { moved = true; lodMoved = true; }
   // keep the camera above the (now much finer) terrain
   var cp = camera.position, floorY = hXZ(cp.x, cp.z) * 0.001 * EXAG + 0.6;
-  if (cp.y < floorY && !(fly && !fly.paused)) { cp.y = floorY; camera.lookAt(controls.target); moved = true; }
+  if (cp.y < floorY) { cp.y = floorY; camera.lookAt(controls.target); moved = true; }
   terrainTick(now);
   reseat(now);
   var rendered = moved || needs;

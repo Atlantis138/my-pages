@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>设计风格图鉴</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;800&family=Cormorant+Garamond:ital,wght@1,600&family=Fredoka:wght@500;700&family=JetBrains+Mono:wght@400;600&family=Josefin+Sans:wght@400;700&family=Limelight&family=Ma+Shan+Zheng&family=Manrope:wght@300;500;800&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@600;900&family=Orbitron:wght@500;800&family=Oswald:wght@700&family=Permanent+Marker&family=Poiret+One&family=Press+Start+2P&family=Roboto:wght@400;500;700&family=Rubik+Dirt&family=Rubik+Mono+One&family=Share+Tech+Mono&family=Sora:wght@600&family=Special+Elite&family=Syncopate:wght@400;700&family=Unbounded:wght@800&family=VT323&display=swap">
+<style>
+/* Layout: specimen catalogue. An index board of 16 swatches, then four family "drawers"; each card = live specimen + palette + meters on the left, field notes on the right. */
+:root{
+  --bg:#ECEEF1; --surface:#FFFFFF; --soft:#E4E8ED; --ink:#14161B; --muted:#596070; --line:#D2D7DE;
+  --code-bg:#171A21; --code-fg:#E3E6EC;
+  --g-modern:#C3342A; --g-ui:#2C55D2; --g-rebel:#946B00; --g-retro:#B02B83;
+  --f-display:"Noto Serif SC","Songti SC","STSong",serif;
+  --f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1115; --surface:#171A20; --soft:#21252C; --ink:#E7E9ED; --muted:#9AA1AD; --line:#2A2F37;
+  --code-bg:#0A0C10; --code-fg:#DCE0E7;
+  --g-modern:#F0675C; --g-ui:#7C9BFF; --g-rebel:#E3B93A; --g-retro:#E26BBE; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1115; --surface:#171A20; --soft:#21252C; --ink:#E7E9ED; --muted:#9AA1AD; --line:#2A2F37;
+  --code-bg:#0A0C10; --code-fg:#DCE0E7;
+  --g-modern:#F0675C; --g-ui:#7C9BFF; --g-rebel:#E3B93A; --g-retro:#E26BBE; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 64px}
+.wrap{max-width:1180px;margin:0 auto}
+a{color:inherit}
+
+/* ---------- masthead ---------- */
+.mast{padding-block:44px 8px}
+.mast-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:10px}
+.mast h1{font-family:var(--f-display);font-weight:900;font-size:clamp(2.6rem,8vw,5.4rem);line-height:1.05;letter-spacing:.02em;margin:26px 0 14px;text-wrap:balance}
+.lede{max-width:64ch;font-size:16px;margin:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 22px;margin:14px 0 0;font-size:13px;color:var(--muted)}
+.legend b{color:var(--ink);font-weight:500}
+
+/* ---------- index board ---------- */
+.index{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px 10px;margin-top:30px}
+.tile{display:grid;gap:6px;text-decoration:none;color:var(--ink);min-width:0}
+.tile-box{aspect-ratio:2/1;max-width:100%;display:grid;place-items:center;font-size:clamp(20px,3vw,30px);line-height:1;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);transition:transform .25s;overflow:hidden}
+.tile:hover .tile-box{transform:translateY(-3px)}
+.tile:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.tile-cap{display:flex;gap:6px;align-items:baseline;font-size:12px;min-width:0;line-height:1.3}
+.tile-cap b{font-family:var(--f-mono);font-weight:600;font-size:10px;color:var(--gc)}
+.tile-cap span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:760px){.index{gap:12px 8px}.tile-box{aspect-ratio:1}.tile-cap{display:grid;gap:0;font-size:11px}}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+.chip{font:inherit;font-size:13px;line-height:1.4;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--gc,var(--ink))}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,.sw:focus-visible,.copy:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* ---------- groups & cards ---------- */
+.group{margin-top:60px}
+.g-head{border-top:4px solid var(--gc);padding-top:14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 20px;align-items:baseline}
+.g-head h2{margin:0;font-family:var(--f-display);font-weight:900;font-size:clamp(24px,3vw,32px);line-height:1.25}
+.g-en{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;color:var(--gc);font-weight:600}
+.g-head p{grid-column:1/-1;margin:4px 0 0;color:var(--muted);max-width:62ch}
+
+.card{margin-top:22px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:4px;scroll-margin-top:16px}
+.card-left{padding:14px;display:flex;flex-direction:column;gap:14px;border-right:1px solid var(--line);min-width:0}
+.card-right{padding:22px 26px 26px;display:flex;flex-direction:column;gap:18px;min-width:0}
+@media (max-width:860px){
+  .card{grid-template-columns:minmax(0,1fr)}
+  .card-left{border-right:0;border-bottom:1px solid var(--line);padding:10px}
+  .card-right{padding:18px 16px 20px}
+}
+.spec-hint{margin:-6px 0 0;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:8px}
+.sw{appearance:none;border:0;background:none;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer;display:grid;gap:2px;min-width:0}
+.sw-c{height:36px;border-radius:2px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.sw-hex{font-family:var(--f-mono);font-size:11px;color:var(--ink);line-height:1.4}
+.sw-n{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+.meters{display:grid;gap:6px;padding-top:12px;border-top:1px dashed var(--line)}
+.mtr{display:grid;grid-template-columns:5em minmax(0,1fr) 2.6em;align-items:center;gap:10px;font-size:12px;color:var(--muted);line-height:1.4}
+.segs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.segs i{height:8px;background:var(--soft)}
+.segs i.f{background:var(--gc)}
+.mtr b{font-family:var(--f-mono);font-weight:400;font-size:11px;font-variant-numeric:tabular-nums;text-align:right}
+
+.c-head{display:grid;gap:2px}
+.c-no{font-family:var(--f-mono);font-size:12px;color:var(--gc);font-weight:600;letter-spacing:.08em}
+.c-name{font-family:var(--f-display);font-weight:900;font-size:clamp(26px,3.2vw,34px);line-height:1.2;margin:2px 0 0}
+.c-en{margin:0;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.c-era{margin:8px 0 0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px}
+.c-era span:first-child{font-family:var(--f-mono);font-weight:600}
+.c-era span:last-child{color:var(--muted)}
+.card-right h4{margin:0 0 6px;font-family:var(--f-mono);font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--muted)}
+.card-right section p{margin:0;max-width:64ch}
+.traits{margin:0;padding:0;list-style:none;display:grid;gap:5px}
+.traits li{position:relative;padding-left:16px}
+.traits li::before{content:"";position:absolute;left:0;top:.72em;width:7px;height:7px;background:var(--gc)}
+.fit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:560px){.fit{grid-template-columns:minmax(0,1fr)}}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12.5px;line-height:1.5;padding:2px 9px;border:1px solid var(--line);border-radius:3px;background:var(--soft)}
+.code-box{position:relative}
+.code-box pre{margin:0;padding:14px 16px;padding-right:64px;background:var(--code-bg);color:var(--code-fg);border-radius:3px;overflow-x:auto;font-family:var(--f-mono);font-size:12.5px;line-height:1.6}
+.copy{position:absolute;top:8px;right:8px;font-family:var(--f-mono);font-size:11px;padding:3px 10px;border-radius:3px;cursor:pointer;color:var(--code-fg);background:var(--code-bg);border:1px solid color-mix(in srgb,var(--code-fg) 30%,transparent)}
+.copy:hover{border-color:var(--code-fg)}
+
+/* ---------- picker ---------- */
+.pick{margin-top:72px;border-top:4px solid var(--ink);padding-top:14px}
+.pick h2{margin:0;font-family:var(--f-display);font-weight:900;font-size:clamp(24px,3vw,32px)}
+.pick > p{margin:4px 0 0;color:var(--muted)}
+.pick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 36px;margin:14px 0 0}
+@media (max-width:760px){.pick-grid{grid-template-columns:minmax(0,1fr)}}
+.pick-row{display:grid;grid-template-columns:8.5em minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.pick-row dt{font-weight:700;line-height:1.5}
+.pick-row dd{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.pick-row a{font-size:13px;line-height:1.5;text-decoration:none;border:1px solid var(--line);padding:2px 10px;border-radius:999px;display:inline-flex;gap:6px;align-items:center;background:var(--surface)}
+.pick-row a i{width:7px;height:7px;border-radius:50%;background:var(--gc)}
+.pick-row a:hover{border-color:var(--ink)}
+.tips{margin-top:26px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.tips{grid-template-columns:minmax(0,1fr)}}
+.tip{background:var(--surface);border:1px solid var(--line);padding:16px 18px;border-radius:4px}
+.tip h3{margin:0 0 6px;font-size:15px;line-height:1.5}
+.tip p{margin:0;font-size:14px;color:var(--muted)}
+.foot{margin-top:48px;font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.06em;border-top:1px solid var(--line);padding-top:12px}
+
+/* =========================================================
+   SPECIMENS — each commits to its own fixed palette
+   ========================================================= */
+.spec{position:relative;overflow:hidden;height:420px;container-type:inline-size;isolation:isolate;border-radius:2px}
+@media (max-width:860px){.spec{height:380px}}
+.spec h3,.spec p{margin:0}
+.spec button{cursor:pointer}
+
+/* 01 Bauhaus */
+.sp-bauhaus{background:#EFE9DC;color:#151515;font-family:"Josefin Sans",Futura,"Century Gothic",sans-serif}
+.bh-circle,.bh-square,.bh-tri,.bh-bar{position:absolute;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.bh-circle{width:56cqi;aspect-ratio:1;border-radius:50%;background:#D8352A;right:-10cqi;top:-12cqi}
+.bh-square{width:30cqi;aspect-ratio:1;background:#1E4C9A;left:10cqi;bottom:-8cqi}
+.bh-tri{width:24cqi;aspect-ratio:1;background:#F2B705;clip-path:polygon(50% 0,100% 100%,0 100%);right:12cqi;bottom:8%}
+.bh-bar{left:0;width:58%;top:60%;height:12px;background:#151515;transform-origin:left}
+.bh-text{position:absolute;left:8cqi;top:7cqi;z-index:2}
+.bh-text h3{font-weight:700;font-size:17cqi;line-height:.8;letter-spacing:-.02em}
+.bh-text p{font-family:"Noto Sans SC",sans-serif;font-weight:700;font-size:15px;margin-top:18px}
+.bh-text small{display:block;font-size:12px;letter-spacing:.14em;margin-top:2px}
+.sp-bauhaus:hover .bh-circle{transform:translate(-6cqi,6cqi)}
+.sp-bauhaus:hover .bh-square{transform:rotate(45deg)}
+.sp-bauhaus:hover .bh-tri{transform:rotate(180deg)}
+.sp-bauhaus:hover .bh-bar{transform:scaleX(1.3)}
+
+/* 02 Art Deco */
+.sp-deco{background:repeating-conic-gradient(from -90deg at 50% 108%,rgba(212,175,95,.16) 0deg 2.5deg,transparent 2.5deg 8deg),#0E1D19;color:#C9A45C;font-family:"Poiret One",serif;display:grid;place-items:center;text-align:center}
+.dc-frame{position:relative;width:80%;max-width:360px;padding:26px 18px 24px;border:1px solid #C9A45C;outline:1px solid #C9A45C;outline-offset:6px;background:rgba(14,29,25,.9);display:grid;justify-items:center;gap:10px}
+.dc-frame::before,.dc-frame::after{content:"";position:absolute;width:16px;height:16px;border:1px solid #C9A45C;background:#0E1D19;transform:rotate(45deg)}
+.dc-frame::before{left:-15px;top:-15px}.dc-frame::after{right:-15px;bottom:-15px}
+.dc-fan{width:84px;height:42px;border-radius:84px 84px 0 0;background:repeating-conic-gradient(from -90deg at 50% 100%,#C9A45C 0 7deg,transparent 7deg 15deg);border-bottom:2px solid #C9A45C}
+.dc-est{font-size:13px;letter-spacing:.42em;color:#E8DCC0}
+.sp-deco h3{font-family:Limelight,serif;font-weight:400;font-size:clamp(28px,10cqi,52px);letter-spacing:.08em;line-height:1;color:#D9B56A}
+.dc-cn{font-family:"Noto Serif SC",serif;font-size:13px;letter-spacing:.3em;color:#E8DCC0}
+.dc-rule{display:flex;align-items:center;gap:10px;width:80%;font-size:10px}
+.dc-rule span{flex:1;height:1px;background:#C9A45C}
+.dc-btn{margin-top:4px;background:transparent;border:1px solid #C9A45C;color:#C9A45C;font-family:"Poiret One",serif;font-weight:700;font-size:14px;letter-spacing:.4em;padding:9px 14px 9px 20px;transition:background .3s,color .3s}
+.dc-btn:hover{background:#C9A45C;color:#0E1D19}
+
+/* 03 Swiss */
+.sp-swiss{background-color:#F3F2EE;background-image:linear-gradient(90deg,transparent calc(100% - 1px),rgba(227,6,19,.22) 0);background-size:calc(100% / 6) 100%;color:#0E0E0E;font-family:"Helvetica Neue",Helvetica,Arial,"Noto Sans SC",sans-serif;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(6,1fr)}
+.sw-num{grid-column:1/4;grid-row:1/3;font-weight:700;font-size:24cqi;line-height:.78;letter-spacing:-.06em;padding:3cqi 0 0 2cqi}
+.sw-red{grid-column:5/7;grid-row:1/3;background:#E30613;transform-origin:right;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.sp-swiss:hover .sw-red{transform:scaleX(1.5)}
+.sw-h{grid-column:1/7;grid-row:3/5;align-self:end;font-weight:700;font-size:14cqi;line-height:.86;letter-spacing:-.045em;padding-left:2cqi}
+.sw-p{grid-column:1/4;grid-row:5/7;padding:3cqi 2cqi;font-size:13px;line-height:1.45}
+.sw-meta{grid-column:5/7;grid-row:5/7;align-self:end;font-size:11px;line-height:1.35;padding:0 2cqi 3cqi}
+
+/* 04 Skeuomorphism */
+.sp-skeuo{background:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 1px,rgba(0,0,0,.035) 1px 2px),linear-gradient(180deg,#DADDE0,#A6AAB0);display:grid;place-items:center;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+.sk-panel{position:relative;width:86%;max-width:380px;padding:26px 22px 22px;border-radius:14px;background:linear-gradient(180deg,#4A4D52,#2B2D31);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.6),0 14px 28px rgba(0,0,0,.45),0 2px 4px rgba(0,0,0,.4);display:grid;gap:16px}
+.sk-screw{position:absolute;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#E7E7E7,#7A7A7A 70%);box-shadow:0 1px 1px rgba(0,0,0,.6)}
+.sk-screw::after{content:"";position:absolute;left:2px;right:2px;top:4.5px;height:1px;background:#444;transform:rotate(35deg)}
+.sk-brand{font-size:10px;font-weight:700;letter-spacing:.22em;color:#1C1D20;text-shadow:0 1px 0 rgba(255,255,255,.18);text-align:center}
+.sk-lcd{display:flex;justify-content:space-between;padding:10px 14px;border-radius:6px;background:linear-gradient(180deg,#A3B890,#869C73);box-shadow:inset 0 2px 7px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.15);font-family:"Share Tech Mono",monospace;font-size:24px;line-height:1.2;color:#1F2C18;text-shadow:1px 1px 0 rgba(255,255,255,.15)}
+.sk-row{display:flex;justify-content:space-around;align-items:flex-end}
+.sk-ctl{display:grid;justify-items:center;gap:8px}
+.sk-lbl{font-size:9px;font-weight:700;letter-spacing:.2em;color:#1C1D20;text-shadow:0 1px 0 rgba(255,255,255,.18)}
+.sk-knob{width:58px;height:58px;border-radius:50%;position:relative;background:conic-gradient(#D9D9D9,#8C8C8C,#F2F2F2,#7A7A7A,#E0E0E0,#8C8C8C,#D9D9D9);box-shadow:0 6px 10px rgba(0,0,0,.55),inset 0 1px 1px rgba(255,255,255,.8),0 0 0 3px #222;transition:transform .6s;transform:rotate(-40deg)}
+.sk-knob::after{content:"";position:absolute;left:50%;top:6px;width:3px;height:14px;margin-left:-1.5px;border-radius:2px;background:#E8542F}
+.sp-skeuo:hover .sk-knob{transform:rotate(70deg)}
+.sk-switch{width:62px;height:30px;border-radius:15px;border:0;padding:0;position:relative;background:linear-gradient(180deg,#151618,#2F3135);box-shadow:inset 0 2px 5px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.18);margin-bottom:14px}
+.sk-switch i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#FAFAFA,#B9B9B9);box-shadow:0 2px 4px rgba(0,0,0,.6),inset 0 -1px 1px rgba(0,0,0,.2);transition:left .25s}
+.sk-switch[aria-pressed="true"]{background:linear-gradient(180deg,#1F4D1F,#3B8A35)}
+.sk-switch[aria-pressed="true"] i{left:35px}
+.sk-switch:focus-visible{outline:2px solid #FFD54A;outline-offset:3px}
+.sk-led{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#7A2A2A,#3A1010);box-shadow:inset 0 1px 2px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.15);margin-bottom:22px;transition:background .2s,box-shadow .2s}
+.sp-skeuo.on .sk-led{background:radial-gradient(circle at 35% 35%,#FFB3A8,#FF3B30 55%,#A3140D);box-shadow:0 0 10px #FF3B30,0 0 22px rgba(255,59,48,.6)}
+
+/* 05 Minimal */
+.sp-min{background:#FAFAF7;color:#121212;font-family:Manrope,"Noto Sans SC",sans-serif;display:flex;flex-direction:column;justify-content:space-between;padding:7% 8%}
+.mn-top{display:flex;justify-content:space-between;font-size:12px;font-weight:500;letter-spacing:.02em}
+.mn-top span:last-child{color:#6D6D6D;word-spacing:1em}
+.sp-min h3{font-weight:300;font-size:clamp(34px,10cqi,64px);line-height:1.02;letter-spacing:-.035em}
+.mn-mid p{margin-top:18px;font-size:13px;color:#6D6D6D;font-weight:300}
+.mn-mid .mn-cite{margin-top:4px;font-size:11px;color:#9A9A96}
+.mn-bot{display:flex;align-items:center;gap:14px;font-size:12px;font-weight:500}
+.mn-line{height:1px;background:#121212;width:40px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.sp-min:hover .mn-line{width:120px}
+.mn-dot{width:7px;height:7px;border-radius:50%;background:#121212;margin-left:auto}
+
+/* 06 Flat */
+.sp-flat{background:#ECF0F1;color:#2C3E50;font-family:"Noto Sans SC",sans-serif}
+.fl-in{position:absolute;inset:0;padding:6cqi;display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
+.fl-art{position:relative;background:#3498DB;overflow:hidden;border-radius:4px;min-height:0}
+.fl-sun{position:absolute;width:20cqi;aspect-ratio:1;border-radius:50%;background:#F1C40F;right:14%;top:12%}
+.fl-m1,.fl-m2,.fl-hill{position:absolute;bottom:0}
+.fl-m1{left:-10%;width:80%;height:62%;background:#2C3E50;clip-path:polygon(0 100%,50% 0,100% 100%)}
+.fl-m2{left:35%;width:75%;height:46%;background:#34495E;clip-path:polygon(0 100%,50% 0,100% 100%)}
+.fl-hill{left:0;right:0;height:20%;background:#1ABC9C}
+.fl-side{display:flex;flex-direction:column;justify-content:center;gap:14px;min-width:0}
+.sp-flat h3{font-size:clamp(26px,7cqi,40px);font-weight:900;line-height:1.05}
+.fl-side p{font-size:13px;color:#5D6D7E;line-height:1.6}
+.fl-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.fl-tiles span{aspect-ratio:1;display:grid;place-items:center;color:#FFF;font-size:17px;font-weight:700}
+.fl-btn{align-self:flex-start;background:#1ABC9C;color:#FFF;border:0;border-radius:4px;padding:10px 20px;font-family:inherit;font-weight:700;font-size:14px;transition:background .2s}
+.fl-btn:hover{background:#16A085}
+@container (max-width:440px){.fl-in{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:14px}.fl-tiles{display:none}}
+
+/* 07 Material */
+.sp-mat{background:#FEF7FF;color:#1D1B20;font-family:Roboto,"Noto Sans SC",sans-serif}
+.mt-bar{height:60px;display:flex;align-items:center;gap:16px;padding:0 16px;background:#F3EDF7}
+.mt-menu{display:grid;gap:4px;width:18px}.mt-menu i{height:2px;background:#49454F;display:block}
+.mt-title{font-size:20px;flex:1}
+.mt-av{width:32px;height:32px;border-radius:50%;background:#6750A4;color:#FFF;display:grid;place-items:center;font-size:14px;font-weight:500}
+.mt-body{padding:14px 16px;display:grid;gap:12px}
+.mt-chips{display:flex;gap:8px;flex-wrap:wrap}
+.mt-chip{height:32px;display:inline-flex;align-items:center;padding:0 14px;border:1px solid #79747E;border-radius:8px;font-size:13px;font-weight:500;color:#49454F}
+.mt-chip.on{background:#E8DEF8;border-color:#E8DEF8;color:#1D192B}
+.mt-card{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:12px;background:#F7F2FA;color:#6750A4;box-shadow:0 1px 2px rgba(0,0,0,.3),0 1px 3px 1px rgba(0,0,0,.15);cursor:pointer;transition:box-shadow .2s;user-select:none}
+.mt-card:hover{box-shadow:0 1px 2px rgba(0,0,0,.3),0 2px 6px 2px rgba(0,0,0,.15)}
+.mt-ava{flex:none;width:40px;height:40px;border-radius:50%;color:#FFF;display:grid;place-items:center;font-size:15px}
+.mt-txt{min-width:0}
+.mt-txt b{display:block;font-weight:500;font-size:15px;color:#1D1B20;line-height:1.4}
+.mt-txt small{display:block;font-size:13px;color:#49454F;line-height:1.4}
+.mt-fab{position:absolute;right:18px;bottom:18px;width:56px;height:56px;border-radius:16px;border:0;background:#EADDFF;color:#21005D;font-family:Roboto,sans-serif;font-size:28px;line-height:1;box-shadow:0 4px 8px 3px rgba(0,0,0,.15),0 1px 3px rgba(0,0,0,.3)}
+[data-ripple]{position:relative;overflow:hidden}
+.rip{position:absolute;border-radius:50%;background:currentColor;opacity:.2;transform:scale(0);animation:rip .6s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+
+/* 08 Neumorphism */
+.sp-neu{background:#E3E8EF;color:#6A788C;font-family:Manrope,"Noto Sans SC",sans-serif;display:grid;place-items:center}
+.nu-wrap{display:grid;justify-items:center;gap:24px}
+.sp-neu h3{font-size:13px;font-weight:800;letter-spacing:.32em;color:#56657A}
+.nu-btn{width:108px;height:108px;border-radius:50%;border:0;background:#E3E8EF;box-shadow:10px 10px 20px #BEC4CE,-10px -10px 20px #FFFFFF;display:grid;place-items:center;transition:box-shadow .25s}
+.nu-btn i{width:0;height:0;border-left:26px solid #8794A8;border-top:16px solid transparent;border-bottom:16px solid transparent;margin-left:8px;transition:border-color .25s}
+.nu-btn[aria-pressed="true"]{box-shadow:inset 8px 8px 16px #BEC4CE,inset -8px -8px 16px #FFFFFF}
+.nu-btn[aria-pressed="true"] i{border-left-color:#5B8DEF}
+.nu-track{position:relative;width:200px;height:14px;border-radius:7px;box-shadow:inset 4px 4px 8px #BEC4CE,inset -4px -4px 8px #FFFFFF}
+.nu-fill{position:absolute;left:3px;top:3px;bottom:3px;width:58%;border-radius:5px;background:linear-gradient(90deg,#8FB2F5,#5B8DEF)}
+.nu-knob{position:absolute;top:50%;left:58%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#E3E8EF;box-shadow:4px 4px 8px #BEC4CE,-4px -4px 8px #FFFFFF}
+.nu-row{display:flex;gap:16px}
+.nu-key{width:52px;height:40px;border-radius:12px;border:0;display:grid;place-items:center;font-family:"Noto Sans SC",sans-serif;font-size:13px;font-weight:700;background:#E3E8EF;color:#6A788C;box-shadow:5px 5px 10px #BEC4CE,-5px -5px 10px #FFFFFF;transition:box-shadow .2s,color .2s}
+.nu-key[aria-pressed="true"]{box-shadow:inset 4px 4px 8px #BEC4CE,inset -4px -4px 8px #FFFFFF;color:#3E73E0}
+.nu-btn:focus-visible,.nu-key:focus-visible{outline:2px solid #5B8DEF;outline-offset:4px}
+
+/* 09 Glassmorphism */
+.sp-glass{background:#1B1530;color:#FFF;font-family:"Noto Sans SC",sans-serif;display:grid;place-items:center}
+.gl-b{position:absolute;border-radius:50%;animation:gldrift 9s ease-in-out infinite alternate}
+.gl-b1{width:55cqi;aspect-ratio:1;background:radial-gradient(circle at 30% 30%,#FF8CC0,#FF3D8B);left:-6cqi;top:-8cqi}
+.gl-b2{width:46cqi;aspect-ratio:1;background:radial-gradient(circle at 30% 30%,#8FA6FF,#4560FF);right:-8cqi;bottom:-10cqi;animation-delay:-3s}
+.gl-b3{width:20cqi;aspect-ratio:1;background:radial-gradient(circle at 30% 30%,#8CF5E2,#14C6A8);right:22cqi;top:10cqi;animation-delay:-6s}
+@keyframes gldrift{to{transform:translate(4cqi,3cqi) scale(1.06)}}
+.gl-card{position:relative;width:76%;max-width:300px;padding:22px 20px 18px;border-radius:22px;background:rgba(255,255,255,.14);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border:1px solid rgba(255,255,255,.38);box-shadow:0 12px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.45)}
+.gl-top{display:flex;justify-content:space-between;font-size:14px}
+.gl-top span:last-child{opacity:.85}
+.gl-temp{font-family:Manrope,sans-serif;font-weight:300;font-size:72px;line-height:1.1;letter-spacing:-.04em;margin:4px 0 10px}
+.gl-hours{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;font-size:14px;line-height:1.4}
+.gl-hours span{padding:8px 0;border-radius:12px;background:rgba(255,255,255,.12)}
+.gl-hours small{display:block;font-size:11px;opacity:.8}
+
+/* 10 Memphis */
+.sp-memphis{background:#FFD3E2;color:#111;font-family:"Rubik Mono One","Noto Sans SC",sans-serif}
+.sp-memphis .mp-s{position:absolute;transition:transform .6s cubic-bezier(.3,1.6,.5,1)}
+.mp-dots{left:-10%;top:12%;width:70%;height:26%;background-color:#FFF;background-image:radial-gradient(#111 2px,transparent 2.6px);background-size:14px 14px;border:3px solid #111;transform:rotate(-8deg)}
+.mp-squig{right:4%;top:8%;width:40%;height:auto}
+.mp-squig path{stroke:#3FC1C9;stroke-width:8;stroke-linecap:round}
+.mp-zig{left:8%;bottom:10%;width:34%;height:auto}
+.mp-zig polyline{stroke:#111;stroke-width:5}
+.mp-tri{right:10%;bottom:12%;width:18cqi;aspect-ratio:1;background:#364F6B;clip-path:polygon(0 100%,50% 0,100% 100%)}
+.mp-circ{right:32%;bottom:6%;width:14cqi;aspect-ratio:1;border-radius:50%;background:repeating-linear-gradient(45deg,#FCE38A 0 6px,#111 6px 9px);border:3px solid #111}
+.mp-half{left:6%;top:4%;width:16cqi;height:8cqi;border-radius:16cqi 16cqi 0 0;background:#FCE38A;border:3px solid #111;border-bottom:0}
+.mp-stick{left:60%;top:28%;width:5cqi;height:22cqi;background:#3FC1C9;border:3px solid #111;transform:rotate(30deg)}
+.mp-text{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:2}
+.sp-memphis h3{font-size:12cqi;font-weight:400;line-height:1.1;color:#111;text-shadow:5px 5px 0 #3FC1C9}
+.mp-tag{display:inline-block;margin-top:10px;background:#111;color:#FCE38A;font-size:12px;padding:5px 10px;transform:rotate(-3deg)}
+.sp-memphis:hover .mp-dots{transform:rotate(-2deg) translate(-12px,-10px)}
+.sp-memphis:hover .mp-squig{transform:translate(14px,-10px) rotate(8deg)}
+.sp-memphis:hover .mp-zig{transform:translate(-14px,10px) rotate(-6deg)}
+.sp-memphis:hover .mp-tri{transform:translate(12px,8px) rotate(25deg)}
+.sp-memphis:hover .mp-circ{transform:translateY(14px) rotate(90deg)}
+.sp-memphis:hover .mp-half{transform:translate(-10px,-8px) rotate(-20deg)}
+.sp-memphis:hover .mp-stick{transform:rotate(80deg) translateX(10px)}
+
+/* 11 Brutalism */
+.sp-brutal{background:#FFF;color:#000;font-family:"Times New Roman",Times,"Noto Serif SC",serif;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.sp-brutal h3{font-size:clamp(34px,11cqi,64px);line-height:.9;font-weight:700}
+.sp-brutal p{font-size:16px;line-height:1.35}
+.br-a{color:#0000EE;text-decoration:underline;cursor:pointer}
+.br-a:hover{color:#EE0000}
+.sp-brutal hr{border:0;border-top:2px solid #000;margin:0;width:100%}
+.sp-brutal table{border-collapse:collapse;font-size:14px}
+.sp-brutal td{border:1px solid #000;padding:2px 8px}
+.br-marq{background:#FF0;border-block:2px solid #000;font-family:"Courier New",monospace;font-weight:700;white-space:nowrap;overflow:hidden;font-size:14px;padding:4px 0}
+.br-marq span{display:inline-block;padding-left:100%;animation:marq 16s linear infinite}
+@keyframes marq{to{transform:translateX(-100%)}}
+.br-count{font-family:"Courier New",monospace}
+.br-count b{background:#000;color:#0F0;padding:0 4px;letter-spacing:.15em}
+
+/* 12 Neo-Brutalism */
+.sp-neob{background-color:#FFF7E0;background-image:linear-gradient(rgba(0,0,0,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.07) 1px,transparent 1px);background-size:24px 24px;color:#000;font-family:Archivo,"Noto Sans SC",sans-serif;display:grid;place-items:center}
+.nb-card{position:relative;width:80%;max-width:340px;background:#FFE14D;border:3px solid #000;border-radius:10px;box-shadow:8px 8px 0 #000;padding:22px 20px;display:grid;gap:12px}
+.nb-tags{display:flex;gap:6px;flex-wrap:wrap}
+.nb-tag{background:#FFF;border:2px solid #000;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:600}
+.nb-tag + .nb-tag{background:#7AD3FF}
+.sp-neob h3{font-family:"Archivo Black",Archivo,sans-serif;font-weight:400;font-size:clamp(34px,11cqi,56px);line-height:.95;letter-spacing:-.02em}
+.nb-card p{font-size:15px;font-weight:600}
+.nb-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.nb-btn{background:#FF7AA2;color:#000;border:3px solid #000;border-radius:8px;box-shadow:4px 4px 0 #000;padding:9px 16px;font-family:Archivo,"Noto Sans SC",sans-serif;font-weight:800;font-size:15px;transition:transform .12s,box-shadow .12s}
+.nb-btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #000}
+.nb-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 #000}
+.nb-link{font-weight:800;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:3px}
+.nb-sticker{position:absolute;top:-24px;right:-18px;width:66px;height:66px;border-radius:50%;background:#7AD3FF;border:3px solid #000;display:grid;place-items:center;font-family:"Archivo Black",sans-serif;font-size:14px;transform:rotate(14deg);transition:transform .4s}
+.sp-neob:hover .nb-sticker{transform:rotate(-8deg) scale(1.08)}
+
+/* 13 Pixel */
+.sp-pixel{background:#1D2B53;color:#FFF1E8;font-family:"Press Start 2P",monospace;display:flex;flex-direction:column;justify-content:space-between;padding:18px}
+.px-stars{position:absolute;left:0;top:0;width:3px;height:3px;box-shadow:var(--stars)}
+.px-hud{position:relative;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#FFEC27}
+.px-lives{display:flex;gap:6px}
+.px-heart{position:relative;width:21px;height:18px;display:block}
+.px-heart::before{content:"";position:absolute;left:0;top:0;width:3px;height:3px;box-shadow:var(--heart)}
+.px-mid{position:relative;display:grid;justify-items:center;gap:22px}
+.sp-pixel h3{font-size:clamp(16px,5cqi,24px);font-weight:400;color:#FFEC27;text-shadow:4px 4px 0 #7E2553}
+.px-box{background:#000;padding:12px 16px;display:grid;gap:8px;box-shadow:0 -4px 0 #FFF1E8,0 4px 0 #FFF1E8,-4px 0 0 #FFF1E8,4px 0 0 #FFF1E8}
+.px-box p{font-family:VT323,monospace;font-size:22px;line-height:1.05}
+.px-box .px-menu{color:#29ADFF}
+.px-cur{color:#FF004D;animation:blink 1s steps(1) infinite}
+.px-start{position:relative;text-align:center;font-size:11px;animation:blink 1.2s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* 14 Cyberpunk */
+.sp-cyber{background-color:#07070D;background-image:linear-gradient(rgba(0,240,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.06) 1px,transparent 1px);background-size:28px 28px;color:#E6F7FF;font-family:"Share Tech Mono",monospace;padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between}
+.sp-cyber::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);pointer-events:none;z-index:5}
+.cy-hud{display:flex;justify-content:space-between;font-size:12px;color:#00F0FF;letter-spacing:.1em;border-bottom:1px solid rgba(0,240,255,.35);padding-bottom:6px}
+.cy-mid{position:relative;z-index:1;display:grid;gap:14px;max-width:80%}
+.cy-glitch{position:relative;font-family:Orbitron,sans-serif;font-weight:800;font-size:clamp(24px,9cqi,50px);line-height:1;color:#FCEE0A;letter-spacing:.02em}
+.cy-glitch::before,.cy-glitch::after{content:attr(data-text);position:absolute;left:0;top:0;opacity:0}
+.cy-glitch::before{color:#00F0FF;clip-path:inset(0 0 55% 0);animation:gl1 2.4s steps(1) infinite}
+.cy-glitch::after{color:#FF2A6D;clip-path:inset(50% 0 0 0);animation:gl2 2.4s steps(1) infinite}
+@keyframes gl1{0%,86%,100%{transform:none;opacity:0}88%{transform:translate(-4px,-1px);opacity:1}92%{transform:translate(3px,1px);opacity:1}}
+@keyframes gl2{0%,88%,100%{transform:none;opacity:0}90%{transform:translate(4px,1px);opacity:1}94%{transform:translate(-3px,0);opacity:1}}
+.sp-cyber:hover .cy-glitch::before,.sp-cyber:hover .cy-glitch::after{animation-duration:.7s}
+.cy-panel{background:rgba(0,240,255,.07);border-left:3px solid #00F0FF;padding:10px 14px;font-size:13px;line-height:1.7;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%)}
+.cy-panel b{color:#FCEE0A;font-weight:400}
+.cy-foot{position:relative;z-index:1;display:flex;align-items:center;gap:14px}
+.cy-btn{background:#FCEE0A;color:#07070D;border:0;font-family:Orbitron,sans-serif;font-weight:800;font-size:14px;letter-spacing:.12em;padding:12px 22px;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:background .15s}
+.cy-btn:hover{background:#00F0FF}
+.cy-code{font-size:11px;color:#FF2A6D}
+.cy-sign{position:absolute;right:18px;top:54px;writing-mode:vertical-rl;font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:clamp(20px,6cqi,30px);letter-spacing:.15em;color:#FFE3EC;text-shadow:0 0 4px #FF2A6D,0 0 12px #FF2A6D,0 0 28px #FF2A6D;animation:flick 5s infinite}
+@keyframes flick{0%,19%,21%,62%,64%,100%{opacity:1}20%,63%{opacity:.35}}
+
+/* 15 Y2K */
+.sp-y2k{background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.9) 0,transparent 38%),linear-gradient(160deg,#BFE6FF 0%,#E3D6FF 55%,#FFD6F3 100%);color:#1B2A6B;font-family:Syncopate,"Noto Sans SC",sans-serif;display:grid;place-items:center;text-align:center}
+.y2-c{position:relative;z-index:2;display:grid;justify-items:center;gap:8px}
+.y2-sub{font-size:11px;font-weight:700;letter-spacing:.32em}
+.y2-chrome{font-size:clamp(70px,24cqi,140px);font-weight:700;line-height:1;letter-spacing:-.02em;background:linear-gradient(180deg,#FFF 0%,#DCE6F1 28%,#6C7F9A 47%,#2C3A58 50%,#F2F7FC 53%,#A7B8CC 72%,#FFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1.5px rgba(27,42,107,.45);filter:drop-shadow(0 6px 10px rgba(70,80,200,.35))}
+.y2-pill{position:relative;margin-top:8px;border:0;border-radius:999px;padding:11px 28px;font-family:Syncopate,sans-serif;font-weight:700;font-size:13px;letter-spacing:.18em;color:#FFF;background:linear-gradient(180deg,#9FE6FF 0%,#38B3F7 48%,#1C8BDD 52%,#7CD8FF 100%);box-shadow:0 4px 12px rgba(30,143,224,.45),inset 0 -2px 4px rgba(0,60,140,.35);text-shadow:0 1px 1px rgba(0,50,120,.5);overflow:hidden;transition:filter .2s,transform .2s}
+.y2-pill::before{content:"";position:absolute;left:10%;right:10%;top:2px;height:45%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.9),rgba(255,255,255,.15))}
+.y2-pill:hover{filter:brightness(1.08) saturate(1.25);transform:scale(1.04)}
+.y2-note{font-size:10px;letter-spacing:.12em;opacity:.8}
+.y2-bub{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 28%,#FFF 0 7%,rgba(255,255,255,.35) 18%,rgba(158,231,255,.25) 55%,rgba(255,158,229,.45) 100%);border:1px solid rgba(255,255,255,.7);animation:bob 6s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-14px)}}
+.y2-star{position:absolute;background:#FFF;clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%);animation:tw 2.4s ease-in-out infinite}
+@keyframes tw{50%{transform:scale(.45) rotate(45deg);opacity:.55}}
+
+/* 16 Vaporwave */
+.sp-vapor{background:linear-gradient(180deg,#1B0B3A 0%,#4A1670 30%,#C2357E 55%,#FF9A76 63%);color:#FFF;font-family:"Noto Sans SC",sans-serif}
+.vp-sun{position:absolute;left:50%;top:22%;width:38cqi;aspect-ratio:1;margin-left:-19cqi;border-radius:50%;background:linear-gradient(180deg,#FFF06A 0%,#FFB347 40%,#FF4FA3 80%);
+  -webkit-mask:linear-gradient(#000 0 0) top/100% 52% no-repeat,repeating-linear-gradient(180deg,#000 0 9px,transparent 9px 14px) bottom/100% 48% no-repeat;
+  mask:linear-gradient(#000 0 0) top/100% 52% no-repeat,repeating-linear-gradient(180deg,#000 0 9px,transparent 9px 14px) bottom/100% 48% no-repeat}
+.vp-floor{position:absolute;left:0;right:0;bottom:0;height:37%;background:#1A0630;overflow:hidden;perspective:180px;perspective-origin:50% 0;border-top:2px solid #FF4FD8;box-shadow:0 -6px 24px rgba(255,79,216,.6)}
+.vp-grid{position:absolute;left:-100%;right:-100%;top:0;height:300%;transform-origin:50% 0;transform:rotateX(62deg);background-image:linear-gradient(#FF4FD8 2px,transparent 2px),linear-gradient(90deg,#FF4FD8 2px,transparent 2px);background-size:44px 44px;animation:vpg 1.6s linear infinite}
+@keyframes vpg{to{background-position:0 44px}}
+.vp-title{position:absolute;right:6%;top:7%;text-align:right;font-family:"Times New Roman",serif;font-style:italic;font-weight:700;font-size:clamp(20px,6.5cqi,36px);line-height:1.1;color:#FFF;text-shadow:2px 2px 0 #00E5FF,-2px -2px 0 #FF4FD8;z-index:2}
+.vp-title span{display:block;margin-top:4px;font-family:"Noto Sans SC",sans-serif;font-style:normal;font-size:13px;font-weight:500;letter-spacing:.3em;text-shadow:none;color:#FFD1F0}
+.vp-win{position:absolute;left:5%;bottom:8%;width:58%;max-width:240px;background:#C0C0C0;border:2px solid;border-color:#FFF #404040 #404040 #FFF;box-shadow:1px 1px 0 #000;color:#000;font-family:Tahoma,"MS Sans Serif",Arial,"Noto Sans SC",sans-serif;font-size:12px;z-index:3}
+.vp-tb{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:3px 3px 3px 6px;background:linear-gradient(90deg,#000080,#1084D0);color:#FFF;font-weight:700;white-space:nowrap;overflow:hidden}
+.vp-tb > span:first-child{overflow:hidden;text-overflow:ellipsis}
+.vp-btns{display:flex;gap:2px;flex:none}
+.vp-btns i{width:16px;height:14px;display:grid;place-items:center;font-style:normal;font-size:10px;line-height:1;background:#C0C0C0;color:#000;border:1px solid;border-color:#FFF #404040 #404040 #FFF}
+.vp-body{padding:10px;display:grid;gap:8px}
+.vp-body p{font-size:15px;letter-spacing:.1em}
+.vp-prog{height:16px;border:1px solid;border-color:#808080 #FFF #FFF #808080;padding:2px;display:flex;gap:2px;overflow:hidden}
+.vp-prog i{flex:none;width:10px;background:#000080}
+.vp-ok{justify-self:end;background:#C0C0C0;border:2px solid;border-color:#FFF #404040 #404040 #FFF;padding:3px 18px;font-family:inherit;font-size:12px;color:#000}
+.vp-ok:active{border-color:#404040 #FFF #FFF #404040}
+
+/* Art Nouveau */
+.sp-nouveau{background:radial-gradient(circle at 50% 35%,#F7EEDB 0,#F1E6CF 55%,#E6D5B3 100%);color:#2E2A24;font-family:"Cormorant Garamond",Georgia,"Noto Serif SC",serif}
+.an-vine{position:absolute;top:6%;height:88%;width:auto}
+.an-vine path{stroke:#4F6B4A;stroke-width:3;stroke-linecap:round}
+.an-l{left:3%}.an-r{right:3%;transform:scaleX(-1)}
+.an-arch{position:absolute;left:50%;top:7%;width:min(48cqi,210px);aspect-ratio:4/5;max-width:100%;transform:translateX(-50%);border-radius:50% 50% 0 0 / 34% 34% 0 0;border:2px solid #4F6B4A;outline:1px solid #B8873B;outline-offset:6px;background:linear-gradient(#EADBB9,#E2CFA6);overflow:hidden}
+.an-halo{position:absolute;width:82%;aspect-ratio:1;top:10%;left:9%;border-radius:50%;background:repeating-conic-gradient(rgba(184,135,59,.75) 0 1.2deg,transparent 1.2deg 9deg);border:2px solid #B8873B;animation:anspin 18s linear infinite;animation-play-state:paused}
+.sp-nouveau:hover .an-halo{animation-play-state:running}
+@keyframes anspin{to{transform:rotate(360deg)}}
+.an-stem{position:absolute;left:50%;top:62%;bottom:0;width:3px;margin-left:-1.5px;background:#4F6B4A}
+.an-flower{position:absolute;width:46%;top:24.4%;left:27%}
+.an-text{position:absolute;left:0;right:0;bottom:6%;text-align:center}
+.sp-nouveau h3{font-style:italic;font-weight:600;font-size:clamp(30px,9cqi,50px);line-height:1;color:#4F6B4A;letter-spacing:.02em}
+.an-text p{font-family:"Noto Serif SC",serif;font-size:13px;letter-spacing:.6em;color:#8E4A3C;margin-top:6px}
+
+/* Constructivism */
+.sp-constructivism{background:#EDE4D3;color:#1A1A1A;font-family:Oswald,"Noto Sans SC",sans-serif}
+.cv-top{position:absolute;left:6cqi;top:6cqi;font-size:12px;letter-spacing:.18em;line-height:1.5;font-weight:700}
+.cv-circle{position:absolute;width:36cqi;aspect-ratio:1;border-radius:50%;background:#1A1A1A;right:6cqi;top:9%}
+.cv-wedge{position:absolute;width:62cqi;height:16cqi;left:-6cqi;top:calc(9% + 10cqi);background:#C1272D;clip-path:polygon(0 0,100% 50%,0 100%);transform:rotate(-12deg);transition:transform .7s cubic-bezier(.2,.8,.2,1);z-index:1}
+.sp-constructivism:hover .cv-wedge{transform:rotate(-12deg) translateX(9cqi)}
+.cv-h{position:absolute;left:5cqi;top:58%;transform:rotate(-12deg);transform-origin:left center;font-weight:700;font-size:clamp(28px,11cqi,50px);line-height:1;text-transform:uppercase;z-index:2;white-space:nowrap}
+.cv-h em{font-style:normal;color:#C1272D}
+.cv-bar{position:absolute;left:-10%;right:-10%;bottom:17%;height:11cqi;background:#1A1A1A;transform:rotate(-8deg);display:flex;align-items:center;justify-content:center;color:#EDE4D3;font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:clamp(14px,4.4cqi,24px);letter-spacing:.4em}
+.cv-bar2{position:absolute;left:-10%;right:-10%;bottom:9%;height:2cqi;background:#C1272D;transform:rotate(-8deg)}
+
+/* Neo-Chinese */
+.sp-neochinese{background:radial-gradient(circle at 70% 20%,#F8F4EB 0,#F3EEE3 50%,#EAE2D2 100%);color:#1F1F1F;font-family:"Noto Serif SC",serif}
+.zh-moon{position:absolute;left:14%;top:12%;width:16cqi;aspect-ratio:1;border-radius:50%;background:#E6DCC6;box-shadow:0 0 30px rgba(200,185,154,.55)}
+.zh-meta{position:absolute;left:14%;top:calc(12% + 16cqi + 14px);font-size:12px;letter-spacing:.4em;color:#8A8170}
+.zh-ink{position:absolute;filter:blur(5px);transition:transform 1.4s ease,opacity 1.4s ease}
+.zh-i1{left:-15%;bottom:-18%;width:80%;height:58%;background:radial-gradient(ellipse 50% 60% at 50% 60%,rgba(31,31,31,.82),rgba(31,31,31,.25) 60%,transparent 75%)}
+.zh-i2{left:30%;bottom:-20%;width:72%;height:52%;background:radial-gradient(ellipse 50% 55% at 50% 60%,rgba(55,66,66,.55),rgba(55,66,66,.15) 60%,transparent 75%)}
+.zh-i3{left:2%;bottom:12%;width:60%;height:32%;background:radial-gradient(ellipse 50% 50% at 50% 60%,rgba(91,123,122,.35),transparent 70%)}
+.sp-neochinese:hover .zh-i1{transform:scale(1.08) translateY(-6px)}
+.sp-neochinese:hover .zh-i2{transform:scale(1.12) translateX(-8px);opacity:.85}
+.sp-neochinese:hover .zh-i3{transform:scale(1.2);opacity:.7}
+.zh-col{position:absolute;right:9%;top:9%;display:flex;flex-direction:row-reverse;align-items:flex-start;gap:12px}
+.zh-tc{display:flex;flex-direction:column;align-items:center;gap:14px}
+.sp-neochinese h3{writing-mode:vertical-rl;font-family:"Ma Shan Zheng","Noto Serif SC",serif;font-weight:400;font-size:clamp(40px,13cqi,72px);line-height:1;letter-spacing:.06em}
+.zh-seal{writing-mode:vertical-rl;background:#B7312C;color:#F3EEE3;font-family:"Ma Shan Zheng",serif;font-size:15px;line-height:1;padding:5px 4px;border-radius:3px}
+.zh-line{width:1px;height:110px;margin-top:6px;background:#B7312C}
+.zh-poem{margin-top:6px;writing-mode:vertical-rl;font-size:15px;letter-spacing:.7em;color:#5B7B7A}
+
+/* Claymorphism */
+.sp-clay{background:#FFE8F0;color:#3D2C5C;font-family:Fredoka,"Noto Sans SC",sans-serif;display:grid;place-items:center}
+.cl-ball{position:absolute;border-radius:50%;box-shadow:inset -8px -8px 16px rgba(0,0,0,.14),inset 8px 8px 16px rgba(255,255,255,.7),10px 14px 24px rgba(61,44,92,.18);animation:bob 5s ease-in-out infinite alternate}
+.cl-b1{width:16cqi;aspect-ratio:1;background:#9AD8FF;left:7%;top:10%}
+.cl-b2{width:10cqi;aspect-ratio:1;background:#FFB86B;right:9%;top:16%;animation-delay:-2s}
+.cl-b3{width:13cqi;aspect-ratio:1;background:#B79CFF;right:12%;bottom:9%;animation-delay:-3.5s}
+.cl-card{position:relative;width:62%;max-width:280px;padding:24px 20px 22px;border-radius:34px;background:#FFF6F9;box-shadow:16px 20px 36px rgba(61,44,92,.18),inset -10px -10px 20px rgba(214,170,190,.35),inset 10px 10px 20px rgba(255,255,255,.9);display:grid;justify-items:center;gap:8px;text-align:center}
+.cl-buddy{position:relative;width:76px;height:68px;border-radius:50% 50% 46% 46%;background:#FFB86B;box-shadow:inset -8px -8px 14px rgba(0,0,0,.14),inset 8px 8px 14px rgba(255,255,255,.6),6px 10px 18px rgba(61,44,92,.2)}
+.cl-buddy i{position:absolute;top:26px;width:9px;height:12px;border-radius:50%;background:#3D2C5C}
+.cl-buddy i:first-child{left:22px}.cl-buddy i:nth-child(2){right:22px}
+.cl-buddy b{position:absolute;left:50%;top:42px;width:18px;height:9px;margin-left:-9px;border-radius:0 0 12px 12px;background:#3D2C5C}
+.sp-clay h3{font-size:clamp(24px,7cqi,34px);font-weight:700;line-height:1.1}
+.cl-card p{font-size:14px;font-weight:500;color:#6B5B88}
+.cl-row{display:flex;gap:12px;margin-top:6px}
+.cl-btn{border:0;border-radius:20px;padding:12px 26px;font-family:Fredoka,"Noto Sans SC",sans-serif;font-weight:700;font-size:16px;color:#1E3A5C;background:#9AD8FF;box-shadow:inset -5px -5px 10px rgba(0,0,0,.14),inset 5px 5px 10px rgba(255,255,255,.7),5px 8px 14px rgba(61,44,92,.2);transition:transform .15s,box-shadow .15s}
+.cl-btn:active{transform:scale(.92,.86);box-shadow:inset -3px -3px 6px rgba(0,0,0,.14),inset 3px 3px 6px rgba(255,255,255,.7),2px 3px 6px rgba(61,44,92,.2)}
+.cl-alt{background:#B79CFF;color:#2E1B5C;padding:12px 18px}
+
+/* Aurora */
+.sp-aurora{background:#0B0C1E;color:#FFF;font-family:Sora,"Noto Sans SC",sans-serif}
+.au-bg{position:absolute;inset:-25%;background:radial-gradient(38% 42% at 25% 35%,#7B5CFF,transparent 70%),radial-gradient(32% 40% at 78% 30%,#22D3EE,transparent 70%),radial-gradient(40% 40% at 60% 80%,#FF6AB0,transparent 70%),radial-gradient(25% 30% at 30% 85%,#FFC56B,transparent 70%);filter:blur(30px) saturate(1.2);animation:audrift 14s ease-in-out infinite alternate}
+@keyframes audrift{50%{transform:translate(4%,-3%) rotate(8deg) scale(1.05)}100%{transform:translate(-3%,4%) rotate(-6deg)}}
+.au-grain,.gr-noise{position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.au-grain{opacity:.22;mix-blend-mode:overlay}
+.au-c{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:14px;padding:0 8cqi;text-shadow:0 2px 24px rgba(11,12,30,.35)}
+.au-pill{font-size:12px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3)}
+.sp-aurora h3{font-weight:600;font-size:clamp(36px,11cqi,68px);line-height:1;letter-spacing:-.04em}
+.au-c p{font-size:15px;color:rgba(255,255,255,.85)}
+.au-btns{display:flex;gap:10px;flex-wrap:wrap}
+.au-b1,.au-b2{border-radius:999px;padding:10px 20px;font-family:inherit;font-weight:600;font-size:14px;transition:background .2s}
+.au-b1{border:0;background:#FFF;color:#0B0C1E}
+.au-b2{border:1px solid rgba(255,255,255,.45);background:transparent;color:#FFF}
+.au-b1:hover{background:#E9E4FF}.au-b2:hover{background:rgba(255,255,255,.12)}
+
+/* Bento */
+.sp-bento{background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Manrope,"Noto Sans SC",sans-serif}
+.bt-grid{position:absolute;inset:0;padding:12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:10px}
+.bt-c{background:#FFF;border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.bt-c:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.08)}
+.bt-c small{font-size:12px;color:#6E6E73;font-weight:500;line-height:1.3}
+.bt-big{grid-column:1/3;grid-row:1/3;background:#1D1D1F;color:#F5F5F7}
+.bt-big small,.bt-big p{color:#A1A1A6}
+.bt-big b{font-size:clamp(44px,15cqi,96px);font-weight:700;line-height:.9;letter-spacing:-.05em}
+.bt-big b span{font-size:.28em;letter-spacing:0;margin-left:4px;font-weight:600}
+.bt-big p{font-size:13px;line-height:1.4}
+.bt-wide{grid-column:span 2}
+.bt-grad{background:linear-gradient(135deg,#E8E8ED,#C7C7CC 45%,#F5F5F7 55%,#B0B0B8)}
+.bt-grad small{color:#48484A}
+.bt-grad b,.bt-l{font-size:clamp(17px,5cqi,30px);font-weight:700;line-height:1.1}
+.bt-ring{align-items:center;justify-content:center}
+.bt-r{width:min(100%,74px);aspect-ratio:1;border-radius:50%;background:conic-gradient(#0071E3 0 87%,#E8E8ED 0);display:grid;place-items:center}
+.bt-r i{width:78%;aspect-ratio:1;border-radius:50%;background:#FFF;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:700}
+.bt-star{background:#FF9F0A;color:#FFF}
+.bt-star b{font-size:clamp(22px,6cqi,36px);font-weight:700;line-height:1}
+.bt-star small{color:#FFF}
+.bt-blue{background:#0071E3;color:#FFF}
+.bt-blue small{color:#D6E8FF}
+.bt-dots{display:flex;gap:6px}
+.bt-dots i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}
+
+/* Grunge */
+.sp-grunge{background:#D9D2C3;color:#1B1B1B;font-family:"Special Elite","Courier New",monospace}
+.gr-noise{opacity:.5;mix-blend-mode:multiply}
+.gr-stain{position:absolute;border-radius:50%}
+.gr-s1{width:40cqi;aspect-ratio:1;right:-8cqi;top:-6cqi;background:radial-gradient(circle,transparent 52%,rgba(111,106,94,.38) 56%,transparent 62%),radial-gradient(circle,rgba(139,30,30,.08),transparent 60%)}
+.gr-s2{width:34cqi;height:20cqi;left:4%;bottom:4%;background:radial-gradient(ellipse,rgba(27,27,27,.2),transparent 70%)}
+.gr-upside{position:absolute;left:7%;top:7%;font-size:12px;letter-spacing:.2em;transform:rotate(180deg)}
+.gr-paper{position:absolute;left:-4%;right:-4%;top:24%;padding:22px 10cqi 26px;background:#F1EDE4;transform:rotate(-4deg);clip-path:polygon(0 6%,6% 0,13% 5%,21% 1%,30% 6%,41% 0,52% 5%,61% 1%,72% 6%,83% 0,92% 5%,100% 2%,100% 94%,93% 100%,84% 95%,74% 99%,63% 94%,51% 100%,40% 95%,29% 99%,18% 94%,8% 100%,0 96%);transition:transform .5s}
+.sp-grunge:hover .gr-paper{transform:rotate(-1.5deg) translateX(8px)}
+.gr-type{font-size:12px;letter-spacing:.12em}
+.sp-grunge h3{font-family:"Rubik Dirt","Special Elite",sans-serif;font-weight:400;font-size:clamp(54px,19cqi,116px);line-height:.95;color:#1B1B1B;text-shadow:4px 2px 0 rgba(139,30,30,.85)}
+.gr-tape{position:absolute;width:24cqi;height:8cqi;background:rgba(228,192,74,.72);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.gr-t1{left:5%;top:20%;transform:rotate(-14deg)}
+.gr-t2{right:7%;top:57%;transform:rotate(10deg)}
+.gr-cn{position:absolute;left:7%;top:69%;font-family:"Noto Serif SC",serif;font-weight:600;font-size:14px;background:#1B1B1B;color:#D9D2C3;padding:2px 8px;transform:rotate(3deg)}
+.gr-marker{position:absolute;right:7%;bottom:7%;font-family:"Permanent Marker",cursive;font-size:clamp(18px,5cqi,28px);color:#8B1E1E;transform:rotate(-7deg);line-height:1.1;text-align:right;transition:transform .5s}
+.sp-grunge:hover .gr-marker{transform:rotate(-2deg) translateY(-6px)}
+
+/* Acid */
+.sp-acid{background:#0A0A0A;color:#FFF;font-family:Unbounded,"Noto Sans SC",sans-serif}
+.ac-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);background-size:25% 25%}
+.ac-ring{position:absolute;left:50%;top:50%;width:76cqi;height:30cqi;margin:-15cqi 0 0 -38cqi;border:1px solid rgba(198,255,0,.85);border-radius:50%;transform:rotate(-18deg)}
+.ac-star{position:absolute;right:8%;top:9%;width:20cqi;aspect-ratio:1;background:#C6FF00;clip-path:polygon(50% 0,56% 40%,100% 50%,56% 60%,50% 100%,44% 60%,0 50%,44% 40%);animation:acspin 9s linear infinite}
+.ac-s2{right:auto;top:auto;left:9%;bottom:26%;width:9cqi;background:#FFF;animation-direction:reverse}
+.sp-acid:hover .ac-star{animation-duration:1.6s}
+@keyframes acspin{to{transform:rotate(360deg)}}
+.ac-meta{position:absolute;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.12em;color:#C6FF00}
+.ac-m1{left:5%;top:5%}.ac-m2{left:5%;bottom:5%}.ac-m3{right:5%;bottom:5%;color:#FFF}
+.ac-title{position:absolute;left:0;right:0;top:50%;text-align:center;transform:translateY(-50%)}
+.ac-title span{display:inline-block;font-weight:800;font-size:clamp(46px,16cqi,100px);line-height:1;letter-spacing:-.04em;transform:scale(1.12,1.9);background:linear-gradient(180deg,#FFF 0%,#8A8A8A 38%,#1A1A1A 50%,#E6E6E6 58%,#6E6E6E 80%,#FFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ac-sub{position:absolute;left:0;right:0;bottom:21%;text-align:center;font-size:12px;letter-spacing:.5em;color:#C6FF00}
+.ac-bar{position:absolute;right:5%;bottom:10%;width:28cqi;height:6cqi;background:repeating-linear-gradient(90deg,#FFF 0 2px,transparent 2px 5px,#FFF 5px 6px,transparent 6px 9px,#FFF 9px 12px,transparent 12px 14px)}
+
+/* Retro Terminal */
+.sp-terminal{background:#1A1A18}
+.tm-screen{position:absolute;inset:14px;--ph:#33FF66;--glow:rgba(51,255,102,.6);border-radius:22px/18px;background:radial-gradient(ellipse at center,#0F1A10 0%,#060906 75%,#020302 100%);color:var(--ph);box-shadow:inset 0 0 50px rgba(0,0,0,.95),0 0 0 3px #2C2C28,0 0 0 6px #111;overflow:hidden;cursor:pointer;animation:tmflick 4s infinite}
+.tm-screen.amber{--ph:#FFB000;--glow:rgba(255,176,0,.55);background:radial-gradient(ellipse at center,#1A1308 0%,#090603 75%,#030201 100%)}
+.tm-screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px);pointer-events:none}
+.tm-screen:focus-visible{outline:2px solid var(--ph);outline-offset:4px}
+.tm-pre{margin:0;padding:18px 22px;font-family:VT323,monospace;font-size:clamp(13px,3.6cqi,20px);line-height:1.15;white-space:pre;text-shadow:0 0 4px var(--glow),0 0 10px var(--glow)}
+.tm-dim{opacity:.6}
+.tm-cur{display:inline-block;width:.55em;height:.95em;background:var(--ph);vertical-align:-.12em;box-shadow:0 0 8px var(--glow);animation:blink 1s steps(1) infinite}
+@keyframes tmflick{0%,100%{opacity:1}50%{opacity:.965}}
+
+@media (prefers-reduced-motion: reduce){
+  .spec *,.spec *::before,.spec *::after,.spec::after{animation:none!important;transition:none!important}
+  .cy-glitch::before,.cy-glitch::after{opacity:0!important}
+  .tile-box{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="mast-top"><span>WEB VISUAL STYLES · 25 SPECIMENS</span><span>1890s → 2025</span></div>
+    <h1>设计风格图鉴</h1>
+    <p class="lede">25 种可以直接用在网页前端的视觉风格。每张卡片左侧是用该风格真实绘制的活体标本，可以悬停、可以点击；右侧记录它的来历、特征、适用场景、字体建议和关键 CSS。风格按源流归入四个谱系，便于对照和挑选。</p>
+    <p class="legend"><span><b>装饰强度</b> 视觉存在感有多强</span><span><b>实现难度</b> 用 CSS 做好需要的功夫</span><span><b>可读性</b> 长时间阅读与操作是否舒适</span><span>色块可点击复制色值</span></p>
+  </header>
+
+  <nav class="index" id="index" aria-label="风格索引"></nav>
+  <div class="filters" id="filters" role="group" aria-label="按谱系筛选"></div>
+  <main id="groups"></main>
+
+  <section class="pick" id="pick">
+    <h2>按目标挑选</h2>
+    <p>先想清楚页面要传达的感觉，再从对应的风格里选一个做主调。</p>
+    <dl class="pick-grid" id="pickGrid"></dl>
+    <div class="tips">
+      <div class="tip"><h3>一主一辅</h3><p>选一种风格做主调，最多再从另一种里借一两个元素，例如瑞士网格配新野兽派按钮。同时混三种以上，页面就失去了辨识度。</p></div>
+      <div class="tip"><h3>装饰放在首屏</h3><p>装饰强度高的风格适合首屏、活动页和空状态。正文、表单和数据区域退回中性排版，读起来才不累。</p></div>
+      <div class="tip"><h3>检查对比度</h3><p>可读性评分在 3 以下的风格，正文与背景对比度要单独核对。WCAG AA 要求正文至少 4.5 : 1，大标题至少 3 : 1。</p></div>
+    </div>
+  </section>
+
+  <p class="foot">25 份标本全部用 HTML 与 CSS 绘制，没有使用任何图片。</p>
+</div>
+
+<script>
+const GROUPS = [
+  {id:"modern", name:"艺术与印刷源流", en:"ART & PRINT ROOTS", span:"1890s → 今", desc:"网页设计的底层语法：曲线与几何、对称与网格、字体层级，大多来自一百多年来的艺术运动和印刷传统，也包括我们自己的古籍与书画。"},
+  {id:"ui", name:"数字界面范式", en:"INTERFACE PARADIGMS", span:"2007 → 今", desc:"屏幕普及之后形成的界面语言。它们围绕同一个问题演化：界面要多像现实世界，用户才知道怎么用？"},
+  {id:"rebel", name:"反叛与表达", en:"REBELLION", span:"1981 → 今", desc:"对「好品味」和模板化的反抗。它们故意打破规则，所以辨识度极高。"},
+  {id:"retro", name:"怀旧与未来", en:"NOSTALGIA & FUTURES", span:"1980s → 今", desc:"从旧时代的科技里取材，或者想象一个霓虹闪烁的未来。情绪浓烈，适合主题鲜明的页面。"}
+];
+
+const S = [
+/* ---------------- modern ---------------- */
+{id:"nouveau", group:"modern", cn:"新艺术运动", short:"新艺术", en:"Art Nouveau", era:"1890 – 1910", place:"巴黎 · 布鲁塞尔 · 维也纳",
+ origin:"新艺术运动在 1890 到 1910 年间席卷欧洲，从巴黎、布鲁塞尔到维也纳都有它的身影。它反对工业化的粗糙复制，从植物、藤蔓和女性长发中提取流动的曲线。阿尔丰斯·穆夏的海报和赫克托·吉马尔设计的巴黎地铁入口是最有名的例子。它是装饰艺术的前身，比后者更柔软、更有机。",
+ traits:["鞭线般流动的有机曲线","花卉、藤蔓、光环等自然纹样","拱形画框与繁复的装饰边框","橄榄绿、赭石、古金等柔和的大地色"],
+ good:["花店、茶饮、香氛、美妆","手工艺与独立出版","婚礼、节庆邀请","酒庄、精品酒店"],
+ avoid:"科技产品与效率工具：曲线和纹样会让界面显得繁重，也很难做好响应式适配。",
+ palette:[["#F1E6CF","羊皮纸"],["#4F6B4A","橄榄绿"],["#B8873B","古金"],["#8E4A3C","赭红"],["#2E2A24","墨褐"]],
+ fonts:"英文：Cormorant Garamond、Federo、Cinzel Decorative；中文：思源宋体、霞鹜文楷。纹样优先用 SVG 绘制，方便缩放和换色。",
+ css:`.arch {
+  border-radius: 50% 50% 0 0 / 34% 34% 0 0;   /* 拱形画框 */
+  border: 2px solid #4F6B4A;
+  outline: 1px solid #B8873B;
+  outline-offset: 6px;
+}
+.halo {
+  border-radius: 50%;
+  background: repeating-conic-gradient(#B8873B 0 1.2deg,
+                                       transparent 1.2deg 9deg);
+}`,
+ m:[5,4,3], hint:"悬停：光环缓缓转动",
+ tile:"background:#F1E6CF;color:#4F6B4A;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600",
+ spec:`<svg class="an-vine an-l" viewBox="0 0 60 300" aria-hidden="true"><path fill="none" d="M40 300 C 0 250, 55 200, 25 150 S 50 60, 15 6"/><ellipse fill="#4F6B4A" cx="34" cy="232" rx="5" ry="12" transform="rotate(-40 34 232)"/><ellipse fill="#4F6B4A" cx="22" cy="178" rx="5" ry="12" transform="rotate(35 22 178)"/><ellipse fill="#4F6B4A" cx="38" cy="104" rx="5" ry="12" transform="rotate(-30 38 104)"/><ellipse fill="#4F6B4A" cx="22" cy="52" rx="4" ry="10" transform="rotate(30 22 52)"/><circle cx="15" cy="6" r="6" fill="#B8873B"/></svg> <svg class="an-vine an-r" viewBox="0 0 60 300" aria-hidden="true"><path fill="none" d="M40 300 C 0 250, 55 200, 25 150 S 50 60, 15 6"/><ellipse fill="#4F6B4A" cx="34" cy="232" rx="5" ry="12" transform="rotate(-40 34 232)"/><ellipse fill="#4F6B4A" cx="22" cy="178" rx="5" ry="12" transform="rotate(35 22 178)"/><ellipse fill="#4F6B4A" cx="38" cy="104" rx="5" ry="12" transform="rotate(-30 38 104)"/><ellipse fill="#4F6B4A" cx="22" cy="52" rx="4" ry="10" transform="rotate(30 22 52)"/><circle cx="15" cy="6" r="6" fill="#B8873B"/></svg>
+<div class="an-arch"><span class="an-halo"></span><span class="an-stem"></span><svg class="an-flower" viewBox="-50 -50 100 100" aria-hidden="true"><g fill="#B8873B">${[0,45,90,135,180,225,270,315].map(r=>`<ellipse rx="9" ry="21" cy="-22" transform="rotate(${r})"/>`).join("")}</g><g fill="#8E4A3C">${[22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5].map(r=>`<ellipse rx="5" ry="13" cy="-16" transform="rotate(${r})"/>`).join("")}</g><circle r="9" fill="#4F6B4A"/></svg></div>
+<div class="an-text"><h3>Printemps</h3><p>春之花信</p></div>`},
+
+{id:"bauhaus", no:1, group:"modern", cn:"包豪斯", short:"包豪斯", en:"Bauhaus", era:"1919 – 1933", place:"德国 · 魏玛 / 德绍 / 柏林",
+ origin:"1919 年由建筑师格罗皮乌斯在魏玛创办的包豪斯学校，主张打通艺术与手工艺，为工业化生产服务。学校只存在了 14 年，却奠定了现代设计教育的基础。基本几何形、三原色、无衬线字体和功能优先的构图，至今仍是网页视觉的底层语法。",
+ traits:["圆、方、三角三种基本形构成画面","红黄蓝三原色加黑白，不用渐变","几何无衬线字体，常全大写或全小写","非对称构图，用色块和粗线条划分空间"],
+ good:["艺术与教育机构","展览、文化活动页","品牌活动着陆页","海报式首屏"],
+ avoid:"信息密集的后台和表单：大色块会和真正需要关注的数据争夺注意力。",
+ palette:[["#D8352A","包豪斯红"],["#F2B705","铬黄"],["#1E4C9A","群青"],["#151515","墨黑"],["#EFE9DC","纸白"]],
+ fonts:"英文：Josefin Sans、Futura、Jost；中文：思源黑体 Heavy、站酷高端黑。全小写排版是包豪斯印刷的标志做法，来自赫伯特·拜耳设计的 Universal 字体。",
+ css:`.circle   { border-radius: 50%; background: #D8352A; }
+.triangle { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.layout   { display: grid; grid-template-columns: 2fr 1fr; }
+h1 {
+  font: 700 8rem/0.82 "Josefin Sans", Futura, sans-serif;
+  text-transform: lowercase;
+}`,
+ m:[4,2,3], hint:"悬停：几何形开始运动",
+ tile:"background:#EFE9DC;color:#D8352A;font-family:'Josefin Sans',sans-serif;font-weight:700",
+ spec:`<span class="bh-circle"></span><span class="bh-square"></span><span class="bh-tri"></span><span class="bh-bar"></span>
+<div class="bh-text"><h3>bau<br>haus</h3><p>艺术与技术，新的统一</p><small>weimar · dessau · berlin</small></div>`},
+
+{id:"constructivism", group:"modern", cn:"构成主义", short:"构成主义", en:"Russian Constructivism", era:"1915 – 1930s", place:"俄国 · 莫斯科 / 彼得格勒",
+ origin:"构成主义诞生于 1910 年代后期的俄国，罗德琴科、利西茨基等艺术家主张艺术应当服务社会，像工程一样被「建造」出来。他们的海报用强烈的对角线、红黑两色、粗体字和摄影拼贴制造冲击力。它和包豪斯相互影响，是现代海报和宣传设计的重要源头。",
+ traits:["强烈的对角线构图，画面充满动势","红、黑配新闻纸米白，色彩极少","粗壮的窄体无衬线字，文字本身就是图形","几何楔形、圆形与摄影拼贴组合"],
+ good:["活动与发布会海报页","新闻专题、观点类媒体","音乐节、剧场","宣言式品牌页面"],
+ avoid:"温和、亲切的消费品牌。另外红黑配色加标语式文案容易带上政治联想，要留意语境。",
+ palette:[["#C1272D","构成红"],["#1A1A1A","黑"],["#EDE4D3","新闻纸"],["#8A8172","铅灰"]],
+ fonts:"英文：Oswald、Anton、Bebas Neue；中文：思源黑体 Heavy、站酷高端黑。整块文字可以用 transform: rotate() 倾斜，顺着对角线排布。",
+ css:`.wedge {
+  background: #C1272D;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform: rotate(-12deg);
+}
+.diagonal { transform: rotate(-12deg); transform-origin: left center; }
+h1 {
+  font: 700 6rem/0.9 Oswald, sans-serif;
+  text-transform: uppercase;
+}`,
+ m:[4,2,3], hint:"悬停：红色楔形向前刺入",
+ tile:"background:linear-gradient(-20deg,#EDE4D3 46%,#C1272D 46% 58%,#EDE4D3 58%);color:#1A1A1A;font-family:Oswald,sans-serif;font-weight:700",
+ spec:`<p class="cv-top">КОНСТРУКТИВИЗМ<br>№ 3 · 1923</p><span class="cv-circle"></span><span class="cv-wedge"></span><h3 class="cv-h"><em>NEW</em> FORM</h3><div class="cv-bar">向前 · 建造新世界</div><span class="cv-bar2"></span>`},
+
+{id:"deco", no:2, group:"modern", cn:"装饰艺术", short:"装饰艺术", en:"Art Deco", era:"1920s – 1930s", place:"法国巴黎 → 纽约 / 上海",
+ origin:"名称来自 1925 年巴黎的国际现代装饰与工业艺术博览会。它把机器时代的几何感和奢华材料结合在一起，纽约克莱斯勒大厦的尖顶、上海外滩的老建筑、《了不起的盖茨比》里的派对都属于这套语汇。放到网页上，它意味着对称、精致的细线和金色。",
+ traits:["严格中轴对称，内容居中","放射线、扇形、阶梯形和重复几何纹样","金色、黄铜色配深黑、墨绿或藏青","高而窄的装饰字体，字距拉得很开"],
+ good:["酒店、餐厅、酒吧","奢侈品与珠宝","婚礼与活动邀请函","剧院、爵士音乐节"],
+ avoid:"日常工具与 SaaS：仪式感太重，反复使用容易疲劳；细金线在小屏幕上也容易糊成一片。",
+ palette:[["#0E1D19","孔雀墨"],["#C9A45C","香槟金"],["#E8DCC0","象牙"],["#1F3A33","墨绿"],["#7A2E2A","勃艮第"]],
+ fonts:"英文：Limelight、Poiret One、Cinzel Decorative；中文：思源宋体、方正清刻本悦宋。标题字距加到 0.3em 左右时效果最明显。",
+ css:`.sunburst {
+  background: repeating-conic-gradient(from -90deg at 50% 100%,
+    #C9A45C22 0 2.5deg, transparent 2.5deg 8deg);
+}
+.frame {
+  border: 1px solid #C9A45C;
+  outline: 1px solid #C9A45C;
+  outline-offset: 6px;          /* 双线框 */
+}
+h1 { font-family: Limelight; letter-spacing: .08em; }`,
+ m:[4,3,3], hint:"悬停按钮：金色填充",
+ tile:"background:#0E1D19;color:#D9B56A;font-family:Limelight,serif",
+ spec:`<div class="dc-frame"><div class="dc-fan"></div><p class="dc-est">EST. MCMXXV</p><h3>THE GRAND</h3><p class="dc-cn">大饭店 · 金色年代</p><div class="dc-rule"><span></span>◆<span></span></div><button class="dc-btn" type="button">RESERVE</button></div>`},
+
+{id:"swiss", no:3, group:"modern", cn:"瑞士国际主义", short:"瑞士风格", en:"International Typographic Style", era:"1950s – 1970s", place:"瑞士 · 苏黎世 / 巴塞尔",
+ origin:"又叫国际主义平面风格，代表人物有约瑟夫·米勒-布罗克曼和阿明·霍夫曼，1957 年诞生的 Helvetica 字体就是它的产物。核心信念是设计应当客观、清晰、可复用，网格是组织一切的工具。今天绝大多数「看起来很专业」的网站都直接继承了它。",
+ traits:["严格的模块网格，元素对齐到栏线","无衬线字体，如 Helvetica、Akzidenz-Grotesk","左对齐，右侧自然参差，不强行两端对齐","大小字号强烈对比，红黑白是经典配色"],
+ good:["企业官网与作品集","文档、数据与信息设计","新闻与长文排版","设计系统的基础风格"],
+ avoid:"需要情绪和亲和力的消费品牌：做得不到位会显得冷淡，像模板。",
+ palette:[["#E30613","瑞士红"],["#0E0E0E","黑"],["#F3F2EE","白"],["#8C8C8C","灰"]],
+ fonts:"英文：Helvetica Neue、Inter、Neue Haas Grotesk；中文：思源黑体、苹方。字重只用常规和粗体两级，层级靠字号拉开。",
+ css:`.page {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 24px;
+}
+h1 {
+  font: 700 clamp(3rem, 9vw, 8rem)/0.9 "Helvetica Neue", Arial;
+  letter-spacing: -0.04em;
+}
+p { text-align: left; hyphens: auto; }`,
+ m:[2,2,5], hint:"悬停：红色模块沿网格延展",
+ tile:"background:#E30613;color:#FFF;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:700;letter-spacing:-.04em",
+ spec:`<div class="sw-num">57</div><div class="sw-red"></div><h3 class="sw-h">Neue<br>Grafik</h3><p class="sw-p">网格是秩序的工具。<br>Das Raster als Ordnungssystem.</p><p class="sw-meta">Zürich<br>Helvetica, 1957</p>`},
+
+{id:"neochinese", group:"modern", cn:"新中式", short:"新中式", en:"Neo-Chinese Aesthetics", era:"2010s → 今", place:"源自宋代美学、文人画与古籍版式",
+ origin:"新中式不是某个流派的正式名称，而是近十几年中文设计界对「用现代手法表达传统美学」的统称。它从宋代器物的素雅、文人画的留白、古籍的竖排版式和篆刻印章中取材，再用现代的网格、字体和克制的配色重新组织。博物馆的数字产品和许多茶饮、文旅品牌都是典型。",
+ traits:["大量留白，讲究「计白当黑」","竖排文字，宋体或书法做标题","朱红印章作为唯一的高饱和点缀","水墨晕染、传统色、窗棂与云纹"],
+ good:["茶、香、器物等生活方式品牌","博物馆、文旅、非遗","节气与传统节日专题","国潮、新消费品牌"],
+ avoid:"堆砌龙凤、祥云和大面积金红会显得俗气；竖排只适合短句，网页上的长正文仍应横排。",
+ palette:[["#F3EEE3","宣纸"],["#1F1F1F","焦墨"],["#B7312C","朱砂"],["#5B7B7A","青瓷"],["#C8B99A","绢黄"]],
+ fonts:"中文：思源宋体、霞鹜文楷、方正清刻本悦宋；书法标题可用马善政体、智莽行，两者都能从 Google Fonts 直接加载。",
+ css:`.vertical {
+  writing-mode: vertical-rl;
+  letter-spacing: .3em;
+  font-family: "Noto Serif SC", serif;
+}
+.seal {
+  background: #B7312C; color: #F3EEE3;
+  padding: 4px; border-radius: 3px;
+  font-family: "Ma Shan Zheng", serif;
+}
+.ink { background: radial-gradient(#1F1F1FAA, transparent 70%); filter: blur(6px); }`,
+ m:[3,3,3], hint:"悬停：远山水墨晕开",
+ tileText:"墨",
+ tile:"background:#F3EEE3;color:#1F1F1F;font-family:'Ma Shan Zheng','Noto Serif SC',serif;box-shadow:inset -6px -6px 0 -3px #B7312C",
+ spec:`<span class="zh-moon"></span><p class="zh-meta">白露 · 卯时</p><span class="zh-ink zh-i3"></span><span class="zh-ink zh-i2"></span><span class="zh-ink zh-i1"></span><div class="zh-col"><div class="zh-tc"><h3>听雨</h3><span class="zh-seal">清欢</span></div><span class="zh-line"></span><p class="zh-poem">山色有无中</p></div>`},
+
+/* ---------------- ui ---------------- */
+{id:"skeuo", no:4, group:"ui", cn:"拟物化", short:"拟物化", en:"Skeuomorphism", era:"2007 – 2013", place:"苹果 iOS 1–6 · Mac OS X",
+ origin:"拟物化让界面模仿现实物体，早期 iOS 的木纹书架、皮革日历和黄色便签本都是例子。触屏刚普及时，这些真实质感告诉用户「这个可以按」。2013 年 iOS 7 转向扁平后它迅速退潮，但在音频插件、游戏和硬件控制面板里一直活着。",
+ traits:["模拟真实材质：金属、皮革、木纹、纸张","多层渐变、高光和投影，强调立体感","物理隐喻：旋钮、拨杆、指示灯、缝线","凹刻或浮雕文字，用 1px 亮色 text-shadow 实现"],
+ good:["音频插件、合成器、音乐 App","游戏与儿童教育","硬件和智能设备控制面板","需要触感和趣味的小组件"],
+ avoid:"大型信息产品：视觉负担重，制作成本高，整站使用容易显得过时。",
+ palette:[["#2B2D31","阳极黑"],["#A6AAB0","拉丝铝"],["#869C73","LCD 绿"],["#FF3B30","指示灯红"],["#DADDE0","高光"]],
+ fonts:"英文：Helvetica、Lucida Grande 配凹刻效果；数码屏用 Share Tech Mono 或 DSEG 七段字体。中文：苹方、思源黑体。",
+ css:`.panel {
+  background: linear-gradient(#4a4d52, #2b2d31);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25),
+              0 14px 28px rgba(0,0,0,.45);
+}
+.engraved {
+  color: #1c1d20;
+  text-shadow: 0 1px 0 rgba(255,255,255,.18);
+}`,
+ m:[5,5,3], hint:"点击 POWER 拨杆，悬停转动旋钮",
+ tile:"background:linear-gradient(#4A4D52,#2B2D31);color:#DADDE0;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:700;text-shadow:0 -1px 0 #000",
+ spec:`<div class="sk-panel">
+<i class="sk-screw" style="top:8px;left:8px"></i><i class="sk-screw" style="top:8px;right:8px"></i><i class="sk-screw" style="bottom:8px;left:8px"></i><i class="sk-screw" style="bottom:8px;right:8px"></i>
+<div class="sk-brand">STUDIO RECORDER · MK II</div>
+<div class="sk-lcd"><span class="sk-lcd-l">○ STBY</span><span>00:42</span></div>
+<div class="sk-row">
+<div class="sk-ctl"><div class="sk-knob"></div><span class="sk-lbl">GAIN</span></div>
+<div class="sk-ctl"><button type="button" class="sk-switch" aria-pressed="false" aria-label="电源开关"><i></i></button><span class="sk-lbl">POWER</span></div>
+<div class="sk-ctl"><span class="sk-led"></span><span class="sk-lbl">REC</span></div>
+</div></div>`},
+
+{id:"minimal", no:5, group:"ui", cn:"极简主义", short:"极简主义", en:"Minimalism", era:"2010s →", place:"源自 1960s 极简艺术与日本美学",
+ origin:"网页极简主义在 2010 年代随苹果和高端品牌成为主流，思想上可以追溯到 1960 年代的极简艺术、密斯·凡·德·罗的「少即是多」，以及迪特·拉姆斯的「少，但更好」。它看起来最容易，做起来最难：元素越少，每一处间距和字重的偏差都越显眼。",
+ traits:["大量留白，留白本身就是构图","元素极少，只有一种强调色或干脆纯黑白","细字重、宽松行距、精确对齐","靠排版层级而不是装饰引导视线"],
+ good:["高端产品与品牌官网","摄影与设计作品集","个人博客、长文阅读","SaaS 着陆页"],
+ avoid:"功能多、入口多的门户和电商首页：内容一多，极简就变成了「找不到东西」。",
+ palette:[["#FAFAF7","米白"],["#121212","近黑"],["#6D6D6D","中灰"],["#E5E5E0","分隔线"]],
+ fonts:"英文：Manrope、Inter、Söhne；中文：思源黑体 Light / Regular、苹方。控制在 1 个字族、2 到 3 个字重以内。",
+ css:`.hero { padding: 20vh 8vw; }
+h1 {
+  font: 300 clamp(2.5rem, 6vw, 5rem)/1.05 Manrope, sans-serif;
+  letter-spacing: -0.03em;
+}
+p { max-width: 38ch; color: #6d6d6d; }
+a { border-bottom: 1px solid currentColor; text-decoration: none; }`,
+ m:[1,3,4], hint:"悬停：底部细线延伸",
+ tile:"background:#FAFAF7;color:#121212;font-family:Manrope,sans-serif;font-weight:300",
+ spec:`<div class="mn-top"><span>Studio Kōyō</span><span>Work About</span></div>
+<div class="mn-mid"><h3>Less,<br>but better.</h3><p>好的设计是尽可能少的设计。</p><p class="mn-cite">Dieter Rams · 好设计十原则</p></div>
+<div class="mn-bot"><span class="mn-line"></span><span>查看作品 →</span><span class="mn-dot"></span></div>`},
+
+{id:"flat", no:6, group:"ui", cn:"扁平化", short:"扁平化", en:"Flat Design", era:"2010 – 2015", place:"Windows Phone Metro → iOS 7",
+ origin:"微软 2010 年的 Metro 设计语言最早把界面彻底「压平」，2013 年 iOS 7 让扁平化成为全行业的默认选择。它去掉了所有模拟质感，只留下纯色、简洁图标和排版。后来的「扁平 2.0」又补回少量阴影，用来解决按钮看起来不能点的问题。",
+ traits:["纯色块，不用渐变、纹理和投影","简洁的线性或色块图标","高饱和但彼此协调的色板","排版与色彩承担全部层级"],
+ good:["移动 App 与响应式网站","信息图、插画式着陆页","图标系统、仪表盘","几乎所有通用产品"],
+ avoid:"完全扁平时，按钮和普通色块很难区分。可点击元素需要额外提示，比如颜色、下划线或轻微阴影。",
+ palette:[["#1ABC9C","绿松石"],["#3498DB","彼得河蓝"],["#F1C40F","向日葵"],["#E74C3C","茜红"],["#2C3E50","午夜蓝"]],
+ fonts:"英文：Open Sans、Lato、Source Sans 3；中文：思源黑体、HarmonyOS Sans。示例色板取自 2013 年流行的 Flat UI Colors。",
+ css:`.btn {
+  background: #1ABC9C;
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+}
+.btn:hover { background: #16A085; }
+.mountain {
+  background: #2C3E50;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+}`,
+ m:[2,1,4], hint:"悬停按钮查看颜色变化",
+ tile:"background:#1ABC9C;color:#FFF;font-family:'Noto Sans SC',sans-serif;font-weight:900",
+ spec:`<div class="fl-in"><div class="fl-art"><span class="fl-sun"></span><span class="fl-m1"></span><span class="fl-m2"></span><span class="fl-hill"></span></div>
+<div class="fl-side"><h3>扁平化</h3><p>去掉阴影与纹理，只留色彩和形状。</p>
+<div class="fl-tiles"><span style="background:#E74C3C">@</span><span style="background:#F1C40F">★</span><span style="background:#9B59B6">♫</span><span style="background:#2C3E50">✓</span></div>
+<button class="fl-btn" type="button">开始使用</button></div></div>`},
+
+{id:"material", no:7, group:"ui", cn:"Material Design", short:"Material", en:"Material Design", era:"2014 → 今", place:"Google · M1 / M2 / M3",
+ origin:"Google 在 2014 年发布 Material Design，把扁平化做成了一套完整规范。界面被看作一张张有厚度的「纸」，用阴影表示高度（elevation），点击时像墨水一样扩散的涟漪提供反馈。2021 年的 Material 3 加入了从壁纸提取的动态配色和更大的圆角。",
+ traits:["用阴影或色调表达层级高度","点击涟漪和有意义的过渡动效","8dp 网格与严格的组件规范","悬浮操作按钮 FAB、卡片、Chip 等标准组件"],
+ good:["Android 与跨平台 Web 应用","管理后台、表单密集的工具","需要快速落地的产品原型","多人协作的设计系统"],
+ avoid:"强调品牌个性的营销页：原样套用会「很像 Google」，需要改配色、字体和圆角。",
+ palette:[["#6750A4","Primary"],["#EADDFF","Primary Container"],["#FEF7FF","Surface"],["#79747E","Outline"],["#1D1B20","On Surface"]],
+ fonts:"英文：Roboto、Roboto Flex、Google Sans；中文：思源黑体，它本身就是 Google Noto 字体家族的一员。",
+ css:`.card {
+  border-radius: 12px;
+  background: #F7F2FA;
+  box-shadow: 0 1px 2px rgba(0,0,0,.3),
+              0 1px 3px 1px rgba(0,0,0,.15); /* elevation 1 */
+}
+.fab {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: #EADDFF; color: #21005D;
+}`,
+ m:[2,2,5], hint:"点击卡片或 + 按钮查看涟漪",
+ tile:"background:#EADDFF;color:#21005D;font-family:Roboto,sans-serif;font-weight:500;border-radius:16px",
+ spec:`<div class="mt-bar"><span class="mt-menu"><i></i><i></i><i></i></span><span class="mt-title">收件箱</span><span class="mt-av">M</span></div>
+<div class="mt-body"><div class="mt-chips"><span class="mt-chip on">✓ 全部</span><span class="mt-chip">未读</span><span class="mt-chip">已加星标</span></div>
+<div class="mt-card" data-ripple><span class="mt-ava" style="background:#7D5260">林</span><div class="mt-txt"><b>设计评审</b><small>下午 3 点 · 新版组件库走查</small></div></div>
+<div class="mt-card" data-ripple><span class="mt-ava" style="background:#625B71">周</span><div class="mt-txt"><b>周报已提交</b><small>本周完成 12 项任务</small></div></div></div>
+<button class="mt-fab" type="button" data-ripple aria-label="新建">+</button>`},
+
+{id:"neumorph", no:8, group:"ui", cn:"新拟态", short:"新拟态", en:"Neumorphism / Soft UI", era:"2019 – 2021", place:"Dribbble 概念作品",
+ origin:"2019 年底，设计师 Alexander Plyuto 在 Dribbble 发布的一个银行 App 概念让这种风格迅速走红，名字由 new 和 skeuomorphism 拼成。元素与背景完全同色，只靠一亮一暗两道阴影「挤」出凸起或凹陷，像一块软塑料上压出的形状。",
+ traits:["元素与背景同色，几乎没有边框","左上亮阴影加右下暗阴影是凸起，inset 是凹陷","低对比、低饱和的柔和色调","大圆角，适合圆形按钮与滑块"],
+ good:["计算器、播放器等单一功能小工具","智能家居、硬件控制面板","作品集里的视觉概念","局部点缀一两个控件"],
+ avoid:"整站使用：对比度普遍达不到 WCAG 标准，按下和未按下的状态难以分辨，对视力较弱的用户不友好。",
+ palette:[["#E3E8EF","底色"],["#FFFFFF","亮阴影"],["#BEC4CE","暗阴影"],["#6A788C","文字"],["#5B8DEF","强调"]],
+ fonts:"英文：Manrope、Nunito、Poppins；中文：思源黑体 Medium、苹方。文字颜色要比看上去需要的再深一档。",
+ css:`.raised {
+  background: #E3E8EF;
+  box-shadow: 10px 10px 20px #BEC4CE,
+             -10px -10px 20px #FFFFFF;
+}
+.pressed {
+  box-shadow: inset 6px 6px 12px #BEC4CE,
+              inset -6px -6px 12px #FFFFFF;
+}`,
+ m:[3,3,2], hint:"点击圆形按钮和风速键：凸起与凹陷切换",
+ tile:"background:#E3E8EF;color:#6A788C;font-family:Manrope,sans-serif;font-weight:800;box-shadow:inset 4px 4px 8px #BEC4CE,inset -4px -4px 8px #FFF",
+ spec:`<div class="nu-wrap"><h3>SOFT UI</h3><button class="nu-btn" type="button" aria-pressed="false" aria-label="播放"><i></i></button>
+<div class="nu-track"><span class="nu-fill"></span><span class="nu-knob"></span></div>
+<div class="nu-row"><button class="nu-key" type="button" aria-pressed="false">低</button><button class="nu-key" type="button" aria-pressed="true">中</button><button class="nu-key" type="button" aria-pressed="false">高</button></div></div>`},
+
+{id:"glass", no:9, group:"ui", cn:"玻璃拟态", short:"玻璃拟态", en:"Glassmorphism", era:"2020 → 今", place:"Windows Aero → macOS Big Sur → Liquid Glass",
+ origin:"半透明的模糊面板早在 2007 年 Windows Vista 的 Aero 里就出现过，iOS 7 和 macOS Big Sur 让它回归，2020 年设计圈给它起名「玻璃拟态」。2025 年苹果推出 Liquid Glass 设计语言，这种质感再次成为焦点。CSS 的 backdrop-filter 让它在网页上实现起来非常简单。",
+ traits:["半透明背景加背景模糊 backdrop-filter","面板边缘一条细细的高光描边","背后必须有丰富的渐变或光斑，玻璃感才出得来","多层叠放，营造前后纵深"],
+ good:["叠在图片或视频上的信息卡","音乐、天气、仪表盘小组件","登录弹窗、导航栏","科技产品着陆页"],
+ avoid:"文字对比度取决于背后的内容，很难保证；大面积模糊在低端设备上会掉帧。",
+ palette:[["#1B1530","深底"],["#FF5FA2","光斑粉"],["#5B7CFF","光斑蓝"],["#2FE0C4","光斑青"],["#FFFFFF24","玻璃 14%"]],
+ fonts:"英文：Inter Display、SF Pro、Plus Jakarta Sans；中文：苹方、思源黑体。数字用细字重的大字号，和模糊背景形成对比。",
+ css:`.glass {
+  background: rgba(255,255,255,.14);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 22px;
+}`,
+ m:[3,3,3], hint:"背后的光斑在缓慢流动",
+ tile:"background:linear-gradient(135deg,#FF5FA2,#5B7CFF 70%,#2FE0C4);color:#FFF;font-family:Manrope,sans-serif;font-weight:300",
+ spec:`<span class="gl-b gl-b1"></span><span class="gl-b gl-b2"></span><span class="gl-b gl-b3"></span>
+<div class="gl-card"><div class="gl-top"><span>大理</span><span>晴转多云</span></div><div class="gl-temp">21°</div>
+<div class="gl-hours"><span><small>14时</small>22°</span><span><small>15时</small>22°</span><span><small>16时</small>21°</span><span><small>17时</small>19°</span></div></div>`},
+
+{id:"aurora", group:"ui", cn:"弥散渐变", short:"弥散渐变", en:"Aurora / Mesh Gradient", era:"2018 → 今", place:"Stripe 官网 · macOS 壁纸 · AI 产品",
+ origin:"弥散渐变用几块大面积模糊的色彩光斑叠出流动的渐变，像极光，也像光线穿过彩色玻璃。2020 年前后 Stripe 官网用 WebGL 做的动态渐变让它广为人知，macOS Big Sur 的壁纸进一步推广。近几年它几乎成了 AI 和 SaaS 产品官网的默认外观，想用出新意，要在配色和构图上多下功夫。",
+ traits:["多个大面积模糊光斑相互融合","叠一层细颗粒噪点，避免色带，增加质感","深色或纯白背景，配大号无衬线标题","光斑缓慢流动，营造氛围"],
+ good:["SaaS、AI 与科技产品官网","发布会、产品首屏","音乐封面、活动主视觉","卡片或按钮的氛围背景"],
+ avoid:"已经被大量使用，容易同质化；光斑颜色太跳会抢走正文的注意力。",
+ palette:[["#0B0C1E","深夜"],["#7B5CFF","电光紫"],["#22D3EE","冰青"],["#FF6AB0","霓粉"],["#FFC56B","暖金"]],
+ fonts:"英文：Sora、Inter Tight、General Sans；中文：MiSans、HarmonyOS Sans。标题字距收紧到 -0.03em 左右。",
+ css:`.aurora::before {
+  content: ""; position: absolute; inset: -25%;
+  background:
+    radial-gradient(38% 42% at 25% 35%, #7B5CFF, transparent 70%),
+    radial-gradient(32% 40% at 78% 30%, #22D3EE, transparent 70%),
+    radial-gradient(40% 40% at 60% 80%, #FF6AB0, transparent 70%);
+  filter: blur(30px);
+  animation: drift 14s ease-in-out infinite alternate;
+}
+/* 颗粒：SVG feTurbulence 生成噪点，mix-blend-mode: overlay 叠加 */`,
+ m:[3,2,4], hint:"光斑缓慢流动，上面叠了一层颗粒噪点",
+ tile:"background:radial-gradient(60% 60% at 25% 30%,#7B5CFF,transparent),radial-gradient(60% 60% at 80% 75%,#22D3EE,transparent),radial-gradient(50% 50% at 70% 20%,#FF6AB0,transparent),#0B0C1E;color:#FFF;font-family:Sora,sans-serif;font-weight:600",
+ spec:`<div class="au-bg"></div><div class="au-grain"></div><div class="au-c"><span class="au-pill">v4.0 新版本已发布 →</span><h3>Think in<br>color.</h3><p>让每一个想法都带着光。</p><div class="au-btns"><button class="au-b1" type="button">免费试用</button><button class="au-b2" type="button">观看演示</button></div></div>`},
+
+{id:"clay", group:"ui", cn:"黏土拟态", short:"黏土拟态", en:"Claymorphism", era:"2021 → 今", place:"Dribbble · 3D 插画潮流",
+ origin:"黏土拟态由设计师 Michał Malewicz 在 2021 年命名，紧跟在新拟态和玻璃拟态之后。它让元素看起来像一团圆润的黏土或充气玩具：外面有柔和的投影，里面用一亮一暗两道 inset 阴影做出体积。和新拟态不同，它的每个元素都有自己的颜色，会从背景上「浮」起来，对比度也好得多。",
+ traits:["超大圆角，形状圆润饱满","外投影加两道内阴影（上亮下暗）塑造体积","柔和的糖果色，每个元素自带颜色","常配 3D 风格的图标与吉祥物插画"],
+ good:["儿童、教育类产品","休闲游戏、社交 App","品牌吉祥物与营销插画","引导页、空状态"],
+ avoid:"专业工具和严肃行业：显得幼稚；多层阴影用在长列表里也会拖累渲染性能。",
+ palette:[["#FFE8F0","樱花底"],["#9AD8FF","云朵蓝"],["#FFB86B","杏橙"],["#B79CFF","薰衣草"],["#3D2C5C","葡萄紫"]],
+ fonts:"英文：Fredoka、Nunito、Baloo 2；中文：阿里妈妈方圆体、站酷快乐体。字重用到 600 以上，才配得上圆润的形状。",
+ css:`.clay {
+  border-radius: 32px;
+  background: #9AD8FF;
+  box-shadow: 14px 14px 28px rgba(61,44,92,.18),
+              inset -8px -8px 16px rgba(0,0,0,.12),
+              inset 8px 8px 16px rgba(255,255,255,.65);
+}
+.clay:active { transform: scale(.92, .86); }   /* 被按扁 */`,
+ m:[4,3,4], hint:"按住按钮：黏土被压扁",
+ tile:"background:#9AD8FF;color:#3D2C5C;font-family:Fredoka,sans-serif;font-weight:700;border-radius:22px;box-shadow:inset -5px -5px 10px rgba(0,0,0,.12),inset 5px 5px 10px rgba(255,255,255,.65)",
+ spec:`<span class="cl-ball cl-b1"></span><span class="cl-ball cl-b2"></span><span class="cl-ball cl-b3"></span>
+<div class="cl-card"><div class="cl-buddy"><i></i><i></i><b></b></div><h3>Play Time!</h3><p>今天也要开开心心</p><div class="cl-row"><button class="cl-btn" type="button">开始</button><button class="cl-btn cl-alt" type="button" aria-label="收藏">★</button></div></div>`},
+
+{id:"bento", group:"ui", cn:"便当盒网格", short:"便当网格", en:"Bento Grid", era:"2022 → 今", place:"苹果发布会 · Linear · Vercel",
+ origin:"便当盒网格得名于日式便当的分格餐盒：一个规整的矩形被分成大小不一的圆角格子，每格装一项内容。苹果在发布会和官网上用它总结产品特性，随后被 Linear、Vercel 等科技公司和大量个人主页采用。它本质上是 CSS Grid 的直接应用，信息密度高却不显乱。",
+ traits:["大小不一的圆角卡片拼成规整矩形","每格只讲一件事：一个数字、一张图或一句话","统一的圆角、间距和内边距","重点格占更大面积，自然形成阅读顺序"],
+ good:["产品特性介绍页","个人主页与作品集","数据看板、年度总结","设计系统展示"],
+ avoid:"需要按顺序讲述的长内容；格子太多或每格信息不聚焦时，会变成杂乱的拼盘。",
+ palette:[["#F5F5F7","浅灰底"],["#1D1D1F","深灰"],["#FFFFFF","卡片白"],["#0071E3","链接蓝"],["#FF9F0A","橙"]],
+ fonts:"英文：Inter、SF Pro Display、Geist；中文：苹方、MiSans。大数字用很粗或很细的极端字重，比中间字重更有冲击力。",
+ css:`.bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 120px;
+  gap: 12px;
+}
+.bento .big  { grid-column: span 2; grid-row: span 2; }
+.bento .wide { grid-column: span 2; }
+.bento > *   { border-radius: 20px; padding: 18px; }`,
+ m:[2,2,5], hint:"悬停格子：轻微浮起",
+ tile:"background:linear-gradient(90deg,#1D1D1F 0 48%,transparent 48% 52%,#0071E3 52%) top/100% 48% no-repeat,linear-gradient(90deg,#FFF 0 48%,transparent 48% 52%,#FF9F0A 52%) bottom/100% 48% no-repeat,#F5F5F7;color:#F5F5F7;font-family:Manrope,sans-serif;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.4)",
+ spec:`<div class="bt-grid">
+<div class="bt-c bt-big"><small>续航</small><b>22<span>小时</span></b><p>一整天，不用找插座。</p></div>
+<div class="bt-c bt-wide bt-grad"><small>材质</small><b>航空级铝</b></div>
+<div class="bt-c bt-ring"><span class="bt-r"><i>87%</i></span></div>
+<div class="bt-c bt-star"><b>4.9</b><small>用户评分</small></div>
+<div class="bt-c bt-wide bt-blue"><small>配色</small><span class="bt-dots"><i style="background:#1D1D1F"></i><i style="background:#F5F5F7"></i><i style="background:#FF9F0A"></i><i style="background:#30D158"></i></span></div>
+<div class="bt-c bt-wide"><small>语言</small><b class="bt-l">40+ 种</b></div>
+</div>`},
+
+/* ---------------- rebel ---------------- */
+{id:"memphis", no:10, group:"rebel", cn:"孟菲斯", short:"孟菲斯", en:"Memphis Design", era:"1981 – 1987", place:"意大利 · 米兰",
+ origin:"1981 年，设计师埃托·索特萨斯在米兰组建孟菲斯小组，名字取自鲍勃·迪伦的一首歌。他们故意用廉价的塑料贴面、刺眼的撞色和没有用途的几何形，来对抗现代主义的「好品味」。2010 年代中期，它在网页和插画里重新流行起来。",
+ traits:["波浪线、锯齿线、波点、斜纹等图案碎片","粉、青、黄、黑撞色，饱和而轻快","几何形随意漂浮，构图不对称","整体俏皮、反严肃，带着 80 年代气息"],
+ good:["节日与营销活动页","儿童、潮流、文创品牌","创意机构与工作室官网","音乐节、派对邀请"],
+ avoid:"需要长时间专注的内容：图形密度太高，会干扰阅读和操作。",
+ palette:[["#FFD3E2","泡泡粉"],["#3FC1C9","薄荷青"],["#FCE38A","奶油黄"],["#364F6B","石板蓝"],["#111111","黑"]],
+ fonts:"英文：Rubik Mono One、Bungee、Righteous；中文：站酷快乐体、站酷庆科黄油体。标题可以加错位的彩色硬投影。",
+ css:`.dots {
+  background-image: radial-gradient(#111 2px, transparent 2.6px);
+  background-size: 14px 14px;
+}
+.stripes {
+  background: repeating-linear-gradient(45deg,
+    #FCE38A 0 6px, #111 6px 9px);
+}
+h1 { text-shadow: 5px 5px 0 #3FC1C9; }`,
+ m:[5,3,2], hint:"悬停：图形四散",
+ tile:"background:#FFD3E2;color:#111;font-family:'Rubik Mono One',sans-serif;text-shadow:3px 3px 0 #3FC1C9",
+ spec:`<span class="mp-s mp-dots"></span>
+<svg class="mp-s mp-squig" viewBox="0 0 210 40" aria-hidden="true"><path fill="none" d="M5 20 Q 25 0 45 20 T 85 20 T 125 20 T 165 20 T 205 20"/></svg>
+<svg class="mp-s mp-zig" viewBox="0 0 120 30" aria-hidden="true"><polyline fill="none" points="0,25 15,5 30,25 45,5 60,25 75,5 90,25 105,5 120,25"/></svg>
+<span class="mp-s mp-tri"></span><span class="mp-s mp-circ"></span><span class="mp-s mp-half"></span><span class="mp-s mp-stick"></span>
+<div class="mp-text"><h3>MEMPHIS</h3><span class="mp-tag">MILANO · 1981</span></div>`},
+
+{id:"grunge", group:"rebel", cn:"垃圾摇滚风", short:"Grunge", en:"Grunge", era:"1990s · 持续回潮", place:"西雅图摇滚 · 《Ray Gun》杂志",
+ origin:"Grunge 原是 90 年代初西雅图的摇滚乐风格，涅槃乐队是代表。平面设计上，大卫·卡森为音乐杂志《Ray Gun》做的版式成了它的视觉标志：文字被撕碎、叠印、倒置，甚至故意让人读不清。复印机噪点、胶带、污渍和手写涂鸦都是常用素材，表达的是对干净商业设计的厌倦。",
+ traits:["脏污纹理、复印噪点、撕纸边缘","套印错位、文字叠压，打破网格","打字机字体与马克笔手写混用","胶带、污渍、涂改等手工痕迹"],
+ good:["乐队、独立音乐与厂牌","街头潮牌、滑板文化","艺术展、独立杂志专题","游戏与影视预告页"],
+ avoid:"任何需要清晰传达信息的页面：可读性正是它主动放弃的东西。",
+ palette:[["#D9D2C3","复印纸"],["#1B1B1B","炭黑"],["#8B1E1E","锈红"],["#6F6A5E","污灰"],["#E4C04A","胶带黄"]],
+ fonts:"英文：Special Elite、Permanent Marker、Rubik Dirt；中文：手写类或做旧类字体。纹理可以用 SVG feTurbulence 生成，不必用图片。",
+ css:`.torn {
+  clip-path: polygon(0 6%, 6% 0, 13% 5%, 21% 1%, 30% 6%, 41% 0,
+                     52% 5%, 61% 1%, 72% 6%, 83% 0, 92% 5%, 100% 2%,
+                     100% 100%, 0 100%);   /* 撕纸边 */
+}
+.misprint { text-shadow: 4px 2px 0 rgba(139,30,30,.85); }
+.tape { background: rgba(228,192,74,.72); transform: rotate(-14deg); }`,
+ m:[5,3,1], hint:"悬停：纸片和涂鸦错位",
+ tile:"background:#D9D2C3;color:#1B1B1B;font-family:'Rubik Dirt','Special Elite',sans-serif;text-shadow:2px 1px 0 #8B1E1E",
+ spec:`<div class="gr-noise"></div><span class="gr-stain gr-s1"></span><span class="gr-stain gr-s2"></span><p class="gr-upside">SIDE B · 33 RPM</p>
+<div class="gr-paper"><p class="gr-type">ISSUE NO.07 — FALL '93</p><h3>NOISE</h3></div>
+<span class="gr-tape gr-t1"></span><span class="gr-tape gr-t2"></span>
+<p class="gr-cn">噪音，也是一种信号。</p>
+<p class="gr-marker">DON'T READ<br>THE MANUAL</p>`},
+
+{id:"brutal", no:11, group:"rebel", cn:"野兽派", short:"野兽派", en:"Web Brutalism", era:"2014 →", place:"名称借自 1950s 粗野主义建筑",
+ origin:"粗野主义原指 1950 年代裸露混凝土的建筑风格。2014 年前后，Pascal Deville 创建 brutalistwebsites.com，收集一类刻意「不设计」的网站：浏览器默认字体、蓝色下划线链接、没有圆角也没有阴影。它反对千篇一律的模板网站，强调内容的原始、直接和坦率。",
+ traits:["保留浏览器默认样式：Times 字体、蓝色下划线链接","无圆角、无阴影、无缓动","等宽字体、生硬边框、原生 HTML 元素","故意粗糙甚至「难看」，结构直接暴露"],
+ good:["艺术家与独立创作者个人站","实验项目、宣言式页面","独立出版与小众媒体","开发者个人主页"],
+ avoid:"电商、金融等需要信任感的产品：用户可能以为网站坏了。",
+ palette:[["#FFFFFF","白"],["#000000","黑"],["#0000EE","默认链接蓝"],["#551A8B","已访问紫"],["#FFFF00","警示黄"]],
+ fonts:"Times New Roman、Courier New、Arial 这类系统默认字体本身就是风格的一部分；中文直接用系统宋体或黑体。",
+ css:`body  { font-family: "Times New Roman", serif; margin: 8px; }
+a     { color: #0000EE; text-decoration: underline; }
+a:visited { color: #551A8B; }
+table, td { border: 1px solid #000; border-collapse: collapse; }
+*     { border-radius: 0 !important; box-shadow: none !important; }`,
+ m:[3,1,2], hint:"跑马灯：上世纪网页的遗产",
+ tile:"background:#FFF;color:#0000EE;font-family:'Times New Roman',serif;text-decoration:underline",
+ spec:`<h3>THIS IS A<br>WEBSITE.</h3>
+<p>没有网格，没有圆角，没有设计。<br><span class="br-a">click here</span> · <span class="br-a">[ index ]</span> · <span class="br-a">about.html</span></p>
+<hr>
+<table><tr><td>last updated</td><td>1999-12-31</td></tr><tr><td>best viewed in</td><td>800 × 600</td></tr></table>
+<div class="br-marq"><span>★ UNDER CONSTRUCTION ★ 本站正在施工 ★ UNDER CONSTRUCTION ★ 本站正在施工 ★</span></div>
+<p class="br-count">visitors: <b>000417</b></p>`},
+
+{id:"acid", group:"rebel", cn:"酸性设计", short:"酸性设计", en:"Acid Graphics", era:"2017 → 今", place:"源自 90 年代锐舞海报",
+ origin:"酸性设计的源头是 80 年代末到 90 年代的 Acid House 锐舞文化，以及 The Designers Republic 等工作室的海报。2017 年前后，它借助 3D 软件和潮流品牌重新流行：液态铬金属字、被拉伸扭曲的字体、荧光色和大量技术符号。整体冷峻、机械又迷幻，像来自一个过曝的数字未来。",
+ traits:["铬金属质感的变形文字","极端拉伸或压扁的宽体字","荧光酸性绿、电紫配黑白","星芒、线框、条形码、坐标等技术符号"],
+ good:["电子音乐、锐舞派对","街头潮牌、球鞋发售","实验艺术、时尚大片","游戏与赛事活动"],
+ avoid:"主流商业与公共服务：辨识度高，门槛也高，很多用户会觉得刺眼、看不懂。",
+ palette:[["#0A0A0A","黑"],["#C6FF00","酸性绿"],["#D9D9D9","铬灰"],["#FFFFFF","白"],["#7A00FF","电紫"]],
+ fonts:"英文：Unbounded、Syne、Monument Extended；中文：站酷酷黑、优设标题黑。用 transform: scale() 拉伸文字，比找特殊字体更灵活。",
+ css:`.stretch { display: inline-block; transform: scale(1.12, 1.9); }
+.star {
+  background: #C6FF00;
+  clip-path: polygon(50% 0, 56% 40%, 100% 50%, 56% 60%,
+                     50% 100%, 44% 60%, 0 50%, 44% 40%);
+}
+.barcode {
+  background: repeating-linear-gradient(90deg,
+    #fff 0 2px, transparent 2px 5px, #fff 5px 6px, transparent 6px 9px);
+}`,
+ m:[5,3,2], hint:"悬停：星芒加速旋转",
+ tile:"background:#0A0A0A;color:#C6FF00;font-family:Unbounded,sans-serif;font-weight:800",
+ spec:`<div class="ac-lines"></div><span class="ac-ring"></span><span class="ac-star"></span><span class="ac-star ac-s2"></span>
+<p class="ac-meta ac-m1">SYS_08 / ▲ 001</p><p class="ac-meta ac-m2">X:0428 Y:1997</p>
+<h3 class="ac-title"><span>ACID</span></h3><p class="ac-sub">RAVE · 夜 · 不眠</p>
+<div class="ac-bar"></div><p class="ac-meta ac-m3">0428 1997 2077</p>`},
+
+{id:"neobrutal", no:12, group:"rebel", cn:"新野兽派", short:"新野兽派", en:"Neo-Brutalism", era:"2020 → 今", place:"创作者工具与初创公司",
+ origin:"新野兽派保留了野兽派的直白和粗线条，又加上明亮的配色和用心的排版，把「粗糙」变成一种友好、有手作感的表达。2021 年前后 Gumroad 的改版是代表案例，此后大量创作者工具和初创公司跟进。它的识别特征几乎都能用一两行 CSS 写出来。",
+ traits:["2 到 4px 的纯黑粗描边","不带模糊的偏移硬投影，如 6px 6px 0 #000","高饱和撞色色块，不用渐变","交互时元素被「按下去」：位移加阴影收起"],
+ good:["创作者工具、初创公司 SaaS","年轻化品牌与社区产品","开发者工具着陆页","活动报名、表单页"],
+ avoid:"银行、医疗、法律等严肃场景，以及需要细腻情绪的高端品牌。",
+ palette:[["#FFE14D","柠檬黄"],["#FF7AA2","西瓜粉"],["#7AD3FF","天蓝"],["#FFF7E0","奶油"],["#000000","描边黑"]],
+ fonts:"英文：Archivo Black、Space Grotesk、Lexend Mega；中文：思源黑体 Heavy、阿里巴巴普惠体 Bold。",
+ css:`.card {
+  border: 3px solid #000;
+  border-radius: 10px;
+  box-shadow: 8px 8px 0 #000;
+}
+.btn:hover  { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+.btn:active { transform: translate(4px, 4px);   box-shadow: 0 0 0 #000; }`,
+ m:[4,2,4], hint:"悬停、按下按钮",
+ tile:"background:#FFE14D;color:#000;font-family:'Archivo Black',sans-serif;box-shadow:inset 0 0 0 3px #000",
+ spec:`<div class="nb-card"><span class="nb-sticker">NEW!</span><div class="nb-tags"><span class="nb-tag">#创作者</span><span class="nb-tag">v2.0</span></div><h3>Ship it.</h3><p>把想法变成产品，就现在。</p><div class="nb-actions"><button class="nb-btn" type="button">免费开始</button><span class="nb-link">看看案例 ↗</span></div></div>`},
+
+/* ---------------- retro ---------------- */
+{id:"terminal", group:"retro", cn:"复古终端", short:"复古终端", en:"Retro Terminal / CRT", era:"1970s – 1980s → 今", place:"VT100 终端 · 绿屏显示器",
+ origin:"早期电脑没有图形界面，人们通过终端在黑底上输入命令，1978 年的 VT100 是其中最著名的型号。荧光屏会发出绿色或琥珀色的光，留下扫描线和余辉。今天这种样式成了程序员文化的符号，常见于开发者个人站、技术文档和黑客马拉松页面，有时整个网站都被做成一个能输入命令的终端。",
+ traits:["黑底配荧光绿或琥珀色等宽文字","扫描线、屏幕暗角与文字辉光","闪烁的光标和命令提示符","ASCII 字符画与方框线条"],
+ good:["开发者个人站与博客","技术文档、命令行工具官网","CTF、黑客马拉松","404 页面与彩蛋"],
+ avoid:"面向普通用户的产品：命令行隐喻门槛高；大面积高亮绿字长时间阅读也很刺眼。",
+ palette:[["#0B0F0A","屏幕黑"],["#33FF66","P1 荧光绿"],["#FFB000","琥珀"],["#1F3B22","暗绿"],["#9DFFB0","辉光"]],
+ fonts:"英文：VT323、IBM Plex Mono、JetBrains Mono；中文：更纱黑体 Mono、霞鹜文楷 Mono，保证中英文等宽对齐。",
+ css:`.crt {
+  background: radial-gradient(ellipse at center, #0F1A10, #060906 75%);
+  color: #33FF66;
+  text-shadow: 0 0 4px rgba(51,255,102,.6), 0 0 10px rgba(51,255,102,.6);
+  font-family: VT323, monospace;
+}
+.crt::after {   /* 扫描线 */
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg,
+    rgba(0,0,0,.28) 0 1px, transparent 1px 3px);
+}`,
+ m:[3,1,3], hint:"点击屏幕：切换绿屏与琥珀屏",
+ tileText:"&gt;_",
+ tile:"background:#0B0F0A;color:#33FF66;font-family:VT323,monospace;font-size:34px;text-shadow:0 0 6px rgba(51,255,102,.8)",
+ spec:`<div class="tm-screen" role="button" tabindex="0" aria-label="切换绿屏与琥珀屏"><pre class="tm-pre"><span class="tm-dim">guest@vt100:~$</span> whoami
+designer
+<span class="tm-dim">guest@vt100:~$</span> ls styles | wc -l
+25
+<span class="tm-dim">guest@vt100:~$</span> cat motd.txt
++--------------------------+
+|  WELCOME TO THE GRID     |
+|  ALL SYSTEMS NOMINAL     |
++--------------------------+
+<span class="tm-dim">guest@vt100:~$</span> <span class="tm-cur"></span></pre></div>`},
+
+{id:"pixel", no:13, group:"retro", cn:"像素复古", short:"像素复古", en:"Pixel Art / 8-bit", era:"1980s → 今", place:"街机与家用游戏机",
+ origin:"像素风来自 8 位、16 位游戏机的硬件限制：分辨率很低，每个角色只能用几种颜色。这些限制反而塑造出一种清晰、可爱的美学，今天广泛用于独立游戏和怀旧主题网页。标本的配色取自 PICO-8 虚拟游戏机的官方 16 色调色板。",
+ traits:["像素字体与方块图形，放大时不做平滑","有限调色板，例如 PICO-8 的 16 色","阶梯边框、对话框、血条等游戏界面元素","逐帧动画（CSS steps()）与闪烁提示"],
+ good:["游戏与游戏化产品","开发者彩蛋、404 页面","怀旧主题活动","儿童与教育互动"],
+ avoid:"正文和小字号：像素字体在 12px 以下几乎无法阅读，可选的中文像素字体也很少。",
+ palette:[["#1D2B53","深蓝"],["#7E2553","酒红"],["#FF004D","红"],["#FFEC27","黄"],["#29ADFF","蓝"],["#FFF1E8","米白"]],
+ fonts:"英文：Press Start 2P、VT323、Silkscreen；中文：Zpix 最地道，方正像素系列也可以，都需要自行托管字体文件。",
+ css:`.sprite { image-rendering: pixelated; }
+.box {   /* 缺角像素边框 */
+  box-shadow:  0 -4px 0 #FFF1E8,  0 4px 0 #FFF1E8,
+              -4px 0 0 #FFF1E8,  4px 0 0 #FFF1E8;
+}
+.blink { animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }`,
+ m:[4,3,2], hint:"闪烁用 steps() 逐帧动画实现",
+ tile:"background:#1D2B53;color:#FFEC27;font-family:'Press Start 2P',monospace;font-size:15px;text-shadow:2px 2px 0 #7E2553",
+ spec:`<span class="px-stars"></span>
+<div class="px-hud"><span>1UP 004200</span><span class="px-lives"><i class="px-heart"></i><i class="px-heart"></i><i class="px-heart px-empty"></i></span></div>
+<div class="px-mid"><h3>LEVEL 25</h3><div class="px-box"><p>A WILD DESIGNER<br>APPEARED!</p><p class="px-menu"><span class="px-cur">&gt;</span> FIGHT&nbsp;&nbsp;STYLE<br>&nbsp;&nbsp;ITEM&nbsp;&nbsp;&nbsp;RUN</p></div></div>
+<div class="px-start">PRESS START</div>`},
+
+{id:"cyber", no:14, group:"retro", cn:"赛博朋克", short:"赛博朋克", en:"Cyberpunk", era:"1980s 文学 → 2020 游戏", place:"《神经漫游者》《银翼杀手》《赛博朋克 2077》",
+ origin:"赛博朋克源于 1980 年代的科幻小说与电影，代表作是威廉·吉布森 1984 年的《神经漫游者》和 1982 年的《银翼杀手》。核心意象是「高科技，低生活」：霓虹灯下的雨夜街道、黑客和巨型企业。2020 年的游戏《赛博朋克 2077》把黄青红配色和切角界面带成了网页上的流行样式。",
+ traits:["深色背景配霓虹青、品红、警示黄","故障效果（glitch）、扫描线、噪点","切角面板（clip-path）与 HUD 读数","等宽或科技感字体，混入中日文招牌"],
+ good:["游戏与电竞","科技发布会、黑客马拉松","暗色数据仪表盘","音乐与潮流活动"],
+ avoid:"长文阅读和普通用户工具：高对比霓虹与动效容易疲劳，频繁闪烁对光敏用户有风险。",
+ palette:[["#07070D","夜"],["#FCEE0A","警示黄"],["#00F0FF","霓虹青"],["#FF2A6D","霓虹红"],["#E6F7FF","冷白"]],
+ fonts:"英文：Orbitron、Share Tech Mono、Rajdhani；中文：思源黑体 Heavy 加辉光，或站酷高端黑。",
+ css:`.panel {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px,
+                     100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+.neon { color: #FF2A6D; text-shadow: 0 0 6px #FF2A6D, 0 0 18px #FF2A6D; }
+.glitch::before {
+  content: attr(data-text);
+  position: absolute; color: #00F0FF;
+  transform: translate(-3px, 0);
+}`,
+ m:[5,4,2], hint:"悬停：故障频率加快",
+ tile:"background:#07070D;color:#FCEE0A;font-family:Orbitron,sans-serif;font-weight:800;text-shadow:-2px 0 #00F0FF,2px 0 #FF2A6D",
+ spec:`<div class="cy-hud"><span>SYS://ONLINE</span><span>NET 98.6%</span></div>
+<div class="cy-mid"><h3 class="cy-glitch" data-text="NIGHT//CITY">NIGHT//CITY</h3>
+<div class="cy-panel"><p>&gt; 接入神经网络…… <b>OK</b></p><p>&gt; 区域：第 7 街区 / 雨</p><p>&gt; 信用点：¥ 2,077</p></div></div>
+<div class="cy-foot"><button class="cy-btn" type="button">JACK IN_</button><span class="cy-code">0xFCEE0A</span></div>
+<span class="cy-sign">霓虹夜市</span>`},
+
+{id:"y2k", no:15, group:"retro", cn:"Y2K 千禧风", short:"Y2K", en:"Y2K Aesthetic", era:"1997 – 2004 · 2020s 复兴", place:"千禧年的科技乐观主义",
+ origin:"千禧年前后，人们对互联网和新世纪充满乐观。1998 年 iMac G3 的邦迪蓝半透明外壳、Mac OS X 的 Aqua 水滴按钮、液态金属字、MP3 播放器上的气泡都是那个时代的符号。2020 年代，Z 世代把这些元素重新带回时尚和网页设计，常配上全息虹彩和星光点缀。",
+ traits:["铬和液态金属文字（多段渐变加 background-clip）","半透明塑料、果冻质感的胶囊按钮","气泡、四角星光、全息虹彩渐变","宽体科技字，银色、冰蓝、粉紫配色"],
+ good:["时尚、美妆、潮流电商","音乐人、专辑与演出页","Z 世代社交产品","复古科技主题活动"],
+ avoid:"企业服务和效率工具：装饰太多，信息层级容易被淹没。",
+ palette:[["#0095B6","邦迪蓝"],["#C9D6E3","铬银"],["#BFE6FF","冰蓝"],["#FFD6F3","泡泡粉"],["#1B2A6B","千禧藏青"]],
+ fonts:"英文：Syncopate、Michroma、Monoton；中文：站酷酷黑、庞门正道标题体。",
+ css:`.chrome {
+  background: linear-gradient(180deg, #fff, #dce6f1 28%, #6c7f9a 47%,
+              #2c3a58 50%, #f2f7fc 53%, #a7b8cc 72%, #fff);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+}
+.aqua {
+  border-radius: 999px;
+  background: linear-gradient(#9FE6FF, #38B3F7 48%, #1C8BDD 52%, #7CD8FF);
+}`,
+ m:[5,4,3], hint:"悬停胶囊按钮",
+ tile:"background:linear-gradient(160deg,#BFE6FF,#FFD6F3);color:#1B2A6B;font-family:Syncopate,sans-serif;font-weight:700",
+ spec:`<span class="y2-bub" style="width:70px;height:70px;left:8%;top:12%"></span>
+<span class="y2-bub" style="width:38px;height:38px;left:20%;bottom:16%;animation-delay:-2s"></span>
+<span class="y2-bub" style="width:56px;height:56px;right:10%;top:20%;animation-delay:-4s"></span>
+<span class="y2-bub" style="width:26px;height:26px;right:22%;bottom:12%;animation-delay:-1s"></span>
+<span class="y2-star" style="width:22px;height:22px;left:30%;top:10%"></span>
+<span class="y2-star" style="width:16px;height:16px;right:26%;top:42%;animation-delay:-.8s"></span>
+<span class="y2-star" style="width:26px;height:26px;left:12%;bottom:34%;animation-delay:-1.6s"></span>
+<span class="y2-star" style="width:14px;height:14px;right:8%;bottom:30%;animation-delay:-.4s"></span>
+<div class="y2-c"><p class="y2-sub">WELCOME TO THE</p><h3 class="y2-chrome">Y2K</h3><p class="y2-sub">MILLENNIUM.EXE</p><button class="y2-pill" type="button">ENTER ✦</button><p class="y2-note">BONDI BLUE · #0095B6</p></div>`},
+
+{id:"vapor", no:16, group:"retro", cn:"蒸汽波", short:"蒸汽波", en:"Vaporwave", era:"2010 – 2013 · 持续流行", place:"互联网音乐亚文化",
+ origin:"蒸汽波最早是一种音乐流派：把 80、90 年代的商场背景音乐和广告配乐放慢、切碎、重新拼贴。2011 年 Macintosh Plus 的专辑《Floral Shoppe》是标志性作品，封面上的希腊雕像、粉紫渐变和日文标题定义了它的视觉。它对早期消费主义和数字乌托邦既怀念又带着讽刺。",
+ traits:["粉紫、青、橙的落日渐变","透视网格地面与条纹夕阳","Windows 95 窗口、早期 3D 渲染、希腊雕像","全角英文（ＡＥＳＴＨＥＴＩＣ）和日文片假名"],
+ good:["音乐人、电子音乐活动","潮流与复古主题页","个人主页、创意实验","社交媒体专题"],
+ avoid:"需要明确转化的商业页面：风格里的讽刺意味很重，容易被读成玩梗。",
+ palette:[["#1B0B3A","午夜紫"],["#C2357E","霓虹洋红"],["#FF9A76","落日橙"],["#FF4FD8","网格粉"],["#C0C0C0","Win95 灰"]],
+ fonts:"英文：Times New Roman 斜体、Monoton、VT323；全角字符用中日文字体即可，例如思源黑体、Noto Sans JP。",
+ css:`.floor {
+  background-image:
+    linear-gradient(#FF4FD8 2px, transparent 2px),
+    linear-gradient(90deg, #FF4FD8 2px, transparent 2px);
+  background-size: 44px 44px;
+  transform: perspective(180px) rotateX(62deg);
+}
+.win95 {
+  background: #C0C0C0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;   /* 立体斜面 */
+}`,
+ m:[5,3,2], hint:"网格地面在无限前进",
+ tile:"background:linear-gradient(180deg,#4A1670,#C2357E 60%,#FF9A76);color:#FFF;font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-shadow:2px 2px 0 #00E5FF,-1px -1px 0 #FF4FD8",
+ spec:`<div class="vp-sun"></div><div class="vp-floor"><div class="vp-grid"></div></div>
+<p class="vp-title">ＳＵＮＳＥＴ<span>夕日の記憶</span></p>
+<div class="vp-win"><div class="vp-tb"><span>ａｅｓｔｈｅｔｉｃｓ.exe</span><span class="vp-btns"><i>_</i><i>□</i><i>×</i></span></div>
+<div class="vp-body"><p>ヴェイパーウェイヴ</p><div class="vp-prog"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="vp-ok" type="button">ＯＫ</button></div></div>`}
+];
+
+S.forEach((s,i)=>{ s.no = i + 1; });
+
+const PICKS = [
+  ["专业、可信、长期使用", ["swiss","material","minimal","bento"]],
+  ["高级、奢华、有仪式感", ["deco","nouveau","minimal"]],
+  ["东方韵味、文化传承", ["neochinese","nouveau","minimal"]],
+  ["年轻、活泼、有个性", ["neobrutal","memphis","clay","y2k"]],
+  ["科技感、未来感", ["cyber","aurora","glass","acid"]],
+  ["怀旧、情绪、主题活动", ["pixel","vapor","terminal","skeuo"]],
+  ["艺术、实验、态度鲜明", ["brutal","grunge","constructivism","bauhaus"]],
+  ["开发者与技术社区", ["terminal","brutal","neobrutal"]],
+  ["小组件的局部质感", ["neumorph","clay","glass","skeuo"]],
+  ["通用产品打底", ["flat","material","bento"]]
+];
+
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const byId = Object.fromEntries(S.map(s=>[s.id,s]));
+const pad = n => String(n).padStart(2,"0");
+
+function meter(label,v){
+  return `<div class="mtr"><span>${label}</span><span class="segs" aria-hidden="true">${[1,2,3,4,5].map(i=>`<i${i<=v?' class="f"':''}></i>`).join("")}</span><b>${v}/5</b></div>`;
+}
+function card(s){
+  return `<article class="card" id="s-${s.id}" style="--gc:var(--g-${s.group})">
+  <div class="card-left">
+    <div class="spec sp-${({minimal:"min",material:"mat",neumorph:"neu",neobrutal:"neob"})[s.id] || s.id}">${s.spec}</div>
+    <p class="spec-hint">↑ ${s.hint}</p>
+    <div class="pal">${s.palette.map(([h,n])=>`<button type="button" class="sw" data-hex="${h}" aria-label="复制 ${n} ${h}"><span class="sw-c" style="background:linear-gradient(${h},${h}),repeating-conic-gradient(#CCC 0 25%,#FFF 0 50%) 0 0/10px 10px"></span><span class="sw-hex">${h}</span><span class="sw-n">${n}</span></button>`).join("")}</div>
+    <div class="meters">${meter("装饰强度",s.m[0])}${meter("实现难度",s.m[1])}${meter("可读性",s.m[2])}</div>
+  </div>
+  <div class="card-right">
+    <header class="c-head"><span class="c-no">No.${pad(s.no)}</span><h3 class="c-name">${s.cn}</h3><p class="c-en">${s.en}</p><p class="c-era"><span>${s.era}</span><span>${s.place}</span></p></header>
+    <section><h4>起源</h4><p>${s.origin}</p></section>
+    <section><h4>关键特征</h4><ul class="traits">${s.traits.map(t=>`<li>${t}</li>`).join("")}</ul></section>
+    <div class="fit"><section><h4>适合</h4><div class="tags">${s.good.map(g=>`<span>${g}</span>`).join("")}</div></section><section><h4>慎用</h4><p>${s.avoid}</p></section></div>
+    <section><h4>字体建议</h4><p>${s.fonts}</p></section>
+    <section><h4>关键 CSS</h4><div class="code-box"><button type="button" class="copy">复制</button><pre><code>${esc(s.css)}</code></pre></div></section>
+  </div>
+</article>`;
+}
+
+/* index */
+document.getElementById("index").innerHTML = S.map(s=>`<a class="tile" href="#s-${s.id}" style="--gc:var(--g-${s.group})"><span class="tile-box" style="${s.tile}">${s.tileText||"Aa"}</span><span class="tile-cap"><b>${pad(s.no)}</b><span>${s.short}</span></span></a>`).join("");
+
+/* filters */
+document.getElementById("filters").innerHTML =
+  `<button type="button" class="chip" data-f="all" aria-pressed="true">全部 25 种</button>` +
+  GROUPS.map(g=>`<button type="button" class="chip" data-f="${g.id}" aria-pressed="false" style="--gc:var(--g-${g.id})"><i></i>${g.name}</button>`).join("");
+
+/* groups */
+document.getElementById("groups").innerHTML = GROUPS.map(g=>`<section class="group" data-group="${g.id}" style="--gc:var(--g-${g.id})">
+  <header class="g-head"><h2>${g.name}</h2><span class="g-en">${g.en} · ${g.span}</span><p>${g.desc}</p></header>
+  ${S.filter(s=>s.group===g.id).map(card).join("")}
+</section>`).join("");
+
+/* picker */
+document.getElementById("pickGrid").innerHTML = PICKS.map(([goal,ids])=>`<div class="pick-row"><dt>${goal}</dt><dd>${ids.map(id=>{const s=byId[id];return `<a href="#s-${id}" style="--gc:var(--g-${s.group})"><i></i>${s.cn}</a>`}).join("")}</dd></div>`).join("");
+
+/* pixel sprites */
+(function(){
+  const heart = [".XX.XX.","XXXXXXX","XXXXXXX",".XXXXX.","..XXX..","...X..."];
+  const sh = c => heart.flatMap((row,y)=>[...row].map((ch,x)=>ch==="X"?`${x*3}px ${y*3}px 0 ${c}`:null)).filter(Boolean).join(",");
+  document.querySelectorAll(".px-heart").forEach(h=>h.style.setProperty("--heart", sh(h.classList.contains("px-empty")?"#5F574F":"#FF004D")));
+  const stars=[]; for(let i=0;i<46;i++){stars.push(`${(i*137)%640}px ${(i*71+23)%430}px 0 ${i%6?"#5F574F":"#FFF1E8"}`)}
+  document.querySelectorAll(".px-stars").forEach(el=>el.style.setProperty("--stars", stars.join(",")));
+})();
+
+/* interactions */
+function flash(el, msg, back){
+  clearTimeout(el._t); el.textContent = msg;
+  el._t = setTimeout(()=>{ el.textContent = back; }, 1300);
+}
+function setFilter(f){
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed", String(c.dataset.f===f)));
+  document.querySelectorAll(".group").forEach(g=>{ g.hidden = !(f==="all" || g.dataset.group===f); });
+}
+document.addEventListener("click", e=>{
+  const t = e.target;
+  const tm = t.closest(".tm-screen");
+  if (tm){ tm.classList.toggle("amber"); return; }
+  const sk = t.closest(".sk-switch");
+  if (sk){ const on = sk.getAttribute("aria-pressed")!=="true"; sk.setAttribute("aria-pressed", String(on)); const sp = sk.closest(".spec"); sp.classList.toggle("on", on); sp.querySelector(".sk-lcd-l").textContent = on ? "● REC" : "○ STBY"; return; }
+  const nb = t.closest(".nu-btn");
+  if (nb){ nb.setAttribute("aria-pressed", String(nb.getAttribute("aria-pressed")!=="true")); return; }
+  const nk = t.closest(".nu-key");
+  if (nk){ nk.parentElement.querySelectorAll(".nu-key").forEach(k=>k.setAttribute("aria-pressed", String(k===nk))); return; }
+  const sw = t.closest(".sw");
+  if (sw){
+    const hex = sw.dataset.hex, label = sw.querySelector(".sw-hex");
+    try { navigator.clipboard.writeText(hex).then(()=>flash(label,"已复制",hex),()=>flash(label,"请手动复制",hex)); }
+    catch(_){ flash(label,"请手动复制",hex); }
+    return;
+  }
+  const cp = t.closest(".copy");
+  if (cp){
+    const pre = cp.parentElement.querySelector("pre");
+    const fallback = ()=>{ const r=document.createRange(); r.selectNodeContents(pre); const s=getSelection(); s.removeAllRanges(); s.addRange(r); flash(cp,"已选中","复制"); };
+    try { navigator.clipboard.writeText(pre.textContent).then(()=>flash(cp,"已复制","复制"), fallback); }
+    catch(_){ fallback(); }
+    return;
+  }
+  const chip = t.closest(".chip");
+  if (chip){ setFilter(chip.dataset.f); return; }
+  const link = t.closest('a[href^="#s-"]');
+  if (link){ const target = document.querySelector(link.getAttribute("href")); if (target && target.closest(".group").hidden) setFilter("all"); }
+});
+document.addEventListener("keydown", e=>{
+  const el = e.target;
+  if ((e.key==="Enter"||e.key===" ") && el.classList && el.classList.contains("tm-screen")){ e.preventDefault(); el.classList.toggle("amber"); }
+});
+document.addEventListener("pointerdown", e=>{
+  const el = e.target.closest("[data-ripple]"); if (!el) return;
+  const r = el.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2.2;
+  const s = document.createElement("span"); s.className = "rip";
+  s.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
+  el.appendChild(s); setTimeout(()=>s.remove(), 650);
+});
+</script>
+</body>
+</html>

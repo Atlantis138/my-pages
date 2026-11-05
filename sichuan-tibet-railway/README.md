@@ -23,6 +23,7 @@ python scripts/build_profile.py    # 推算轨面高程 → data/route.json
 OVERPASS_URL=… python scripts/fetch_water.py   # OSM 河流与水面 → raw/（约 90 MB，不提交）
 python scripts/build_water.py      # 河网分级与简化 → data/rivers.json；湖泊距离场 → data/water.png
 python scripts/build_borders.py    # Natural Earth 国界 → data/borders.json
+python scripts/build_kml.py        # 线位、桥隧、车站 → export/sichuan-tibet-railway.kml（可导入 Google Earth）
 ```
 
 `data/atlas.json` 是人工整理的文字与专题数据；`scripts/extract_legacy.py` 是从旧版单文件页面拆出数据时用的一次性脚本。页面需通过 HTTP 访问（如在仓库根目录运行 `python -m http.server`）。

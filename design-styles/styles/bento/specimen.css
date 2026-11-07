@@ -1,0 +1,24 @@
+.sp-bento{background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Manrope,"Noto Sans SC",sans-serif}
+.bt-grid{position:absolute;inset:0;padding:12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:10px}
+.bt-c{background:#FFF;border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.bt-c:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.08)}
+.bt-c small{font-size:12px;color:#6E6E73;font-weight:500;line-height:1.3}
+.bt-big{grid-column:1/3;grid-row:1/3;background:#1D1D1F;color:#F5F5F7}
+.bt-big small,.bt-big p{color:#A1A1A6}
+.bt-big b{font-size:clamp(44px,15cqi,96px);font-weight:700;line-height:.9;letter-spacing:-.05em}
+.bt-big b span{font-size:.28em;letter-spacing:0;margin-left:4px;font-weight:600}
+.bt-big p{font-size:13px;line-height:1.4}
+.bt-wide{grid-column:span 2}
+.bt-grad{background:linear-gradient(135deg,#E8E8ED,#C7C7CC 45%,#F5F5F7 55%,#B0B0B8)}
+.bt-grad small{color:#48484A}
+.bt-grad b,.bt-l{font-size:clamp(17px,5cqi,30px);font-weight:700;line-height:1.1}
+.bt-ring{align-items:center;justify-content:center}
+.bt-r{width:min(100%,74px);aspect-ratio:1;border-radius:50%;background:conic-gradient(#0071E3 0 87%,#E8E8ED 0);display:grid;place-items:center}
+.bt-r i{width:78%;aspect-ratio:1;border-radius:50%;background:#FFF;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:700}
+.bt-star{background:#FF9F0A;color:#FFF}
+.bt-star b{font-size:clamp(22px,6cqi,36px);font-weight:700;line-height:1}
+.bt-star small{color:#FFF}
+.bt-blue{background:#0071E3;color:#FFF}
+.bt-blue small{color:#D6E8FF}
+.bt-dots{display:flex;gap:6px}
+.bt-dots i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}

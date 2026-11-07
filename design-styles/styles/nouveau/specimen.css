@@ -1,0 +1,13 @@
+.sp-nouveau{background:radial-gradient(circle at 50% 35%,#F7EEDB 0,#F1E6CF 55%,#E6D5B3 100%);color:#2E2A24;font-family:"Cormorant Garamond",Georgia,"Noto Serif SC",serif}
+.an-vine{position:absolute;top:6%;height:88%;width:auto}
+.an-vine path{stroke:#4F6B4A;stroke-width:3;stroke-linecap:round}
+.an-l{left:3%}.an-r{right:3%;transform:scaleX(-1)}
+.an-arch{position:absolute;left:50%;top:7%;width:min(48cqi,210px);aspect-ratio:4/5;max-width:100%;transform:translateX(-50%);border-radius:50% 50% 0 0 / 34% 34% 0 0;border:2px solid #4F6B4A;outline:1px solid #B8873B;outline-offset:6px;background:linear-gradient(#EADBB9,#E2CFA6);overflow:hidden}
+.an-halo{position:absolute;width:82%;aspect-ratio:1;top:10%;left:9%;border-radius:50%;background:repeating-conic-gradient(rgba(184,135,59,.75) 0 1.2deg,transparent 1.2deg 9deg);border:2px solid #B8873B;animation:anspin 18s linear infinite;animation-play-state:paused}
+.sp-nouveau:hover .an-halo{animation-play-state:running}
+@keyframes anspin{to{transform:rotate(360deg)}}
+.an-stem{position:absolute;left:50%;top:62%;bottom:0;width:3px;margin-left:-1.5px;background:#4F6B4A}
+.an-flower{position:absolute;width:46%;top:24.4%;left:27%}
+.an-text{position:absolute;left:0;right:0;bottom:6%;text-align:center}
+.sp-nouveau h3{font-style:italic;font-weight:600;font-size:clamp(30px,9cqi,50px);line-height:1;color:#4F6B4A;letter-spacing:.02em}
+.an-text p{font-family:"Noto Serif SC",serif;font-size:13px;letter-spacing:.6em;color:#8E4A3C;margin-top:6px}

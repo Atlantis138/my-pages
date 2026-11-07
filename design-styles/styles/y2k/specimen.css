@@ -1,0 +1,12 @@
+.sp-y2k{background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.9) 0,transparent 38%),linear-gradient(160deg,#BFE6FF 0%,#E3D6FF 55%,#FFD6F3 100%);color:#1B2A6B;font-family:Syncopate,"Noto Sans SC",sans-serif;display:grid;place-items:center;text-align:center}
+.y2-c{position:relative;z-index:2;display:grid;justify-items:center;gap:8px}
+.y2-sub{font-size:11px;font-weight:700;letter-spacing:.32em}
+.y2-chrome{font-size:clamp(70px,24cqi,140px);font-weight:700;line-height:1;letter-spacing:-.02em;background:linear-gradient(180deg,#FFF 0%,#DCE6F1 28%,#6C7F9A 47%,#2C3A58 50%,#F2F7FC 53%,#A7B8CC 72%,#FFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1.5px rgba(27,42,107,.45);filter:drop-shadow(0 6px 10px rgba(70,80,200,.35))}
+.y2-pill{position:relative;margin-top:8px;border:0;border-radius:999px;padding:11px 28px;font-family:Syncopate,sans-serif;font-weight:700;font-size:13px;letter-spacing:.18em;color:#FFF;background:linear-gradient(180deg,#9FE6FF 0%,#38B3F7 48%,#1C8BDD 52%,#7CD8FF 100%);box-shadow:0 4px 12px rgba(30,143,224,.45),inset 0 -2px 4px rgba(0,60,140,.35);text-shadow:0 1px 1px rgba(0,50,120,.5);overflow:hidden;transition:filter .2s,transform .2s}
+.y2-pill::before{content:"";position:absolute;left:10%;right:10%;top:2px;height:45%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.9),rgba(255,255,255,.15))}
+.y2-pill:hover{filter:brightness(1.08) saturate(1.25);transform:scale(1.04)}
+.y2-note{font-size:10px;letter-spacing:.12em;opacity:.8}
+.y2-bub{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 28%,#FFF 0 7%,rgba(255,255,255,.35) 18%,rgba(158,231,255,.25) 55%,rgba(255,158,229,.45) 100%);border:1px solid rgba(255,255,255,.7);animation:bob 6s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-14px)}}
+.y2-star{position:absolute;background:#FFF;clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%);animation:tw 2.4s ease-in-out infinite}
+@keyframes tw{50%{transform:scale(.45) rotate(45deg);opacity:.55}}

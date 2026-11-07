@@ -1,0 +1,14 @@
+.sp-neu{background:#E3E8EF;color:#6A788C;font-family:Manrope,"Noto Sans SC",sans-serif;display:grid;place-items:center}
+.nu-wrap{display:grid;justify-items:center;gap:24px}
+.sp-neu h3{font-size:13px;font-weight:800;letter-spacing:.32em;color:#56657A}
+.nu-btn{width:108px;height:108px;border-radius:50%;border:0;background:#E3E8EF;box-shadow:10px 10px 20px #BEC4CE,-10px -10px 20px #FFFFFF;display:grid;place-items:center;transition:box-shadow .25s}
+.nu-btn i{width:0;height:0;border-left:26px solid #8794A8;border-top:16px solid transparent;border-bottom:16px solid transparent;margin-left:8px;transition:border-color .25s}
+.nu-btn[aria-pressed="true"]{box-shadow:inset 8px 8px 16px #BEC4CE,inset -8px -8px 16px #FFFFFF}
+.nu-btn[aria-pressed="true"] i{border-left-color:#5B8DEF}
+.nu-track{position:relative;width:200px;height:14px;border-radius:7px;box-shadow:inset 4px 4px 8px #BEC4CE,inset -4px -4px 8px #FFFFFF}
+.nu-fill{position:absolute;left:3px;top:3px;bottom:3px;width:58%;border-radius:5px;background:linear-gradient(90deg,#8FB2F5,#5B8DEF)}
+.nu-knob{position:absolute;top:50%;left:58%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#E3E8EF;box-shadow:4px 4px 8px #BEC4CE,-4px -4px 8px #FFFFFF}
+.nu-row{display:flex;gap:16px}
+.nu-key{width:52px;height:40px;border-radius:12px;border:0;display:grid;place-items:center;font-family:"Noto Sans SC",sans-serif;font-size:13px;font-weight:700;background:#E3E8EF;color:#6A788C;box-shadow:5px 5px 10px #BEC4CE,-5px -5px 10px #FFFFFF;transition:box-shadow .2s,color .2s}
+.nu-key[aria-pressed="true"]{box-shadow:inset 4px 4px 8px #BEC4CE,inset -4px -4px 8px #FFFFFF;color:#3E73E0}
+.nu-btn:focus-visible,.nu-key:focus-visible{outline:2px solid #5B8DEF;outline-offset:4px}

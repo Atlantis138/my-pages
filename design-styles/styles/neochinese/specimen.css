@@ -1,0 +1,16 @@
+.sp-neochinese{background:radial-gradient(circle at 70% 20%,#F8F4EB 0,#F3EEE3 50%,#EAE2D2 100%);color:#1F1F1F;font-family:"Noto Serif SC",serif}
+.zh-moon{position:absolute;left:14%;top:12%;width:16cqi;aspect-ratio:1;border-radius:50%;background:#E6DCC6;box-shadow:0 0 30px rgba(200,185,154,.55)}
+.zh-meta{position:absolute;left:14%;top:calc(12% + 16cqi + 14px);font-size:12px;letter-spacing:.4em;color:#8A8170}
+.zh-ink{position:absolute;filter:blur(5px);transition:transform 1.4s ease,opacity 1.4s ease}
+.zh-i1{left:-15%;bottom:-18%;width:80%;height:58%;background:radial-gradient(ellipse 50% 60% at 50% 60%,rgba(31,31,31,.82),rgba(31,31,31,.25) 60%,transparent 75%)}
+.zh-i2{left:30%;bottom:-20%;width:72%;height:52%;background:radial-gradient(ellipse 50% 55% at 50% 60%,rgba(55,66,66,.55),rgba(55,66,66,.15) 60%,transparent 75%)}
+.zh-i3{left:2%;bottom:12%;width:60%;height:32%;background:radial-gradient(ellipse 50% 50% at 50% 60%,rgba(91,123,122,.35),transparent 70%)}
+.sp-neochinese:hover .zh-i1{transform:scale(1.08) translateY(-6px)}
+.sp-neochinese:hover .zh-i2{transform:scale(1.12) translateX(-8px);opacity:.85}
+.sp-neochinese:hover .zh-i3{transform:scale(1.2);opacity:.7}
+.zh-col{position:absolute;right:9%;top:9%;display:flex;flex-direction:row-reverse;align-items:flex-start;gap:12px}
+.zh-tc{display:flex;flex-direction:column;align-items:center;gap:14px}
+.sp-neochinese h3{writing-mode:vertical-rl;font-family:"Ma Shan Zheng","Noto Serif SC",serif;font-weight:400;font-size:clamp(40px,13cqi,72px);line-height:1;letter-spacing:.06em}
+.zh-seal{writing-mode:vertical-rl;background:#B7312C;color:#F3EEE3;font-family:"Ma Shan Zheng",serif;font-size:15px;line-height:1;padding:5px 4px;border-radius:3px}
+.zh-line{width:1px;height:110px;margin-top:6px;background:#B7312C}
+.zh-poem{margin-top:6px;writing-mode:vertical-rl;font-size:15px;letter-spacing:.7em;color:#5B7B7A}

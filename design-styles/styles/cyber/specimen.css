@@ -1,0 +1,21 @@
+.sp-cyber{background-color:#07070D;background-image:linear-gradient(rgba(0,240,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.06) 1px,transparent 1px);background-size:28px 28px;color:#E6F7FF;font-family:"Share Tech Mono",monospace;padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between}
+.sp-cyber::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);pointer-events:none;z-index:5}
+.cy-hud{display:flex;justify-content:space-between;font-size:12px;color:#00F0FF;letter-spacing:.1em;border-bottom:1px solid rgba(0,240,255,.35);padding-bottom:6px}
+.cy-mid{position:relative;z-index:1;display:grid;gap:14px;max-width:80%}
+.cy-glitch{position:relative;font-family:Orbitron,sans-serif;font-weight:800;font-size:clamp(24px,9cqi,50px);line-height:1;color:#FCEE0A;letter-spacing:.02em}
+.cy-glitch::before,.cy-glitch::after{content:attr(data-text);position:absolute;left:0;top:0;opacity:0}
+.cy-glitch::before{color:#00F0FF;clip-path:inset(0 0 55% 0);animation:gl1 2.4s steps(1) infinite}
+.cy-glitch::after{color:#FF2A6D;clip-path:inset(50% 0 0 0);animation:gl2 2.4s steps(1) infinite}
+@keyframes gl1{0%,86%,100%{transform:none;opacity:0}88%{transform:translate(-4px,-1px);opacity:1}92%{transform:translate(3px,1px);opacity:1}}
+@keyframes gl2{0%,88%,100%{transform:none;opacity:0}90%{transform:translate(4px,1px);opacity:1}94%{transform:translate(-3px,0);opacity:1}}
+.sp-cyber:hover .cy-glitch::before,.sp-cyber:hover .cy-glitch::after{animation-duration:.7s}
+.cy-panel{background:rgba(0,240,255,.07);border-left:3px solid #00F0FF;padding:10px 14px;font-size:13px;line-height:1.7;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%)}
+.cy-panel b{color:#FCEE0A;font-weight:400}
+.cy-foot{position:relative;z-index:1;display:flex;align-items:center;gap:14px}
+.cy-btn{background:#FCEE0A;color:#07070D;border:0;font-family:Orbitron,sans-serif;font-weight:800;font-size:14px;letter-spacing:.12em;padding:12px 22px;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:background .15s}
+.cy-btn:hover{background:#00F0FF}
+.cy-code{font-size:11px;color:#FF2A6D}
+.cy-sign{position:absolute;right:18px;top:54px;writing-mode:vertical-rl;font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:clamp(20px,6cqi,30px);letter-spacing:.15em;color:#FFE3EC;text-shadow:0 0 4px #FF2A6D,0 0 12px #FF2A6D,0 0 28px #FF2A6D;animation:flick 5s infinite}
+@keyframes flick{0%,19%,21%,62%,64%,100%{opacity:1}20%,63%{opacity:.35}}
+
+@media (prefers-reduced-motion: reduce){.cy-glitch::before,.cy-glitch::after{opacity:0!important}}

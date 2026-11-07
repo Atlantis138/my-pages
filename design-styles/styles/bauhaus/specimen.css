@@ -1,0 +1,14 @@
+.sp-bauhaus{background:#EFE9DC;color:#151515;font-family:"Josefin Sans",Futura,"Century Gothic",sans-serif}
+.bh-circle,.bh-square,.bh-tri,.bh-bar{position:absolute;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.bh-circle{width:56cqi;aspect-ratio:1;border-radius:50%;background:#D8352A;right:-10cqi;top:-12cqi}
+.bh-square{width:30cqi;aspect-ratio:1;background:#1E4C9A;left:10cqi;bottom:-8cqi}
+.bh-tri{width:24cqi;aspect-ratio:1;background:#F2B705;clip-path:polygon(50% 0,100% 100%,0 100%);right:12cqi;bottom:8%}
+.bh-bar{left:0;width:58%;top:60%;height:12px;background:#151515;transform-origin:left}
+.bh-text{position:absolute;left:8cqi;top:7cqi;z-index:2}
+.bh-text h3{font-weight:700;font-size:17cqi;line-height:.8;letter-spacing:-.02em}
+.bh-text p{font-family:"Noto Sans SC",sans-serif;font-weight:700;font-size:15px;margin-top:18px}
+.bh-text small{display:block;font-size:12px;letter-spacing:.14em;margin-top:2px}
+.sp-bauhaus:hover .bh-circle{transform:translate(-6cqi,6cqi)}
+.sp-bauhaus:hover .bh-square{transform:rotate(45deg)}
+.sp-bauhaus:hover .bh-tri{transform:rotate(180deg)}
+.sp-bauhaus:hover .bh-bar{transform:scaleX(1.3)}

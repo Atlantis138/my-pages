@@ -1,0 +1,11 @@
+.sp-terminal{background:#1A1A18}
+.tm-screen{position:absolute;inset:14px;--ph:#33FF66;--glow:rgba(51,255,102,.6);border-radius:22px/18px;background:radial-gradient(ellipse at center,#0F1A10 0%,#060906 75%,#020302 100%);color:var(--ph);box-shadow:inset 0 0 50px rgba(0,0,0,.95),0 0 0 3px #2C2C28,0 0 0 6px #111;overflow:hidden;cursor:pointer;animation:tmflick 4s infinite}
+.tm-screen.amber{--ph:#FFB000;--glow:rgba(255,176,0,.55);background:radial-gradient(ellipse at center,#1A1308 0%,#090603 75%,#030201 100%)}
+.tm-screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px);pointer-events:none}
+.tm-screen:focus-visible{outline:2px solid var(--ph);outline-offset:4px}
+.tm-pre{margin:0;padding:18px 22px;font-family:VT323,monospace;font-size:clamp(13px,3.6cqi,20px);line-height:1.15;white-space:pre;text-shadow:0 0 4px var(--glow),0 0 10px var(--glow)}
+.tm-dim{opacity:.6}
+.tm-cur{display:inline-block;width:.55em;height:.95em;background:var(--ph);vertical-align:-.12em;box-shadow:0 0 8px var(--glow);animation:blink 1s steps(1) infinite}
+@keyframes tmflick{0%,100%{opacity:1}50%{opacity:.965}}
+
+@keyframes blink{50%{opacity:0}}

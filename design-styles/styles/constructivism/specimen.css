@@ -1,0 +1,9 @@
+.sp-constructivism{background:#EDE4D3;color:#1A1A1A;font-family:Oswald,"Noto Sans SC",sans-serif}
+.cv-top{position:absolute;left:6cqi;top:6cqi;font-size:12px;letter-spacing:.18em;line-height:1.5;font-weight:700}
+.cv-circle{position:absolute;width:36cqi;aspect-ratio:1;border-radius:50%;background:#1A1A1A;right:6cqi;top:9%}
+.cv-wedge{position:absolute;width:62cqi;height:16cqi;left:-6cqi;top:calc(9% + 10cqi);background:#C1272D;clip-path:polygon(0 0,100% 50%,0 100%);transform:rotate(-12deg);transition:transform .7s cubic-bezier(.2,.8,.2,1);z-index:1}
+.sp-constructivism:hover .cv-wedge{transform:rotate(-12deg) translateX(9cqi)}
+.cv-h{position:absolute;left:5cqi;top:58%;transform:rotate(-12deg);transform-origin:left center;font-weight:700;font-size:clamp(28px,11cqi,50px);line-height:1;text-transform:uppercase;z-index:2;white-space:nowrap}
+.cv-h em{font-style:normal;color:#C1272D}
+.cv-bar{position:absolute;left:-10%;right:-10%;bottom:17%;height:11cqi;background:#1A1A1A;transform:rotate(-8deg);display:flex;align-items:center;justify-content:center;color:#EDE4D3;font-family:"Noto Sans SC",sans-serif;font-weight:900;font-size:clamp(14px,4.4cqi,24px);letter-spacing:.4em}
+.cv-bar2{position:absolute;left:-10%;right:-10%;bottom:9%;height:2cqi;background:#C1272D;transform:rotate(-8deg)}

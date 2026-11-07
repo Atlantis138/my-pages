@@ -1,0 +1,10 @@
+.sp-min{background:#FAFAF7;color:#121212;font-family:Manrope,"Noto Sans SC",sans-serif;display:flex;flex-direction:column;justify-content:space-between;padding:7% 8%}
+.mn-top{display:flex;justify-content:space-between;font-size:12px;font-weight:500;letter-spacing:.02em}
+.mn-top span:last-child{color:#6D6D6D;word-spacing:1em}
+.sp-min h3{font-weight:300;font-size:clamp(34px,10cqi,64px);line-height:1.02;letter-spacing:-.035em}
+.mn-mid p{margin-top:18px;font-size:13px;color:#6D6D6D;font-weight:300}
+.mn-mid .mn-cite{margin-top:4px;font-size:11px;color:#9A9A96}
+.mn-bot{display:flex;align-items:center;gap:14px;font-size:12px;font-weight:500}
+.mn-line{height:1px;background:#121212;width:40px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.sp-min:hover .mn-line{width:120px}
+.mn-dot{width:7px;height:7px;border-radius:50%;background:#121212;margin-left:auto}

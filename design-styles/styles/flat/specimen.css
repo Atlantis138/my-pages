@@ -1,0 +1,16 @@
+.sp-flat{background:#ECF0F1;color:#2C3E50;font-family:"Noto Sans SC",sans-serif}
+.fl-in{position:absolute;inset:0;padding:6cqi;display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
+.fl-art{position:relative;background:#3498DB;overflow:hidden;border-radius:4px;min-height:0}
+.fl-sun{position:absolute;width:20cqi;aspect-ratio:1;border-radius:50%;background:#F1C40F;right:14%;top:12%}
+.fl-m1,.fl-m2,.fl-hill{position:absolute;bottom:0}
+.fl-m1{left:-10%;width:80%;height:62%;background:#2C3E50;clip-path:polygon(0 100%,50% 0,100% 100%)}
+.fl-m2{left:35%;width:75%;height:46%;background:#34495E;clip-path:polygon(0 100%,50% 0,100% 100%)}
+.fl-hill{left:0;right:0;height:20%;background:#1ABC9C}
+.fl-side{display:flex;flex-direction:column;justify-content:center;gap:14px;min-width:0}
+.sp-flat h3{font-size:clamp(26px,7cqi,40px);font-weight:900;line-height:1.05}
+.fl-side p{font-size:13px;color:#5D6D7E;line-height:1.6}
+.fl-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.fl-tiles span{aspect-ratio:1;display:grid;place-items:center;color:#FFF;font-size:17px;font-weight:700}
+.fl-btn{align-self:flex-start;background:#1ABC9C;color:#FFF;border:0;border-radius:4px;padding:10px 20px;font-family:inherit;font-weight:700;font-size:14px;transition:background .2s}
+.fl-btn:hover{background:#16A085}
+@container (max-width:440px){.fl-in{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:14px}.fl-tiles{display:none}}

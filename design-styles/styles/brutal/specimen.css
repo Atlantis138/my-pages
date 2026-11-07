@@ -1,0 +1,13 @@
+.sp-brutal{background:#FFF;color:#000;font-family:"Times New Roman",Times,"Noto Serif SC",serif;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.sp-brutal h3{font-size:clamp(34px,11cqi,64px);line-height:.9;font-weight:700}
+.sp-brutal p{font-size:16px;line-height:1.35}
+.br-a{color:#0000EE;text-decoration:underline;cursor:pointer}
+.br-a:hover{color:#EE0000}
+.sp-brutal hr{border:0;border-top:2px solid #000;margin:0;width:100%}
+.sp-brutal table{border-collapse:collapse;font-size:14px}
+.sp-brutal td{border:1px solid #000;padding:2px 8px}
+.br-marq{background:#FF0;border-block:2px solid #000;font-family:"Courier New",monospace;font-weight:700;white-space:nowrap;overflow:hidden;font-size:14px;padding:4px 0}
+.br-marq span{display:inline-block;padding-left:100%;animation:marq 16s linear infinite}
+@keyframes marq{to{transform:translateX(-100%)}}
+.br-count{font-family:"Courier New",monospace}
+.br-count b{background:#000;color:#0F0;padding:0 4px;letter-spacing:.15em}

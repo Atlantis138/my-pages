@@ -142,7 +142,7 @@
     <article class="card card-outlined">
       <h3 class="title-large">HCT：色相、彩度、色调</h3>
       <p class="body-medium">HCT 是 Google 为 M3 设计的色彩空间。<b>色相</b>和<b>彩度</b>取自 CAM16 色貌模型，<b>色调</b>就是 CIELAB 的明度 L*，0 为纯黑，100 为纯白。</p>
-      <p class="body-medium">关键在于色调：两种颜色的色调相差 40 以上，对比度至少 3 : 1；相差 50 以上，至少 4.5 : 1。所以只要按色调编号取色，配色方案就自动满足无障碍要求，不管种子色是什么。</p>
+      <p class="body-medium">关键在于色调：两种颜色的色调相差 40，对比度大约是 WCAG 的 3 : 1；相差 50，大约是 4.5 : 1。M3 据此规定小元素与背景至少差 50、大元素至少差 40，所以只要按色调编号取色，不管种子色是什么，配色方案基本都能满足无障碍要求。</p>
     </article>
     <article class="card card-outlined contrast-card">
       <h3 class="title-large">当前的对比度</h3>
@@ -413,8 +413,8 @@
       <ul class="list res">
         <li><span class="li-text"><span class="body-large">Jetpack Compose</span><span class="body-medium muted">Android 官方 UI 工具包，M3 组件一等支持</span></span></li>
         <li><span class="li-text"><span class="body-large">Flutter</span><span class="body-medium muted">3.16 起默认启用 Material 3</span></span></li>
-        <li><span class="li-text"><span class="body-large">Material Web</span><span class="body-medium muted">Google 官方的 Web Components 实现</span></span></li>
-        <li><span class="li-text"><span class="body-large">Angular Material</span><span class="body-medium muted">Angular 官方组件库，已支持 M3 主题</span></span></li>
+        <li><span class="li-text"><span class="body-large">Material Web</span><span class="body-medium muted">Google 官方的 Web Components 实现，2024 年起处于维护模式</span></span></li>
+        <li><span class="li-text"><span class="body-large">Angular Material</span><span class="body-medium muted">Angular 官方组件库，v18 起 M3 主题转为稳定</span></span></li>
         <li><span class="li-text"><span class="body-large">MUI</span><span class="body-medium muted">React 生态最流行的 Material 风格组件库，以 M2 为基础</span></span></li>
         <li><span class="li-text"><span class="body-large">Material Theme Builder</span><span class="body-medium muted">输入种子色，导出全套颜色令牌</span></span></li>
       </ul>

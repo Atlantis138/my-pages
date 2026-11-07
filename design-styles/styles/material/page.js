@@ -1,6 +1,5 @@
 /* Material Design 完整页：动态配色、导航、组件交互与各节演示。 */
 import { schemeFrom, palettesFrom, contrast, TONES } from "./color.js";
-import { siblings } from "../_shared/siblings.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -420,7 +419,8 @@ addEventListener("resize", () => $$(".tabs").forEach(placeTabIndicator));
 renderWalls();
 applyScheme();
 
-siblings("material").then((nav) => {
+/* 导航数据单独动态载入：即使失败，也只影响页脚的上一篇 / 下一篇，不影响页面本身 */
+import("../shared/siblings.js").then((m) => m.siblings("material")).then((nav) => {
   $$("[data-no]").forEach((el) => (el.textContent = `No.${String(nav.no).padStart(2, "0")}`));
   const card = (s, dir) => s
     ? `<a class="next-card ${dir}" href="${s.href}"><span>${dir === "prev" ? '<span class="ms">arrow_back</span>上一个风格' : '下一个风格<span class="ms">arrow_forward</span>'}</span><b>${s.cn}</b></a>`

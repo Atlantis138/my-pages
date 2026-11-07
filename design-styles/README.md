@@ -13,7 +13,7 @@ design-styles/
 │   └── taxonomy.js         四个谱系的说明、「按目标挑选」表
 └── styles/
     ├── registry.js         风格注册表：有哪些风格、顺序、哪些有完整页
-    ├── _shared/
+    ├── shared/
     │   └── siblings.js     完整页之间的上一篇 / 下一篇 / 返回图鉴
     ├── bauhaus/            每个风格一个文件夹，文件夹名 = 风格 id
     │   ├── meta.js         卡片数据 + 标本 HTML + 可选的 setup(el) 交互
@@ -47,7 +47,7 @@ design-styles/
 3. 页面里需要导航时：
 
    ```js
-   import { siblings } from "../_shared/siblings.js";
+   import { siblings } from "../shared/siblings.js";
    const nav = await siblings("<id>"); // { no, total, catalog, prev, next }
    ```
 

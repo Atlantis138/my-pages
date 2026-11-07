@@ -6,6 +6,7 @@
 
 ```
 design-styles/
+├── PAGE_GUIDE.md           完整介绍页的制作规范
 ├── index.html              图鉴页外壳：只有页面骨架，内容由 catalog.js 渲染
 ├── catalog/                图鉴页自己的代码
 │   ├── catalog.css         图鉴外框样式（索引、分组、卡片、挑选表）
@@ -13,8 +14,6 @@ design-styles/
 │   └── taxonomy.js         四个谱系的说明、「按目标挑选」表
 └── styles/
     ├── registry.js         风格注册表：有哪些风格、顺序、哪些有完整页
-    ├── shared/
-    │   └── siblings.js     完整页之间的上一篇 / 下一篇 / 返回图鉴
     ├── bauhaus/            每个风格一个文件夹，文件夹名 = 风格 id
     │   ├── meta.js         卡片数据 + 标本 HTML + 可选的 setup(el) 交互
     │   └── specimen.css    标本样式（类名以该风格的前缀开头）
@@ -44,14 +43,7 @@ design-styles/
 
 1. 在 `styles/<id>/` 里新建 `index.html`（以及需要的 css / js），页面完全按该风格设计，不必沿用其他页面的样式。
 2. 在 `registry.js` 里把该行改成 `{ id: "<id>", page: true }`。图鉴卡片会出现「进入完整页面」，索引格右上角出现 ↗。
-3. 页面里需要导航时：
-
-   ```js
-   import { siblings } from "../shared/siblings.js";
-   const nav = await siblings("<id>"); // { no, total, catalog, prev, next }
-   ```
-
-   返回图鉴的链接写 `../../#s-<id>`。
+3. 页面怎么做，见 [`PAGE_GUIDE.md`](PAGE_GUIDE.md)：一页自成一体，只留一个返回图鉴的入口（`../../#s-<id>`），并提供一键复原。
 
 已有完整页：`material/`（Material Design）、`neumorph/`（新拟态）。
 

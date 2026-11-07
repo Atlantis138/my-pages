@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Material Design · 设计风格图鉴</title>
+<title>Material Design</title>
 <meta name="description" content="用 Material 3 的规范搭一页介绍 Material Design：纸与墨水的隐喻、十年演进、动态配色、字体与形状、高度、动效与组件。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&icon_names=add,animation,arrow_back,arrow_forward,calendar_month,check,close,content_copy,dark_mode,edit,favorite,history,home,layers,light_mode,lightbulb,mail,menu,palette,photo_library,play_arrow,search,settings,share,star,text_fields,widgets&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&icon_names=add,animation,arrow_back,calendar_month,check,close,content_copy,dark_mode,edit,favorite,history,home,layers,light_mode,lightbulb,mail,menu,palette,photo_library,play_arrow,restart_alt,search,settings,share,star,text_fields,widgets&display=block">
 <link rel="stylesheet" href="page.css">
 <script type="module" src="page.js"></script>
 </head>
@@ -18,9 +18,10 @@
 <!-- ============ Top app bar ============ -->
 <header class="top-app-bar" id="appbar">
   <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="打开导航" aria-controls="drawer" aria-expanded="false"><span class="ms">menu</span></button>
-  <a class="icon-btn" href="../../#s-material" aria-label="返回设计风格图鉴" data-catalog><span class="ms">arrow_back</span></a>
+  <a class="icon-btn" href="../../#s-material" aria-label="返回设计风格图鉴" title="返回设计风格图鉴"><span class="ms">arrow_back</span></a>
   <p class="bar-title title-large">Material Design</p>
   <div class="bar-actions">
+    <button class="icon-btn" id="resetBtn" type="button" aria-label="恢复初始状态" title="恢复初始状态：配色、明暗与所有组件"><span class="ms">restart_alt</span></button>
     <button class="icon-btn" id="seedBtn" type="button" aria-label="更换种子色" aria-haspopup="menu" aria-expanded="false"><span class="ms">palette</span></button>
     <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式"><span class="ms">dark_mode</span></button>
   </div>
@@ -29,7 +30,7 @@
 
 <!-- ============ Navigation drawer ============ -->
 <nav class="drawer" id="drawer" aria-label="章节">
-  <p class="drawer-head title-small">设计风格图鉴 · <span data-no>No.10</span></p>
+  <p class="drawer-head title-small">Material Design</p>
   <a class="drawer-item" href="#overview"><span class="ms">home</span>概览</a>
   <a class="drawer-item" href="#history"><span class="ms">history</span>十年演进</a>
   <a class="drawer-item" href="#color"><span class="ms">palette</span>动态配色</a>
@@ -38,8 +39,6 @@
   <a class="drawer-item" href="#motion"><span class="ms">animation</span>动效</a>
   <a class="drawer-item" href="#components"><span class="ms">widgets</span>组件</a>
   <a class="drawer-item" href="#practice"><span class="ms">lightbulb</span>何时使用</a>
-  <hr class="divider">
-  <a class="drawer-item" href="../../#s-material" data-catalog><span class="ms">arrow_back</span>返回图鉴</a>
 </nav>
 <div class="scrim" id="scrim" hidden></div>
 
@@ -49,7 +48,7 @@
 <section class="section" id="overview" aria-labelledby="h-overview">
   <div class="hero">
     <div class="hero-text">
-      <p class="label-large hero-over">设计风格图鉴 · <span data-no>No.10</span> · 数字界面范式</p>
+      <p class="label-large hero-over">Google 设计系统 · 2014 至今</p>
       <h1 class="display-large" id="h-overview">Material Design</h1>
       <p class="body-large">Google 在 2014 年推出的设计系统。它把屏幕想象成一叠有厚度的纸：纸会投下阴影、会滑动和变形，被触碰时泛起墨水般的涟漪。十余年间，它从一套视觉规范长成了覆盖色彩、字体、形状、动效和上百个组件的完整体系。</p>
       <p class="body-large">这一页本身就按 Material 3 的规范搭建。你看到的按钮、卡片和每一种颜色，都是讲解的一部分。</p>
@@ -423,10 +422,7 @@
 </section>
 
 <footer class="page-foot" id="pageFoot">
-  <div class="foot-nav" id="footNav">
-    <a class="btn btn-outlined" href="../../#s-material" data-catalog data-ripple><span class="ms">arrow_back</span>返回图鉴</a>
-  </div>
-  <p class="body-small muted">本页用 HTML、CSS 和少量 JavaScript 手写，没有使用组件库；图标来自 Material Symbols。</p>
+  <p class="body-small muted">本页用 HTML、CSS 和少量 JavaScript 手写，没有使用组件库；图标来自 Material Symbols。右上角的 <span class="ms foot-ic">restart_alt</span> 可以把配色、明暗和所有组件恢复到初始状态。</p>
 </footer>
 </main>
 

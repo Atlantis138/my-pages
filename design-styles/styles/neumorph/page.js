@@ -6,6 +6,7 @@ const root = document.documentElement;
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (_) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (_) {} },
 };
 
 /* ---------- color helpers ---------- */
@@ -264,13 +265,21 @@ setBright();
 setLight(+(store.get("nm-light") ?? 315), false);
 renderLab();
 
-/* 导航数据单独动态载入：即使失败，也只影响页脚的上一篇 / 下一篇，不影响页面本身 */
-import("../shared/siblings.js").then((m) => m.siblings("neumorph")).then((nav) => {
-  $$("[data-no]").forEach((el) => (el.textContent = `No.${String(nav.no).padStart(2, "0")}`));
-  const pill = (s, dir) => s
-    ? `<a class="pill nm-raised ${dir}" href="${s.href}" style="--d:6px">${dir === "prev" ? `<svg class="ic"><use href="#i-back"/></svg><small>上一个</small>${s.cn}` : `<small>下一个</small>${s.cn}<svg class="ic"><use href="#i-next"/></svg>`}</a>`
-    : "";
-  const nav0 = $("#footNav");
-  nav0.insertAdjacentHTML("afterbegin", pill(nav.prev, "prev"));
-  nav0.insertAdjacentHTML("beforeend", pill(nav.next, "next"));
-}).catch(() => {});
+/* 一键复原：清掉本页保存的设置，把表单控件改回默认值（避免浏览器在刷新后恢复它们），再重新载入 */
+function toast(text) {
+  const t = $("#toast");
+  t.textContent = text; t.classList.add("show");
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+$("#resetBtn").addEventListener("click", () => {
+  ["nm-light", "nm-theme", "nm-enhanced"].forEach(store.del);
+  $$("input").forEach((i) => {
+    if (i.type === "checkbox" || i.type === "radio") i.checked = i.defaultChecked;
+    else i.value = i.defaultValue;
+  });
+  try { sessionStorage.setItem("nm-reset", "1"); } catch (_) {}
+  location.reload();
+});
+try {
+  if (sessionStorage.getItem("nm-reset")) { sessionStorage.removeItem("nm-reset"); toast("已恢复初始状态"); }
+} catch (_) {}

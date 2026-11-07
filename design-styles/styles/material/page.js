@@ -8,6 +8,7 @@ const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (_) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (_) {} },
 };
 
 /* =====================================================================
@@ -419,11 +420,16 @@ addEventListener("resize", () => $$(".tabs").forEach(placeTabIndicator));
 renderWalls();
 applyScheme();
 
-/* 导航数据单独动态载入：即使失败，也只影响页脚的上一篇 / 下一篇，不影响页面本身 */
-import("../shared/siblings.js").then((m) => m.siblings("material")).then((nav) => {
-  $$("[data-no]").forEach((el) => (el.textContent = `No.${String(nav.no).padStart(2, "0")}`));
-  const card = (s, dir) => s
-    ? `<a class="next-card ${dir}" href="${s.href}"><span>${dir === "prev" ? '<span class="ms">arrow_back</span>上一个风格' : '下一个风格<span class="ms">arrow_forward</span>'}</span><b>${s.cn}</b></a>`
-    : "";
-  $("#footNav").insertAdjacentHTML("beforeend", card(nav.prev, "prev") + card(nav.next, "next"));
-}).catch(() => {});
+/* 一键复原：清掉本页保存的设置，把表单控件改回默认值（避免浏览器在刷新后恢复它们），再重新载入 */
+$("#resetBtn").addEventListener("click", () => {
+  ["md-seed", "md-theme"].forEach(store.del);
+  $$("input").forEach((i) => {
+    if (i.type === "checkbox" || i.type === "radio") i.checked = i.defaultChecked;
+    else i.value = i.defaultValue;
+  });
+  try { sessionStorage.setItem("md-reset", "1"); } catch (_) {}
+  location.reload();
+});
+try {
+  if (sessionStorage.getItem("md-reset")) { sessionStorage.removeItem("md-reset"); snack("已恢复初始状态"); }
+} catch (_) {}

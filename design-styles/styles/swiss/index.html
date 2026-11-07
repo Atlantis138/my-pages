@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>瑞士风格 · International Typographic Style</title>
+<meta name="description" content="用瑞士国际主义平面风格写成的一页瑞士风格介绍：12 栏网格叠加层、版面解剖、来历年表、网格术语、字体与层级、对齐、网格实验室、常见错误与 CSS 实现。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,700&family=JetBrains+Mono:wght@400&family=Noto+Sans+SC:wght@400;700&display=swap">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- ============ 12 栏网格叠加层（按 G 显示） ============ -->
+<div class="overlay" aria-hidden="true">
+  <div class="g ov-grid"><i><b>1</b></i><i><b>2</b></i><i><b>3</b></i><i><b>4</b></i><i><b>5</b></i><i><b>6</b></i><i><b>7</b></i><i><b>8</b></i><i><b>9</b></i><i><b>10</b></i><i><b>11</b></i><i><b>12</b></i></div>
+</div>
+
+<!-- ============ header ============ -->
+<header class="top">
+  <div class="g top-in">
+    <a class="back" href="../../#s-swiss"><span aria-hidden="true">←</span> 设计风格图鉴</a>
+    <nav class="toc" aria-label="章节">
+      <a href="#principle"><b>1</b>原理</a><a href="#history"><b>2</b>来历</a><a href="#grid"><b>3</b>网格</a><a href="#type"><b>4</b>文字</a><a href="#lab"><b>5</b>实验室</a><a href="#ui"><b>6</b>界面</a><a href="#use"><b>7</b>用法</a><a href="#code"><b>8</b>实现</a>
+    </nav>
+    <div class="tools">
+      <button class="tool" id="gridBtn" type="button" aria-pressed="false" title="显示 12 栏网格（快捷键 G）"><i aria-hidden="true"></i>网格<kbd>G</kbd></button>
+      <button class="tool" id="themeBtn" type="button" role="switch" aria-checked="false" title="深色模式"><i aria-hidden="true"></i>深色</button>
+      <button class="tool" id="resetBtn" type="button" title="恢复初始状态：网格、明暗、实验室与所有控件"><span aria-hidden="true">↺</span>复原</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ hero ============ -->
+<section class="hero g" id="top" aria-labelledby="h-hero">
+  <p class="meta">国际主义平面风格<br><span lang="en">International Typographic Style</span></p>
+  <p class="meta">苏黎世 · 巴塞尔<br><span lang="de">Zürich · Basel</span></p>
+  <p class="meta">1950 年代至 1970 年代<br>源于 1920 年代的新文字设计</p>
+  <p class="meta">Helvetica · Univers<br>同在 1957 年发布</p>
+
+  <h1 class="mega" id="h-hero">瑞士<br>风格</h1>
+  <div class="hero-red">
+    <p class="hr-k" lang="de">Grundsätze</p>
+    <p class="hr-w" lang="de">Raster<br>Ordnung<br>Klarheit</p>
+    <p class="hr-cn">网格 · 秩序 · 清晰</p>
+  </div>
+
+  <div class="hero-left">
+    <p class="en" lang="en">International Typographic Style</p>
+    <p class="lede">二十世纪五十年代，苏黎世和巴塞尔的一批设计师相信：设计应当客观、清晰、可以复用。他们用数学网格组织版面，用无衬线字体排字，左对齐，不加装饰，让信息自己说话。今天大多数「看起来很专业」的网站，骨子里都是这套方法。</p>
+    <p class="hint">这一页也用它写成。按 <kbd>G</kbd> 键，或点右上角的「网格」，看看这一页的骨架。</p>
+    <button class="btn" type="button" id="heroGrid" aria-pressed="false">显示网格</button>
+  </div>
+
+  <dl class="specs">
+    <div><dt>12</dt><dd>栏网格，所有元素都对齐栏线</dd></div>
+    <div><dt>2</dt><dd>种字重：400 与 700</dd></div>
+    <div><dt>3</dt><dd>种颜色：黑、白、红</dd></div>
+    <div><dt>0</dt><dd>阴影、渐变和图片；圆角只留给单选按钮</dd></div>
+  </dl>
+</section>
+
+<!-- ============ 1 principle ============ -->
+<section class="sec g" id="principle" aria-labelledby="h-principle">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true">1</p>
+    <h2 id="h-principle">原理</h2>
+    <p class="sec-de" lang="de">Grundsätze</p>
+  </header>
+  <div class="sec-body">
+    <p class="sec-lead c-7">瑞士风格的设计师认为，设计师的任务不是表达自己，而是把信息清楚、客观地组织起来。他们几乎放弃了装饰，只依靠几样工具：网格、无衬线字体、左齐右不齐的排版、悬殊的尺寸对比和留白。</p>
+    <p class="c-7 body-l">「客观」是这套方法的关键词：用摄影代替插画，用事实代替修辞，用系统代替灵感。右边这张海报是按这些规则排的，把指针移到（或点按）条目上，看每条规则落在哪里。</p>
+
+    <div class="anat c-4">
+      <div class="poster" id="poster" data-hl="">
+        <div class="p-grid" id="pGrid" aria-hidden="true"></div>
+        <p class="p-meta" lang="de">Ausstellung<br>12.–30. Juni</p>
+        <div class="p-red"></div>
+        <div class="p-void"></div>
+        <p class="p-title" lang="de">Raster</p>
+        <p class="p-body" lang="de">Die Fläche wird in gleiche Felder geteilt. Jedes Element beginnt an einer Linie des Rasters.</p>
+        <p class="p-body2" lang="de">Schrift, Bild und Fläche folgen derselben Ordnung. Der Weissraum gehört zur Gestaltung.</p>
+        <span class="pm pm1" aria-hidden="true">1</span><span class="pm pm2" aria-hidden="true">2</span><span class="pm pm3" aria-hidden="true">3</span><span class="pm pm4" aria-hidden="true">4</span><span class="pm pm5" aria-hidden="true">5</span><span class="pm pm6" aria-hidden="true">6</span>
+      </div>
+    </div>
+    <ol class="rules c-5" id="rules">
+      <li><button type="button" data-hl="1" aria-pressed="false"><b>1</b><span><strong>网格</strong>版面被划成 6 栏 × 8 行的模块，每个元素的边都落在模块线上。</span></button></li>
+      <li><button type="button" data-hl="2" aria-pressed="false"><b>2</b><span><strong>无衬线字体</strong>一种字体，两种字重。笔画均匀、没有装饰的怪诞体（Grotesk）被认为最「中性」。</span></button></li>
+      <li><button type="button" data-hl="3" aria-pressed="false"><b>3</b><span><strong>左齐右不齐</strong>每行都从同一条竖线开始，行尾自然参差，词距处处相等。</span></button></li>
+      <li><button type="button" data-hl="4" aria-pressed="false"><b>4</b><span><strong>尺寸对比</strong>标题和正文的字号相差十倍以上。层级一眼可见，用不着颜色和装饰。</span></button></li>
+      <li><button type="button" data-hl="5" aria-pressed="false"><b>5</b><span><strong>不对称</strong>红色块压在右上，标题沉在下方。重心偏离中轴，彼此却是平衡的。</span></button></li>
+      <li><button type="button" data-hl="6" aria-pressed="false"><b>6</b><span><strong>留白</strong>左上方的大片空白不是剩下的，它给标题和色块留出了呼吸的距离。</span></button></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 2 history ============ -->
+<section class="sec g" id="history" aria-labelledby="h-history">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true">2</p>
+    <h2 id="h-history">来历</h2>
+    <p class="sec-de" lang="de">Geschichte</p>
+  </header>
+  <div class="sec-body">
+    <p class="sec-lead c-7">它的源头是 1920 年代德国的「新文字设计」，在二战后中立的瑞士成熟。苏黎世和巴塞尔的两所工艺美术学校是它的两个中心；1958 年创刊的杂志《新平面设计》把它推向世界，随后进入企业形象、公共导视，最后进入网页。</p>
+    <div class="filters c-9" role="group" aria-label="按类别筛选" id="filters">
+      <button type="button" data-f="all" aria-pressed="true">全部</button>
+      <button type="button" data-f="font" aria-pressed="false">字体</button>
+      <button type="button" data-f="book" aria-pressed="false">出版</button>
+      <button type="button" data-f="school" aria-pressed="false">学校与人物</button>
+      <button type="button" data-f="spread" aria-pressed="false">传播与反叛</button>
+    </div>
+    <ol class="tl c-9" id="tl">
+      <li data-t="font"><b>1898</b><p>柏林的贝特霍尔德铸字厂推出 <span lang="de">Akzidenz-Grotesk</span>。半个世纪后，它成了瑞士设计师最常用的无衬线体。</p><span class="tag">字体</span></li>
+      <li data-t="school"><b>1918</b><p>恩斯特·凯勒开始在苏黎世工艺美术学校教平面设计，此后执教约四十年，被视为瑞士平面设计教育的开创者。</p><span class="tag">学校与人物</span></li>
+      <li data-t="book"><b>1928</b><p>扬·奇肖尔德出版《新文字设计》（<span lang="de">Die neue Typographie</span>），主张不对称版式和无衬线字体。他后来转回古典排版，并批评自己早年的主张过于教条。</p><span class="tag">出版</span></li>
+      <li data-t="school"><b>1942</b><p>埃米尔·鲁德开始在巴塞尔工艺美术学校教字体排印。</p><span class="tag">学校与人物</span></li>
+      <li data-t="school"><b>1947</b><p>阿明·霍夫曼加入巴塞尔工艺美术学校，后来与鲁德一起开设高级平面设计班，吸引了世界各地的学生。</p><span class="tag">学校与人物</span></li>
+      <li data-t="font"><b>1957</b><p>哈斯铸字厂推出 <span lang="de">Neue Haas Grotesk</span>（马克斯·米丁格尔与爱德华·霍夫曼）；同年，阿德里安·弗鲁蒂格的 Univers 在巴黎发布。</p><span class="tag">字体</span></li>
+      <li data-t="book"><b>1958</b><p>《新平面设计》（<span lang="de">Neue Grafik</span>）在苏黎世创刊，德、英、法三语对照，由米勒-布罗克曼、洛泽、诺伊堡和维瓦雷利共同编辑，出到第 18 期，1965 年停刊。</p><span class="tag">出版</span></li>
+      <li data-t="font"><b>1960</b><p><span lang="de">Neue Haas Grotesk</span> 改名 Helvetica，取自瑞士的拉丁语名称 Helvetia，从此走向全世界。</p><span class="tag">字体</span></li>
+      <li data-t="book"><b>1961</b><p>米勒-布罗克曼出版《平面设计师的设计问题》。</p><span class="tag">出版</span></li>
+      <li data-t="book"><b>1965</b><p>霍夫曼出版《平面设计手册》，整理了巴塞尔的基础训练方法。</p><span class="tag">出版</span></li>
+      <li data-t="book"><b>1967</b><p>鲁德出版《字体排印》（<span lang="de">Typographie</span>），用大量范例讨论网格、比例与留白。</p><span class="tag">出版</span></li>
+      <li data-t="spread"><b>1968</b><p>沃尔夫冈·魏因加特开始在巴塞尔任教。他用打散、倾斜和叠印挑战网格，引出了「新浪潮」字体排印。</p><span class="tag">传播与反叛</span></li>
+      <li data-t="spread"><b>1970</b><p>纽约地铁的标识规范（Unimark：马西莫·维涅里与鲍勃·诺尔达）把网格和无衬线字体带进了公共导视。</p><span class="tag">传播与反叛</span></li>
+      <li data-t="book"><b>1981</b><p>米勒-布罗克曼出版《平面设计中的网格系统》，至今仍是网格设计最常被引用的教材。</p><span class="tag">出版</span></li>
+      <li data-t="spread"><b>2008</b><p>960 Grid System 等 CSS 栅格框架流行，12 栏网格成为网页的默认骨架。</p><span class="tag">传播与反叛</span></li>
+      <li data-t="spread"><b>2017</b><p>CSS Grid 布局在主流浏览器中相继落地，网格第一次成为浏览器原生的排版能力。</p><span class="tag">传播与反叛</span></li>
+    </ol>
+    <p class="tl-count c-9" id="tlCount" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- ============ 3 grid ============ -->
+<section class="sec g" id="grid" aria-labelledby="h-grid">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true">3</p>
+    <h2 id="h-grid">网格</h2>
+    <p class="sec-de" lang="de">Raster</p>
+  </header>
+  <div class="sec-body">
+    <p class="sec-lead c-7">网格把版面划分成等宽的栏和等高的行，栏与行交叉出的格子叫「场」（<span lang="de">Feld</span>），也叫模块。所有元素的边都落在网格线上：不同的页面、不同的内容，因此能保持同一种秩序。</p>
+
+    <figure class="diagram c-5">
+      <svg viewBox="0 0 300 400" role="img" aria-label="网格的组成：版心、页边距、栏、栏间距、场与基线">
+        <rect class="d-page" x="0.5" y="0.5" width="299" height="399"/>
+        <rect class="d-area" x="30" y="30" width="240" height="320"/>
+        <g class="d-cols">
+          <rect x="30" y="30" width="51" height="320"/><rect x="93" y="30" width="51" height="320"/><rect x="156" y="30" width="51" height="320"/><rect x="219" y="30" width="51" height="320"/>
+        </g>
+        <g class="d-rows">
+          <line x1="30" x2="270" y1="101" y2="101"/><line x1="30" x2="270" y1="113" y2="113"/>
+          <line x1="30" x2="270" y1="184" y2="184"/><line x1="30" x2="270" y1="196" y2="196"/>
+          <line x1="30" x2="270" y1="267" y2="267"/><line x1="30" x2="270" y1="279" y2="279"/>
+        </g>
+        <rect class="d-field" x="93" y="113" width="114" height="154"/>
+        <g class="d-base"><line x1="219" x2="270" y1="125" y2="125"/><line x1="219" x2="270" y1="137" y2="137"/><line x1="219" x2="270" y1="149" y2="149"/><line x1="219" x2="270" y1="161" y2="161"/><line x1="219" x2="270" y1="173" y2="173"/></g>
+        <g class="d-marks">
+          <g><rect x="38" y="38" width="16" height="16"/><text x="46" y="50">1</text></g>
+          <g><rect x="7" y="192" width="16" height="16"/><text x="15" y="204">2</text></g>
+          <g><rect x="47" y="300" width="16" height="16"/><text x="55" y="312">3</text></g>
+          <g><rect x="80" y="40" width="16" height="16"/><text x="88" y="52">4</text></g>
+          <g><rect x="142" y="182" width="16" height="16"/><text x="150" y="194">5</text></g>
+          <g><rect x="250" y="141" width="16" height="16"/><text x="258" y="153">6</text></g>
+        </g>
+      </svg>
+      <figcaption>4 栏 × 4 行的网格。浅色条是栏，红框是一个占 2 × 2 个场的区域，右侧的细横线是基线。</figcaption>
+    </figure>
+    <dl class="terms c-4">
+      <div><dt><b>1</b>版心 <span lang="de">Satzspiegel</span></dt><dd>页边距以内、放置内容的区域。</dd></div>
+      <div><dt><b>2</b>页边距 <span lang="de">Rand</span></dt><dd>版心四周的空白。传统上下边距最大，让版面「站得稳」。</dd></div>
+      <div><dt><b>3</b>栏 <span lang="de">Spalte</span></dt><dd>版心被竖向等分出的条带。文字和图片的宽度都是一栏或几栏。</dd></div>
+      <div><dt><b>4</b>栏间距 <span lang="de">Zwischenraum</span></dt><dd>栏与栏之间的空隙，防止相邻两栏的文字读串。行与行之间也有同样的间距。</dd></div>
+      <div><dt><b>5</b>场 <span lang="de">Feld</span></dt><dd>栏与行交叉出的模块。图片和文字块总是占据整数个场。</dd></div>
+      <div><dt><b>6</b>基线网格 <span lang="de">Grundlinienraster</span></dt><dd>按正文行距画出的等距横线，让相邻各栏的文字行横向对齐。</dd></div>
+    </dl>
+
+    <blockquote class="quote c-9">
+      <p class="q-big">网格是辅助，不是保证。</p>
+      <p class="q-small">它允许许多种用法，每位设计师都能找到适合自己的方案。但用网格需要学习，这是一门需要练习的艺术。</p>
+      <footer>约瑟夫·米勒-布罗克曼，《平面设计中的网格系统》，1981（大意）</footer>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ 4 type ============ -->
+<section class="sec g" id="type" aria-labelledby="h-type">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true">4</p>
+    <h2 id="h-type">文字</h2>
+    <p class="sec-de" lang="de">Typografie</p>
+  </header>
+  <div class="sec-body">
+    <p class="sec-lead c-7">瑞士风格几乎只用一类字体：十九世纪末出现的无衬线「怪诞体」（<span lang="de">Grotesk</span>），以及它在 1950 年代的改良版。层级不靠换字体，而靠字号、字重和位置。</p>
+
+    <h3 class="sub c-9"><b>4.1</b>三款字体</h3>
+    <article class="face c-3">
+      <p class="f-year">1898</p>
+      <h4 lang="de">Akzidenz-Grotesk</h4>
+      <p class="f-who">贝特霍尔德铸字厂 · 柏林</p>
+      <p><span lang="de">Akzidenz</span> 指广告、表格、票据这类零星的商业印刷。它本是一款平凡的商用字体，五十年后被瑞士设计师重新发现。</p>
+    </article>
+    <article class="face c-3">
+      <p class="f-year">1957</p>
+      <h4>Helvetica</h4>
+      <p class="f-who">米丁格尔与霍夫曼 · 哈斯铸字厂</p>
+      <p>原名 <span lang="de">Neue Haas Grotesk</span>，在 Akzidenz 的基础上改良，1960 年改名。字怀紧凑，笔画末端水平切齐，排出的字块格外整齐。</p>
+    </article>
+    <article class="face c-3">
+      <p class="f-year">1957</p>
+      <h4>Univers</h4>
+      <p class="f-who">阿德里安·弗鲁蒂格 · 巴黎</p>
+      <p>发布时就有 21 种字重和宽度，用两位数字编号（55 是常规体），开创了把整个字族当作系统来规划的做法。</p>
+    </article>
+    <p class="note c-9">本页没有嵌入这三款字体：装有 Helvetica Neue 的设备（如 Mac 和 iPhone）会直接显示它，其他设备显示开源的 Inter。中文一律用思源黑体。</p>
+
+    <h3 class="sub c-9"><b>4.2</b>层级来自对比</h3>
+    <div class="steps c-9" role="radiogroup" aria-label="层级手段" id="steps">
+      <button type="button" role="radio" aria-checked="false" data-s="1"><b>1</b>无层级</button>
+      <button type="button" role="radio" aria-checked="false" data-s="2"><b>2</b>＋字号</button>
+      <button type="button" role="radio" aria-checked="false" data-s="3"><b>3</b>＋字重</button>
+      <button type="button" role="radio" aria-checked="true" data-s="4"><b>4</b>＋位置与留白</button>
+    </div>
+    <div class="hier c-9" id="hier" data-step="4">
+      <p class="h-kicker">第 4 节 · 文字</p>
+      <p class="h-title">层级来自对比</p>
+      <p class="h-sub">字号、字重和位置，不需要颜色</p>
+      <p class="h-body">读者先看到什么、后看到什么，取决于元素之间的差距有多大。瑞士风格把差距拉得很开：标题可以是正文的十几倍，同时只用常规和粗体两种字重。</p>
+      <p class="h-body">位置也是层级的一部分。图注和编号退到左边的窄栏，正文从同一条竖线开始，眼睛不用找就知道下一行在哪里。</p>
+      <p class="h-cap">图注 · 本例只用了一种字体与两种字重</p>
+    </div>
+    <p class="step-note c-9" id="stepNote" aria-live="polite"></p>
+
+    <h3 class="sub c-9"><b>4.3</b>左齐右不齐</h3>
+    <div class="align-ctrl c-9">
+      <div class="seg" role="radiogroup" aria-label="对齐方式" id="alignSeg">
+        <button type="button" role="radio" aria-checked="true" data-a="left">左齐</button>
+        <button type="button" role="radio" aria-checked="false" data-a="justify">两端对齐</button>
+        <button type="button" role="radio" aria-checked="false" data-a="center">居中</button>
+      </div>
+      <label class="check"><input type="checkbox" id="hyph"><span>自动断词</span></label>
+    </div>
+    <div class="align-demo c-9" id="alignDemo" data-a="left">
+      <figure>
+        <p lang="de">Ein Raster teilt die Fläche in gleiche Spalten und Zeilen. Jede Zeile beginnt an derselben senkrechten Linie, das Zeilenende bleibt offen. So bleiben die Wortabstände überall gleich – auch in schmalen Spalten mit langen Wörtern wie Gestaltungsgrundlagen oder Informationsarchitektur.</p>
+        <figcaption>德文 · 窄栏</figcaption>
+      </figure>
+      <figure>
+        <p>网格把版面分成等宽的栏和等高的行。每段文字都从同一条竖线开始，行尾保持开放。汉字是等宽的方块，两端对齐时只需在字与字之间分配极小的空隙，几乎看不出来。</p>
+        <figcaption>中文 · 同样的栏宽</figcaption>
+      </figure>
+      <div class="align-text">
+        <p>西文单词长短不一。两端对齐时只能靠拉大词距来凑齐，窄栏里就会出现一道道白色的「河流」；左齐让词距保持一致，参差的行尾反而成了节奏。打开「自动断词」能缓解，但治不了根。</p>
+        <p>中文是另一回事：汉字等宽，两端对齐几乎不留痕迹，所以中文正文通常两端对齐。「左齐右不齐」主要是针对西文的规则。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 lab ============ -->
+<section class="sec g" id="lab" aria-labelledby="h-lab">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true">5</p>
+    <h2 id="h-lab">实验室</h2>
+    <p class="sec-de" lang="de">Labor</p>
+  </header>
+  <div class="sec-body">
+    <p class="sec-lead c-7">网格不规定答案，只规定可能性。改变栏数、行数和间距，或者换一种排法：海报上的元素会吸附到最近的网格线上。米勒-布罗克曼在书中用 8 场、20 场、32 场等网格做示范，下面的预设按「栏 × 行」划分。</p>
+
+    <div class="lab-ctrl c-3">
+      <div class="presets" role="group" aria-label="预设" id="presets">
+        <button type="button" data-c="2" data-r="4">8 场</button>
+        <button type="button" data-c="4" data-r="5">20 场</button>
+        <button type="button" data-c="4" data-r="8">32 场</button>
+      </div>
+      <label class="range"><span>栏<output id="oCols"></output></span><input type="range" id="lCols" min="1" max="12" value="4"></label>
+      <label class="range"><span>行<output id="oRows"></output></span><input type="range" id="lRows" min="1" max="10" value="5"></label>
+      <label class="range"><span>间距<output id="oGap"></output></span><input type="range" id="lGap" min="0" max="32" value="12"></label>
+      <label class="range"><span>页边距<output id="oPad"></output></span><input type="range" id="lPad" min="0" max="48" value="24"></label>
+      <div class="seg" role="radiogroup" aria-label="排法" id="lLayout">
+        <button type="button" role="radio" aria-checked="true" data-l="A">排法 A</button>
+        <button type="button" role="radio" aria-checked="false" data-l="B">B</button>
+        <button type="button" role="radio" aria-checked="false" data-l="C">C</button>
+      </div>
+      <label class="field"><span>标题</span><input type="text" id="lTitle" value="Raster" maxlength="18" autocomplete="off" spellcheck="false"></label>
+      <label class="check"><input type="checkbox" id="lShow" checked><span>显示网格</span></label>
+    </div>
+    <div class="lab-out c-6">
+      <div class="lab-poster" id="labPoster">
+        <div class="lp-grid" id="lpGrid" aria-hidden="true"></div>
+        <div class="lp-items" id="lpItems">
+          <p class="li-top" data-k="top" lang="de">Ausstellung</p>
+          <div class="li-red" data-k="red"></div>
+          <p class="li-title" data-k="title" id="lpTitle">Raster</p>
+          <p class="li-body" data-k="body">网格不规定答案，只规定可能性。元素的四条边都吸附在网格线上。</p>
+          <p class="li-meta" data-k="meta" lang="de">Zürich<br>1958</p>
+        </div>
+      </div>
+      <p class="lab-stat" id="labStat" aria-live="polite"></p>
+    </div>
+    <div class="code c-9">
+      <button class="copy" type="button" data-copy="labCode">复制</button>
+      <pre><code id="labCode"></code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 ui ============ -->
+<section class="sec g" id="ui" aria-labelledby="h-ui">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true">6</p>
+    <h2 id="h-ui">界面</h2>
+    <p class="sec-de" lang="de">Oberfläche</p>
+  </header>
+  <div class="sec-body">
+    <p class="sec-lead c-7">网页界面最常用的底色就是瑞士风格：它的规则几乎可以一条条翻译成组件。下面的组件都能操作，样式全部来自本页的同一组变量；拖动 6.2 的宽度，看同一张网格怎样从桌面退到手机。</p>
+
+    <h3 class="sub c-9"><b>6.1</b>组件</h3>
+    <div class="ui-box c-4">
+      <p class="ui-k">按钮与链接</p>
+      <div class="ui-row">
+        <button class="ui-btn" type="button">提交申请</button>
+        <button class="ui-btn red" type="button">立即报名</button>
+        <button class="ui-btn line" type="button">稍后再说</button>
+      </div>
+      <div class="ui-row"><a class="ui-link" href="#ui">查看全部组件 <span aria-hidden="true">→</span></a><button class="ui-btn line" type="button" disabled>已截止</button></div>
+      <p class="ui-note">方角、实色、没有阴影。主次只靠填充和描边区分；悬停时只换颜色，不位移、不放大，版面始终纹丝不动。</p>
+    </div>
+    <form class="ui-box ui-form c-5" id="uiForm" novalidate>
+      <p class="ui-k">表单</p>
+      <label class="ui-field"><span>姓名</span><input type="text" name="name" autocomplete="off" placeholder="Josef Müller"></label>
+      <label class="ui-field" id="mailField"><span>邮箱</span><input type="email" name="mail" autocomplete="off" placeholder="name@example.ch" aria-describedby="mailErr"><em id="mailErr" class="ui-err" aria-live="polite"></em></label>
+      <fieldset class="ui-set">
+        <legend>场次</legend>
+        <label class="ui-radio"><input type="radio" name="slot" value="am" checked><span>上午 09:00</span></label>
+        <label class="ui-radio"><input type="radio" name="slot" value="pm"><span>下午 14:00</span></label>
+      </fieldset>
+      <label class="ui-check"><input type="checkbox" name="news"><span>订阅展览通讯</span></label>
+      <div class="ui-row"><button class="ui-btn" type="submit">提交</button><span class="ui-ok" id="formOk" aria-live="polite"></span></div>
+      <p class="ui-note">标签放在输入框上方并左齐，和正文挂在同一条栏线上。单选按钮保留圆形：用户熟悉的约定比风格的统一更重要。</p>
+    </form>
+
+    <div class="ui-box c-9">
+      <p class="ui-k">数据表格 <span>示例数据 · 点击表头排序</span></p>
+      <div class="tbl-wrap">
+        <table class="ui-table" id="depTable">
+          <caption class="sr">苏黎世出发列车（示例数据）</caption>
+          <thead><tr>
+            <th scope="col" aria-sort="ascending"><button type="button" data-k="time">时间</button></th>
+            <th scope="col"><button type="button" data-k="train">车次</button></th>
+            <th scope="col"><button type="button" data-k="dest">目的地</button></th>
+            <th scope="col" class="num"><button type="button" data-k="track">站台</button></th>
+            <th scope="col" class="num"><button type="button" data-k="delay">晚点</button></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="ui-note">瑞士风格最擅长的就是表格：等宽数字、右对齐的数值列、只有横线没有竖线、表头和正文同一种字体只差字重。晚点是唯一用红色的地方，而且同时用文字写明。</p>
+    </div>
+
+    <div class="ui-box c-4">
+      <p class="ui-k">导航与分页</p>
+      <nav class="ui-crumb" aria-label="示例面包屑"><a href="#ui">首页</a><span aria-hidden="true">/</span><a href="#ui">展览</a><span aria-hidden="true">/</span><span aria-current="page">网格与秩序</span></nav>
+      <nav class="ui-pages" aria-label="示例分页" id="pager"></nav>
+      <p class="ui-note">当前页用实心块标出，其余是纯数字；上一页、下一页用箭头而不是图标。所有数字等宽，翻页时版面不会抖动。</p>
+    </div>
+    <div class="ui-box c-5">
+      <p class="ui-k">提示与标签</p>
+      <div class="ui-alert"><b>提示</b><p>展览开幕时间调整为 18:00。</p></div>
+      <div class="ui-alert err" role="note"><b>错误</b><p>票已售完，请选择其他场次。</p></div>
+      <div class="ui-tags"><span>字体排印</span><span>网格</span><span>海报</span><span class="on">1958</span></div>
+      <p class="ui-note">状态靠一个粗体词加一条竖线表达，颜色只是加强。即使看不出红色，「错误」两个字也不会丢。</p>
+    </div>
+
+    <h3 class="sub c-9"><b>6.2</b>响应式：12 栏 → 8 栏 → 4 栏</h3>
+    <div class="rs-ctrl c-9">
+      <div class="seg" role="group" aria-label="设备宽度预设" id="rsPresets">
+        <button type="button" data-w="375">手机 375</button>
+        <button type="button" data-w="768">平板 768</button>
+        <button type="button" data-w="1200">桌面 1200</button>
+      </div>
+      <label class="range rs-range"><span>页面宽度<output id="rsOut"></output></span><input type="range" id="rsWidth" min="320" max="1280" step="1" value="1200"></label>
+    </div>
+    <div class="rs-stage c-9" id="rsStage">
+      <div class="rs-frame" id="rsFrame">
+        <div class="rs-page">
+          <div class="rs-cols" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <header class="rs-head"><b>Kunsthalle</b><nav><span>展览</span><span>活动</span><span>参观</span><span>关于</span></nav><span class="rs-menu">菜单</span></header>
+          <p class="rs-kick">展览 · 2026 年 6 月 12 日至 9 月 30 日</p>
+          <h4 class="rs-title">网格与秩序</h4>
+          <div class="rs-img"></div>
+          <dl class="rs-facts"><div><dt>开放</dt><dd>10:00–18:00</dd></div><div><dt>票价</dt><dd>CHF 18</dd></div><div><dt>地点</dt><dd>3 层</dd></div></dl>
+          <p class="rs-p">一场关于版面、字体与信息的展览。展品来自苏黎世和巴塞尔，从海报、书籍到导视系统。</p>
+          <p class="rs-p">每件作品都附有它的网格：栏数、栏间距和字号，一目了然。</p>
+          <p class="rs-p">展厅本身也按网格布置，展墙的宽度正好是两栏。</p>
+        </div>
+      </div>
+    </div>
+    <p class="rs-read c-9" id="rsRead" aria-live="polite"></p>
+    <p class="note c-9">示例页面用容器查询（<code>@container</code>）按自身宽度切换栏数，而不是按浏览器窗口；窄屏上会按比例缩小显示。</p>
+  </div>
+</section>
+
+<!-- ============ 7 use ============ -->
+<section class="sec g" id="use" aria-labelledby="h-use">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true">7</p>
+    <h2 id="h-use">用法</h2>
+    <p class="sec-de" lang="de">Anwendung</p>
+  </header>
+  <div class="sec-body">
+    <p class="sec-lead c-7">瑞士风格最擅长组织大量信息，几乎不会出错，所以成了企业、机构和设计系统的默认选择。它的风险也在这里：做得平庸时，它只剩下冷淡。</p>
+    <div class="fit c-4">
+      <h3>适合</h3>
+      <ul>
+        <li><b>企业官网、年报与作品集</b>需要可信、专业、长期不过时的场合。</li>
+        <li><b>文档、数据与信息设计</b>表格、图表、时刻表、导视系统。</li>
+        <li><b>新闻与长文</b>多栏排版、清晰的标题层级。</li>
+        <li><b>设计系统的底层</b>栅格、字阶、间距标尺都直接来自它。</li>
+      </ul>
+    </div>
+    <div class="fit c-4 fit-no">
+      <h3>慎用</h3>
+      <ul>
+        <li><b>需要温度和亲和力的品牌</b>做不到位就显得冷淡，像一份模板。</li>
+        <li><b>儿童、娱乐和节庆内容</b>克制的语言很难传达热闹与玩心。</li>
+        <li><b>内容很少的页面</b>网格的好处来自大量内容的统一；三个元素撑不起一张网格。</li>
+      </ul>
+    </div>
+
+    <h3 class="sub c-9"><b>7.1</b>四个常见错误</h3>
+    <article class="mis c-9">
+      <div class="mis-pair">
+        <figure><div class="mbox mz-center"><b>Raster</b><span>Ausstellung</span><span>12.–30. Juni</span></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mbox mz-left"><b>Raster</b><span>Ausstellung</span><span>12.–30. Juni</span></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <div class="mis-text"><h4>居中对称</h4><p>所有元素沿中轴排开，每一行的起点都不同，眼睛只能一行一行地找。改成左齐，让文字都挂在同一条栏线上。</p></div>
+    </article>
+    <article class="mis c-9">
+      <div class="mis-pair">
+        <figure><div class="mbox mz-fonts"><b>Raster</b><i>und Ordnung</i><span>Ausstellung 1958</span></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mbox mz-one"><b>Raster</b><i>und Ordnung</i><span>Ausstellung 1958</span></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <div class="mis-text"><h4>字体和字重太多</h4><p>衬线、斜体、等宽字体一起上，再配三种颜色，层级反而说不清。一种字体、两种字重，差别交给字号和位置。</p></div>
+    </article>
+    <article class="mis c-9">
+      <div class="mis-pair">
+        <figure><div class="mbox mz-just"><p lang="de">Ein Raster ordnet Text, Bild und Fläche. Lange Wörter wie Gestaltungsgrundlagen sprengen jede schmale Spalte.</p></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mbox mz-rag"><p lang="de">Ein Raster ordnet Text, Bild und Fläche. Lange Wörter wie Gestaltungsgrundlagen sprengen jede schmale Spalte.</p></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <div class="mis-text"><h4>西文窄栏两端对齐</h4><p>长单词把行撑得忽紧忽松，中间留下大块空白。窄栏一律左齐；实在要两端对齐，至少打开断词并加宽栏。</p></div>
+    </article>
+    <article class="mis c-9">
+      <div class="mis-pair">
+        <figure><div class="mbox mz-loose"><b>Raster</b></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mbox mz-tight"><b>Raster</b></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <div class="mis-text"><h4>大标题用默认字距</h4><p>字体的默认字距是为正文设计的，放大到几十倍后字母之间会显得很散。大标题收紧到 −0.03 至 −0.05 em，小字反而要略微放开。</p></div>
+    </article>
+
+    <div class="flaw c-9">
+      <h3>它的问题：冷，以及千篇一律</h3>
+      <p class="flaw-lead">当所有公司都用同一种字体和同一张 12 栏网格，版面就不再传达任何个性。1960 年代末，巴塞尔的魏因加特等人开始有意打破它。今天用瑞士风格，可以这样让它活起来：</p>
+      <ol>
+        <li><b>极端的尺度</b>让最大的字大到出格，最小的字小到安静，张力来自两者的差距。</li>
+        <li><b>一种大胆的颜色</b>保留一块纯色作为唯一的情绪出口，其他一律黑白。</li>
+        <li><b>真实的内容</b>真实的照片、数据和文字，比任何装饰都有表情。</li>
+        <li><b>有意打破一次</b>在严格的网格里，让一个元素出血、跨栏或旋转。规则越严，这一下越有力。</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 code ============ -->
+<section class="sec g" id="code" aria-labelledby="h-code">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true">8</p>
+    <h2 id="h-code">实现</h2>
+    <p class="sec-de" lang="de">Technik</p>
+  </header>
+  <div class="sec-body">
+    <p class="sec-lead c-7">CSS Grid 让网格第一次成为浏览器原生的能力，做瑞士风格网页从未这样容易。难的是细节，下面这些都是这一页用到的。</p>
+    <ol class="tips c-4">
+      <li><b>8.1</b><div><h4>用 minmax(0, 1fr)，不要用 1fr</h4><p><code>1fr</code> 的最小值是内容宽度，一个长单词或一段代码就能把栏撑宽，网格随之歪掉。</p></div></li>
+      <li><b>8.2</b><div><h4>用 subgrid 对齐嵌套元素</h4><p>本页每一节的正文区都是外层 12 栏的子网格，所以卡片、图表和文字都落在同一组栏线上。</p></div></li>
+      <li><b>8.3</b><div><h4>断词需要声明语言</h4><p><code>hyphens: auto</code> 只在元素带有 <code>lang</code> 属性（如 <code>lang="de"</code>）时生效。</p></div></li>
+      <li><b>8.4</b><div><h4>让行尾更整齐</h4><p><code>text-wrap: pretty</code> 能避免段末只剩一个词；不支持的浏览器会直接忽略它。</p></div></li>
+      <li><b>8.5</b><div><h4>数字要等宽</h4><p>年表和表格用 <code>font-variant-numeric: tabular-nums</code>，每一位数字等宽，竖向才能对齐。</p></div></li>
+      <li><b>8.6</b><div><h4>网格叠加层与正文共用变量</h4><p>按 <kbd>G</kbd> 显示的红色栏线是一个固定定位的 12 栏网格，和正文用同一组变量，所以在任何宽度下都严丝合缝。</p></div></li>
+    </ol>
+    <div class="code c-5">
+      <button class="copy" type="button" data-copy="pageCode">复制</button>
+<pre><code id="pageCode"><span class="c-c">/* 一组变量，正文和叠加层共用 */</span>
+<span class="c-k">:root</span> {
+  --cols: <span class="c-v">12</span>;
+  --gutter: <span class="c-v">clamp(12px, 2vw, 24px)</span>;
+  --margin: <span class="c-v">clamp(16px, 4vw, 48px)</span>;
+}
+<span class="c-k">.g</span> {
+  display: grid;
+  grid-template-columns:
+    repeat(var(--cols), <span class="c-v">minmax(0, 1fr)</span>);
+  column-gap: var(--gutter);
+  padding-inline: var(--margin);
+}
+<span class="c-k">.sec-body</span> {
+  grid-column: <span class="c-v">4 / -1</span>;
+  display: grid;
+  grid-template-columns: <span class="c-v">subgrid</span>;
+}
+<span class="c-k">h1</span> {
+  font-weight: <span class="c-v">700</span>;
+  line-height: <span class="c-v">.9</span>;
+  letter-spacing: <span class="c-v">-0.04em</span>;
+}
+<span class="c-k">p</span> { text-align: left; text-wrap: pretty; }
+<span class="c-k">[lang="de"]</span> { hyphens: auto; }
+<span class="c-k">.tl b</span> { font-variant-numeric: tabular-nums; }
+
+<span class="c-c">/* 按 G 显示：固定定位，套用同一个 .g */</span>
+<span class="c-k">.overlay</span> {
+  position: fixed; inset: 0;
+  pointer-events: none;
+}</code></pre>
+    </div>
+    <h3 class="sub c-9"><b>8.7</b>本页的设计令牌</h3>
+    <div class="tbl-wrap c-9">
+      <table class="tokens">
+        <caption>颜色（对比度按各自背景计算）</caption>
+        <thead><tr><th scope="col">令牌</th><th scope="col">浅色</th><th scope="col">深色</th><th scope="col">用途</th><th scope="col" class="num">对比度</th></tr></thead>
+        <tbody>
+          <tr><td>--ink</td><td><i style="background:#111111"></i>#111111</td><td><i style="background:#F2F1ED"></i>#F2F1ED</td><td>正文、标题、线</td><td class="num">17.0</td></tr>
+          <tr><td>--paper</td><td><i style="background:#F4F3EF"></i>#F4F3EF</td><td><i style="background:#0F0F0F"></i>#0F0F0F</td><td>背景</td><td class="num">—</td></tr>
+          <tr><td>--gray</td><td><i style="background:#5E5E5E"></i>#5E5E5E</td><td><i style="background:#9A9A9A"></i>#9A9A9A</td><td>图注、次要文字</td><td class="num">5.8 / 6.8</td></tr>
+          <tr><td>--red</td><td><i style="background:#E30613"></i>#E30613</td><td><i style="background:#E30613"></i>#E30613</td><td class="wrap">色块、按钮底色；上面压白字 4.9</td><td class="num">4.4 / 3.9</td></tr>
+          <tr><td>--red-text</td><td><i style="background:#C4000E"></i>#C4000E</td><td><i style="background:#FF4436"></i>#FF4436</td><td class="wrap">小字号红字：编号、错误</td><td class="num">5.6 / 5.6</td></tr>
+        </tbody>
+      </table>
+      <p class="note">纯正的瑞士红 #E30613 在浅色底上只有 4.4 : 1，够大字和色块用，不够正文；所以小字的红另设一个更深的 --red-text。</p>
+    </div>
+    <div class="tbl-wrap c-4">
+      <table class="tokens">
+        <caption>字阶与间距</caption>
+        <thead><tr><th scope="col">令牌</th><th scope="col">取值</th><th scope="col">用途</th></tr></thead>
+        <tbody>
+          <tr><td>--t-xs</td><td>13px</td><td>图注、标签</td></tr>
+          <tr><td>--t-s</td><td>15px</td><td>界面文字</td></tr>
+          <tr><td>--t-m</td><td>17px</td><td>正文</td></tr>
+          <tr><td>--t-l</td><td>21px</td><td>导语、编号</td></tr>
+          <tr><td>--t-xl</td><td>24–30px</td><td>小标题</td></tr>
+          <tr><td>--t-2xl</td><td>64–120px</td><td>章节编号</td></tr>
+          <tr><td>--s-1 … 5</td><td>8 · 16 · 24 · 48 · 72–128</td><td>间距</td></tr>
+          <tr><td>线</td><td>1px · 2px</td><td>细线分隔，粗线开篇</td></tr>
+        </tbody>
+      </table>
+      <p class="note">字号之间的比例大约是 1.2 到 1.3；越往上跳得越大，标题与正文的差距靠最后两级拉开。</p>
+    </div>
+    <ol class="scale c-5" aria-label="字阶样张">
+      <li><span>13</span><b style="font-size:13px">图注 Bildlegende</b></li>
+      <li><span>15</span><b style="font-size:15px">界面文字 Oberfläche</b></li>
+      <li><span>17</span><b style="font-size:17px">正文 Grundschrift</b></li>
+      <li><span>21</span><b style="font-size:21px">导语 Vorspann</b></li>
+      <li><span>30</span><b style="font-size:30px">小标题 Titel</b></li>
+      <li><span>64+</span><b style="font-size:64px">网格 Raster</b></li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot g">
+  <p class="fo-name">瑞士风格<br><span lang="en">International Typographic Style</span></p>
+  <p><b>字体</b>Helvetica Neue（如设备已安装）或 Inter；中文为思源黑体。只用 400 与 700 两种字重。</p>
+  <p><b>网格</b>12 栏 · 栏间距 12–24 px · 页边距 16–48 px</p>
+  <p><b>颜色</b><span class="sw-dot d-ink"></span>#111111 <span class="sw-dot d-paper"></span>#F4F3EF <span class="sw-dot d-red"></span>#E30613</p>
+  <p class="fo-end">本页没有图片、阴影和渐变；唯一的圆形是单选按钮。<a href="#top">回到顶部 ↑</a></p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

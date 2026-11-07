@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>新拟态 · 设计风格图鉴</title>
+<title>新拟态 · Soft UI</title>
 <meta name="description" content="用新拟态（Neumorphism / Soft UI）写成的一页新拟态介绍：原理、来历、四种形态、光影实验室、组件、可用性问题与实现要点。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,6 +34,7 @@
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
   </defs>
 </svg>
@@ -41,14 +42,17 @@
 
 <!-- ============ floating nav ============ -->
 <header class="nav nm-raised" style="--d:6px">
-  <a class="round-btn nm-raised" href="../../#s-neumorph" aria-label="返回设计风格图鉴" data-catalog style="--d:4px"><svg class="ic"><use href="#i-back"/></svg></a>
+  <a class="round-btn nm-raised" href="../../#s-neumorph" aria-label="返回设计风格图鉴" title="返回设计风格图鉴" style="--d:4px"><svg class="ic"><use href="#i-back"/></svg></a>
   <p class="nav-title">Soft UI <span>· 新拟态</span></p>
   <nav class="nav-links nm-inset" style="--d:3px" aria-label="章节">
     <a href="#what">原理</a><a href="#origin">来历</a><a href="#forms">形态</a><a href="#lab">实验室</a><a href="#kit">组件</a><a href="#a11y">可用性</a><a href="#use">用法</a>
   </nav>
-  <button class="theme-toggle nm-inset" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="深色模式" style="--d:3px">
-    <span class="tt-knob nm-raised" style="--d:3px"><svg class="ic"><use href="#i-sun"/></svg></span>
-  </button>
+  <div class="nav-tools">
+    <button class="round-btn nm-raised press" id="resetBtn" type="button" aria-label="恢复初始状态" title="恢复初始状态：光源、明暗与所有组件" style="--d:4px"><svg class="ic"><use href="#i-reset"/></svg></button>
+    <button class="theme-toggle nm-inset" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="深色模式" style="--d:3px">
+      <span class="tt-knob nm-raised" style="--d:3px"><svg class="ic"><use href="#i-sun"/></svg></span>
+    </button>
+  </div>
 </header>
 
 <main id="main">
@@ -56,7 +60,7 @@
 <!-- ============ hero ============ -->
 <section class="hero" aria-labelledby="h-hero">
   <div class="hero-text">
-    <p class="kicker">设计风格图鉴 · <span data-no>No.11</span> · Neumorphism</p>
+    <p class="kicker">Neumorphism · Soft UI · 2019 —</p>
     <h1 id="h-hero" class="emboss">新拟态</h1>
     <p class="hero-en">Soft UI — 从同一块材料里「挤」出来的界面</p>
     <p class="lead">元素与背景是同一种颜色，没有边框，也几乎没有色块。只靠一道亮阴影和一道暗阴影，就让按钮像从软塑料表面凸起，或者被按进去。它在 2020 年前后风靡设计社区，又因为难以使用而迅速降温。</p>
@@ -323,15 +327,41 @@
     </article>
   </div>
 
-  <h3 class="sub-h">和相邻的风格比一比</h3>
-  <div class="compare" role="table" aria-label="风格对比">
-    <div class="cmp-row cmp-head" role="row"><span role="columnheader">风格</span><span role="columnheader">立体感从哪来</span><span role="columnheader">颜色</span><span role="columnheader">对比度</span></div>
-    <a class="cmp-row nm-raised" role="row" href="../../#s-skeuo" style="--d:5px"><span role="cell"><b>拟物化</b></span><span role="cell">真实材质、渐变、高光</span><span role="cell">丰富</span><span role="cell">高</span></a>
-    <a class="cmp-row nm-raised" role="row" href="../../#s-flat" style="--d:5px"><span role="cell"><b>扁平化</b></span><span role="cell">没有立体感</span><span role="cell">高饱和纯色</span><span role="cell">高</span></a>
-    <a class="cmp-row nm-raised" role="row" href="../material/" style="--d:5px"><span role="cell"><b>Material</b></span><span role="cell">纸张投影与色调高度</span><span role="cell">品牌色系统</span><span role="cell">高</span></a>
-    <a class="cmp-row nm-inset here" role="row" aria-current="page" href="#h-hero" style="--d:4px"><span role="cell"><b>新拟态</b></span><span role="cell">同色的亮影与暗影</span><span role="cell">单色、低饱和</span><span role="cell">低</span></a>
-    <a class="cmp-row nm-raised" role="row" href="../../#s-glass" style="--d:5px"><span role="cell"><b>玻璃拟态</b></span><span role="cell">半透明与背景模糊</span><span role="cell">取决于背景</span><span role="cell">不稳定</span></a>
-    <a class="cmp-row nm-raised" role="row" href="../../#s-clay" style="--d:5px"><span role="cell"><b>黏土拟态</b></span><span role="cell">彩色体块与内阴影</span><span role="cell">明快糖果色</span><span role="cell">中</span></a>
+  <h3 class="sub-h">四个常见错误</h3>
+  <p class="lead mis-lead">每组左边是错误示范，右边是改正后的样子。它们同样受页首旋钮控制，转动光源时差别会更明显。</p>
+  <div class="mistakes">
+    <article class="mis">
+      <div class="mis-stage nm-inset" style="--d:6px">
+        <figure><div class="mis-row"><i class="chip nm-raised" style="--d:6px"></i><i class="chip flip"></i></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-row"><i class="chip nm-raised" style="--d:6px"></i><i class="chip nm-raised" style="--d:6px"></i></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h3>光源不统一</h3>
+      <p>右边那块的阴影方向反了，看上去像一个坑，又像光从两边同时照来。整页必须共享同一个光源方向，最好写成变量，而不是每个组件各写一套偏移。</p>
+    </article>
+    <article class="mis">
+      <div class="mis-stage nm-inset" style="--d:6px">
+        <figure><div class="mis-row"><i class="chip dirty"></i></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-row"><i class="chip nm-raised" style="--d:6px"></i></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h3>阴影用纯黑和纯白</h3>
+      <p>半透明黑做暗影、纯白做亮影，在浅灰蓝的底上会发灰发脏，换到深色模式更刺眼。阴影色应从底色推导：色相不变，只把明度调亮或调暗。</p>
+    </article>
+    <article class="mis">
+      <div class="mis-stage nm-inset" style="--d:6px">
+        <figure><div class="mis-row"><i class="chip hard"></i></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-row"><i class="chip nm-raised" style="--d:6px"></i></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h3>偏移大、模糊小</h3>
+      <p>模糊半径比偏移量还小，阴影边缘就会变硬，元素像一张叠在上面的纸片，而不是从表面里鼓起来。模糊一般取偏移量的两倍左右。</p>
+    </article>
+    <article class="mis">
+      <div class="mis-stage nm-inset" style="--d:6px">
+        <figure><p class="mis-text emb">夜间模式将在 23:00 自动开启</p><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><p class="mis-text">夜间模式将在 23:00 自动开启</p><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h3>正文也做成浮雕</h3>
+      <p>浮雕字和背景同色，只能靠阴影辨认，读几行就累，对比度也远低于要求。浮雕只留给少数大标题，正文和数值一律用足够深的实色。</p>
+    </article>
   </div>
 </section>
 
@@ -373,11 +403,9 @@
 </section>
 
 <footer class="foot">
-  <div class="foot-nav" id="footNav">
-    <a class="pill nm-raised" href="../../#s-neumorph" data-catalog style="--d:6px"><svg class="ic"><use href="#i-back"/></svg>返回图鉴</a>
-  </div>
-  <p class="muted small">本页的所有立体效果都由 CSS box-shadow 绘制，没有使用图片。</p>
+  <p class="muted small">本页的所有立体效果都由 CSS box-shadow 绘制，没有使用图片。<br>页首右侧的复原按钮可以把光源、明暗和所有组件恢复到初始状态。</p>
 </footer>
 </main>
+<div class="toast nm-raised" id="toast" role="status" aria-live="polite" style="--d:8px"></div>
 </body>
 </html>

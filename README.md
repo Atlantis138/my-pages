@@ -13,4 +13,4 @@
 | 看得见的量子计算 | `quantum-computing/` |
 | 标准模型粒子图谱 | `standard-model/` |
 
-本地查看请在仓库根目录运行 `python -m http.server`，再打开 http://localhost:8000 （直接双击打开时，珠峰页的数据文件会载入失败）。
+本地查看请在仓库根目录运行 `python -m http.server`，再打开 http://localhost:8000 （直接双击打开时，珠峰页的数据文件和设计风格图鉴的模块会载入失败）。设计风格图鉴的目录结构与扩展方法见 `design-styles/README.md`。

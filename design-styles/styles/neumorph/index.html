@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>新拟态 · 设计风格图鉴</title>
+<meta name="description" content="用新拟态（Neumorphism / Soft UI）写成的一页新拟态介绍：原理、来历、四种形态、光影实验室、组件、可用性问题与实现要点。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 6l-8 6 8 6z" fill="currentColor"/><path d="M6 6v12"/></symbol>
+    <symbol id="i-skip" viewBox="0 0 24 24"><path d="M6 6l8 6-8 6z" fill="currentColor"/><path d="M18 6v12"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2V16h5v-.2c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></symbol>
+    <symbol id="i-fan" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6"/><path d="M12 10.4C10 6 11 3 13.5 3.5S15 8 12 10.4zM13.6 12c4.4-2 7.4-1 6.9 1.5S16 15 13.6 12zM12 13.6c2 4.4 1 7.4-1.5 6.9S9 16 12 13.6zM10.4 12C6 14 3 13 3.5 10.5S8 9 10.4 12z"/></symbol>
+    <symbol id="i-blind" viewBox="0 0 24 24"><path d="M4 4h16M5 4v12M19 4v12M5 8h14M5 12h14M5 16h14M12 16v4"/></symbol>
+    <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  </defs>
+</svg>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- ============ floating nav ============ -->
+<header class="nav nm-raised" style="--d:6px">
+  <a class="round-btn nm-raised" href="../../#s-neumorph" aria-label="返回设计风格图鉴" data-catalog style="--d:4px"><svg class="ic"><use href="#i-back"/></svg></a>
+  <p class="nav-title">Soft UI <span>· 新拟态</span></p>
+  <nav class="nav-links nm-inset" style="--d:3px" aria-label="章节">
+    <a href="#what">原理</a><a href="#origin">来历</a><a href="#forms">形态</a><a href="#lab">实验室</a><a href="#kit">组件</a><a href="#a11y">可用性</a><a href="#use">用法</a>
+  </nav>
+  <button class="theme-toggle nm-inset" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="深色模式" style="--d:3px">
+    <span class="tt-knob nm-raised" style="--d:3px"><svg class="ic"><use href="#i-sun"/></svg></span>
+  </button>
+</header>
+
+<main id="main">
+
+<!-- ============ hero ============ -->
+<section class="hero" aria-labelledby="h-hero">
+  <div class="hero-text">
+    <p class="kicker">设计风格图鉴 · <span data-no>No.11</span> · Neumorphism</p>
+    <h1 id="h-hero" class="emboss">新拟态</h1>
+    <p class="hero-en">Soft UI — 从同一块材料里「挤」出来的界面</p>
+    <p class="lead">元素与背景是同一种颜色，没有边框，也几乎没有色块。只靠一道亮阴影和一道暗阴影，就让按钮像从软塑料表面凸起，或者被按进去。它在 2020 年前后风靡设计社区，又因为难以使用而迅速降温。</p>
+    <p class="lead">这一页就用新拟态写成。右边的旋钮控制着整页唯一的光源，拖动它，你会看到所有阴影一起转向。</p>
+  </div>
+  <div class="dial-wrap">
+    <div class="dial-ring nm-inset" style="--d:10px">
+      <span class="sun" id="sun" aria-hidden="true"><svg class="ic"><use href="#i-sun"/></svg></span>
+      <div class="dial nm-convex" id="dial" role="slider" tabindex="0" aria-label="光源方向" aria-valuemin="0" aria-valuemax="359" aria-valuenow="315" aria-valuetext="光从左上方照来" style="--d:14px">
+        <span class="dial-mark"></span>
+        <span class="dial-read"><b id="dialDeg">315°</b><small>光源方向</small></span>
+      </div>
+    </div>
+    <p class="dial-hint">拖动旋钮或用方向键转动光源 · 双击复位</p>
+  </div>
+</section>
+
+<!-- ============ what ============ -->
+<section class="sec" id="what" aria-labelledby="h-what">
+  <header class="sec-head">
+    <p class="kicker">01 · 原理</p>
+    <h2 id="h-what">一亮一暗，两道阴影</h2>
+    <p class="lead">新拟态的全部魔法只有一句 CSS：在元素背光的一侧投下暗影，在迎光的一侧投下亮影。两者都与背景同色系，于是元素看起来不是「放在」表面上，而是表面本身鼓了起来。</p>
+  </header>
+  <div class="anatomy">
+    <div class="anat-stage">
+      <div class="anat-card nm-raised" style="--d:18px"></div>
+      <span class="anat-tag nm-inset tag-hi" style="--d:3px"><i class="sw sw-hi"></i>亮影：迎光一侧</span>
+      <span class="anat-tag nm-inset tag-lo" style="--d:3px"><i class="sw sw-lo"></i>暗影：背光一侧</span>
+      <span class="anat-tag nm-inset tag-bg" style="--d:3px"><i class="sw sw-bg"></i>元素与背景同色</span>
+    </div>
+    <div class="anat-notes">
+      <ol class="steps">
+        <li><b>同色</b><span>元素的底色和它所在的表面完全一样，不靠颜色区分。</span></li>
+        <li><b>单一光源</b><span>整页只有一个光源方向，所有元素的亮影和暗影都朝同一边。</span></li>
+        <li><b>亮暗对称</b><span>亮影与暗影偏移量相同、方向相反，模糊半径通常是偏移量的两倍。</span></li>
+        <li><b>大圆角</b><span>柔和的形状才像软材料，直角会让阴影显得生硬。</span></li>
+      </ol>
+      <pre class="code nm-inset" style="--d:5px"><code><span class="c-k">.raised</span> {
+  background: <span class="c-v">#E4E9F0</span>;          <span class="c-c">/* 与父元素同色 */</span>
+  border-radius: <span class="c-v">24px</span>;
+  box-shadow:  <span class="c-v">12px  12px 24px</span> <span class="c-v">#B4BDCA</span>,  <span class="c-c">/* 暗影 */</span>
+              <span class="c-v">-12px -12px 24px</span> <span class="c-v">#FFFFFF</span>;  <span class="c-c">/* 亮影 */</span>
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ origin ============ -->
+<section class="sec" id="origin" aria-labelledby="h-origin">
+  <header class="sec-head">
+    <p class="kicker">02 · 来历</p>
+    <h2 id="h-origin">拟物化的一次温柔回潮</h2>
+    <p class="lead">名字由 new 与 skeuomorphism 拼成，意思是「新的拟物化」，也常被叫作 Soft UI。它出现在扁平化统治界面多年之后，像是设计师对立体质感的一次怀旧。点击时间轴上的节点查看每个阶段。</p>
+  </header>
+  <div class="timeline nm-inset" style="--d:6px" role="tablist" aria-label="时间轴" id="timeline">
+    <button class="t-node nm-raised" type="button" role="tab" aria-selected="false" data-i="0" style="--d:5px"><b>2007</b><span>拟物化</span></button>
+    <button class="t-node nm-raised" type="button" role="tab" aria-selected="false" data-i="1" style="--d:5px"><b>2013</b><span>扁平化</span></button>
+    <button class="t-node nm-raised" type="button" role="tab" aria-selected="true" data-i="2" style="--d:5px"><b>2019</b><span>新拟态诞生</span></button>
+    <button class="t-node nm-raised" type="button" role="tab" aria-selected="false" data-i="3" style="--d:5px"><b>2020</b><span>热潮</span></button>
+    <button class="t-node nm-raised" type="button" role="tab" aria-selected="false" data-i="4" style="--d:5px"><b>2021</b><span>降温</span></button>
+    <button class="t-node nm-raised" type="button" role="tab" aria-selected="false" data-i="5" style="--d:5px"><b>今天</b><span>局部点缀</span></button>
+  </div>
+  <article class="t-panel nm-raised" style="--d:12px" role="tabpanel" id="tPanel" aria-live="polite"></article>
+</section>
+
+<!-- ============ forms ============ -->
+<section class="sec" id="forms" aria-labelledby="h-forms">
+  <header class="sec-head">
+    <p class="kicker">03 · 形态</p>
+    <h2 id="h-forms">四种基本形态</h2>
+    <p class="lead">改变阴影的方向和背景渐变，同一块材料就能呈现四种不同的起伏。整套语言几乎都由这四种形态组合而成。</p>
+  </header>
+  <div class="forms">
+    <figure class="form-card">
+      <div class="form-shape nm-raised" style="--d:14px"></div>
+      <figcaption><b>凸起 Flat</b><span>外阴影一亮一暗。默认状态的按钮和卡片。</span></figcaption>
+    </figure>
+    <figure class="form-card">
+      <div class="form-shape nm-inset" style="--d:12px"></div>
+      <figcaption><b>凹陷 Pressed</b><span>两道 inset 内阴影。按下的按钮、输入框、轨道。</span></figcaption>
+    </figure>
+    <figure class="form-card">
+      <div class="form-shape nm-concave" style="--d:14px"></div>
+      <figcaption><b>凹面 Concave</b><span>外阴影加「迎光暗、背光亮」的渐变，像一只浅碗。</span></figcaption>
+    </figure>
+    <figure class="form-card">
+      <div class="form-shape nm-convex" style="--d:14px"></div>
+      <figcaption><b>凸面 Convex</b><span>外阴影加「迎光亮、背光暗」的渐变，像一颗圆顶。</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ lab ============ -->
+<section class="sec" id="lab" aria-labelledby="h-lab">
+  <header class="sec-head">
+    <p class="kicker">04 · 实验室</p>
+    <h2 id="h-lab">光影实验室</h2>
+    <p class="lead">调整参数，生成一段可以直接使用的 CSS。阴影色由底色按「强度」自动提亮和压暗，光源方向与页首的旋钮联动。</p>
+  </header>
+  <div class="lab">
+    <div class="lab-controls nm-raised" style="--d:12px">
+      <div class="ctl-row">
+        <span class="ctl-label">底色</span>
+        <div class="swatches" id="labSwatches"></div>
+        <label class="color-well nm-inset" style="--d:3px" aria-label="自定义底色"><input type="color" id="labColor" value="#e4e9f0"></label>
+      </div>
+      <label class="range"><span class="ctl-label">尺寸<b id="vSize"></b></span><input type="range" id="labSize" min="80" max="240" value="170"></label>
+      <label class="range"><span class="ctl-label">圆角<b id="vRadius"></b></span><input type="range" id="labRadius" min="0" max="50" value="22"></label>
+      <label class="range"><span class="ctl-label">距离<b id="vDist"></b></span><input type="range" id="labDist" min="2" max="40" value="16"></label>
+      <label class="range"><span class="ctl-label">模糊<b id="vBlur"></b></span><input type="range" id="labBlur" min="0" max="80" value="32"></label>
+      <label class="range"><span class="ctl-label">强度<b id="vInt"></b></span><input type="range" id="labInt" min="5" max="40" value="16"></label>
+      <div class="ctl-row">
+        <span class="ctl-label">形态</span>
+        <div class="seg nm-inset" style="--d:3px" role="radiogroup" aria-label="形态" id="labShape">
+          <button type="button" role="radio" aria-checked="true" data-v="flat">凸起</button>
+          <button type="button" role="radio" aria-checked="false" data-v="pressed">凹陷</button>
+          <button type="button" role="radio" aria-checked="false" data-v="concave">凹面</button>
+          <button type="button" role="radio" aria-checked="false" data-v="convex">凸面</button>
+        </div>
+      </div>
+    </div>
+    <div class="lab-out">
+      <div class="lab-stage" id="labStage"><div class="lab-el" id="labEl"></div></div>
+      <div class="lab-code nm-inset" style="--d:5px">
+        <button class="copy-btn nm-raised" type="button" id="labCopy" style="--d:3px"><svg class="ic"><use href="#i-copy"/></svg><span>复制</span></button>
+        <pre class="code"><code id="labCode"></code></pre>
+      </div>
+      <p class="lab-meter" id="labMeter"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ kit ============ -->
+<section class="sec" id="kit" aria-labelledby="h-kit">
+  <header class="sec-head">
+    <p class="kicker">05 · 组件</p>
+    <h2 id="h-kit">一块智能家居面板</h2>
+    <p class="lead">新拟态最擅长的是「少而精」的控制界面：按键不多、状态简单、像一件实体设备。下面的面板都可以操作。</p>
+  </header>
+  <div class="kit">
+    <article class="panel nm-raised thermo" style="--d:14px">
+      <h3>客厅温度</h3>
+      <div class="thermo-ring nm-inset" style="--d:8px" id="thermoRing">
+        <div class="thermo-core nm-convex" style="--d:8px"><b id="thermoVal">22</b><small>°C · 设定</small></div>
+      </div>
+      <div class="thermo-btns">
+        <button class="round-btn nm-raised press" type="button" id="tDown" aria-label="降低温度" style="--d:5px"><svg class="ic"><use href="#i-minus"/></svg></button>
+        <div class="seg nm-inset" style="--d:3px" role="radiogroup" aria-label="空调模式">
+          <button type="button" role="radio" aria-checked="true">自动</button>
+          <button type="button" role="radio" aria-checked="false">制冷</button>
+          <button type="button" role="radio" aria-checked="false">制热</button>
+        </div>
+        <button class="round-btn nm-raised press" type="button" id="tUp" aria-label="提高温度" style="--d:5px"><svg class="ic"><use href="#i-plus"/></svg></button>
+      </div>
+    </article>
+
+    <article class="panel nm-raised rooms" style="--d:14px">
+      <h3>场景开关</h3>
+      <div class="tiles">
+        <button class="tile nm-raised" type="button" aria-pressed="true" style="--d:7px"><svg class="ic"><use href="#i-bulb"/></svg><b>客厅灯</b><small>开</small></button>
+        <button class="tile nm-raised" type="button" aria-pressed="false" style="--d:7px"><svg class="ic"><use href="#i-fan"/></svg><b>新风</b><small>关</small></button>
+        <button class="tile nm-raised" type="button" aria-pressed="false" style="--d:7px"><svg class="ic"><use href="#i-blind"/></svg><b>窗帘</b><small>关</small></button>
+        <button class="tile nm-raised" type="button" aria-pressed="true" style="--d:7px"><svg class="ic"><use href="#i-tv"/></svg><b>电视</b><small>开</small></button>
+      </div>
+      <label class="range soft-range"><span class="ctl-label">亮度<b id="vBright">70%</b></span><input type="range" id="bright" min="0" max="100" value="70"></label>
+    </article>
+
+    <article class="panel nm-raised player" style="--d:14px">
+      <h3>正在播放</h3>
+      <div class="art nm-inset" style="--d:8px"><div class="disc nm-convex" id="disc" style="--d:6px"><i></i></div></div>
+      <p class="track"><b>Soft Light</b><span>Ambient Sessions · 第 3 首</span></p>
+      <div class="prog nm-inset" style="--d:3px"><i id="progFill"></i></div>
+      <div class="ctrls">
+        <button class="round-btn nm-raised press" type="button" aria-label="上一首" style="--d:5px"><svg class="ic"><use href="#i-prev"/></svg></button>
+        <button class="round-btn big nm-raised" type="button" id="playBtn" aria-pressed="false" aria-label="播放" style="--d:8px"><svg class="ic"><use href="#i-play"/></svg></button>
+        <button class="round-btn nm-raised press" type="button" aria-label="下一首" style="--d:5px"><svg class="ic"><use href="#i-skip"/></svg></button>
+      </div>
+    </article>
+
+    <article class="panel nm-raised toggles" style="--d:14px">
+      <h3>设备</h3>
+      <label class="search nm-inset" style="--d:4px"><svg class="ic"><use href="#i-search"/></svg><input type="search" placeholder="搜索设备" aria-label="搜索设备"></label>
+      <ul class="sw-list">
+        <li><svg class="ic"><use href="#i-wifi"/></svg><span>家庭 Wi-Fi</span><button class="switch nm-inset" type="button" role="switch" aria-checked="true" aria-label="家庭 Wi-Fi" style="--d:3px"><i class="nm-raised" style="--d:3px"></i></button></li>
+        <li><svg class="ic"><use href="#i-lock"/></svg><span>门锁</span><button class="switch nm-inset" type="button" role="switch" aria-checked="true" aria-label="门锁" style="--d:3px"><i class="nm-raised" style="--d:3px"></i></button></li>
+        <li><svg class="ic"><use href="#i-moon"/></svg><span>夜间模式</span><button class="switch nm-inset" type="button" role="switch" aria-checked="false" aria-label="夜间模式" style="--d:3px"><i class="nm-raised" style="--d:3px"></i></button></li>
+      </ul>
+      <div class="checks">
+        <label class="check"><input type="checkbox" checked><span class="box nm-raised" style="--d:3px"><svg class="ic"><use href="#i-check"/></svg></span>离家自动布防</label>
+        <label class="check"><input type="checkbox"><span class="box nm-raised" style="--d:3px"><svg class="ic"><use href="#i-check"/></svg></span>节能模式</label>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ a11y ============ -->
+<section class="sec" id="a11y" aria-labelledby="h-a11y">
+  <header class="sec-head">
+    <p class="kicker">06 · 可用性</p>
+    <h2 id="h-a11y">美，但不好用</h2>
+    <p class="lead">新拟态降温的根本原因不是审美疲劳，而是可用性。一切都靠浅浅的阴影区分，对比度天生不足：哪个能点、哪个已经按下，常常要猜。</p>
+  </header>
+  <div class="a11y">
+    <article class="panel nm-raised quiz" style="--d:14px">
+      <h3>小测验：哪个开关是打开的？</h3>
+      <p class="muted">三个按钮里只有一个处于按下（开启）状态。凭感觉点一下。</p>
+      <div class="quiz-row" id="quiz">
+        <button class="quiz-btn nm-raised" type="button" data-ok="0" style="--d:4px">A</button>
+        <button class="quiz-btn nm-inset" type="button" data-ok="1" style="--d:2px">B</button>
+        <button class="quiz-btn nm-raised" type="button" data-ok="0" style="--d:4px">C</button>
+      </div>
+      <p class="quiz-msg" id="quizMsg" aria-live="polite">&nbsp;</p>
+    </article>
+    <article class="panel nm-raised meters" style="--d:14px">
+      <h3>对比度体检</h3>
+      <p class="muted">按当前配色实时计算。WCAG 2.1 要求界面组件的边界与相邻颜色至少 3 : 1，正文文字至少 4.5 : 1。</p>
+      <ul class="meter-list" id="meterList"></ul>
+    </article>
+  </div>
+  <div class="fix nm-raised" style="--d:14px">
+    <div class="fix-text">
+      <h3>把它改得能用</h3>
+      <ol class="steps">
+        <li><b>状态双重编码</b><span>按下或开启时，除了凹陷，再加上强调色、图标或文字变化。</span></li>
+        <li><b>给可交互元素描边</b><span>一道与文字同色、低不透明度的细边，就能把组件边界的对比度拉上来。</span></li>
+        <li><b>清晰的焦点环</b><span>键盘用户看不出阴影的细微变化，焦点必须用明显的颜色标出。</span></li>
+        <li><b>正文不靠阴影</b><span>文字一律用足够深的颜色，标题浮雕只作装饰。</span></li>
+        <li><b>尊重系统设置</b><span>用户开启「增加对比度」时（prefers-contrast: more），自动切到增强样式。</span></li>
+      </ol>
+    </div>
+    <div class="fix-toggle">
+      <button class="big-switch nm-inset" type="button" role="switch" aria-checked="false" id="enhanceBtn" style="--d:5px"><i class="nm-raised" style="--d:5px"><svg class="ic"><use href="#i-eye"/></svg></i></button>
+      <p><b>增强模式</b><span>作用于整页：描边、强调色与焦点环。打开后再做一次上面的小测验。</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ use ============ -->
+<section class="sec" id="use" aria-labelledby="h-use">
+  <header class="sec-head">
+    <p class="kicker">07 · 用法</p>
+    <h2 id="h-use">把它当作调味，而不是主菜</h2>
+    <p class="lead">整站使用新拟态，几乎注定会遇到对比度和层级的问题。更好的做法是在一个以其他风格为主的界面里，挑一两个控件用它来增加触感。</p>
+  </header>
+  <div class="two">
+    <article class="panel nm-raised fit" style="--d:14px">
+      <h3><span class="dot ok nm-inset" style="--d:2px"><svg class="ic"><use href="#i-check"/></svg></span>适合</h3>
+      <ul>
+        <li><b>单一功能的小工具</b>：计算器、计时器、音乐播放器，控件少而大。</li>
+        <li><b>智能家居与硬件面板</b>：模仿实体按键，与产品工业设计呼应。</li>
+        <li><b>局部点缀</b>：一个开关、一个旋钮、一张会员卡片。</li>
+        <li><b>视觉概念与作品集</b>：展示质感与氛围，不承担复杂任务。</li>
+      </ul>
+    </article>
+    <article class="panel nm-raised fit" style="--d:14px">
+      <h3><span class="dot no nm-inset" style="--d:2px"><svg class="ic"><use href="#i-x"/></svg></span>慎用</h3>
+      <ul>
+        <li><b>信息密集的后台与表单</b>：几十个同色凸起块会让页面失去层级。</li>
+        <li><b>需要强调行动的页面</b>：主按钮和普通按钮长得几乎一样。</li>
+        <li><b>彩色或图片背景</b>：阴影依赖纯色底，背景一花就失效。</li>
+        <li><b>纯白或纯黑背景</b>：亮影或暗影没有余地，立体感消失。</li>
+      </ul>
+    </article>
+  </div>
+
+  <h3 class="sub-h">和相邻的风格比一比</h3>
+  <div class="compare" role="table" aria-label="风格对比">
+    <div class="cmp-row cmp-head" role="row"><span role="columnheader">风格</span><span role="columnheader">立体感从哪来</span><span role="columnheader">颜色</span><span role="columnheader">对比度</span></div>
+    <a class="cmp-row nm-raised" role="row" href="../../#s-skeuo" style="--d:5px"><span role="cell"><b>拟物化</b></span><span role="cell">真实材质、渐变、高光</span><span role="cell">丰富</span><span role="cell">高</span></a>
+    <a class="cmp-row nm-raised" role="row" href="../../#s-flat" style="--d:5px"><span role="cell"><b>扁平化</b></span><span role="cell">没有立体感</span><span role="cell">高饱和纯色</span><span role="cell">高</span></a>
+    <a class="cmp-row nm-raised" role="row" href="../material/" style="--d:5px"><span role="cell"><b>Material</b></span><span role="cell">纸张投影与色调高度</span><span role="cell">品牌色系统</span><span role="cell">高</span></a>
+    <a class="cmp-row nm-inset here" role="row" aria-current="page" href="#h-hero" style="--d:4px"><span role="cell"><b>新拟态</b></span><span role="cell">同色的亮影与暗影</span><span role="cell">单色、低饱和</span><span role="cell">低</span></a>
+    <a class="cmp-row nm-raised" role="row" href="../../#s-glass" style="--d:5px"><span role="cell"><b>玻璃拟态</b></span><span role="cell">半透明与背景模糊</span><span role="cell">取决于背景</span><span role="cell">不稳定</span></a>
+    <a class="cmp-row nm-raised" role="row" href="../../#s-clay" style="--d:5px"><span role="cell"><b>黏土拟态</b></span><span role="cell">彩色体块与内阴影</span><span role="cell">明快糖果色</span><span role="cell">中</span></a>
+  </div>
+</section>
+
+<!-- ============ css ============ -->
+<section class="sec" id="css" aria-labelledby="h-css">
+  <header class="sec-head">
+    <p class="kicker">08 · 实现</p>
+    <h2 id="h-css">写好它的几个要点</h2>
+  </header>
+  <div class="two">
+    <div class="tips">
+      <div class="tip nm-raised" style="--d:8px"><b>用变量统一光源</b><p>把阴影的偏移方向写成 CSS 变量，整页共用。本页的旋钮只改了两个变量：<code>--sx</code> 和 <code>--sy</code>。</p></div>
+      <div class="tip nm-raised" style="--d:8px"><b>阴影色从底色推导</b><p>亮影是底色提亮，暗影是底色压暗，而不是纯白和纯黑。换底色时阴影跟着变，才不会发脏。</p></div>
+      <div class="tip nm-raised" style="--d:8px"><b>别直接给 box-shadow 做动画</b><p>大模糊半径的阴影重绘很贵。可以把两种状态的阴影分别放在伪元素上，只切换透明度。</p></div>
+      <div class="tip nm-raised" style="--d:8px"><b>深色版要重新调</b><p>深色底上亮影要克制，暗影要更深；直接反转颜色会显得浑浊。点右上角的开关看看本页的深色版本。</p></div>
+    </div>
+    <pre class="code nm-inset" style="--d:6px"><code><span class="c-c">/* 光源方向：暗影偏移的单位向量 */</span>
+<span class="c-k">:root</span> {
+  --bg: <span class="c-v">#E4E9F0</span>;
+  --hi: <span class="c-v">#FFFFFF</span>;  --lo: <span class="c-v">#B4BDCA</span>;
+  --sx: <span class="c-v">0.71</span>;   --sy: <span class="c-v">0.71</span>;
+}
+<span class="c-k">.nm-raised</span> {
+  --x: calc(var(--sx) * var(--d));
+  --y: calc(var(--sy) * var(--d));
+  background: var(--bg);
+  box-shadow: var(--x) var(--y) calc(var(--d) * 2) var(--lo),
+              calc(var(--x) * -1) calc(var(--y) * -1)
+              calc(var(--d) * 2) var(--hi);
+}
+<span class="c-k">.nm-inset</span> {
+  box-shadow: inset var(--x) var(--y) var(--d) var(--lo),
+              inset calc(var(--x) * -1) calc(var(--y) * -1)
+              var(--d) var(--hi);
+}
+<span class="c-c">/* 用的时候只需给出「高度」 */</span>
+<span class="c-k">.button</span> { --d: <span class="c-v">8px</span>; }</code></pre>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot-nav" id="footNav">
+    <a class="pill nm-raised" href="../../#s-neumorph" data-catalog style="--d:6px"><svg class="ic"><use href="#i-back"/></svg>返回图鉴</a>
+  </div>
+  <p class="muted small">本页的所有立体效果都由 CSS box-shadow 绘制，没有使用图片。</p>
+</footer>
+</main>
+</body>
+</html>

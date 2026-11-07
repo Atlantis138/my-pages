@@ -1,5 +1,4 @@
 /* 新拟态完整页：全局光源、时间轴、光影实验室、组件与可用性演示。 */
-import { siblings } from "../_shared/siblings.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -126,7 +125,7 @@ $$("main > .sec").forEach((s) => spy.observe(s));
 const ERAS = [
   ["2007 – 2013", "拟物化的黄金年代", "初代 iPhone 让触屏走进大众。为了告诉用户「这里可以按」，界面大量模仿真实物体：皮革日历、木纹书架、带高光的果冻按钮。新拟态后来借用的，正是这种「看起来能按」的直觉。", `<span class="mini-skeuo">按钮</span>`],
   ["2013", "扁平化取而代之", "iOS 7 与此前微软的 Metro 设计语言把纹理、渐变和投影几乎全部拿掉，界面只剩纯色、排版和图标。界面变得清爽，却也常常分不清哪里能点。", `<span class="mini-flat">按钮</span>`],
-  ["2019 年末", "一组银行 App 概念图", "设计师 Alexander Plyuto 在 Dribbble 发布了名为 Skeuomorph Mobile Banking 的概念作品：整个界面只有一种浅灰蓝，卡片和按钮全靠柔和的双向阴影浮起。作品迅速刷屏，随后的设计文章把这种做法称为 Neumorphism。", `<span class="mini-neu nm-raised" style="--d:8px"><svg class="ic"><use href="#i-play"/></svg></span>`],
+  ["2019 年 11 月", "一组银行 App 概念图", "乌克兰设计师 Alexander Plyuto 在 Dribbble 发布了名为 Skeuomorph Mobile Banking 的概念作品：整个界面只有一种浅灰蓝，卡片和按钮全靠柔和的双向阴影浮起。作品迅速刷屏，Neumorphism 这个名字也随之流行开来（最早由谁提出说法不一）。", `<span class="mini-neu nm-raised" style="--d:8px"><svg class="ic"><use href="#i-play"/></svg></span>`],
   ["2020", "风靡设计社区", "Dribbble 和 Behance 上出现了大量新拟态的计算器、播放器和智能家居面板，在线阴影生成器、UI 套件和教程层出不穷。它很适合做静态概念图：干净、柔和、有触感。", `<span class="mini-grid">${'<i class="nm-raised" style="--d:4px"></i>'.repeat(6)}</span>`],
   ["2021 起", "热度消退", "真正落地的产品很少。低对比度、难以表达状态、无法与彩色内容共存，让它在实际项目里处处受限。设计圈的注意力转向了玻璃拟态和黏土拟态。", `<span class="mini-fade"></span>`],
   ["今天", "作为局部点缀", "新拟态很少再被整站使用，而是化作局部的质感：一个控制旋钮、一组音量按键、一张会员卡片，嵌在以扁平或 Material 为主的界面里。", `<span class="mini-mix"><i></i>主界面扁平，<br>旋钮新拟态</span>`],
@@ -265,7 +264,8 @@ setBright();
 setLight(+(store.get("nm-light") ?? 315), false);
 renderLab();
 
-siblings("neumorph").then((nav) => {
+/* 导航数据单独动态载入：即使失败，也只影响页脚的上一篇 / 下一篇，不影响页面本身 */
+import("../shared/siblings.js").then((m) => m.siblings("neumorph")).then((nav) => {
   $$("[data-no]").forEach((el) => (el.textContent = `No.${String(nav.no).padStart(2, "0")}`));
   const pill = (s, dir) => s
     ? `<a class="pill nm-raised ${dir}" href="${s.href}" style="--d:6px">${dir === "prev" ? `<svg class="ic"><use href="#i-back"/></svg><small>上一个</small>${s.cn}` : `<small>下一个</small>${s.cn}<svg class="ic"><use href="#i-next"/></svg>`}</a>`

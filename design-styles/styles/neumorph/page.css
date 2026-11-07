@@ -135,6 +135,8 @@ h3 { font-size: 19px; line-height: 1.4; font-weight: 800; }
 .sw { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 25%, transparent); }
 .sw-hi { background: var(--hi); } .sw-lo { background: var(--lo); } .sw-bg { background: var(--bg); }
 .tag-bg { box-shadow: none !important; background: transparent; }
+/* 脚本运行前的默认位置（对应光从左上方照来），脚本会按光源方向重新摆放 */
+.tag-hi { left: 22%; top: 16%; } .tag-lo { left: 78%; top: 84%; }
 .steps { list-style: none; padding: 0; display: grid; gap: 14px; counter-reset: st; }
 .steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 14px; counter-increment: st; }
 .steps li::before { content: counter(st); grid-row: span 2; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; font-weight: 800; color: var(--accent); background: var(--bg); box-shadow: inset calc(var(--sx) * 3px) calc(var(--sy) * 3px) 5px var(--lo), inset calc(var(--sx) * -3px) calc(var(--sy) * -3px) 5px var(--hi); transition: box-shadow .3s; }

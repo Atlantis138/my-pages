@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>包豪斯 · bauhaus</title>
+<meta name="description" content="用包豪斯的语法写成的一页包豪斯介绍：康定斯基问卷、拆解海报、十四年校史、工坊作品、形与色、小写字体、不对称平衡、海报构成器、常见错误与 CSS 实现。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H5M11 5l-7 7 7 7"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9H12z" fill="currentColor" stroke="none"/><path d="M12 3a9 9 0 0 1 9 9"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M5 12a7 7 0 1 0 2.05-4.95"/><path d="M4 3.5V9h5.5"/></symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 7h4l10 10h4M3 17h4l10-10h4M18 4l3 3-3 3M18 14l3 3-3 3"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v13M5 10l7 7 7-7M4 21h16"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path d="M8 8h12v12H8z"/><path d="M16 8V4H4v12h4"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20V5M5 12l7-7 7 7"/></symbol>
+  </defs>
+</svg>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- ================= bar ================= -->
+<header class="bar">
+  <a class="ctl ctl-ci" href="../../#s-bauhaus" aria-label="返回设计风格图鉴" title="返回设计风格图鉴"><span class="ctl-shape" aria-hidden="true"></span><svg class="ic"><use href="#i-back"/></svg></a>
+  <a class="brand" href="#top"><span class="brand-de">Bauhaus</span><span class="brand-cn">包豪斯</span></a>
+  <nav class="links" aria-label="章节">
+    <a href="#principle">原理</a><a href="#history">来历</a><a href="#color">形与色</a><a href="#type">字</a><a href="#composition">构图</a><a href="#ui">界面</a><a href="#make">动手</a><a href="#use">用法</a><a href="#code">实现</a>
+  </nav>
+  <div class="tools">
+    <button class="ctl ctl-sq" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="深色模式" title="深色模式"><span class="ctl-shape" aria-hidden="true"></span><svg class="ic"><use href="#i-sun"/></svg></button>
+    <button class="ctl ctl-tri" id="resetBtn" type="button" aria-label="恢复初始状态" title="恢复初始状态：问卷答案、明暗、海报与所有控件"><span class="ctl-shape" aria-hidden="true"></span><svg class="ic"><use href="#i-reset"/></svg></button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ================= hero ================= -->
+<section class="hero" id="top" aria-labelledby="h-hero">
+  <div class="hero-type">
+    <p class="kicker"><span>Staatliches Bauhaus</span><span>1919 — 1933</span></p>
+    <h1 id="h-hero" class="mega"><span>Bau</span><span>haus</span><span class="sr">包豪斯</span></h1>
+    <p class="cn-band" aria-hidden="true">包豪斯</p>
+    <div class="hero-copy">
+      <p class="lead">1919 年，建筑师格罗皮乌斯在魏玛创办了一所学校，想让艺术家、工匠和工业重新坐到一张桌子旁。它只存在了十四年，搬了两次家，最后在纳粹的压力下解散。它留下的形、色、字和构图方法，后来成了现代设计的基础语法。</p>
+      <p class="lead">这一页就用这套语法写成：只有圆、方、三角，红、黄、蓝，黑与白。</p>
+    </div>
+  </div>
+
+  <div class="hero-q">
+    <div class="q-stage" id="qStage">
+      <span class="q-bar" aria-hidden="true"></span>
+      <button class="q-shape q-tri" type="button" data-shape="tri" aria-label="三角形"><span class="q-fill"></span></button>
+      <button class="q-shape q-sq" type="button" data-shape="sq" aria-label="方形"><span class="q-fill"></span></button>
+      <button class="q-shape q-ci" type="button" data-shape="ci" aria-label="圆形"><span class="q-fill"></span></button>
+    </div>
+    <div class="q-card">
+      <p class="q-title"><b>康定斯基问卷</b><span>Weimar 1923</span></p>
+      <p>包豪斯壁画工坊当年发出过一张问卷：用黄、红、蓝三种颜色，各填满一个图形。点击上面的图形换一种颜色——这一页上的圆、方、三角都会按你的答案重新上色。</p>
+      <p class="q-status" id="qStatus" aria-live="polite"></p>
+      <div class="q-actions">
+        <button class="btn" type="button" id="qKandinsky">换回康定斯基的答案</button>
+        <a class="more" href="#color">他为什么这样填 <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1 principle ================= -->
+<section class="sec" id="principle" aria-labelledby="h-principle">
+  <header class="sec-head">
+    <span class="sec-num n-ci" aria-hidden="true">1</span>
+    <p class="sec-de" lang="de">Grundlagen</p>
+    <h2 id="h-principle">把一切拆回基本元素</h2>
+    <p class="lead">包豪斯的新生入学先上半年预备课程，要把学过的风格统统放下，从材料、形和色这些最基本的东西重新学起。它的视觉语言也是这样搭起来的：几种基本形、三种原色加黑白、一种不加装饰的字，再按功能把它们组织起来。</p>
+  </header>
+
+  <div class="elements">
+    <article class="el">
+      <svg class="el-pic" viewBox="0 0 96 96" aria-hidden="true"><polygon class="c-tri" points="24,8 44,44 4,44"/><rect class="c-sq" x="52" y="8" width="36" height="36"/><circle class="c-ci" cx="48" cy="72" r="20"/></svg>
+      <h3><span lang="de">Form</span>形</h3>
+      <p>圆、方、三角。复杂的东西由它们组合出来：台灯是半球加圆柱，字母是圆加竖线。</p>
+    </article>
+    <article class="el">
+      <svg class="el-pic" viewBox="0 0 96 96" aria-hidden="true"><rect class="f-r" x="4" y="8" width="52" height="80"/><rect class="f-y" x="56" y="8" width="36" height="28"/><rect class="f-b" x="56" y="36" width="36" height="36"/><rect class="f-k" x="56" y="72" width="36" height="16"/></svg>
+      <h3><span lang="de">Farbe</span>色</h3>
+      <p>红、黄、蓝加黑白，平涂，不用渐变和阴影。颜色是结构的一部分，用来区分和强调，不是填充。</p>
+    </article>
+    <article class="el">
+      <svg class="el-pic" viewBox="0 0 96 96" aria-hidden="true"><rect class="f-k" x="4" y="10" width="88" height="8"/><text class="t-k" x="2" y="66" font-size="48" font-weight="700">abc</text><rect class="f-r" x="4" y="78" width="40" height="8"/></svg>
+      <h3><span lang="de">Schrift</span>字</h3>
+      <p>无衬线、几何化，常常全部小写。粗黑线和色条也算排版元素，用来组织阅读顺序。</p>
+    </article>
+    <article class="el">
+      <svg class="el-pic" viewBox="0 0 96 96" aria-hidden="true"><rect class="c-sq" x="-6" y="40" width="50" height="50"/><circle class="c-ci" cx="78" cy="18" r="12"/><rect class="f-k" x="10" y="44" width="90" height="7" transform="rotate(-30 50 48)"/></svg>
+      <h3><span lang="de">Komposition</span>构图</h3>
+      <p>不对称、对角线、大块留白。元素放在哪里，由它要传达什么决定，而不是由「好看」决定。</p>
+    </article>
+  </div>
+
+  <div class="explode">
+    <div class="ex-stage" id="exStage" data-active="">
+      <div class="ex-poster" id="exPoster">
+        <div class="ex-layer l1" data-layer="1"><span class="ex-tag1" aria-hidden="true">1</span></div>
+        <svg class="ex-layer l2" data-layer="2" viewBox="0 0 300 400" aria-hidden="true">
+          <circle class="c-ci bl" cx="214" cy="118" r="104"/>
+          <rect class="c-sq bl" x="28" y="236" width="120" height="120"/>
+          <polygon class="c-tri bl" points="236,270 288,362 184,362"/>
+          <g class="ex-tag"><rect x="264" y="8" width="28" height="28"/><text x="278" y="28">2</text></g>
+        </svg>
+        <svg class="ex-layer l3" data-layer="3" viewBox="0 0 300 400" aria-hidden="true">
+          <rect class="f-k" x="0" y="206" width="236" height="12"/>
+          <rect class="f-k" x="160" y="218" width="8" height="182"/>
+          <rect class="f-k" x="24" y="22" width="56" height="8"/>
+          <g class="ex-tag"><rect x="264" y="8" width="28" height="28"/><text x="278" y="28">3</text></g>
+        </svg>
+        <svg class="ex-layer l4" data-layer="4" viewBox="0 0 300 400" aria-hidden="true">
+          <text class="t-k" x="22" y="92" font-size="56" font-weight="700">kunst</text>
+          <text class="t-k" x="24" y="130" font-size="25" font-weight="500">und technik</text>
+          <text class="t-k" x="180" y="244" font-size="11" font-weight="500" letter-spacing="1.5">eine neue einheit</text>
+                    <text class="t-k" x="20" y="356" font-size="12" font-weight="500" letter-spacing="2" transform="rotate(-90 20 356)">bauhaus weimar</text>
+          <text class="t-k" x="180" y="394" font-size="38" font-weight="700">1923</text>
+          <g class="ex-tag"><rect x="264" y="8" width="28" height="28"/><text x="278" y="28">4</text></g>
+        </svg>
+      </div>
+    </div>
+    <div class="ex-notes">
+      <h3>拆开一张海报</h3>
+      <p>一张包豪斯式海报通常只有四层。按下按钮把它拆开，再把指针移到（或点按）下面的条目上，看每一层各管什么。</p>
+      <button class="btn" type="button" id="exBtn" aria-pressed="false">拆开</button>
+      <ol class="ex-list" id="exList">
+        <li><button type="button" data-layer="1"><b>纸面</b><span>留白是构图的一部分。空着的地方不是剩下的，是故意留出来的。</span></button></li>
+        <li><button type="button" data-layer="2"><b>色面</b><span>三原色平涂，面积悬殊：一个大图形定下基调，小图形负责平衡。</span></button></li>
+        <li><button type="button" data-layer="3"><b>线与条</b><span>粗黑线把版面切成区域，也决定视线先去哪、后去哪。</span></button></li>
+        <li><button type="button" data-layer="4"><b>文字</b><span>小写无衬线，可以很大，可以旋转。这一张写的是格罗皮乌斯 1923 年的口号「艺术与技术：新的统一」。</span></button></li>
+      </ol>
+    </div>
+  </div>
+
+  <aside class="myths">
+    <h3>两句常被挂在包豪斯名下的话</h3>
+    <div class="myth">
+      <p class="myth-q">「形式追随功能」</p>
+      <p>出自美国建筑师路易斯·沙利文 1896 年的文章《高层办公楼的艺术考量》，比包豪斯早了二十多年。包豪斯继承了这种想法，但这句话不是它说的。</p>
+    </div>
+    <div class="myth">
+      <p class="myth-q">「包豪斯风格」</p>
+      <p>格罗皮乌斯本人反对这个说法。他在 1935 年的《新建筑与包豪斯》里写道，如果真的出现一种「包豪斯风格」，那就意味着学校的失败——它要教的是方法，而不是一种样式。</p>
+    </div>
+  </aside>
+</section>
+
+<!-- ================= 2 history ================= -->
+<section class="sec" id="history" aria-labelledby="h-history">
+  <header class="sec-head">
+    <span class="sec-num n-sq" aria-hidden="true">2</span>
+    <p class="sec-de" lang="de">Geschichte</p>
+    <h2 id="h-history">十四年，三座城市，三任校长</h2>
+    <p class="lead">包豪斯 1919 年创办，1933 年解散。它三次换地方、三次换校长，每一次都改变了学校的方向。色条的长度按实际年数画出；点击任意一段查看那个阶段。</p>
+  </header>
+
+  <div class="tl" id="tl">
+    <div class="tl-row">
+      <span class="tl-label">城市</span>
+      <div class="tl-track">
+        <button type="button" class="tl-seg s-y" data-k="weimar" style="--w:6" aria-pressed="true">Weimar</button>
+        <button type="button" class="tl-seg s-r" data-k="dessau" style="--w:7.5" aria-pressed="false">Dessau</button>
+        <button type="button" class="tl-seg s-k narrow" data-k="berlin" style="--w:0.8" aria-pressed="false"><span>Berlin</span></button>
+      </div>
+    </div>
+    <div class="tl-row">
+      <span class="tl-label">校长</span>
+      <div class="tl-track">
+        <button type="button" class="tl-seg s-b" data-k="gropius" style="--w:9" aria-pressed="false">Gropius</button>
+        <button type="button" class="tl-seg s-o narrow-ish" data-k="meyer" style="--w:2.35" aria-pressed="false">Meyer</button>
+        <button type="button" class="tl-seg s-k" data-k="mies" style="--w:2.95" aria-pressed="false">Mies</button>
+      </div>
+    </div>
+    <div class="tl-axis" aria-hidden="true">
+      <span style="--at:0">1919</span><span style="--at:6">1925</span><span style="--at:9">1928</span><span style="--at:11.35">1930</span><span class="hide-sm" style="--at:13.5">1932</span><span class="end" style="--at:14.3">1933</span>
+    </div>
+    <article class="tl-panel" id="tlPanel" aria-live="polite"></article>
+  </div>
+
+  <h3 class="sub-h">代表作，以及它们能教给网页的事</h3>
+  <p class="sub-lead">包豪斯的教学在工坊里进行。下面的简图只用圆、方、三角和直线画成——这些作品本身就是由基本形组成的。</p>
+  <div class="works">
+    <article class="work">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><polygon class="c-tri" points="60,6 94,62 26,62"/><rect class="c-sq" x="10" y="68" width="46" height="46"/><circle class="c-ci" cx="86" cy="91" r="23"/></svg>
+      <p class="work-k">预备课程 · <span lang="de">Vorkurs</span></p>
+      <h3>伊顿 → 莫霍利-纳吉与阿尔伯斯</h3>
+      <p>伊顿 1919 年创立，1923 年由莫霍利-纳吉和阿尔伯斯接手。每个新生都先在这里研究材料、质感、形与色。</p>
+      <p class="work-web"><b>网页上</b>设计系统也从最基本的令牌搭起：颜色、字号、间距先定好，页面才动手。</p>
+    </article>
+    <article class="work">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><path class="c-ci" d="M18 58a42 42 0 0 0 84 0z"/><path class="f-k" d="M44 58a16 16 0 0 1 32 0z"/><circle class="f-k" cx="60" cy="36" r="5"/><rect class="f-k" x="88" y="22" width="8" height="40" transform="rotate(35 92 42)"/><rect class="f-k" x="4" y="62" width="20" height="5"/><rect class="f-k" x="40" y="100" width="40" height="5"/></svg>
+      <p class="work-k">金属工坊 · 1924</p>
+      <h3>玛丽安娜·布兰特的茶壶</h3>
+      <p>半球形的壶身、圆盘形的盖、直线的把手，几乎是一道几何练习题。如今是金属工坊最有名的作品之一。</p>
+      <p class="work-web"><b>网页上</b>图标和插图同样可以只用几种基本形搭成，风格自然统一。</p>
+    </article>
+    <article class="work">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><path class="c-ci" d="M24 50a36 36 0 0 1 72 0z"/><rect class="f-k" x="57" y="50" width="6" height="52"/><rect class="f-k" x="30" y="102" width="60" height="10"/><rect class="f-k" x="74" y="52" width="2" height="22"/><circle class="f-k" cx="75" cy="76" r="3"/></svg>
+      <p class="work-k">金属工坊 · 1923—24</p>
+      <h3>瓦根费尔德与尤克的台灯</h3>
+      <p>半球灯罩、圆柱灯杆、圆形底座。设计时想的是量产，可当年零件还要手工装配，并没有卖出去多少。</p>
+      <p class="work-web"><b>网页上</b>为量产而设计，就是组件化：一次设计好，在每个页面复用。</p>
+    </article>
+    <article class="work">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><g class="s-k" fill="none" stroke-width="4"><path d="M14 106h92M26 106V70h70v36M26 70L20 28M20 50h80M96 70V50"/></g><path class="f-k" d="M30 62h62v8H30zM22 32l8 0 4 30-8 0z"/></svg>
+      <p class="work-k">家具工坊 · 1925</p>
+      <h3>布劳耶的钢管扶手椅</h3>
+      <p>据说灵感来自自行车把手。弯曲的钢管只是线条，座面和靠背是绷紧的布。它后来以「瓦西里椅」闻名。</p>
+      <p class="work-web"><b>网页上</b>不必隐藏结构：网格、分隔线和对齐关系本身就可以成为装饰。</p>
+    </article>
+    <article class="work">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="c-ci" cx="54" cy="66" r="44" opacity=".25"/><g class="s-k" fill="none" stroke-width="12"><circle cx="54" cy="66" r="30"/><path d="M84 32v70"/></g><rect class="f-k" x="4" y="108" width="112" height="2"/></svg>
+      <p class="work-k">印刷与广告 · 1925</p>
+      <h3>拜耳的「通用字体」</h3>
+      <p>只有小写，字母由圆弧和直线构成。同一年起，学校的印刷品不再使用大写字母（见第 4 节）。</p>
+      <p class="work-web"><b>网页上</b>字体和字重越少，加载越快，版面也越统一。</p>
+    </article>
+    <article class="work">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><rect class="c-sq" x="10" y="16" width="56" height="46"/><rect class="f-k" x="66" y="34" width="34" height="12"/><rect class="s-k" fill="none" stroke-width="4" x="78" y="46" width="22" height="64"/><rect class="s-k" fill="none" stroke-width="4" x="26" y="62" width="18" height="46"/><rect class="f-k" x="100" y="8" width="12" height="38"/></svg>
+      <p class="work-k">建筑 · 1926</p>
+      <h3>格罗皮乌斯的德绍校舍</h3>
+      <p>工坊楼、教学楼和宿舍楼像风车的叶片伸向三个方向，用一座桥连起来。工坊楼整面的玻璃幕墙让室内整天都有光。</p>
+      <p class="work-web"><b>网页上</b>按功能划分区域：导航、内容、操作各占一块，互不混杂。</p>
+    </article>
+  </div>
+
+  <div class="diaspora">
+    <h3>学校关了，方法散向世界</h3>
+    <p class="muted">1933 年以后，包豪斯的师生大多离开德国。他们把预备课程、工坊教学和这套视觉语法带到了美国、以色列和战后的西德。</p>
+    <ol class="dia-list">
+      <li><b>1933</b><span class="dia-place">黑山学院 · 美国</span><span>约瑟夫与安妮·阿尔伯斯赴美任教，把包豪斯的基础课带进美国的艺术教育。</span></li>
+      <li><b>1937</b><span class="dia-place">哈佛大学 · 美国</span><span>格罗皮乌斯开始执教建筑，影响了一代美国现代建筑师。</span></li>
+      <li><b>1937</b><span class="dia-place">新包豪斯 · 芝加哥</span><span>莫霍利-纳吉创办，后来发展为芝加哥设计学院。</span></li>
+      <li><b>1938</b><span class="dia-place">阿穆尔理工学院 · 芝加哥</span><span>密斯主持建筑系，学校后来并入伊利诺伊理工学院。</span></li>
+      <li><b>1930s</b><span class="dia-place">特拉维夫 · 以色列</span><span>曾在包豪斯学习的建筑师参与建造「白城」，2003 年列入世界遗产。</span></li>
+      <li><b>1953</b><span class="dia-place">乌尔姆设计学院 · 西德</span><span>包豪斯毕业生马克斯·比尔参与创办并出任首任校长，把包豪斯的方法发展成系统化的设计教学。</span></li>
+      <li><b>1996</b><span class="dia-place">世界遗产</span><span>魏玛与德绍的包豪斯建筑列入联合国教科文组织世界遗产名录。</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 3 color ================= -->
+<section class="sec" id="color" aria-labelledby="h-color">
+  <header class="sec-head">
+    <span class="sec-num n-tri" aria-hidden="true">3</span>
+    <p class="sec-de" lang="de">Form und Farbe</p>
+    <h2 id="h-color">黄三角、红方、蓝圆</h2>
+    <p class="lead">康定斯基在包豪斯教形式与色彩课。他相信每种形和色都有自己的「张力」，性格相合的形和色放在一起会互相加强。页首问卷的标准答案就来自这套理论。</p>
+  </header>
+
+  <div class="pairs">
+    <article class="pair">
+      <span class="pair-shape k-tri" aria-hidden="true"></span>
+      <h3>三角 × 黄</h3>
+      <p>三个锐角向外刺，是最有方向、最活跃的形；黄色明亮刺眼，向外扩张。</p>
+    </article>
+    <article class="pair">
+      <span class="pair-shape k-sq" aria-hidden="true"></span>
+      <h3>方 × 红</h3>
+      <p>水平与垂直互相抵消，方形稳定、沉重；红色饱满有力，稳稳停在原地。</p>
+    </article>
+    <article class="pair">
+      <span class="pair-shape k-ci" aria-hidden="true"></span>
+      <h3>圆 × 蓝</h3>
+      <p>没有角，也没有方向，圆是内敛、完整的形；蓝色深远，向内退去。</p>
+    </article>
+  </div>
+
+  <div class="truth">
+    <div class="truth-text">
+      <h3>问卷的真相</h3>
+      <p>1923 年收回的答卷里，多数人给出了和康定斯基一样的答案。但研究者后来指出，答卷的大多是包豪斯师生，早就熟悉老师的理论；之后的心理学实验也没能复现这种一致。与其说它证明了一条规律，不如说它是一堂训练感受力的课。</p>
+    </div>
+    <div class="truth-mine">
+      <p class="mine-k">你在页首的答案</p>
+      <div class="mine-row" id="mineRow" aria-hidden="true"><span class="m-tri"></span><span class="m-sq"></span><span class="m-ci"></span></div>
+      <p class="mine-t" id="mineText"></p>
+      <a class="more" href="#top">回到页首改答案 <span aria-hidden="true">↑</span></a>
+    </div>
+  </div>
+
+  <div class="albers">
+    <div class="albers-text">
+      <h3>同一种颜色，两种样子</h3>
+      <p>约瑟夫·阿尔伯斯 1923 年起在包豪斯任教，后来在耶鲁写成《色彩的互动》（1963）。他最有名的练习，是让同一块颜色在不同的底色上看起来像两种颜色。所以包豪斯的配色从来不是孤立地挑颜色，而是安排颜色之间的关系。</p>
+      <p>右边两个小方块，哪个更深？想好了再把它们连起来。</p>
+      <button class="btn" type="button" id="albersBtn" aria-pressed="false">把两块连起来</button>
+      <p class="albers-out" id="albersOut" aria-live="polite"></p>
+      <p class="web-note"><b>网页上</b>同一个灰色的次要文字，放在不同底色的卡片上，深浅看起来会不一样。挑颜色要在真实的背景上看，别只在白底上挑。</p>
+    </div>
+    <div class="albers-demo" id="albers" aria-hidden="true">
+      <div class="ab-ground ab-y"><i class="ab-chip"></i></div>
+      <div class="ab-ground ab-b"><i class="ab-chip"></i></div>
+      <i class="ab-bridge"></i>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4 type ================= -->
+<section class="sec" id="type" aria-labelledby="h-type">
+  <header class="sec-head">
+    <span class="sec-num n-ci" aria-hidden="true">4</span>
+    <p class="sec-de" lang="de">Schrift</p>
+    <h2 id="h-type">全部小写，不加装饰</h2>
+    <p class="lead">包豪斯把文字也当成构图材料：无衬线、几何化，可以很大，也可以旋转；粗线和色条负责安排阅读顺序。1925 年底起，学校的印刷品一律只用小写字母，信纸下方印着理由——</p>
+  </header>
+
+  <figure class="letterhead">
+    <blockquote>
+      <p class="lh-de" lang="de">wir schreiben alles klein, denn wir sparen damit zeit. außerdem: warum 2 alphabete, wenn eins dasselbe erreicht? warum groß schreiben, wenn man nicht groß sprechen kann?</p>
+      <p class="lh-cn">我们全部用小写，因为这样省时间。再说：一套字母能做到的事，何必用两套？说话的时候没有大写，写字为什么要有？</p>
+    </blockquote>
+    <figcaption>包豪斯信纸上的说明，1925 年起使用；信纸由赫伯特·拜耳设计。</figcaption>
+  </figure>
+
+  <div class="build">
+    <div class="build-text">
+      <h3>用圆和直线造字母</h3>
+      <p>拜耳 1925 年设计的「通用字体」只有小写。既然一套字母就够了，那就让它尽可能简单：大多数字母由一个正圆和一两条直线组成。</p>
+      <p>下面的字按这个原则重画，只是示意，并不是拜耳的原字体。打开作图线看看它们是怎么搭起来的。</p>
+      <button class="btn" type="button" id="guideBtn" aria-pressed="false">显示作图线</button>
+      <ul class="build-notes">
+        <li>b、a、u、h 共用同一个圆</li>
+        <li>竖线与圆相切，笔画处处等粗</li>
+        <li>x 高度正好等于圆的直径</li>
+        <li>s 由两个半径减半的圆接成</li>
+      </ul>
+    </div>
+    <div class="build-pic" id="buildPic">
+      <svg viewBox="-12 22 818 204" role="img" aria-label="用圆和直线构成的小写字母 bauhaus">
+        <g class="glyphs" fill="none" stroke-width="18">
+          <path d="M9 40V200M50 109a41 41 0 1 1 0 82a41 41 0 1 1 0-82"/>
+          <path d="M172 109a41 41 0 1 1 0 82a41 41 0 1 1 0-82M213 100V200"/>
+          <path d="M253 100V150a41 41 0 0 0 82 0M335 100V200"/>
+          <path d="M375 40V200M375 150a41 41 0 0 1 82 0V200"/>
+          <path d="M538 109a41 41 0 1 1 0 82a41 41 0 1 1 0-82M579 100V200"/>
+          <path d="M619 100V150a41 41 0 0 0 82 0M701 100V200"/>
+          <path d="M782.5 129.5a20.5 20.5 0 1 0-20.5 20.5a20.5 20.5 0 1 1-20.5 20.5"/>
+        </g>
+        <g class="guides" aria-hidden="true">
+          <line x1="-12" x2="806" y1="40" y2="40"/><line x1="-12" x2="806" y1="100" y2="100"/><line x1="-12" x2="806" y1="200" y2="200"/>
+          <circle cx="50" cy="150" r="50"/><circle cx="172" cy="150" r="50"/><circle cx="294" cy="150" r="50"/><circle cx="416" cy="150" r="50"/><circle cx="538" cy="150" r="50"/><circle cx="660" cy="150" r="50"/>
+          <circle cx="762" cy="129.5" r="29.5"/><circle cx="762" cy="170.5" r="29.5"/>
+          <text x="804" y="34" text-anchor="end">上伸线</text><text x="804" y="94" text-anchor="end">x 高度</text><text x="804" y="220" text-anchor="end">基线</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="type-pair">
+    <figure class="moholy">
+      <blockquote>
+        <p class="mq-cn">文字排印是传达的工具。它必须以最强烈的形式，清楚地传达。</p>
+        <p class="mq-de" lang="de">Die Typographie ist ein Instrument der Mitteilung. Sie muß eine klare Mitteilung in der eindringlichsten Form sein.</p>
+      </blockquote>
+      <figcaption>莫霍利-纳吉，《新文字排印》，载于 1923 年包豪斯展览图录</figcaption>
+    </figure>
+    <div class="cjk-note">
+      <h3>中文没有大小写</h3>
+      <p>小写规则只适用于拉丁字母。包豪斯式的中文排版要靠别的手段：粗黑体、悬殊的字号、横排和竖排混用，以及把文字直接压在色块和粗线上——就像这一页的标题和页首那条红色竖带。</p>
+    </div>
+  </div>
+
+  <div class="webfonts">
+    <h3>网页里用什么字体</h3>
+    <dl>
+      <div><dt>Jost</dt><dd>免费，Google Fonts。本页的拉丁字母都用它，结构接近 Futura。</dd></div>
+      <div><dt>Josefin Sans · League Spartan</dt><dd>免费。前者更纤细复古，后者更粗重，适合海报式大标题。</dd></div>
+      <div><dt>Futura PT</dt><dd>商用。Futura 是保罗·伦纳 1927 年的作品，并非出自包豪斯，却最接近它的精神。</dd></div>
+      <div><dt>思源黑体</dt><dd>中文没有几何黑体，就用 Heavy / Black 做标题、Regular 做正文，靠粗细对比撑起层级。</dd></div>
+      <div><dt>加载</dt><dd>只载入用到的字重（本页 Jost 载入 400、500、700、800 四种），并用 <code>display=swap</code> 避免文字长时间不显示。</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ================= 5 composition ================= -->
+<section class="sec" id="composition" aria-labelledby="h-composition">
+  <header class="sec-head">
+    <span class="sec-num n-sq" aria-hidden="true">5</span>
+    <p class="sec-de" lang="de">Komposition</p>
+    <h2 id="h-composition">不对称的平衡</h2>
+    <p class="lead">古典版式沿中轴对称，稳但呆板。包豪斯把元素推离中心，再用大小、颜色和距离让画面重新平衡——像一杆秤：大的靠近支点，小的要放得更远。</p>
+  </header>
+
+  <div class="balance">
+    <div class="bal-stage">
+      <div class="bal-beam" id="beam">
+        <span class="bal-sq"></span>
+        <span class="bal-ci" id="balCi"></span>
+      </div>
+      <span class="bal-fulcrum" aria-hidden="true"></span>
+      <span class="bal-floor" aria-hidden="true"></span>
+    </div>
+    <div class="bal-ctrl">
+      <label class="range"><span>圆的大小</span><input type="range" id="balSize" min="8" max="24" value="13"></label>
+      <label class="range"><span>圆离支点的距离</span><input type="range" id="balPos" min="0" max="100" value="25"></label>
+      <p class="bal-status" id="balStatus" aria-live="polite"></p>
+      <p class="note">示意：这里的「视觉重量」只按面积计算。实际上颜色越深、越饱和，看起来就越重。</p>
+      <p class="web-note"><b>网页上</b>首屏常见的「一侧大标题、另一侧小图形」就是这杆秤：大的靠近版心，小的推向边缘。</p>
+    </div>
+  </div>
+
+  <div class="tools4">
+    <div class="tool"><span class="tool-pic tp-diag" aria-hidden="true"><i></i></span><h3>对角线</h3><p>倾斜的文字和色条让画面产生运动感，莫霍利-纳吉和拜耳都常用这一招。</p><p class="tool-web">网页上只用在首屏或分隔带，倾斜的文字别超过一行。</p></div>
+    <div class="tool"><span class="tool-pic tp-bars" aria-hidden="true"><i></i><i></i></span><h3>粗线划分</h3><p>粗黑线把版面切成区域，也规定了视线的先后顺序。</p><p class="tool-web">网页上用 3–12px 的实线分隔区块，比卡片阴影更清楚。</p></div>
+    <div class="tool"><span class="tool-pic tp-bleed" aria-hidden="true"><i></i></span><h3>出血</h3><p>大图形冲出画面边缘，版面就显得比纸张更大。</p><p class="tool-web">网页上给容器加 <code>overflow: clip</code>，免得撑出横向滚动条。</p></div>
+    <div class="tool"><span class="tool-pic tp-void" aria-hidden="true"><i></i></span><h3>留白</h3><p>把内容挤到一角，剩下的大片空白反而成了画面的主角。</p><p class="tool-web">网页上首屏敢于留空，操作区域却要紧凑。</p></div>
+  </div>
+</section>
+
+<!-- ================= 6 ui ================= -->
+<section class="sec" id="ui" aria-labelledby="h-ui">
+  <header class="sec-head">
+    <span class="sec-num n-tri" aria-hidden="true">6</span>
+    <p class="sec-de" lang="de">Oberfläche</p>
+    <h2 id="h-ui">放进网页界面</h2>
+    <p class="lead">包豪斯式的界面要克制：大图形和原色留给首屏、活动页和品牌，操作区域回到黑白和清楚的层级。它的形与色还能翻译成一套顺手的符号——单选是圆，多选是方，警告是三角。下面的组件都能操作。</p>
+  </header>
+
+  <div class="kit">
+    <div class="kit-box kb-btn">
+      <p class="kit-k">按钮</p>
+      <div class="kit-row">
+        <button class="kb" type="button"><i class="kb-mark" aria-hidden="true"></i>报名参加</button>
+        <button class="kb red" type="button">立即购票</button>
+        <button class="kb ghost" type="button">了解更多</button>
+        <button class="kb" type="button" disabled>已售罄</button>
+      </div>
+      <p class="kit-note">主按钮用黑底，整页最重要的那一个行动才用红色。悬停时只让小方块转 45°，按钮本身不变形、不加阴影。</p>
+    </div>
+
+    <form class="kit-box kb-form" id="bhForm" novalidate>
+      <p class="kit-k">表单</p>
+      <label class="kf" id="bhMailField"><span>邮箱</span><input type="email" name="mail" placeholder="name@example.de" autocomplete="off" aria-describedby="bhErr"><em class="kf-err" id="bhErr" aria-live="polite"></em></label>
+      <fieldset class="kf-set"><legend>参观日期 · 单选是圆</legend>
+        <label class="kr"><input type="radio" name="day" checked><span>周六</span></label>
+        <label class="kr"><input type="radio" name="day"><span>周日</span></label>
+      </fieldset>
+      <fieldset class="kf-set"><legend>附加项目 · 多选是方</legend>
+        <label class="kc"><input type="checkbox" checked><span>导览</span></label>
+        <label class="kc"><input type="checkbox"><span>工作坊</span></label>
+      </fieldset>
+      <div class="ks"><span id="bhSwLabel">开展前一天提醒我</span><button type="button" role="switch" aria-checked="false" aria-labelledby="bhSwLabel" class="ks-sw" id="bhSwitch"><i></i></button></div>
+      <div class="kit-row"><button class="kb" type="submit">提交</button><span class="kf-ok" id="bhOk" aria-live="polite"></span></div>
+      <p class="kit-note">输入框只留一条 3px 的底线；单选、多选和开关直接用圆、方两种基本形，和页首问卷的配色联动。</p>
+    </form>
+
+    <div class="kit-box kb-alert" id="bhAlerts">
+      <p class="kit-k">状态提示 · 形状与颜色双重编码</p>
+      <div class="al al-info"><i aria-hidden="true"></i><p><b>提示</b>周日的导览改为 14:00 开始。</p></div>
+      <div class="al al-warn"><i aria-hidden="true"></i><p><b>注意</b>剩余名额不足 10 个。</p></div>
+      <div class="al al-err"><i aria-hidden="true"></i><p><b>错误</b>付款没有完成，请重试。</p></div>
+      <button class="btn ghost" type="button" id="grayBtn" aria-pressed="false">只看明暗（灰度）</button>
+      <p class="kit-note">状态色是「语义令牌」，不跟随页首问卷变化：蓝圆是信息，黄三角是警告，红方是错误。切到灰度后颜色消失，形状和文字依然能区分。</p>
+    </div>
+
+    <div class="kit-box kb-tabs">
+      <p class="kit-k">标签页</p>
+      <div class="tabs" role="tablist" aria-label="示例标签页" id="bhTabs">
+        <button type="button" role="tab" id="bt1" aria-controls="bp1" aria-selected="true">展览</button>
+        <button type="button" role="tab" id="bt2" aria-controls="bp2" aria-selected="false" tabindex="-1">活动</button>
+        <button type="button" role="tab" id="bt3" aria-controls="bp3" aria-selected="false" tabindex="-1">参观</button>
+      </div>
+      <div class="tab-panel" role="tabpanel" id="bp1" aria-labelledby="bt1"><p>1919—1933：从魏玛到柏林的十四年。</p></div>
+      <div class="tab-panel" role="tabpanel" id="bp2" aria-labelledby="bt2" hidden><p>每周六 15:00，用三种基本形做一张海报。</p></div>
+      <div class="tab-panel" role="tabpanel" id="bp3" aria-labelledby="bt3" hidden><p>周二至周日 10:00—18:00 开放。</p></div>
+      <p class="kit-note">当前标签是一整块实色，而不是一条细下划线。方向键可以切换。</p>
+    </div>
+
+    <div class="kit-box kb-card">
+      <p class="kit-k">卡片</p>
+      <article class="card">
+        <div class="card-pic" aria-hidden="true"><i class="cp-ci"></i><i class="cp-sq"></i><i class="cp-bar"></i></div>
+        <p class="card-date"><b>12</b><span>06 · 周六</span></p>
+        <h3>形与色工作坊</h3>
+        <p>两小时，用圆、方、三角和三原色完成一张海报。</p>
+        <a class="more" href="#make">先在本页试试 <span aria-hidden="true">→</span></a>
+      </article>
+      <p class="kit-note">缩略图用基本形拼成，不需要图片；日期用大号数字，是卡片里最显眼的信息。</p>
+    </div>
+  </div>
+
+  <h3 class="sub-h">响应式首屏：同一套构成，三种宽度</h3>
+  <div class="rf-ctrl">
+    <div class="seg" role="group" aria-label="设备宽度预设" id="rfPresets">
+      <button type="button" data-w="375">手机 375</button>
+      <button type="button" data-w="768">平板 768</button>
+      <button type="button" data-w="1200">桌面 1200</button>
+    </div>
+    <label class="range rf-range"><span>页面宽度 <output id="rfOut"></output></span><input type="range" id="rfWidth" min="320" max="1280" value="1200"></label>
+  </div>
+  <div class="rf-stage" id="rfStage">
+    <div class="rf-frame" id="rfFrame">
+      <div class="rf-page">
+        <header class="rf-head"><b>bauhaus</b><nav><span>展览</span><span>活动</span><span>参观</span></nav><span class="rf-menu">菜单</span></header>
+        <div class="rf-hero">
+          <i class="rf-ci" aria-hidden="true"></i><i class="rf-sq" aria-hidden="true"></i><i class="rf-tri" aria-hidden="true"></i>
+          <p class="rf-title">kunst<br>und technik</p>
+          <p class="rf-sub">艺术与技术：新的统一 · 展览 1923</p>
+          <span class="rf-cta">预约参观</span>
+        </div>
+        <div class="rf-cols">
+          <div class="rf-col"><h5>展览</h5><p>四百件作品：海报、家具、灯具、织物与字体，按工坊陈列。</p></div>
+          <div class="rf-col"><h5>工作坊</h5><p>每周六下午，用三种基本形做海报。</p></div>
+          <div class="rf-col"><h5>开放</h5><p>周二至周日 10—18 点。</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="rf-read" id="rfRead" aria-live="polite"></p>
+  <p class="note">示例页用容器查询（<code>@container</code>）按自身宽度切换布局，标题字号用容器单位 <code>cqi</code> 连续缩放；窄屏上会按比例缩小显示。</p>
+</section>
+
+<!-- ================= 7 make ================= -->
+<section class="sec" id="make" aria-labelledby="h-make">
+  <header class="sec-head">
+    <span class="sec-num n-ci" aria-hidden="true">7</span>
+    <p class="sec-de" lang="de">Plakat</p>
+    <h2 id="h-make">做一张包豪斯海报</h2>
+    <p class="lead">每按一次「重新构成」，程序就按下面四条规矩重摆一次，图形的颜色跟随你在页首的问卷答案。选「分享图」会得到 1200 × 630 的版式，下载 PNG 后可以直接用作网页的 <code>og:image</code> 分享卡片。</p>
+  </header>
+
+  <div class="maker">
+    <div class="mk-preview">
+      <div class="mk-frame" id="mkFrame"></div>
+      <p class="mk-no" id="mkNo" aria-live="polite"></p>
+    </div>
+    <div class="mk-ctrl">
+      <label class="field"><span>标题</span><input type="text" id="mkTitle" value="Bauhaus" maxlength="20" autocomplete="off" spellcheck="false"></label>
+      <label class="field"><span>副标题</span><input type="text" id="mkSub" value="Ausstellung · Weimar" maxlength="32" autocomplete="off" spellcheck="false"></label>
+      <div class="seg" role="radiogroup" aria-label="尺寸" id="mkSize">
+        <button type="button" role="radio" aria-checked="true" data-v="poster">海报 3 : 4</button>
+        <button type="button" role="radio" aria-checked="false" data-v="og">分享图 1200 × 630</button>
+      </div>
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="mkLower" checked><span>全部小写</span></label>
+        <label class="check"><input type="checkbox" id="mkDiag"><span>对角线构图</span></label>
+        <label class="check"><input type="checkbox" id="mkOver" checked><span>叠印</span></label>
+        <label class="check"><input type="checkbox" id="mkDark"><span>黑色纸</span></label>
+      </div>
+      <div class="mk-btns">
+        <button class="btn" type="button" id="mkShuffle"><svg class="ic"><use href="#i-shuffle"/></svg>重新构成</button>
+        <button class="btn ghost" type="button" id="mkPng"><svg class="ic"><use href="#i-down"/></svg>下载 PNG</button>
+        <button class="btn ghost" type="button" id="mkSave"><svg class="ic"><use href="#i-down"/></svg>SVG</button>
+      </div>
+      <ol class="rules">
+        <li><b>一大两小</b>三种图形各一个，面积悬殊，大的定基调。</li>
+        <li><b>出血</b>大图形至少有一边冲出画面。</li>
+        <li><b>对齐网格</b>黑条只放在 25 单位的网格线上。</li>
+        <li><b>文字尽量大</b>标题撑满画面宽度或高度。</li>
+      </ol>
+      <p class="note">构成规则是本页自定的简化版，只为演示。黑色纸上叠印会让颜色变黑，所以会自动关闭。PNG 由浏览器用已载入的 Jost 绘制；SVG 只记录字体名称，没装 Jost 的电脑会显示替代字体。多数社交平台不接受 SVG 格式的分享图，请用 PNG。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8 use ================= -->
+<section class="sec" id="use" aria-labelledby="h-use">
+  <header class="sec-head">
+    <span class="sec-num n-sq" aria-hidden="true">8</span>
+    <p class="sec-de" lang="de">Anwendung</p>
+    <h2 id="h-use">什么时候用，怎么不用错</h2>
+    <p class="lead">包豪斯的语法强烈、好认，适合需要一眼被记住的场合。同样的大色块和几何字体，放到信息密集的地方就会变成噪音。</p>
+  </header>
+
+  <div class="fit">
+    <div class="fit-col">
+      <h3><span class="fit-mark m-ok" aria-hidden="true"></span>适合</h3>
+      <ul>
+        <li><b>展览、文化与艺术机构</b>海报式的首屏、活动页和导视。</li>
+        <li><b>品牌活动与着陆页</b>需要一眼被认出、被记住的场合。</li>
+        <li><b>教育与入门内容</b>基本形和原色天然好懂，适合讲解结构。</li>
+        <li><b>设计系统的点缀层</b>插图、图标、空状态和数据之外的装饰。</li>
+      </ul>
+    </div>
+    <div class="fit-col">
+      <h3><span class="fit-mark m-no" aria-hidden="true"></span>慎用</h3>
+      <ul>
+        <li><b>后台、表格与表单</b>大色块会和真正需要注意的数据抢注意力。</li>
+        <li><b>长篇正文</b>几何字体的正圆字怀适合标题；长文换成更易读的无衬线体。</li>
+        <li><b>需要细腻情绪的品牌</b>原色和粗线条太直接，难以表现柔和与高级感。</li>
+        <li><b>全小写的界面文案</b>小写会抹掉专有名词和句首的提示，按钮和说明保持正常大小写。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sub-h">六个常见错误</h3>
+  <div class="mistakes">
+    <article class="mis">
+      <div class="mis-pair">
+        <figure><div class="mis-box"><span class="mz-glossy"></span></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mis-box"><span class="mz-flat"></span></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <h4>加上渐变和投影</h4>
+      <p>渐变和投影让图形变成「物体」，包豪斯的图形是平面上的色块。保持平涂，层次交给大小和位置。</p>
+    </article>
+    <article class="mis">
+      <div class="mis-pair">
+        <figure><div class="mis-box mz-even"><i></i><i></i><i></i></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mis-box mz-domin"><i></i><i></i><i></i></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <h4>三种颜色平均分</h4>
+      <p>红黄蓝各占三分之一，画面就像一面旗帜，没有主次。让一种颜色占大面积，另外两种只做点缀。</p>
+    </article>
+    <article class="mis">
+      <div class="mis-pair">
+        <figure><div class="mis-box mz-center"><i></i><b>bauhaus</b><s></s></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mis-box mz-asym"><i></i><b>bauhaus</b><s></s></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <h4>一切居中对称</h4>
+      <p>图形、标题、线条全部摆在中轴上，画面稳定却毫无张力。把主体推离中心，用留白去平衡它。</p>
+    </article>
+    <article class="mis">
+      <div class="mis-pair">
+        <figure><div class="mis-box mz-yw"><span>展览开幕</span></div><figcaption class="no">1.8 : 1</figcaption></figure>
+        <figure><div class="mis-box mz-yk"><span>展览开幕</span></div><figcaption class="ok">10 : 1</figcaption></figure>
+      </div>
+      <h4>黄底上压白字</h4>
+      <p>铬黄非常亮，白字在上面的对比度只有 1.8 : 1，远低于正文要求的 4.5 : 1。黄底上一律用黑字；红底和蓝底上才用白字。</p>
+    </article>
+    <article class="mis">
+      <div class="mis-pair">
+        <figure><div class="mis-box mz-noisy"><i></i><i></i><span>提交</span></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mis-box mz-calm"><i></i><i></i><span>提交</span></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <h4>装饰抢走了操作</h4>
+      <p>表单旁边放一个大红圆，提交按钮却是细线框，用户的视线先落在装饰上。最强的颜色留给最重要的行动，装饰缩小、退到角落。</p>
+    </article>
+    <article class="mis">
+      <div class="mis-pair">
+        <figure><div class="mis-box mz-dots"><p><i></i>订单 A</p><p><i></i>订单 B</p><p><i></i>订单 C</p></div><figcaption class="no">错误</figcaption></figure>
+        <figure><div class="mis-box mz-shapes"><p><i></i>A 完成</p><p><i></i>B 待办</p><p><i></i>C 失败</p></div><figcaption class="ok">正确</figcaption></figure>
+      </div>
+      <h4>只靠颜色区分状态</h4>
+      <p>订单旁边的圆点只有颜色不同，色觉障碍用户和黑白打印时都分不清哪个出了问题。换成圆、三角、方三种形状，再写明状态。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= 9 code ================= -->
+<section class="sec" id="code" aria-labelledby="h-code">
+  <header class="sec-head">
+    <span class="sec-num n-tri" aria-hidden="true">9</span>
+    <p class="sec-de" lang="de">Technik</p>
+    <h2 id="h-code">用 CSS 画包豪斯</h2>
+    <p class="lead">基本形用几行 CSS 就能画出来，难的是几个不显眼的坑。下面这些都是做这一页时实际遇到的。</p>
+  </header>
+  <div class="code-wrap">
+    <ol class="tips">
+      <li><b>形与色分开写</b><span>用 <code>--ci</code>、<code>--sq</code>、<code>--tri</code> 表示「圆的颜色」「方的颜色」「三角的颜色」。页首的问卷只改这三个变量，整页的图形就一起换色。</span></li>
+      <li><b>clip-path 会裁掉焦点环</b><span>三角形用 <code>clip-path</code> 画，但 outline 也会被一起裁掉。把 clip-path 放在内层元素上，焦点环画在外层按钮上——右上角的三角复原按钮就是这样做的。</span></li>
+      <li><b>叠印在深色背景上会失效</b><span><code>mix-blend-mode: multiply</code> 让颜色与底色相乘，深色底上一切都会变黑。本页切到深色模式时改回 <code>normal</code>。</span></li>
+      <li><b>用 CSS 变小写，别改源文本</b><span><code>text-transform: lowercase</code> 只改变显示。源文本里的专有名词和德语名词照常大写，读屏软件和搜索引擎拿到的是原文。</span></li>
+      <li><b>网格要不对称</b><span>用 <code>5fr 3fr 2fr</code> 这样悬殊的比例代替平均分栏，并写成 <code>minmax(0, 5fr)</code>，长单词才不会撑破栏宽。</span></li>
+      <li><b>出血不要撑出滚动条</b><span>冲出边缘的大图形放进 <code>overflow: clip</code> 的容器。它和 hidden 一样会裁切，但不会生成滚动容器，里面的 <code>position: sticky</code> 照常工作。</span></li>
+      <li><b>首屏大字随容器缩放</b><span>标题用 <code>clamp()</code> 设上下限，或者在容器查询里用 <code>cqi</code>，让构图在任何宽度下保持同样的比例（见第 6 节的响应式示例）。</span></li>
+      <li><b>装饰对读屏软件隐藏</b><span>纯装饰的圆、方、三角加 <code>aria-hidden="true"</code>；用图形做的按钮一定要有文字或 <code>aria-label</code>。</span></li>
+      <li><b>动效只动 transform</b><span>几何形的旋转和位移交给 <code>transform</code>，不触发重排；在 <code>prefers-reduced-motion: reduce</code> 下关掉。</span></li>
+    </ol>
+    <div class="code-box">
+      <button class="btn ghost copy" type="button" id="copyBtn"><svg class="ic"><use href="#i-copy"/></svg><span>复制</span></button>
+<pre><code id="codeText"><span class="c-c">/* 形与色分开：换一套对应关系只改三个变量 */</span>
+<span class="c-k">:root</span> { --tri: <span class="c-v">#F2B705</span>; --sq: <span class="c-v">#D8352A</span>; --ci: <span class="c-v">#1E4C9A</span>; }
+
+<span class="c-k">.circle</span>   { aspect-ratio: 1; border-radius: 50%; background: var(--ci); }
+<span class="c-k">.square</span>   { aspect-ratio: 1; background: var(--sq); }
+<span class="c-k">.triangle</span> { aspect-ratio: 1; }
+<span class="c-k">.triangle::before</span> {            <span class="c-c">/* 裁内层，焦点环留在外层 */</span>
+  content: ""; position: absolute; inset: 0;
+  background: var(--tri);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+<span class="c-c">/* 叠印：只在浅色纸上用 */</span>
+<span class="c-k">.stage</span> { isolation: isolate; }
+<span class="c-k">.stage &gt; *</span> { mix-blend-mode: multiply; }
+<span class="c-k">[data-theme="dark"] .stage &gt; *</span> { mix-blend-mode: normal; }
+
+<span class="c-c">/* 小写只改显示 */</span>
+<span class="c-k">.label</span> { text-transform: lowercase; }
+
+<span class="c-c">/* 不对称网格 */</span>
+<span class="c-k">.layout</span> {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 2fr);
+}</code></pre>
+    </div>
+  </div>
+  <h3 class="sub-h">本页的设计令牌</h3>
+  <div class="tok-wrap">
+    <table class="tok">
+      <thead><tr><th scope="col">令牌</th><th scope="col">取值</th><th scope="col">用途</th><th scope="col" class="num">对比度</th></tr></thead>
+      <tbody>
+        <tr class="tok-group"><th colspan="4" scope="rowgroup">装饰令牌 · 跟随问卷</th></tr>
+        <tr><td><code>--ci</code> <code>--sq</code> <code>--tri</code></td><td><i class="tk" style="background:var(--ci)"></i><i class="tk" style="background:var(--sq)"></i><i class="tk" style="background:var(--tri)"></i>默认 蓝 / 红 / 黄</td><td>插图、编号、装饰图形、表单控件</td><td class="num">—</td></tr>
+        <tr><td><code>--ci-on</code> 等</td><td>白 / 白 / 黑</td><td>压在对应图形上的文字</td><td class="num">≥ 4.7</td></tr>
+        <tr class="tok-group"><th colspan="4" scope="rowgroup">语义令牌 · 固定不变</th></tr>
+        <tr><td><code>--info</code></td><td><i class="tk" style="background:#1E4C9A"></i>#1E4C9A · 圆</td><td>信息提示</td><td class="num">白字 8.2</td></tr>
+        <tr><td><code>--warn</code></td><td><i class="tk" style="background:#F2B705"></i>#F2B705 · 三角</td><td>警告</td><td class="num">黑字 10.0</td></tr>
+        <tr><td><code>--danger</code></td><td><i class="tk" style="background:#D8352A"></i>#D8352A · 方</td><td>错误、最重要的行动</td><td class="num">白字 4.7</td></tr>
+        <tr><td><code>--ink</code> / <code>--paper</code></td><td><i class="tk" style="background:#151515"></i><i class="tk" style="background:#EFE9DC"></i>#151515 / #EFE9DC</td><td>正文与背景（深色模式对调）</td><td class="num">15.1</td></tr>
+        <tr><td><code>--red-ink</code></td><td><i class="tk" style="background:#B52A20"></i>#B52A20</td><td>小字号的红字</td><td class="num">5.2</td></tr>
+        <tr class="tok-group"><th colspan="4" scope="rowgroup">字、线与形</th></tr>
+        <tr><td>首屏大字</td><td>clamp(80px, 26vw, 236px)</td><td>Jost 800，全小写，行高 0.8</td><td class="num">—</td></tr>
+        <tr><td>章节标题</td><td>clamp(30px, 5vw, 60px)</td><td>思源黑体 Black</td><td class="num">—</td></tr>
+        <tr><td>正文</td><td>17px / 1.8</td><td>Jost + 思源黑体 Regular</td><td class="num">—</td></tr>
+        <tr><td><code>--bar</code></td><td>3px · 12px</td><td>细线分隔，粗条开篇</td><td class="num">—</td></tr>
+        <tr><td>圆角 · 阴影</td><td>0 或 50% · 无</td><td>只有方和圆，没有「圆角矩形」</td><td class="num">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p class="foot-mega" aria-hidden="true">bauhaus</p>
+  <div class="foot-row">
+    <p>1919 魏玛 · 1925 德绍 · 1932 柏林 · 1933 解散</p>
+    <p>本页的图形全部由 CSS 与 SVG 画成，没有使用图片。字体：Jost、思源黑体。</p>
+    <a class="more" href="#top">回到页首 <span aria-hidden="true">↑</span></a>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

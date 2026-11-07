@@ -10,10 +10,10 @@
 export const STYLES = [
   /* 艺术与印刷源流 */
   { id: "nouveau" },
-  { id: "bauhaus" },
+  { id: "bauhaus", page: true },
   { id: "constructivism" },
   { id: "deco" },
-  { id: "swiss" },
+  { id: "swiss", page: true },
   { id: "neochinese" },
   /* 数字界面范式 */
   { id: "skeuo" },

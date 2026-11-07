@@ -1,0 +1,13 @@
+.sp-glass{background:#1B1530;color:#FFF;font-family:"Noto Sans SC",sans-serif;display:grid;place-items:center}
+.gl-b{position:absolute;border-radius:50%;animation:gldrift 9s ease-in-out infinite alternate}
+.gl-b1{width:55cqi;aspect-ratio:1;background:radial-gradient(circle at 30% 30%,#FF8CC0,#FF3D8B);left:-6cqi;top:-8cqi}
+.gl-b2{width:46cqi;aspect-ratio:1;background:radial-gradient(circle at 30% 30%,#8FA6FF,#4560FF);right:-8cqi;bottom:-10cqi;animation-delay:-3s}
+.gl-b3{width:20cqi;aspect-ratio:1;background:radial-gradient(circle at 30% 30%,#8CF5E2,#14C6A8);right:22cqi;top:10cqi;animation-delay:-6s}
+@keyframes gldrift{to{transform:translate(4cqi,3cqi) scale(1.06)}}
+.gl-card{position:relative;width:76%;max-width:300px;padding:22px 20px 18px;border-radius:22px;background:rgba(255,255,255,.14);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border:1px solid rgba(255,255,255,.38);box-shadow:0 12px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.45)}
+.gl-top{display:flex;justify-content:space-between;font-size:14px}
+.gl-top span:last-child{opacity:.85}
+.gl-temp{font-family:Manrope,sans-serif;font-weight:300;font-size:72px;line-height:1.1;letter-spacing:-.04em;margin:4px 0 10px}
+.gl-hours{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;font-size:14px;line-height:1.4}
+.gl-hours span{padding:8px 0;border-radius:12px;background:rgba(255,255,255,.12)}
+.gl-hours small{display:block;font-size:11px;opacity:.8}

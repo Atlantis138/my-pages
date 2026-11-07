@@ -1,0 +1,14 @@
+.sp-aurora{background:#0B0C1E;color:#FFF;font-family:Sora,"Noto Sans SC",sans-serif}
+.au-bg{position:absolute;inset:-25%;background:radial-gradient(38% 42% at 25% 35%,#7B5CFF,transparent 70%),radial-gradient(32% 40% at 78% 30%,#22D3EE,transparent 70%),radial-gradient(40% 40% at 60% 80%,#FF6AB0,transparent 70%),radial-gradient(25% 30% at 30% 85%,#FFC56B,transparent 70%);filter:blur(30px) saturate(1.2);animation:audrift 14s ease-in-out infinite alternate}
+@keyframes audrift{50%{transform:translate(4%,-3%) rotate(8deg) scale(1.05)}100%{transform:translate(-3%,4%) rotate(-6deg)}}
+.au-grain,.gr-noise{position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.au-grain{opacity:.22;mix-blend-mode:overlay}
+.au-c{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:14px;padding:0 8cqi;text-shadow:0 2px 24px rgba(11,12,30,.35)}
+.au-pill{font-size:12px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3)}
+.sp-aurora h3{font-weight:600;font-size:clamp(36px,11cqi,68px);line-height:1;letter-spacing:-.04em}
+.au-c p{font-size:15px;color:rgba(255,255,255,.85)}
+.au-btns{display:flex;gap:10px;flex-wrap:wrap}
+.au-b1,.au-b2{border-radius:999px;padding:10px 20px;font-family:inherit;font-weight:600;font-size:14px;transition:background .2s}
+.au-b1{border:0;background:#FFF;color:#0B0C1E}
+.au-b2{border:1px solid rgba(255,255,255,.45);background:transparent;color:#FFF}
+.au-b1:hover{background:#E9E4FF}.au-b2:hover{background:rgba(255,255,255,.12)}

@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Material Design · 设计风格图鉴</title>
+<meta name="description" content="用 Material 3 的规范搭一页介绍 Material Design：纸与墨水的隐喻、十年演进、动态配色、字体与形状、高度、动效与组件。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&icon_names=add,animation,arrow_back,arrow_forward,calendar_month,check,close,content_copy,dark_mode,edit,favorite,history,home,layers,light_mode,lightbulb,mail,menu,palette,photo_library,play_arrow,search,settings,share,star,text_fields,widgets&display=block">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- ============ Top app bar ============ -->
+<header class="top-app-bar" id="appbar">
+  <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="打开导航" aria-controls="drawer" aria-expanded="false"><span class="ms">menu</span></button>
+  <a class="icon-btn" href="../../#s-material" aria-label="返回设计风格图鉴" data-catalog><span class="ms">arrow_back</span></a>
+  <p class="bar-title title-large">Material Design</p>
+  <div class="bar-actions">
+    <button class="icon-btn" id="seedBtn" type="button" aria-label="更换种子色" aria-haspopup="menu" aria-expanded="false"><span class="ms">palette</span></button>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式"><span class="ms">dark_mode</span></button>
+  </div>
+  <div class="menu" id="seedMenu" role="menu" hidden></div>
+</header>
+
+<!-- ============ Navigation drawer ============ -->
+<nav class="drawer" id="drawer" aria-label="章节">
+  <p class="drawer-head title-small">设计风格图鉴 · <span data-no>No.10</span></p>
+  <a class="drawer-item" href="#overview"><span class="ms">home</span>概览</a>
+  <a class="drawer-item" href="#history"><span class="ms">history</span>十年演进</a>
+  <a class="drawer-item" href="#color"><span class="ms">palette</span>动态配色</a>
+  <a class="drawer-item" href="#type"><span class="ms">text_fields</span>字体与形状</a>
+  <a class="drawer-item" href="#elevation"><span class="ms">layers</span>高度</a>
+  <a class="drawer-item" href="#motion"><span class="ms">animation</span>动效</a>
+  <a class="drawer-item" href="#components"><span class="ms">widgets</span>组件</a>
+  <a class="drawer-item" href="#practice"><span class="ms">lightbulb</span>何时使用</a>
+  <hr class="divider">
+  <a class="drawer-item" href="../../#s-material" data-catalog><span class="ms">arrow_back</span>返回图鉴</a>
+</nav>
+<div class="scrim" id="scrim" hidden></div>
+
+<main id="main" class="content">
+
+<!-- ============ 概览 ============ -->
+<section class="section" id="overview" aria-labelledby="h-overview">
+  <div class="hero">
+    <div class="hero-text">
+      <p class="label-large hero-over">设计风格图鉴 · <span data-no>No.10</span> · 数字界面范式</p>
+      <h1 class="display-large" id="h-overview">Material Design</h1>
+      <p class="body-large">Google 在 2014 年推出的设计系统。它把屏幕想象成一叠有厚度的纸：纸会投下阴影、会滑动和变形，被触碰时泛起墨水般的涟漪。十余年间，它从一套视觉规范长成了覆盖色彩、字体、形状、动效和上百个组件的完整体系。</p>
+      <p class="body-large">这一页本身就按 Material 3 的规范搭建。你看到的按钮、卡片和每一种颜色，都是讲解的一部分。</p>
+      <div class="hero-actions">
+        <a class="btn btn-filled" href="#color" data-ripple><span class="ms">palette</span>从种子色生成配色</a>
+        <a class="btn btn-outlined" href="#components" data-ripple>浏览组件</a>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="paper p1"></div>
+      <div class="paper p2"></div>
+      <div class="paper p3"><span class="ms">add</span></div>
+      <svg class="hero-shape" viewBox="-1.2 -1.2 2.4 2.4"><path id="heroShape"/></svg>
+    </div>
+  </div>
+
+  <div class="facts">
+    <div class="fact"><b class="display-small">2014</b><span class="body-medium">在 Google I/O 首次发布</span></div>
+    <div class="fact"><b class="display-small">13</b><span class="body-medium">每组色调板的色调级数</span></div>
+    <div class="fact"><b class="display-small">15</b><span class="body-medium">字体样式（5 种角色 × 3 种尺寸）</span></div>
+    <div class="fact"><b class="display-small">6</b><span class="body-medium">高度层级，从 Level 0 到 Level 5</span></div>
+  </div>
+
+  <h2 class="headline-medium sub-h">三条最初的原则</h2>
+  <div class="grid-3">
+    <article class="card card-filled principle">
+      <span class="ms icon-badge">layers</span>
+      <h3 class="title-large">材料是隐喻</h3>
+      <p class="body-medium">界面元素像真实的纸：有边缘、有厚度、可以叠放，同时又能自由伸缩变形。光照和阴影告诉你谁在上、谁在下，用户不必学习就能理解层级。</p>
+    </article>
+    <article class="card card-filled principle">
+      <span class="ms icon-badge">text_fields</span>
+      <h3 class="title-large">鲜明、图形化、有意图</h3>
+      <p class="body-medium">沿用印刷设计的方法：网格、留白、大胆的色彩与字号对比。重要的操作用颜色和位置突出出来，而不是靠装饰。</p>
+    </article>
+    <article class="card card-filled principle">
+      <span class="ms icon-badge">animation</span>
+      <h3 class="title-large">动效赋予意义</h3>
+      <p class="body-medium">动画不是点缀。元素从哪里来、到哪里去、为什么变化，都由连续的动效交代清楚，让用户始终知道自己身在何处。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 演进 ============ -->
+<section class="section" id="history" aria-labelledby="h-history">
+  <header class="sec-head">
+    <p class="label-large overline">十年演进</p>
+    <h2 class="display-small" id="h-history">四个版本，各自回答一个问题</h2>
+    <p class="body-large lead">第一版让扁平界面重新有了层次；第二版让各家产品不再长得一模一样；第三版让界面属于用户本人；最新的 Expressive 则想让它更有情绪。下面每张卡片里的按钮，都按那一代的样子绘制。</p>
+  </header>
+  <ol class="timeline">
+    <li class="card card-outlined era">
+      <div class="era-top"><span class="chip chip-assist">2014</span><span class="title-medium">Material Design</span></div>
+      <p class="body-medium">随 Android 5.0 Lollipop 发布，由 Matías Duarte 领导的团队提出。纸与墨水的隐喻、以 dp 计量的投影、点击涟漪、悬浮操作按钮 FAB，以及饱和度很高的原色调色板。</p>
+      <div class="era-demo"><button class="era-btn m1" type="button" data-ripple>Button</button></div>
+    </li>
+    <li class="card card-outlined era">
+      <div class="era-top"><span class="chip chip-assist">2018</span><span class="title-medium">Material Theming</span></div>
+      <p class="body-medium">回应「所有 App 都像 Google」的批评：颜色、字体、形状都可以按品牌定制，并推出 Material Components 组件库与主题工具。Google 自家产品同时换上更白、更圆润的外观。</p>
+      <div class="era-demo"><button class="era-btn m2" type="button" data-ripple>Button</button></div>
+    </li>
+    <li class="card card-outlined era">
+      <div class="era-top"><span class="chip chip-assist">2021</span><span class="title-medium">Material You · M3</span></div>
+      <p class="body-medium">随 Android 12 发布。系统从壁纸中提取种子色，用 HCT 色彩空间生成整套配色；圆角变大，按钮变成胶囊形，阴影大多让位给表面颜色的深浅。关键词是个人化、自适应。</p>
+      <div class="era-demo"><button class="era-btn m3" type="button" data-ripple>Button</button></div>
+    </li>
+    <li class="card card-outlined era">
+      <div class="era-top"><span class="chip chip-assist">2025</span><span class="title-medium">M3 Expressive</span></div>
+      <p class="body-medium">在 Material 3 之上强化情感表达：基于弹簧物理的动效、一套可以相互变形的抽象形状、更大胆的强调字体，以及按钮组、分体按钮、FAB 菜单等新组件。按住右边的按钮试试。</p>
+      <div class="era-demo"><button class="era-btn m3x" type="button" data-ripple>Button</button></div>
+    </li>
+  </ol>
+</section>
+
+<!-- ============ 色彩 ============ -->
+<section class="section" id="color" aria-labelledby="h-color">
+  <header class="sec-head">
+    <p class="label-large overline">动态配色</p>
+    <h2 class="display-small" id="h-color">一个种子色，一整套方案</h2>
+    <p class="body-large lead">Material 3 不再让设计师一个个挑颜色。系统从壁纸或品牌色里取出一个种子色，生成五组色调板，再按固定的色调编号把颜色分配给几十个「颜色角色」。选一张壁纸，整页都会重新上色。</p>
+  </header>
+
+  <div class="card card-filled wall-card">
+    <h3 class="title-medium">选择壁纸</h3>
+    <div class="walls" id="walls" role="radiogroup" aria-label="壁纸"></div>
+    <label class="custom-seed"><input type="color" id="seedInput" value="#6750A4"><span class="body-medium">或者自定义种子色 <code id="seedHex">#6750A4</code></span></label>
+  </div>
+
+  <div class="grid-2 hct">
+    <article class="card card-outlined">
+      <h3 class="title-large">HCT：色相、彩度、色调</h3>
+      <p class="body-medium">HCT 是 Google 为 M3 设计的色彩空间。<b>色相</b>和<b>彩度</b>取自 CAM16 色貌模型，<b>色调</b>就是 CIELAB 的明度 L*，0 为纯黑，100 为纯白。</p>
+      <p class="body-medium">关键在于色调：两种颜色的色调相差 40 以上，对比度至少 3 : 1；相差 50 以上，至少 4.5 : 1。所以只要按色调编号取色，配色方案就自动满足无障碍要求，不管种子色是什么。</p>
+    </article>
+    <article class="card card-outlined contrast-card">
+      <h3 class="title-large">当前的对比度</h3>
+      <div class="contrast-demo" id="contrastDemo"></div>
+      <p class="body-small muted">本页用 CIELAB LCh 近似 HCT：色调与官方一致，色相和彩度略有出入。官方算法见开源的 material-color-utilities。</p>
+    </article>
+  </div>
+
+  <h3 class="headline-small sub-h">五组色调板</h3>
+  <p class="body-medium muted">每组 13 级色调。主色板保留种子色的彩度，次色板降低彩度，第三色板把色相转动 60°，两组中性色几乎没有彩度，用来铺背景和文字。</p>
+  <div class="palettes" id="palettes"></div>
+
+  <h3 class="headline-small sub-h">颜色角色</h3>
+  <p class="body-medium muted">组件从不直接引用色值，只引用角色，例如按钮用 primary 填充、文字用 on-primary。切换深色模式时，角色改取另一个色调编号，组件代码一行都不用改。</p>
+  <div class="roles" id="roles"></div>
+</section>
+
+<!-- ============ 字体与形状 ============ -->
+<section class="section" id="type" aria-labelledby="h-type">
+  <header class="sec-head">
+    <p class="label-large overline">字体与形状</p>
+    <h2 class="display-small" id="h-type">五种角色，各分大中小</h2>
+    <p class="body-large lead">M3 的字体系统一共 15 个样式：Display、Headline、Title、Body、Label 五种角色，各有大、中、小三档。默认字体是 Roboto，中文可以搭配同属 Noto 家族的思源黑体。</p>
+  </header>
+  <div class="card card-outlined type-scale" id="typeScale"></div>
+
+  <h3 class="headline-small sub-h">形状：从直角到全圆</h3>
+  <p class="body-medium muted">圆角也被做成了令牌。小元素用小圆角，大容器用大圆角：Chip 是 8dp，卡片 12dp，FAB 16dp，对话框 28dp，按钮则是全圆的胶囊。</p>
+  <div class="shapes" id="shapes"></div>
+
+  <div class="grid-2 morph-row">
+    <article class="card card-filled">
+      <h3 class="title-large">M3 Expressive：形状变形</h3>
+      <p class="body-medium">2025 年的更新加入了一套抽象形状，可以作为头像遮罩、图标底板或加载动画，并且能在彼此之间平滑变形。点击右侧的形状切换。</p>
+      <p class="label-large" id="morphName">圆形</p>
+    </article>
+    <button class="morph-stage" id="morphStage" type="button" aria-label="切换形状">
+      <svg viewBox="-1.25 -1.25 2.5 2.5" aria-hidden="true"><path id="morphPath"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ============ 高度 ============ -->
+<section class="section" id="elevation" aria-labelledby="h-elev">
+  <header class="sec-head">
+    <p class="label-large overline">高度</p>
+    <h2 class="display-small" id="h-elev">用阴影和色调表达前后</h2>
+    <p class="body-large lead">每个表面都在 z 轴上有一个高度。最初的 Material 用 dp 数值和投影来表达；M3 把高度精简为六级，并且更多地用表面颜色的深浅来区分层级，阴影只留给真正浮起来的元素。</p>
+  </header>
+  <div class="levels" id="levels"></div>
+
+  <div class="card card-outlined elev-lab">
+    <div class="elev-controls">
+      <h3 class="title-large">动手试试</h3>
+      <label class="body-medium" for="elevSlider">高度：<b id="elevVal">Level 2 · 3dp</b></label>
+      <input type="range" class="slider" id="elevSlider" min="0" max="5" step="1" value="2">
+      <p class="body-medium">表达方式</p>
+      <div class="segmented" id="elevMode" role="radiogroup" aria-label="表达方式">
+        <button type="button" role="radio" aria-checked="false" data-v="shadow"><span class="ms">check</span>阴影</button>
+        <button type="button" role="radio" aria-checked="false" data-v="tone"><span class="ms">check</span>色调</button>
+        <button type="button" role="radio" aria-checked="true" data-v="both"><span class="ms">check</span>两者</button>
+      </div>
+    </div>
+    <div class="elev-stage"><div class="elev-sample" id="elevSample"><span class="ms">layers</span><span class="title-medium">表面</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 动效 ============ -->
+<section class="section" id="motion" aria-labelledby="h-motion">
+  <header class="sec-head">
+    <p class="label-large overline">动效</p>
+    <h2 class="display-small" id="h-motion">有起点、有终点、有因果</h2>
+    <p class="body-large lead">Material 的动画总在解释些什么：卡片展开成详情页，说明详情从哪里来；按下时的涟漪，说明触碰已被接收。缓动曲线和时长同样是令牌。</p>
+  </header>
+
+  <article class="card card-outlined easing">
+    <div class="easing-head">
+      <h3 class="title-large">缓动曲线</h3>
+      <button class="btn btn-tonal" id="easePlay" type="button" data-ripple><span class="ms">play_arrow</span>播放</button>
+    </div>
+    <div class="ease-list" id="easeList"></div>
+    <p class="body-small muted">「强调」曲线用于大多数界面转场：快速启动、缓慢落定。进入屏幕用减速版，离开屏幕用加速版。</p>
+  </article>
+
+  <div class="grid-2">
+    <article class="card card-outlined">
+      <h3 class="title-large">容器变换</h3>
+      <p class="body-medium">点击一张卡片，它会直接长成详情页，而不是凭空切换。这是 Material 最有代表性的转场。</p>
+      <div class="ct-grid" id="ctGrid">
+        <button class="ct-card" type="button" data-ct="0"><span class="ms">photo_library</span><span class="title-small">海边相册</span></button>
+        <button class="ct-card" type="button" data-ct="1"><span class="ms">mail</span><span class="title-small">未读邮件</span></button>
+        <button class="ct-card" type="button" data-ct="2"><span class="ms">calendar_month</span><span class="title-small">周末日程</span></button>
+      </div>
+    </article>
+    <article class="card card-outlined">
+      <h3 class="title-large">状态层与涟漪</h3>
+      <p class="body-medium">交互状态不换颜色，而是在元素上叠一层半透明的「状态层」，颜色取元素的文字色，透明度固定：</p>
+      <ul class="states">
+        <li><span class="st" style="--o:.08"></span>悬停 8%</li>
+        <li><span class="st" style="--o:.10"></span>聚焦 10%</li>
+        <li><span class="st" style="--o:.10"></span>按下 10%，并从触点扩散涟漪</li>
+        <li><span class="st" style="--o:.16"></span>拖动 16%</li>
+      </ul>
+      <button class="btn btn-filled" type="button" data-ripple>悬停、按下或用 Tab 聚焦</button>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 组件 ============ -->
+<section class="section" id="components" aria-labelledby="h-comp">
+  <header class="sec-head">
+    <p class="label-large overline">组件</p>
+    <h2 class="display-small" id="h-comp">同一套令牌，上百个组件</h2>
+    <p class="body-large lead">下面的组件全部用本页的颜色、字体和形状令牌手写。换一个种子色或切换深色模式，它们会一起变化。</p>
+  </header>
+
+  <div class="gallery">
+    <article class="card card-outlined comp comp-wide">
+      <h3 class="title-medium">按钮</h3>
+      <div class="row">
+        <button class="btn btn-elevated" type="button" data-ripple>Elevated</button>
+        <button class="btn btn-filled" type="button" data-ripple>Filled</button>
+        <button class="btn btn-tonal" type="button" data-ripple>Tonal</button>
+        <button class="btn btn-outlined" type="button" data-ripple>Outlined</button>
+        <button class="btn btn-text" type="button" data-ripple>Text</button>
+      </div>
+      <div class="row">
+        <button class="btn btn-filled" type="button" data-ripple><span class="ms">edit</span>带图标</button>
+        <button class="btn btn-filled" type="button" disabled>已停用</button>
+      </div>
+      <p class="body-small muted">强调程度从左到右递减：一屏里通常只放一个 Filled 按钮。</p>
+    </article>
+
+    <article class="card card-outlined comp">
+      <h3 class="title-medium">悬浮操作按钮 FAB</h3>
+      <div class="row fab-row">
+        <button class="fab fab-small" type="button" data-ripple aria-label="新建"><span class="ms">add</span></button>
+        <button class="fab" type="button" data-ripple aria-label="编辑"><span class="ms">edit</span></button>
+        <button class="fab fab-large" type="button" data-ripple aria-label="新建"><span class="ms">add</span></button>
+      </div>
+      <button class="fab fab-extended" type="button" data-ripple data-snack="已创建新草稿"><span class="ms">edit</span>写邮件</button>
+    </article>
+
+    <article class="card card-outlined comp">
+      <h3 class="title-medium">图标按钮</h3>
+      <div class="row">
+        <button class="icon-btn" type="button" data-ripple aria-label="搜索"><span class="ms">search</span></button>
+        <button class="icon-btn ib-filled" type="button" data-ripple aria-label="设置"><span class="ms">settings</span></button>
+        <button class="icon-btn ib-tonal" type="button" data-ripple aria-label="分享"><span class="ms">share</span></button>
+        <button class="icon-btn ib-outlined" type="button" data-ripple aria-label="复制"><span class="ms">content_copy</span></button>
+        <button class="icon-btn ib-toggle" type="button" data-ripple aria-pressed="false" aria-label="收藏"><span class="ms">favorite</span></button>
+      </div>
+      <p class="body-small muted">最右边是可切换的图标按钮：选中后图标变为实心。</p>
+    </article>
+
+    <article class="card card-outlined comp">
+      <h3 class="title-medium">Chip</h3>
+      <div class="row">
+        <button class="chip chip-assist" type="button" data-ripple><span class="ms">calendar_month</span>加入日历</button>
+        <button class="chip chip-filter" type="button" data-ripple aria-pressed="true"><span class="ms">check</span>未读</button>
+        <button class="chip chip-filter" type="button" data-ripple aria-pressed="false"><span class="ms">check</span>带附件</button>
+        <span class="chip chip-input">设计评审<button type="button" aria-label="移除"><span class="ms">close</span></button></span>
+      </div>
+      <p class="body-small muted">辅助、筛选、输入、建议四种 Chip，圆角都是 8dp。</p>
+    </article>
+
+    <article class="card card-outlined comp">
+      <h3 class="title-medium">选择控件</h3>
+      <div class="sel-list">
+        <label class="sel"><input type="checkbox" checked><span class="ctl cb"></span>同步邮件</label>
+        <label class="sel"><input type="checkbox"><span class="ctl cb"></span>同步日历</label>
+        <label class="sel"><input type="radio" name="r1" checked><span class="ctl rb"></span>每天</label>
+        <label class="sel"><input type="radio" name="r1"><span class="ctl rb"></span>每周</label>
+        <label class="sel sel-switch">夜间免打扰<input type="checkbox" role="switch" checked><span class="ctl switch"></span></label>
+      </div>
+    </article>
+
+    <article class="card card-outlined comp">
+      <h3 class="title-medium">文本框</h3>
+      <div class="field filled"><input id="tf1" placeholder=" " value="林一"><label for="tf1">姓名</label></div>
+      <div class="field outlined"><input id="tf2" placeholder=" "><label for="tf2">电子邮箱</label></div>
+      <p class="body-small muted">有填充与描边两种。点击后标签浮到上方，底线或边框换成主色。</p>
+    </article>
+
+    <article class="card card-outlined comp">
+      <h3 class="title-medium">滑块与进度</h3>
+      <label class="body-medium" for="vol">音量 <b id="volVal">60</b></label>
+      <input type="range" class="slider" id="vol" min="0" max="100" value="60">
+      <div class="progress" role="progressbar" aria-label="下载进度" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><i style="width:62%"></i></div>
+      <div class="progress indeterminate" role="progressbar" aria-label="正在加载"><i></i></div>
+      <div class="row"><span class="spinner" role="progressbar" aria-label="正在加载"></span><span class="body-small muted">线性与环形进度指示器</span></div>
+    </article>
+
+    <article class="card card-outlined comp">
+      <h3 class="title-medium">分段按钮与标签页</h3>
+      <div class="segmented" role="radiogroup" aria-label="视图">
+        <button type="button" role="radio" aria-checked="true"><span class="ms">check</span>日</button>
+        <button type="button" role="radio" aria-checked="false"><span class="ms">check</span>周</button>
+        <button type="button" role="radio" aria-checked="false"><span class="ms">check</span>月</button>
+      </div>
+      <div class="tabs" role="tablist" aria-label="收件箱分类">
+        <button type="button" role="tab" aria-selected="true">主要</button>
+        <button type="button" role="tab" aria-selected="false">社交</button>
+        <button type="button" role="tab" aria-selected="false">推广</button>
+        <span class="tab-ind"></span>
+      </div>
+    </article>
+
+    <article class="card card-outlined comp">
+      <h3 class="title-medium">列表</h3>
+      <ul class="list">
+        <li><span class="avatar" style="background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container)">林</span><span class="li-text"><span class="body-large">设计评审</span><span class="body-medium muted">下午 3 点 · 新版组件库走查</span></span><span class="label-small muted">14:02</span></li>
+        <li><span class="avatar" style="background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)">周</span><span class="li-text"><span class="body-large">周报已提交</span><span class="body-medium muted">本周完成 12 项任务</span></span><span class="label-small muted">昨天</span></li>
+        <li><span class="avatar" style="background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container)"><span class="ms">star</span></span><span class="li-text"><span class="body-large">已加星标</span><span class="body-medium muted">3 封邮件</span></span><span class="badge">3</span></li>
+      </ul>
+    </article>
+
+    <article class="card card-outlined comp comp-wide">
+      <h3 class="title-medium">对话框与提示条</h3>
+      <p class="body-medium">对话框是圆角 28dp 的 Level 3 表面，提示条（Snackbar）从屏幕底部升起，几秒后自动消失。</p>
+      <div class="row">
+        <button class="btn btn-tonal" type="button" data-ripple id="openDialog">打开对话框</button>
+        <button class="btn btn-outlined" type="button" data-ripple data-snack="邮件已归档" data-snack-action="撤销">显示 Snackbar</button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 实践 ============ -->
+<section class="section" id="practice" aria-labelledby="h-practice">
+  <header class="sec-head">
+    <p class="label-large overline">何时使用</p>
+    <h2 class="display-small" id="h-practice">好用，但要让它像你自己</h2>
+    <p class="body-large lead">Material 是一套为「做产品」而生的系统：规则完整、组件齐全、各平台都有官方实现。它最大的风险也正来自这里：原样套用，你的产品就会长得像 Google。</p>
+  </header>
+  <div class="grid-2">
+    <article class="card card-filled fit good">
+      <h3 class="title-large"><span class="ms">check</span>适合</h3>
+      <ul class="body-medium">
+        <li><b>Android 与跨平台应用</b>：用户已经熟悉这些组件和手势，学习成本最低。</li>
+        <li><b>后台、表单密集的工具</b>：输入框、表格、对话框都有成熟的规范和状态定义。</li>
+        <li><b>需要快速落地的产品</b>：从原型到上线都有现成的组件库可用。</li>
+        <li><b>多人协作的设计系统</b>：令牌化的颜色、字体和形状，天然适合设计与开发对齐。</li>
+      </ul>
+    </article>
+    <article class="card card-filled fit bad">
+      <h3 class="title-large"><span class="ms">close</span>慎用</h3>
+      <ul class="body-medium">
+        <li><b>强调品牌个性的营销页</b>：标准组件的辨识度属于 Google，不属于你。</li>
+        <li><b>奢侈品、艺术与文化类网站</b>：工程化的秩序感会压过情绪和氛围。</li>
+        <li><b>iOS 原生应用</b>：与平台习惯冲突，例如返回方式和导航结构。</li>
+        <li><b>内容极简的单页</b>：一套完整的系统在这里显得太重。</li>
+      </ul>
+    </article>
+  </div>
+  <div class="grid-2">
+    <article class="card card-outlined">
+      <h3 class="title-large">让它不像 Google</h3>
+      <ol class="tips body-medium">
+        <li>把品牌色作为种子色，交给动态配色生成整套方案，而不是只换主按钮的颜色。</li>
+        <li>调整形状令牌：全部直角会显得硬朗，全部超大圆角会显得柔软可爱。</li>
+        <li>换掉 Roboto。标题用有个性的字体，正文保持易读。</li>
+        <li>重画插图和空状态，这是最能体现品牌气质的地方。</li>
+      </ol>
+    </article>
+    <article class="card card-outlined">
+      <h3 class="title-large">官方与主流实现</h3>
+      <ul class="list res">
+        <li><span class="li-text"><span class="body-large">Jetpack Compose</span><span class="body-medium muted">Android 官方 UI 工具包，M3 组件一等支持</span></span></li>
+        <li><span class="li-text"><span class="body-large">Flutter</span><span class="body-medium muted">3.16 起默认启用 Material 3</span></span></li>
+        <li><span class="li-text"><span class="body-large">Material Web</span><span class="body-medium muted">Google 官方的 Web Components 实现</span></span></li>
+        <li><span class="li-text"><span class="body-large">Angular Material</span><span class="body-medium muted">Angular 官方组件库，已支持 M3 主题</span></span></li>
+        <li><span class="li-text"><span class="body-large">MUI</span><span class="body-medium muted">React 生态最流行的 Material 风格组件库，以 M2 为基础</span></span></li>
+        <li><span class="li-text"><span class="body-large">Material Theme Builder</span><span class="body-medium muted">输入种子色，导出全套颜色令牌</span></span></li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<footer class="page-foot" id="pageFoot">
+  <div class="foot-nav" id="footNav">
+    <a class="btn btn-outlined" href="../../#s-material" data-catalog data-ripple><span class="ms">arrow_back</span>返回图鉴</a>
+  </div>
+  <p class="body-small muted">本页用 HTML、CSS 和少量 JavaScript 手写，没有使用组件库；图标来自 Material Symbols。</p>
+</footer>
+</main>
+
+<!-- ============ Overlays ============ -->
+<div class="ct-detail" id="ctDetail" role="dialog" aria-modal="true" aria-labelledby="ctTitle" hidden>
+  <div class="ct-inner">
+    <div class="ct-bar"><button class="icon-btn" type="button" id="ctClose" aria-label="关闭"><span class="ms">close</span></button><h3 class="title-large" id="ctTitle"></h3></div>
+    <div class="ct-hero"><span class="ms" id="ctIcon"></span></div>
+    <p class="body-large" id="ctBody"></p>
+  </div>
+</div>
+
+<dialog class="dialog" id="dialog" aria-labelledby="dlgTitle">
+  <span class="ms dlg-icon">mail</span>
+  <h3 class="headline-small" id="dlgTitle">删除这封草稿？</h3>
+  <p class="body-medium">草稿会从所有设备上移除，此操作无法撤销。对话框只在需要用户立刻做决定时使用。</p>
+  <form method="dialog" class="dlg-actions">
+    <button class="btn btn-text" value="cancel" data-ripple>取消</button>
+    <button class="btn btn-text" value="ok" data-ripple data-snack="草稿已删除">删除</button>
+  </form>
+</dialog>
+
+<div class="snackbar" id="snackbar" role="status" aria-live="polite"><span id="snackText"></span><button class="snack-action" type="button" id="snackAction" hidden></button></div>
+</body>
+</html>

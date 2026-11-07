@@ -1,0 +1,21 @@
+.sp-memphis{background:#FFD3E2;color:#111;font-family:"Rubik Mono One","Noto Sans SC",sans-serif}
+.sp-memphis .mp-s{position:absolute;transition:transform .6s cubic-bezier(.3,1.6,.5,1)}
+.mp-dots{left:-10%;top:12%;width:70%;height:26%;background-color:#FFF;background-image:radial-gradient(#111 2px,transparent 2.6px);background-size:14px 14px;border:3px solid #111;transform:rotate(-8deg)}
+.mp-squig{right:4%;top:8%;width:40%;height:auto}
+.mp-squig path{stroke:#3FC1C9;stroke-width:8;stroke-linecap:round}
+.mp-zig{left:8%;bottom:10%;width:34%;height:auto}
+.mp-zig polyline{stroke:#111;stroke-width:5}
+.mp-tri{right:10%;bottom:12%;width:18cqi;aspect-ratio:1;background:#364F6B;clip-path:polygon(0 100%,50% 0,100% 100%)}
+.mp-circ{right:32%;bottom:6%;width:14cqi;aspect-ratio:1;border-radius:50%;background:repeating-linear-gradient(45deg,#FCE38A 0 6px,#111 6px 9px);border:3px solid #111}
+.mp-half{left:6%;top:4%;width:16cqi;height:8cqi;border-radius:16cqi 16cqi 0 0;background:#FCE38A;border:3px solid #111;border-bottom:0}
+.mp-stick{left:60%;top:28%;width:5cqi;height:22cqi;background:#3FC1C9;border:3px solid #111;transform:rotate(30deg)}
+.mp-text{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:2}
+.sp-memphis h3{font-size:12cqi;font-weight:400;line-height:1.1;color:#111;text-shadow:5px 5px 0 #3FC1C9}
+.mp-tag{display:inline-block;margin-top:10px;background:#111;color:#FCE38A;font-size:12px;padding:5px 10px;transform:rotate(-3deg)}
+.sp-memphis:hover .mp-dots{transform:rotate(-2deg) translate(-12px,-10px)}
+.sp-memphis:hover .mp-squig{transform:translate(14px,-10px) rotate(8deg)}
+.sp-memphis:hover .mp-zig{transform:translate(-14px,10px) rotate(-6deg)}
+.sp-memphis:hover .mp-tri{transform:translate(12px,8px) rotate(25deg)}
+.sp-memphis:hover .mp-circ{transform:translateY(14px) rotate(90deg)}
+.sp-memphis:hover .mp-half{transform:translate(-10px,-8px) rotate(-20deg)}
+.sp-memphis:hover .mp-stick{transform:rotate(80deg) translateX(10px)}

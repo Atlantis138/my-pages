@@ -1,0 +1,18 @@
+.sp-clay{background:#FFE8F0;color:#3D2C5C;font-family:Fredoka,"Noto Sans SC",sans-serif;display:grid;place-items:center}
+.cl-ball{position:absolute;border-radius:50%;box-shadow:inset -8px -8px 16px rgba(0,0,0,.14),inset 8px 8px 16px rgba(255,255,255,.7),10px 14px 24px rgba(61,44,92,.18);animation:bob 5s ease-in-out infinite alternate}
+.cl-b1{width:16cqi;aspect-ratio:1;background:#9AD8FF;left:7%;top:10%}
+.cl-b2{width:10cqi;aspect-ratio:1;background:#FFB86B;right:9%;top:16%;animation-delay:-2s}
+.cl-b3{width:13cqi;aspect-ratio:1;background:#B79CFF;right:12%;bottom:9%;animation-delay:-3.5s}
+.cl-card{position:relative;width:62%;max-width:280px;padding:24px 20px 22px;border-radius:34px;background:#FFF6F9;box-shadow:16px 20px 36px rgba(61,44,92,.18),inset -10px -10px 20px rgba(214,170,190,.35),inset 10px 10px 20px rgba(255,255,255,.9);display:grid;justify-items:center;gap:8px;text-align:center}
+.cl-buddy{position:relative;width:76px;height:68px;border-radius:50% 50% 46% 46%;background:#FFB86B;box-shadow:inset -8px -8px 14px rgba(0,0,0,.14),inset 8px 8px 14px rgba(255,255,255,.6),6px 10px 18px rgba(61,44,92,.2)}
+.cl-buddy i{position:absolute;top:26px;width:9px;height:12px;border-radius:50%;background:#3D2C5C}
+.cl-buddy i:first-child{left:22px}.cl-buddy i:nth-child(2){right:22px}
+.cl-buddy b{position:absolute;left:50%;top:42px;width:18px;height:9px;margin-left:-9px;border-radius:0 0 12px 12px;background:#3D2C5C}
+.sp-clay h3{font-size:clamp(24px,7cqi,34px);font-weight:700;line-height:1.1}
+.cl-card p{font-size:14px;font-weight:500;color:#6B5B88}
+.cl-row{display:flex;gap:12px;margin-top:6px}
+.cl-btn{border:0;border-radius:20px;padding:12px 26px;font-family:Fredoka,"Noto Sans SC",sans-serif;font-weight:700;font-size:16px;color:#1E3A5C;background:#9AD8FF;box-shadow:inset -5px -5px 10px rgba(0,0,0,.14),inset 5px 5px 10px rgba(255,255,255,.7),5px 8px 14px rgba(61,44,92,.2);transition:transform .15s,box-shadow .15s}
+.cl-btn:active{transform:scale(.92,.86);box-shadow:inset -3px -3px 6px rgba(0,0,0,.14),inset 3px 3px 6px rgba(255,255,255,.7),2px 3px 6px rgba(61,44,92,.2)}
+.cl-alt{background:#B79CFF;color:#2E1B5C;padding:12px 18px}
+
+@keyframes bob{to{transform:translateY(-14px)}}

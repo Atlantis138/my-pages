@@ -1,0 +1,276 @@
+/* 新拟态完整页：全局光源、时间轴、光影实验室、组件与可用性演示。 */
+import { siblings } from "../_shared/siblings.js";
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const root = document.documentElement;
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (_) {} },
+};
+
+/* ---------- color helpers ---------- */
+const hexToRgb = (hex) => { const n = parseInt(hex.replace("#", ""), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+const rgbToHex = (rgb) => "#" + rgb.map((v) => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, "0")).join("").toUpperCase();
+const shade = (hex, k) => rgbToHex(hexToRgb(hex).map((v) => v * (1 + k)));
+const lum = (hex) => { const [r, g, b] = hexToRgb(hex).map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+const mix = (a, b, t) => { const A = hexToRgb(a), B = hexToRgb(b); return rgbToHex(A.map((v, i) => v + (B[i] - v) * t)); };
+const token = (name) => {
+  /* 把 CSS 变量解析成 #RRGGBB（借助一个临时元素） */
+  const probe = document.createElement("i");
+  probe.style.color = `var(${name})`; probe.style.display = "none";
+  document.body.appendChild(probe);
+  const m = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g).map(Number);
+  probe.remove();
+  return rgbToHex(m.slice(0, 3));
+};
+
+/* =====================================================================
+   Global light source
+   ===================================================================== */
+let lightDeg = 315; // 罗盘角：0° = 正上方，顺时针；315° = 左上方
+const dial = $("#dial"), ring = $(".dial-ring"), sun = $("#sun"), mark = $(".dial-mark");
+const DIRS = ["上方", "右上方", "右方", "右下方", "下方", "左下方", "左方", "左上方"];
+
+function setLight(deg, save = true) {
+  lightDeg = ((Math.round(deg) % 360) + 360) % 360;
+  const r = (lightDeg * Math.PI) / 180;
+  const lx = Math.sin(r), ly = -Math.cos(r); // 指向光源的单位向量（屏幕坐标，y 向下）
+  root.style.setProperty("--sx", (-lx).toFixed(4));
+  root.style.setProperty("--sy", (-ly).toFixed(4));
+  root.style.setProperty("--ang", `${(lightDeg + 180) % 360}deg`);
+  /* sun orbits in the ring; the mark sits on the dial edge */
+  const rr = ring.clientWidth / 2, dr = dial.clientWidth / 2;
+  const so = rr - (rr - dr) / 2;
+  sun.style.left = `${rr + lx * so}px`; sun.style.top = `${rr + ly * so}px`;
+  mark.style.left = `${dr + lx * (dr - 20)}px`; mark.style.top = `${dr + ly * (dr - 20)}px`;
+  $("#dialDeg").textContent = `${lightDeg}°`;
+  dial.setAttribute("aria-valuenow", lightDeg);
+  dial.setAttribute("aria-valuetext", `光从${DIRS[Math.round(lightDeg / 45) % 8]}照来`);
+  placeAnatomyTags(lx, ly);
+  if (save) store.set("nm-light", lightDeg);
+  if (typeof renderLab === "function") renderLab();
+}
+
+function angleFromPointer(e) {
+  const b = dial.getBoundingClientRect();
+  const dx = e.clientX - (b.left + b.width / 2), dy = e.clientY - (b.top + b.height / 2);
+  return (Math.atan2(dx, -dy) * 180) / Math.PI;
+}
+dial.addEventListener("pointerdown", (e) => {
+  dial.setPointerCapture(e.pointerId);
+  setLight(angleFromPointer(e));
+  const move = (ev) => setLight(angleFromPointer(ev));
+  const up = () => { dial.removeEventListener("pointermove", move); dial.removeEventListener("pointerup", up); };
+  dial.addEventListener("pointermove", move);
+  dial.addEventListener("pointerup", up);
+});
+dial.addEventListener("dblclick", () => setLight(315));
+dial.addEventListener("keydown", (e) => {
+  const step = e.shiftKey ? 45 : 15;
+  if (e.key === "ArrowRight" || e.key === "ArrowUp") { e.preventDefault(); setLight(lightDeg + step); }
+  if (e.key === "ArrowLeft" || e.key === "ArrowDown") { e.preventDefault(); setLight(lightDeg - step); }
+  if (e.key === "Home") { e.preventDefault(); setLight(315); }
+});
+addEventListener("resize", () => setLight(lightDeg, false));
+
+function placeAnatomyTags(lx, ly) {
+  const stage = $(".anat-stage"); if (!stage) return;
+  const w = stage.clientWidth, h = stage.clientHeight;
+  const rx = Math.min(w / 2 - 80, 230), ry = Math.min(h / 2 - 22, 170);
+  const put = (el, k) => { el.style.left = `${w / 2 + lx * rx * k}px`; el.style.top = `${h / 2 + ly * ry * k}px`; };
+  put($(".tag-hi"), 1); put($(".tag-lo"), -1); put($(".tag-bg"), 0);
+}
+
+/* =====================================================================
+   Theme & enhanced mode
+   ===================================================================== */
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+let theme = store.get("nm-theme");
+const isDark = () => (theme ? theme === "dark" : darkQuery.matches);
+function applyTheme() {
+  const dark = isDark();
+  root.dataset.theme = dark ? "dark" : "light";
+  const t = $("#themeBtn");
+  t.setAttribute("aria-checked", String(dark));
+  $("use", t).setAttribute("href", dark ? "#i-moon" : "#i-sun");
+  requestAnimationFrame(renderMeters);
+}
+$("#themeBtn").addEventListener("click", () => { theme = isDark() ? "light" : "dark"; store.set("nm-theme", theme); applyTheme(); });
+darkQuery.addEventListener("change", () => { if (!theme) applyTheme(); });
+
+const enhanceBtn = $("#enhanceBtn");
+function setEnhanced(on) {
+  root.classList.toggle("enhanced", on);
+  enhanceBtn.setAttribute("aria-checked", String(on));
+  renderMeters();
+}
+enhanceBtn.addEventListener("click", () => {
+  const on = enhanceBtn.getAttribute("aria-checked") !== "true";
+  setEnhanced(on); store.set("nm-enhanced", on ? "1" : "0");
+});
+
+/* =====================================================================
+   Nav scroll spy
+   ===================================================================== */
+const links = $$(".nav-links a");
+const spy = new IntersectionObserver((entries) => {
+  for (const en of entries) if (en.isIntersecting) links.forEach((a) => a.setAttribute("aria-current", String(a.getAttribute("href") === `#${en.target.id}`)));
+}, { rootMargin: "-45% 0px -50% 0px" });
+$$("main > .sec").forEach((s) => spy.observe(s));
+
+/* =====================================================================
+   Timeline
+   ===================================================================== */
+const ERAS = [
+  ["2007 – 2013", "拟物化的黄金年代", "初代 iPhone 让触屏走进大众。为了告诉用户「这里可以按」，界面大量模仿真实物体：皮革日历、木纹书架、带高光的果冻按钮。新拟态后来借用的，正是这种「看起来能按」的直觉。", `<span class="mini-skeuo">按钮</span>`],
+  ["2013", "扁平化取而代之", "iOS 7 与此前微软的 Metro 设计语言把纹理、渐变和投影几乎全部拿掉，界面只剩纯色、排版和图标。界面变得清爽，却也常常分不清哪里能点。", `<span class="mini-flat">按钮</span>`],
+  ["2019 年末", "一组银行 App 概念图", "设计师 Alexander Plyuto 在 Dribbble 发布了名为 Skeuomorph Mobile Banking 的概念作品：整个界面只有一种浅灰蓝，卡片和按钮全靠柔和的双向阴影浮起。作品迅速刷屏，随后的设计文章把这种做法称为 Neumorphism。", `<span class="mini-neu nm-raised" style="--d:8px"><svg class="ic"><use href="#i-play"/></svg></span>`],
+  ["2020", "风靡设计社区", "Dribbble 和 Behance 上出现了大量新拟态的计算器、播放器和智能家居面板，在线阴影生成器、UI 套件和教程层出不穷。它很适合做静态概念图：干净、柔和、有触感。", `<span class="mini-grid">${'<i class="nm-raised" style="--d:4px"></i>'.repeat(6)}</span>`],
+  ["2021 起", "热度消退", "真正落地的产品很少。低对比度、难以表达状态、无法与彩色内容共存，让它在实际项目里处处受限。设计圈的注意力转向了玻璃拟态和黏土拟态。", `<span class="mini-fade"></span>`],
+  ["今天", "作为局部点缀", "新拟态很少再被整站使用，而是化作局部的质感：一个控制旋钮、一组音量按键、一张会员卡片，嵌在以扁平或 Material 为主的界面里。", `<span class="mini-mix"><i></i>主界面扁平，<br>旋钮新拟态</span>`],
+];
+function showEra(i) {
+  $$(".t-node").forEach((n) => n.setAttribute("aria-selected", String(+n.dataset.i === i)));
+  const [yr, title, body, demo] = ERAS[i];
+  $("#tPanel").innerHTML = `<div><p class="yr">${yr}</p><h3>${title}</h3><p>${body}</p></div><div class="t-demo nm-inset" style="--d:6px">${demo}</div>`;
+}
+$("#timeline").addEventListener("click", (e) => { const n = e.target.closest(".t-node"); if (n) showEra(+n.dataset.i); });
+$("#timeline").addEventListener("keydown", (e) => {
+  if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+  const cur = +$('.t-node[aria-selected="true"]').dataset.i;
+  const next = (cur + (e.key === "ArrowRight" ? 1 : ERAS.length - 1)) % ERAS.length;
+  showEra(next); $(`.t-node[data-i="${next}"]`).focus();
+});
+
+/* =====================================================================
+   Light lab
+   ===================================================================== */
+const PRESETS = ["#E4E9F0", "#E0E0E0", "#EDE4DA", "#DCE8E2", "#E9DFEA", "#2A2F37", "#3A4A6B"];
+const lab = { color: "#E4E9F0", shape: "flat" };
+const L = (id) => $(id);
+$("#labSwatches").innerHTML = PRESETS.map((c) => `<button class="swatch" type="button" role="radio" aria-checked="false" aria-label="底色 ${c}" data-c="${c}" style="background:${c}"></button>`).join("");
+$("#labSwatches").addEventListener("click", (e) => { const s = e.target.closest(".swatch"); if (s) { lab.color = s.dataset.c; L("#labColor").value = s.dataset.c.toLowerCase(); renderLab(); } });
+L("#labColor").addEventListener("input", (e) => { lab.color = e.target.value.toUpperCase(); renderLab(); });
+$("#labShape").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { lab.shape = b.dataset.v; renderLab(); } });
+$$(".lab-controls input[type=range]").forEach((r) => r.addEventListener("input", renderLab));
+
+function renderLab() {
+  const size = +L("#labSize").value, radius = +L("#labRadius").value, dist = +L("#labDist").value, blur = +L("#labBlur").value, k = +L("#labInt").value / 100;
+  const r = (lightDeg * Math.PI) / 180, sx = -Math.sin(r), sy = Math.cos(r);
+  const x = Math.round(sx * dist), y = Math.round(sy * dist);
+  const base = lab.color.toUpperCase(), dark = shade(base, -k), light = shade(base, k);
+  const ang = (lightDeg + 180) % 360;
+  const inset = lab.shape === "pressed" ? "inset " : "";
+  const shadow = `${inset}${x}px ${y}px ${blur}px ${dark},\n              ${inset}${-x}px ${-y}px ${blur}px ${light}`;
+  let bg = base;
+  if (lab.shape === "concave") bg = `linear-gradient(${ang}deg, ${shade(base, -k / 2.2)}, ${shade(base, k / 2.2)})`;
+  if (lab.shape === "convex") bg = `linear-gradient(${ang}deg, ${shade(base, k / 2.2)}, ${shade(base, -k / 2.2)})`;
+  const br = radius >= 50 ? "50%" : `${Math.round((size * radius) / 100)}px`;
+
+  $("#labStage").style.backgroundColor = base;
+  Object.assign($("#labEl").style, { width: `${size}px`, height: `${size}px`, borderRadius: br, background: bg, boxShadow: shadow.replace(/\n\s+/g, " ") });
+  $("#labCode").innerHTML =
+    `<span class="c-k">.soft</span> {\n  border-radius: <span class="c-v">${br}</span>;\n  background: <span class="c-v">${bg}</span>;\n  box-shadow: <span class="c-v">${shadow}</span>;\n}`;
+  $("#vSize").textContent = `${size}px`; $("#vRadius").textContent = radius >= 50 ? "圆形" : `${radius}%`;
+  $("#vDist").textContent = `${dist}px`; $("#vBlur").textContent = `${blur}px`; $("#vInt").textContent = `${Math.round(k * 100)}%`;
+  $$(".lab-controls input[type=range]").forEach((el) => el.style.setProperty("--p", `${((el.value - el.min) / (el.max - el.min)) * 100}%`));
+  $$("#labShape button").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.v === lab.shape)));
+  $$(".swatch").forEach((s) => s.setAttribute("aria-checked", String(s.dataset.c === base)));
+  const c = contrast(dark, base);
+  $("#labMeter").innerHTML = `暗影与底色的对比度只有 <b>${c.toFixed(2)} : 1</b>，亮影 <b>${contrast(light, base).toFixed(2)} : 1</b>。新拟态的边界正是由这两个数字决定的。`;
+}
+$("#labCopy").addEventListener("click", () => {
+  const text = $("#labCode").textContent, label = $("#labCopy span");
+  const done = (msg) => { label.textContent = msg; setTimeout(() => (label.textContent = "复制"), 1400); };
+  try { navigator.clipboard.writeText(text).then(() => done("已复制"), () => done("请手动复制")); } catch (_) { done("请手动复制"); }
+});
+
+/* =====================================================================
+   Kit
+   ===================================================================== */
+let temp = 22;
+function setTemp(t) {
+  temp = Math.max(16, Math.min(30, t));
+  $("#thermoVal").textContent = temp;
+  $("#thermoRing").style.setProperty("--p", `${((temp - 16) / 14) * 75}%`);
+}
+$("#tUp").addEventListener("click", () => setTemp(temp + 1));
+$("#tDown").addEventListener("click", () => setTemp(temp - 1));
+
+document.addEventListener("click", (e) => {
+  const t = e.target;
+  const tile = t.closest(".tile");
+  if (tile) { const on = tile.getAttribute("aria-pressed") !== "true"; tile.setAttribute("aria-pressed", String(on)); $("small", tile).textContent = on ? "开" : "关"; return; }
+  const sw = t.closest(".switch");
+  if (sw) { sw.setAttribute("aria-checked", String(sw.getAttribute("aria-checked") !== "true")); return; }
+  const seg = t.closest(".seg button");
+  if (seg && !seg.closest("#labShape")) { seg.parentElement.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", String(b === seg))); }
+});
+
+const playBtn = $("#playBtn");
+let progTimer, prog = 38;
+playBtn.addEventListener("click", () => {
+  const on = playBtn.getAttribute("aria-pressed") !== "true";
+  playBtn.setAttribute("aria-pressed", String(on));
+  playBtn.setAttribute("aria-label", on ? "暂停" : "播放");
+  $("use", playBtn).setAttribute("href", on ? "#i-pause" : "#i-play");
+  $(".player").classList.toggle("playing", on);
+  clearInterval(progTimer);
+  if (on) progTimer = setInterval(() => { prog = prog >= 100 ? 0 : prog + 0.5; $("#progFill").style.width = `${prog}%`; }, 250);
+});
+const bright = $("#bright");
+const setBright = () => { $("#vBright").textContent = `${bright.value}%`; bright.style.setProperty("--p", `${bright.value}%`); };
+bright.addEventListener("input", setBright);
+
+/* =====================================================================
+   A11y: quiz & live contrast meters
+   ===================================================================== */
+$("#quiz").addEventListener("click", (e) => {
+  const b = e.target.closest(".quiz-btn"); if (!b) return;
+  $$(".quiz-btn").forEach((q) => q.classList.remove("right", "wrong"));
+  const ok = b.dataset.ok === "1";
+  b.classList.add(ok ? "right" : "wrong");
+  $("#quizMsg").textContent = ok
+    ? (root.classList.contains("enhanced") ? "答对了。增强模式下，强调色和描边让答案一目了然。" : "答对了，是 B。不过你是不是犹豫了一下？")
+    : "不对，开启的是 B。只差几像素的阴影，确实很难分辨。";
+});
+
+function renderMeters() {
+  const bg = token("--bg"), lo = token("--lo"), hi = token("--hi"), text = token("--text"), muted = token("--muted"), accent = token("--accent");
+  const rows = [
+    ["暗影 / 底色（组件边界）", contrast(lo, bg), 3],
+    ["亮影 / 底色（组件边界）", contrast(hi, bg), 3],
+    ["正文 / 底色", contrast(text, bg), 4.5],
+    ["次要文字 / 底色", contrast(muted, bg), 4.5],
+    ["强调色 / 底色", contrast(accent, bg), 3],
+  ];
+  if (root.classList.contains("enhanced")) rows.splice(2, 0, ["增强描边 / 底色", contrast(mix(bg, text, 0.45), bg), 3]);
+  $("#meterList").innerHTML = rows.map(([name, c, need]) => {
+    const pass = c >= need;
+    const w = Math.min(100, (c / 7) * 100);
+    return `<li><span>${name}</span><span class="ratio">${c.toFixed(2)} : 1</span><span class="badge ${pass ? "ok" : "no"}">${pass ? "达标" : `需 ${need}`}</span><span class="bar"><i style="width:${w}%;background:var(${pass ? "--ok" : "--bad"})"></i></span></li>`;
+  }).join("");
+}
+
+/* =====================================================================
+   Boot
+   ===================================================================== */
+applyTheme();
+setEnhanced(store.get("nm-enhanced") === "1" || (store.get("nm-enhanced") === null && matchMedia("(prefers-contrast: more)").matches));
+showEra(2);
+setTemp(22);
+setBright();
+setLight(+(store.get("nm-light") ?? 315), false);
+renderLab();
+
+siblings("neumorph").then((nav) => {
+  $$("[data-no]").forEach((el) => (el.textContent = `No.${String(nav.no).padStart(2, "0")}`));
+  const pill = (s, dir) => s
+    ? `<a class="pill nm-raised ${dir}" href="${s.href}" style="--d:6px">${dir === "prev" ? `<svg class="ic"><use href="#i-back"/></svg><small>上一个</small>${s.cn}` : `<small>下一个</small>${s.cn}<svg class="ic"><use href="#i-next"/></svg>`}</a>`
+    : "";
+  const nav0 = $("#footNav");
+  nav0.insertAdjacentHTML("afterbegin", pill(nav.prev, "prev"));
+  nav0.insertAdjacentHTML("beforeend", pill(nav.next, "next"));
+}).catch(() => {});

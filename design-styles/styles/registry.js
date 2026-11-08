@@ -21,14 +21,14 @@ export const STYLES = [
   { id: "flat" },
   { id: "material", page: true },
   { id: "neumorph", page: true },
-  { id: "glass" },
+  { id: "glass", page: true },
   { id: "aurora" },
-  { id: "clay" },
+  { id: "clay", page: true },
   { id: "bento" },
   /* 反叛与表达 */
   { id: "memphis" },
   { id: "grunge" },
-  { id: "brutal" },
+  { id: "brutal", page: true },
   { id: "acid" },
   { id: "neobrutal" },
   /* 怀旧与未来 */

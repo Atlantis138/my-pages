@@ -45,7 +45,7 @@ design-styles/
 2. 在 `registry.js` 里把该行改成 `{ id: "<id>", page: true }`。图鉴卡片会出现「进入完整页面」，索引格右上角出现 ↗。
 3. 页面怎么做，见 [`PAGE_GUIDE.md`](PAGE_GUIDE.md)：一页自成一体，只留一个返回图鉴的入口（`../../#s-<id>`），并提供一键复原。
 
-已有完整页：`bauhaus/`（包豪斯）、`swiss/`（瑞士风格）、`material/`（Material Design）、`neumorph/`（新拟态）。
+已有完整页：`bauhaus/`（包豪斯）、`swiss/`（瑞士风格）、`material/`（Material Design）、`neumorph/`（新拟态）、`glass/`（玻璃拟态）、`clay/`（黏土拟态）、`brutal/`（野兽派）。
 
 ## 本地预览
 

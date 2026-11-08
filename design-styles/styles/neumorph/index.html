@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>新拟态 · Soft UI</title>
-<meta name="description" content="用新拟态（Neumorphism / Soft UI）写成的一页新拟态介绍：原理、来历、四种形态、光影实验室、组件、可用性问题与实现要点。">
+<meta name="description" content="用新拟态（Neumorphism / Soft UI）写成的一页新拟态介绍：原理、来历、四种形态、光影实验室、组件与响应式示例、可用性问题、实现要点与设计令牌。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
@@ -45,7 +45,7 @@
   <a class="round-btn nm-raised" href="../../#s-neumorph" aria-label="返回设计风格图鉴" title="返回设计风格图鉴" style="--d:4px"><svg class="ic"><use href="#i-back"/></svg></a>
   <p class="nav-title">Soft UI <span>· 新拟态</span></p>
   <nav class="nav-links nm-inset" style="--d:3px" aria-label="章节">
-    <a href="#what">原理</a><a href="#origin">来历</a><a href="#forms">形态</a><a href="#lab">实验室</a><a href="#kit">组件</a><a href="#a11y">可用性</a><a href="#use">用法</a>
+    <a href="#what">原理</a><a href="#origin">来历</a><a href="#forms">形态</a><a href="#lab">实验室</a><a href="#kit">组件</a><a href="#a11y">可用性</a><a href="#use">用法</a><a href="#css">实现</a>
   </nav>
   <div class="nav-tools">
     <button class="round-btn nm-raised press" id="resetBtn" type="button" aria-label="恢复初始状态" title="恢复初始状态：光源、明暗与所有组件" style="--d:4px"><svg class="ic"><use href="#i-reset"/></svg></button>
@@ -255,6 +255,46 @@
       </div>
     </article>
   </div>
+
+  <h3 class="sub-h">同一块面板，三种宽度</h3>
+  <p class="lead mis-lead">示例页用容器查询按自身宽度重排。窄屏上除了换成单列，阴影距离也按比例缩小：卡片之间的间隙变窄了，阴影太长会越过间隙压到下一张卡片上，整片界面就糊在一起。它同样受页首旋钮控制。</p>
+  <div class="rf nm-raised" style="--d:14px">
+    <div class="rf-ctrl">
+      <div class="seg nm-inset" style="--d:3px" role="radiogroup" aria-label="设备宽度预设" id="rfPresets">
+        <button type="button" role="radio" aria-checked="false" data-w="375">手机 375</button>
+        <button type="button" role="radio" aria-checked="false" data-w="768">平板 768</button>
+        <button type="button" role="radio" aria-checked="true" data-w="1100">桌面 1100</button>
+      </div>
+      <label class="range rf-range"><span class="ctl-label">页面宽度<b id="rfOut">1100px</b></span><input type="range" id="rfWidth" min="320" max="1200" value="1100"></label>
+    </div>
+    <div class="rf-stage nm-inset" style="--d:6px" id="rfStage">
+      <div class="rf-frame" id="rfFrame" aria-hidden="true">
+        <div class="home">
+          <header class="hm-top"><b>我的家</b><span class="hm-pill nm-raised" style="--d:4px">室外 18°C · 晴</span></header>
+          <section class="hm-card hm-thermo nm-raised" style="--d:12px">
+            <p>客厅温度</p>
+            <div class="hm-ring nm-inset" style="--d:7px"><div class="hm-core nm-convex" style="--d:6px"><b>22°</b></div></div>
+          </section>
+          <section class="hm-card hm-scenes nm-raised" style="--d:12px">
+            <p>场景</p>
+            <div class="hm-tiles">
+              <span class="hm-tile nm-inset on" style="--d:5px"><svg class="ic"><use href="#i-bulb"/></svg>回家</span>
+              <span class="hm-tile nm-raised" style="--d:6px"><svg class="ic"><use href="#i-moon"/></svg>睡眠</span>
+              <span class="hm-tile nm-raised" style="--d:6px"><svg class="ic"><use href="#i-tv"/></svg>影院</span>
+              <span class="hm-tile nm-raised" style="--d:6px"><svg class="ic"><use href="#i-lock"/></svg>离家</span>
+            </div>
+          </section>
+          <section class="hm-card hm-energy nm-raised" style="--d:12px">
+            <p>本周用电</p>
+            <div class="hm-bars"><i class="nm-inset" style="--d:3px;--h:40%"></i><i class="nm-inset" style="--d:3px;--h:62%"></i><i class="nm-inset" style="--d:3px;--h:48%"></i><i class="nm-inset" style="--d:3px;--h:80%"></i><i class="nm-inset" style="--d:3px;--h:55%"></i><i class="nm-inset" style="--d:3px;--h:70%"></i><i class="nm-inset" style="--d:3px;--h:35%"></i></div>
+            <p class="hm-sum"><b>41.6</b> 千瓦时 · 比上周少 8%</p>
+          </section>
+          <nav class="hm-tab nm-raised" style="--d:8px"><span class="nm-inset" style="--d:3px"><svg class="ic"><use href="#i-bulb"/></svg></span><span><svg class="ic"><use href="#i-fan"/></svg></span><span><svg class="ic"><use href="#i-lock"/></svg></span><span><svg class="ic"><use href="#i-wifi"/></svg></span></nav>
+        </div>
+      </div>
+    </div>
+    <p class="rf-read" id="rfRead" aria-live="polite"></p>
+  </div>
 </section>
 
 <!-- ============ a11y ============ -->
@@ -399,6 +439,15 @@
 }
 <span class="c-c">/* 用的时候只需给出「高度」 */</span>
 <span class="c-k">.button</span> { --d: <span class="c-v">8px</span>; }</code></pre>
+  </div>
+
+  <h3 class="sub-h">本页的设计令牌</h3>
+  <p class="lead mis-lead">颜色一栏按当前明暗模式实时计算对比度。亮影和暗影的对比度天生很低，所以它们只能做装饰，信息一律交给文字和强调色。</p>
+  <div class="tokens nm-raised" style="--d:12px">
+    <table>
+      <thead><tr><th scope="col">令牌</th><th scope="col">值</th><th scope="col">用途</th><th scope="col">对比度（对底色）</th></tr></thead>
+      <tbody id="tokenBody"></tbody>
+    </table>
   </div>
 </section>
 

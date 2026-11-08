@@ -6,8 +6,8 @@
    ===================================================================== */
 :root {
   --bg: #E4E9F0; --hi: #FFFFFF; --lo: #B4BDCA;
-  --text: #2B3546; --muted: #556174; --accent: #3F6FE0; --accent-soft: #6F93EC;
-  --ok: #2F8F6B; --bad: #C2513A;
+  --text: #2B3546; --muted: #556174; --accent: #2F5BC9; --accent-soft: #6F93EC;
+  --ok: #1B6E4F; --bad: #A8402B;
   --sx: .7071; --sy: .7071; --ang: 135deg;
   --font: Manrope, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -85,7 +85,11 @@ main { max-width: 1120px; margin: 0 auto; }
 .tt-knob { position: absolute; top: 4px; left: 4px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: #E2A33A; transition: left .35s cubic-bezier(.3, 1.4, .5, 1), box-shadow .3s, color .3s; }
 .tt-knob .ic { width: 18px; height: 18px; }
 .theme-toggle[aria-checked="true"] .tt-knob { left: 36px; color: var(--accent); }
-@media (max-width: 860px) { .nav-links { display: none; } .nav-tools { margin-left: auto; } }
+@media (max-width: 860px) {
+  .nav { flex-wrap: wrap; row-gap: 8px; border-radius: 28px; }
+  .nav-tools { margin-left: auto; }
+  .nav-links { order: 3; width: 100%; margin: 0; }
+}
 
 /* ---------- typography blocks ---------- */
 .kicker { font-size: 13px; font-weight: 700; letter-spacing: .14em; color: var(--accent); text-transform: uppercase; }
@@ -374,3 +378,70 @@ h3 { font-size: 19px; line-height: 1.4; font-weight: 800; }
   *, *::before, *::after { transition-duration: 1ms !important; }
   .disc { animation: none; }
 }
+
+/* =====================================================================
+   响应式示例：容器查询换布局，同时用 --dk 按比例缩放阴影距离
+   ===================================================================== */
+.rf { margin-top: 0; padding: 24px; border-radius: 30px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.rf-ctrl { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; }
+.rf-range { flex: 1 1 240px; }
+.rf-stage { position: relative; overflow: hidden; border-radius: 22px; }
+.rf-frame { width: calc(var(--w, 1100) * 1px); transform: scale(var(--k, 1)); transform-origin: 0 0; container-type: inline-size; }
+.rf-read { font-size: 14px; color: var(--muted); }
+.rf-read b { color: var(--text); font-variant-numeric: tabular-nums; }
+.home {
+  --dk: 1; --gap: 28px;
+  display: grid; gap: var(--gap); padding: calc(var(--gap) + 4px); background: var(--bg); color: var(--text); font-size: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "top top top" "thermo scenes energy";
+  transition: background-color .4s;
+}
+.home [class*="nm-"] {
+  --x: calc(var(--sx) * var(--d) * var(--dk)); --y: calc(var(--sy) * var(--d) * var(--dk));
+  --sh-out: var(--x) var(--y) calc(var(--d) * 2 * var(--dk)) var(--lo), calc(var(--x) * -1) calc(var(--y) * -1) calc(var(--d) * 2 * var(--dk)) var(--hi);
+  --sh-in: inset var(--x) var(--y) calc(var(--d) * var(--dk)) var(--lo), inset calc(var(--x) * -1) calc(var(--y) * -1) calc(var(--d) * var(--dk)) var(--hi);
+}
+.hm-top { grid-area: top; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 20px; }
+.hm-pill { padding: 6px 14px; border-radius: 99px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.hm-card { padding: 20px; border-radius: 24px; display: grid; gap: 14px; align-content: start; }
+.hm-card > p:first-child { font-weight: 700; color: var(--muted); }
+.hm-thermo { grid-area: thermo; justify-items: center; }
+.hm-ring { width: 150px; height: 150px; border-radius: 50%; display: grid; place-items: center; }
+.hm-core { width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center; }
+.hm-core b { font-size: 30px; font-weight: 800; }
+.hm-scenes { grid-area: scenes; }
+.hm-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.hm-tile { display: grid; justify-items: start; gap: 6px; padding: 14px; border-radius: 18px; font-weight: 700; color: var(--muted); }
+.hm-tile.on { color: var(--accent); }
+.hm-energy { grid-area: energy; }
+.hm-bars { height: 120px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; align-items: end; }
+.hm-bars i { height: 100%; border-radius: 99px; position: relative; overflow: hidden; }
+.hm-bars i::after { content: ""; position: absolute; left: 3px; right: 3px; bottom: 3px; height: calc(var(--h) - 6px); border-radius: 99px; background: var(--accent-soft); }
+.hm-sum { color: var(--muted); }
+.hm-sum b { font-size: 22px; color: var(--text); }
+.hm-tab { grid-area: tab; display: none; grid-template-columns: repeat(4, 1fr); padding: 8px; border-radius: 22px; position: sticky; bottom: 10px; }
+.hm-tab span { height: 44px; display: grid; place-items: center; border-radius: 14px; color: var(--muted); }
+.hm-tab span.nm-inset { color: var(--accent); }
+@container (max-width: 899px) {
+  .home { --dk: .8; --gap: 22px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "top top" "thermo scenes" "energy energy"; }
+}
+@container (max-width: 559px) {
+  .home { --dk: .55; --gap: 14px; grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "thermo" "scenes" "energy" "tab"; }
+  .hm-tab { display: grid; }
+  .hm-ring { width: 128px; height: 128px; }
+  .hm-core { width: 88px; height: 88px; }
+}
+
+/* =====================================================================
+   设计令牌表
+   ===================================================================== */
+.tokens { border-radius: 26px; padding: 10px 14px; overflow-x: auto; }
+.tokens table { width: 100%; min-width: 600px; border-collapse: collapse; font-size: 14px; }
+.tokens th { text-align: left; padding: 12px 10px; font-size: 12px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+.tokens td { padding: 11px 10px; vertical-align: middle; border-top: 1px solid color-mix(in srgb, var(--lo) 70%, transparent); }
+.tokens td code { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; }
+.tokens .sw { display: inline-block; width: 22px; height: 22px; border-radius: 8px; vertical-align: -6px; margin-right: 8px; background: var(--c); box-shadow: 2px 2px 4px var(--lo), -2px -2px 4px var(--hi); }
+.tokens .ct { font-family: var(--mono); font-weight: 500; }
+.tokens .ct.pass { color: var(--ok); }
+.tokens .ct.fail { color: var(--bad); }
+.tokens .ct small { font-family: var(--font); font-weight: 600; margin-left: 4px; }
+.tokens .ct.deco { color: var(--muted); }

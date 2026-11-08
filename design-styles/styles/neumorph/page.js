@@ -51,6 +51,7 @@ function setLight(deg, save = true) {
   placeAnatomyTags(lx, ly);
   if (save) store.set("nm-light", lightDeg);
   if (typeof renderLab === "function") renderLab();
+  const ts = document.getElementById("tokSxy"); if (ts) ts.textContent = sxy();
 }
 
 function angleFromPointer(e) {
@@ -95,7 +96,7 @@ function applyTheme() {
   const t = $("#themeBtn");
   t.setAttribute("aria-checked", String(dark));
   $("use", t).setAttribute("href", dark ? "#i-moon" : "#i-sun");
-  requestAnimationFrame(renderMeters);
+  requestAnimationFrame(() => { renderMeters(); renderTokens(); });
 }
 $("#themeBtn").addEventListener("click", () => { theme = isDark() ? "light" : "dark"; store.set("nm-theme", theme); applyTheme(); });
 darkQuery.addEventListener("change", () => { if (!theme) applyTheme(); });
@@ -209,6 +210,17 @@ document.addEventListener("click", (e) => {
   if (seg && !seg.closest("#labShape")) { seg.parentElement.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", String(b === seg))); }
 });
 
+/* 键盘：分段控件（单选）用方向键切换 */
+document.addEventListener("keydown", (e) => {
+  const k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+  const b = k && e.target.closest?.('.seg[role="radiogroup"] [role="radio"]');
+  if (!b) return;
+  e.preventDefault();
+  const items = [...b.parentElement.querySelectorAll('[role="radio"]')];
+  const n = items[(items.indexOf(b) + k + items.length) % items.length];
+  n.focus(); n.click();
+});
+
 const playBtn = $("#playBtn");
 let progTimer, prog = 38;
 playBtn.addEventListener("click", () => {
@@ -255,9 +267,65 @@ function renderMeters() {
 }
 
 /* =====================================================================
+   响应式示例：示例页按自身宽度（容器查询）重排，窄屏缩小阴影距离
+   ===================================================================== */
+const rfStage = $("#rfStage"), rfFrame = $("#rfFrame"), rfWidth = $("#rfWidth");
+const RF_TEXT = {
+  wide: "三列一字排开，阴影用完整的距离，卡片间距 28px：每块凸起周围都留够了「地面」。",
+  mid: "两列：温度和场景并排，用电图横跨一行；阴影距离缩到 80%，间距 22px。",
+  narrow: "单列，底部出现标签栏；阴影距离缩到 55%，间距 14px。否则卡片的暗影会越过间隙，压到下一张卡片上。",
+};
+function layoutRF() {
+  const w = +rfWidth.value, k = Math.min(1, rfStage.clientWidth / w);
+  rfFrame.style.setProperty("--w", w);
+  rfFrame.style.setProperty("--k", k.toFixed(4));
+  rfStage.style.height = `${Math.ceil(rfFrame.offsetHeight * k)}px`;
+  $("#rfOut").textContent = `${w}px`;
+  rfWidth.style.setProperty("--p", `${((w - rfWidth.min) / (rfWidth.max - rfWidth.min)) * 100}%`);
+  const mode = w >= 900 ? "wide" : w >= 560 ? "mid" : "narrow";
+  $("#rfRead").innerHTML = `<b>${w}px</b> → ${RF_TEXT[mode]}${k < 1 ? `（按 ${Math.round(k * 100)}% 缩小显示）` : ""}`;
+  $$("#rfPresets button").forEach((b) => b.setAttribute("aria-checked", String(+b.dataset.w === w)));
+}
+rfWidth.addEventListener("input", layoutRF);
+$("#rfPresets").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { rfWidth.value = b.dataset.w; layoutRF(); } });
+new ResizeObserver(layoutRF).observe(rfStage);
+
+/* =====================================================================
+   设计令牌表
+   ===================================================================== */
+const sxy = () => ["--sx", "--sy"].map((k) => (+getComputedStyle(root).getPropertyValue(k)).toFixed(2)).join(" / ");
+function renderTokens() {
+  const bg = token("--bg");
+  const row = (name, hex, use, need) => {
+    let ct = "—";
+    if (need) {
+      const c = contrast(hex, bg), pass = c >= need;
+      ct = `<span class="ct ${need === 1 ? "deco" : pass ? "pass" : "fail"}">${c.toFixed(2)} : 1<small>${need === 1 ? "装饰" : pass ? "达标" : `需 ${need}`}</small></span>`;
+    }
+    return `<tr><td><code>${name}</code></td><td><i class="sw" style="--c:${hex}"></i><code>${hex}</code></td><td>${use}</td><td>${ct}</td></tr>`;
+  };
+  const txt = (name, val, use) => `<tr><td><code>${name}</code></td><td><code>${val}</code></td><td>${use}</td><td>—</td></tr>`;
+  $("#tokenBody").innerHTML = [
+    row("--bg", bg, "底色：页面和所有凸起、凹陷元素共用", 0),
+    row("--text", token("--text"), "正文、标题、数值", 4.5),
+    row("--muted", token("--muted"), "次要文字、图标", 4.5),
+    row("--accent", token("--accent"), "选中、开启、焦点与链接", 4.5),
+    row("--ok", token("--ok"), "成功与「正确」标记", 4.5),
+    row("--bad", token("--bad"), "错误与「错误」标记", 4.5),
+    row("--hi", token("--hi"), "亮影：底色提亮", 1),
+    row("--lo", token("--lo"), "暗影：底色压暗", 1),
+    `<tr><td><code>--sx / --sy</code></td><td><code id="tokSxy">${sxy()}</code></td><td>暗影偏移方向的单位向量，由页首旋钮实时写入</td><td>—</td></tr>`,
+    txt("--d", "3 · 5 · 8 · 12 · 14px", "高度：开关 · 小按钮 · 磁贴 · 面板 · 旋钮"),
+    txt("模糊", "外阴影 2 × --d · 内阴影 1 × --d", "模糊取距离的倍数，阴影才柔和"),
+    txt("圆角", "12 · 16 · 22 · 30px · 50%", "分段 · 色块 · 磁贴 · 面板 · 圆形按钮"),
+  ].join("");
+}
+
+/* =====================================================================
    Boot
    ===================================================================== */
 applyTheme();
+layoutRF();
 setEnhanced(store.get("nm-enhanced") === "1" || (store.get("nm-enhanced") === null && matchMedia("(prefers-contrast: more)").matches));
 showEra(2);
 setTemp(22);

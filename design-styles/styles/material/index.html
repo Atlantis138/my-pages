@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Material Design</title>
-<meta name="description" content="用 Material 3 的规范搭一页介绍 Material Design：纸与墨水的隐喻、十年演进、动态配色、字体与形状、高度、动效与组件。">
+<meta name="description" content="用 Material 3 的规范搭一页介绍 Material Design：纸与墨水的隐喻、十年演进、动态配色、字体与形状、高度、动效、组件与自适应布局、常见错误，以及可导出的颜色令牌。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&icon_names=add,animation,arrow_back,calendar_month,check,close,content_copy,dark_mode,edit,favorite,history,home,layers,light_mode,lightbulb,mail,menu,palette,photo_library,play_arrow,restart_alt,search,settings,share,star,text_fields,widgets&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&icon_names=add,animation,arrow_back,calendar_month,check,close,code,content_copy,dark_mode,edit,favorite,history,home,inbox,layers,light_mode,lightbulb,mail,menu,palette,photo_library,play_arrow,restart_alt,search,send,settings,share,star,text_fields,widgets&display=block">
 <link rel="stylesheet" href="page.css">
 <script type="module" src="page.js"></script>
 </head>
@@ -39,6 +39,7 @@
   <a class="drawer-item" href="#motion"><span class="ms">animation</span>动效</a>
   <a class="drawer-item" href="#components"><span class="ms">widgets</span>组件</a>
   <a class="drawer-item" href="#practice"><span class="ms">lightbulb</span>何时使用</a>
+  <a class="drawer-item" href="#build"><span class="ms">code</span>实现</a>
 </nav>
 <div class="scrim" id="scrim" hidden></div>
 
@@ -368,6 +369,56 @@
       </div>
     </article>
   </div>
+
+  <h3 class="headline-small sub-h" id="adaptive">自适应布局：按窗口宽度换导航</h3>
+  <p class="body-medium muted">M3 不按「手机、平板」分类，而是按窗口宽度分档，叫作窗口尺寸类别：紧凑（小于 600dp）、中等（600–839dp）、展开（840dp 起），后来又加入了 large 和 extra-large 两档，照顾大平板与外接显示器。每一档换一种导航组件和窗格数量：底部导航栏、导航轨，再到并排的两个窗格。在网页上 1dp 就是 1 个 CSS 像素。</p>
+  <div class="card card-outlined adapt">
+    <div class="adapt-ctl">
+      <div class="segmented" role="radiogroup" aria-label="窗口宽度预设" id="adPresets">
+        <button type="button" role="radio" aria-checked="false" data-w="400"><span class="ms">check</span>紧凑 400</button>
+        <button type="button" role="radio" aria-checked="false" data-w="720"><span class="ms">check</span>中等 720</button>
+        <button type="button" role="radio" aria-checked="true" data-w="1040"><span class="ms">check</span>展开 1040</button>
+      </div>
+      <label class="body-medium ad-range" for="adWidth">窗口宽度 <b id="adOut">1040dp</b><input type="range" class="slider" id="adWidth" min="320" max="1280" value="1040"></label>
+    </div>
+    <div class="ad-stage" id="adStage">
+      <div class="ad-frame" id="adFrame" aria-hidden="true">
+        <div class="mail">
+          <nav class="m-rail">
+            <span class="m-menu"><span class="ms">menu</span></span>
+            <span class="m-fab"><span class="ms">edit</span><b>写邮件</b></span>
+            <span class="m-dest on"><span class="m-ic"><span class="ms">inbox</span></span><small>收件箱</small></span>
+            <span class="m-dest"><span class="m-ic"><span class="ms">star</span></span><small>星标</small></span>
+            <span class="m-dest"><span class="m-ic"><span class="ms">send</span></span><small>已发送</small></span>
+            <span class="m-dest"><span class="m-ic"><span class="ms">settings</span></span><small>设置</small></span>
+          </nav>
+          <section class="m-list">
+            <p class="m-search"><span class="ms">search</span><span>搜索邮件</span><span class="m-av">我</span></p>
+            <ul>
+              <li class="on"><span class="m-av" style="--a:var(--md-sys-color-tertiary-container);--b:var(--md-sys-color-on-tertiary-container)">林</span><span><b>林一</b><span>设计评审改到下午三点</span><small>新版组件库的走查清单在附件里……</small></span><time>14:02</time></li>
+              <li><span class="m-av" style="--a:var(--md-sys-color-secondary-container);--b:var(--md-sys-color-on-secondary-container)">周</span><span><b>周晴</b><span>本周周报</span><small>完成 12 项任务，下周重点是……</small></span><time>11:40</time></li>
+              <li><span class="m-av" style="--a:var(--md-sys-color-primary-container);--b:var(--md-sys-color-on-primary-container)">陈</span><span><b>陈默</b><span>周末去爬山吗</span><small>周六早上 8 点在地铁站集合……</small></span><time>昨天</time></li>
+              <li><span class="m-av" style="--a:var(--md-sys-color-error-container);--b:var(--md-sys-color-on-error-container)">账</span><span><b>账单提醒</b><span>本月账单已出</span><small>请在 25 日前完成还款……</small></span><time>周一</time></li>
+            </ul>
+          </section>
+          <article class="m-detail">
+            <p class="m-subj">设计评审改到下午三点</p>
+            <p class="m-from"><span class="m-av" style="--a:var(--md-sys-color-tertiary-container);--b:var(--md-sys-color-on-tertiary-container)">林</span><span><b>林一</b><small>发给 我、周晴 · 14:02</small></span></p>
+            <p class="m-body">大家好，原定上午的设计评审改到下午三点，地点不变。新版组件库的走查清单在附件里，请提前看一下按钮和文本框两部分。</p>
+            <p class="m-acts"><span class="m-btn tonal">回复</span><span class="m-btn">转发</span></p>
+          </article>
+          <span class="m-fab-float"><span class="ms">edit</span></span>
+          <nav class="m-bar">
+            <span class="m-dest on"><span class="m-ic"><span class="ms">inbox</span></span><small>收件箱</small></span>
+            <span class="m-dest"><span class="m-ic"><span class="ms">star</span></span><small>星标</small></span>
+            <span class="m-dest"><span class="m-ic"><span class="ms">send</span></span><small>已发送</small></span>
+            <span class="m-dest"><span class="m-ic"><span class="ms">settings</span></span><small>设置</small></span>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <p class="body-medium ad-read" id="adRead" aria-live="polite"></p>
+  </div>
 </section>
 
 <!-- ============ 实践 ============ -->
@@ -397,6 +448,43 @@
       </ul>
     </article>
   </div>
+
+  <h3 class="headline-small sub-h">四个常见错误</h3>
+  <p class="body-medium muted">每组左边是错误示范，右边是改正后的样子。它们都用本页的令牌画成，会跟着种子色和明暗一起变。</p>
+  <div class="grid-2 mistakes">
+    <article class="card card-outlined mis">
+      <div class="mis-pair">
+        <figure><div class="mis-stage"><span class="btn btn-filled sm">保存</span><span class="btn btn-filled sm">预览</span><span class="btn btn-filled sm">分享</span></div><figcaption class="no"><span class="ms">close</span>错误</figcaption></figure>
+        <figure><div class="mis-stage"><span class="btn btn-filled sm">保存</span><span class="btn btn-tonal sm">预览</span><span class="btn btn-text sm">分享</span></div><figcaption class="ok"><span class="ms">check</span>正确</figcaption></figure>
+      </div>
+      <h3 class="title-medium">一屏好几个 Filled 按钮</h3>
+      <p class="body-medium muted">每个按钮都在喊「点我」，用户反而找不到主要操作。一屏只留一个 Filled，其余按重要程度降为 Tonal、Outlined 或 Text。</p>
+    </article>
+    <article class="card card-outlined mis">
+      <div class="mis-pair">
+        <figure><div class="mis-stage"><span class="mini-card hard"><b>本月账单</b>¥ 1,280.00</span></div><figcaption class="no"><span class="ms">close</span>错误</figcaption></figure>
+        <figure><div class="mis-stage"><span class="mini-card"><b>本月账单</b>¥ 1,280.00</span></div><figcaption class="ok"><span class="ms">check</span>正确</figcaption></figure>
+      </div>
+      <h3 class="title-medium">把色值写死在组件里</h3>
+      <p class="body-medium muted">左边的卡片写死了 <code>#F3EDF7</code> 和 <code>#1D1B20</code>，右边引用的是 <code>surface-container</code> 与 <code>on-surface</code>。换一张壁纸或切到深色模式，左边就和页面脱节了。</p>
+    </article>
+    <article class="card card-outlined mis">
+      <div class="mis-pair">
+        <figure><div class="mis-stage"><span class="lvl shadowy"><i></i><i></i></span></div><figcaption class="no"><span class="ms">close</span>错误</figcaption></figure>
+        <figure><div class="mis-stage"><span class="lvl tonal"><i></i><i></i></span></div><figcaption class="ok"><span class="ms">check</span>正确</figcaption></figure>
+      </div>
+      <h3 class="title-medium">处处都用阴影分层</h3>
+      <p class="body-medium muted">卡片套卡片、每层都投影，页面又脏又乱。M3 用表面容器的五档色调区分层级，阴影只留给 FAB、菜单、拖动中的元素这些真正浮起来的东西。</p>
+    </article>
+    <article class="card card-outlined mis">
+      <div class="mis-pair">
+        <figure><div class="mis-stage"><span class="fake-field">lin@exam|</span></div><figcaption class="no"><span class="ms">close</span>错误</figcaption></figure>
+        <figure><div class="mis-stage"><span class="fake-field labeled"><em>电子邮箱</em>lin@exam|</span></div><figcaption class="ok"><span class="ms">check</span>正确</figcaption></figure>
+      </div>
+      <h3 class="title-medium">只用占位文字当标签</h3>
+      <p class="body-medium muted">占位文字一输入就消失，用户写到一半就忘了这一栏要填什么，屏幕阅读器也未必读出它。M3 的文本框始终保留标签：聚焦或有值时，它缩小并浮到上方。</p>
+    </article>
+  </div>
   <div class="grid-2">
     <article class="card card-outlined">
       <h3 class="title-large">让它不像 Google</h3>
@@ -418,6 +506,99 @@
         <li><span class="li-text"><span class="body-large">Material Theme Builder</span><span class="body-medium muted">输入种子色，导出全套颜色令牌</span></span></li>
       </ul>
     </article>
+  </div>
+</section>
+
+<!-- ============ 实现 ============ -->
+<section class="section" id="build" aria-labelledby="h-build">
+  <header class="sec-head">
+    <p class="label-large overline">实现</p>
+    <h2 class="display-small" id="h-build">把规范落到 CSS 里</h2>
+    <p class="body-large lead">Material 的「设计令牌」就是一组有名字的变量。网页上最自然的载体是 CSS 自定义属性：组件只引用名字，主题只改变量的值。下面是本页的核心写法、几个容易踩的坑，以及当前配色的导出与对比度检查。</p>
+  </header>
+  <div class="grid-2 build">
+    <article class="card card-outlined">
+      <h3 class="title-large">容易踩的坑</h3>
+      <ol class="tips body-medium">
+        <li><b>组件只认角色名。</b>写 <code>var(--md-sys-color-primary)</code>，不写色值。深色模式和换主题只替换变量的值，组件代码一行不改。</li>
+        <li><b>状态层叠在内容下面。</b>用 <code>::before</code> 铺一层 <code>currentColor</code>，悬停 8%、聚焦和按下 10%。不要去改容器自身的颜色或 <code>opacity</code>，否则文字也会一起变淡。</li>
+        <li><b>触控目标至少 48 × 48dp。</b>图标按钮的图形只有 24dp，点击区域要用内边距补足；相邻目标之间留出间隙。</li>
+        <li><b>图标字体要先占好位置。</b>Material Symbols 是连字字体，加载完成前会把 <code>menu</code> 这样的单词直接显示出来。用 <code>display=block</code> 加固定宽高的容器，再用 <code>icon_names=</code> 只下载用到的图标：本页只加载了 30 个。</li>
+        <li><b>涟漪要尊重「减少动效」。</b>开启后只保留状态层的颜色变化，不画扩散的圆。</li>
+        <li><b>动态配色交给官方工具。</b>正式项目用开源的 material-color-utilities 或 Material Theme Builder 生成令牌；本页用 LCh 近似 HCT，只适合演示和原型。</li>
+      </ol>
+    </article>
+    <article class="card card-outlined code-card">
+      <h3 class="title-large">核心写法</h3>
+      <div class="code-wrap">
+        <button class="icon-btn copy" type="button" data-copy="coreCode" aria-label="复制代码"><span class="ms">content_copy</span></button>
+<pre class="code"><code id="coreCode">/* 1. 颜色角色：组件只认这些名字 */
+:root {
+  --md-sys-color-primary: #6750A4;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-surface: #FEF7FF;
+  --md-sys-color-on-surface: #1D1B20;
+  --md-shape-full: 9999px;
+  --md-ease-emphasized: cubic-bezier(.2, 0, 0, 1);
+}
+/* 2. 按钮：40dp 高的胶囊 */
+.btn-filled {
+  height: 40px; padding: 0 24px;
+  border: 0; border-radius: var(--md-shape-full);
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  font: 500 14px/20px Roboto, sans-serif;
+  /* 3. 状态层的容器 */
+  position: relative; overflow: hidden; isolation: isolate;
+}
+.btn-filled::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: currentColor; opacity: 0;
+  transition: opacity 150ms linear;
+}
+.btn-filled:hover::before { opacity: .08; }
+.btn-filled:is(:focus-visible, :active)::before { opacity: .10; }
+/* 4. 焦点环：3px、secondary 色、外扩 2px */
+:focus-visible {
+  outline: 3px solid var(--md-sys-color-secondary);
+  outline-offset: 2px;
+}</code></pre>
+      </div>
+    </article>
+  </div>
+
+  <article class="card card-filled export">
+    <div class="export-head">
+      <div>
+        <h3 class="title-large">导出当前配色</h3>
+        <p class="body-medium">种子色 <code id="exSeed">#6750A4</code> 生成的全部颜色角色，浅色与深色各一套，可以直接粘贴到项目里。在「动态配色」一节换种子色，这里会同步更新。</p>
+      </div>
+      <button class="btn btn-filled" type="button" data-copy="exportCode" data-ripple><span class="ms">content_copy</span>复制 CSS</button>
+    </div>
+    <pre class="code export-code"><code id="exportCode"></code></pre>
+  </article>
+
+  <h3 class="headline-small sub-h">设计令牌与对比度</h3>
+  <p class="body-medium muted">按当前种子色实时计算。文字至少 4.5 : 1；outline 是组件边界，按界面元素的要求，至少 3 : 1。</p>
+  <div class="card card-outlined token-card">
+    <table class="tok">
+      <thead><tr><th scope="col">前景 / 背景</th><th scope="col">色调（浅 · 深）</th><th scope="col">浅色</th><th scope="col">深色</th></tr></thead>
+      <tbody id="tokBody"></tbody>
+    </table>
+  </div>
+  <div class="card card-outlined token-card">
+    <table class="tok">
+      <thead><tr><th scope="col">其他令牌</th><th scope="col">取值</th><th scope="col">用在哪里</th></tr></thead>
+      <tbody>
+        <tr><td>形状</td><td><code>4 · 8 · 12 · 16 · 28dp · 全圆</code></td><td>文本框 · Chip · 卡片 · FAB · 对话框 · 按钮</td></tr>
+        <tr><td>高度</td><td><code>Level 0–5 = 0 · 1 · 3 · 6 · 8 · 12dp</code></td><td>平铺 · 卡片 · 菜单 · FAB 与对话框 · 悬停 · 拖动</td></tr>
+        <tr><td>字阶</td><td><code>Body Large 16/24 · Title Large 22/28 · Display Large 57/64</code></td><td>正文 · 卡片标题 · 首屏大字（共 15 档）</td></tr>
+        <tr><td>间距</td><td><code>4dp 基线网格</code></td><td>所有尺寸与间距取 4 的倍数</td></tr>
+        <tr><td>触控目标</td><td><code>48 × 48dp</code></td><td>任何可点击元素的最小点击区域</td></tr>
+        <tr><td>缓动</td><td><code>emphasized cubic-bezier(.2, 0, 0, 1)</code></td><td>大多数转场；进入用减速版、离开用加速版</td></tr>
+        <tr><td>时长</td><td><code>short 50–200 · medium 250–400 · long 450–600ms</code></td><td>小控件 · 卡片展开 · 整屏转场</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 

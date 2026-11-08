@@ -109,6 +109,7 @@ function applyScheme() {
   if (!meta) { meta = document.createElement("meta"); meta.name = "theme-color"; document.head.appendChild(meta); }
   meta.content = scheme.roles.surface.hex;
   renderColorDocs(scheme);
+  renderBuild();
   renderLevels();
   updateElevation();
 }
@@ -404,6 +405,17 @@ document.addEventListener("click", (e) => {
   if (sn) snack(sn.dataset.snack, sn.dataset.snackAction);
 });
 
+/* 键盘：分段按钮（单选）和标签页用方向键切换 */
+document.addEventListener("keydown", (e) => {
+  const k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+  const b = k && e.target.closest?.('.segmented[role="radiogroup"] [role="radio"], .tabs [role="tab"]');
+  if (!b) return;
+  e.preventDefault();
+  const items = [...b.parentElement.querySelectorAll('[role="radio"], [role="tab"]')];
+  const n = items[(items.indexOf(b) + k + items.length) % items.length];
+  n.focus(); n.click();
+});
+
 function placeTabIndicator(tabs) {
   const sel = tabs.querySelector('[aria-selected="true"]'), ind = tabs.querySelector(".tab-ind");
   const label = sel.getBoundingClientRect(), box = tabs.getBoundingClientRect();
@@ -415,10 +427,75 @@ $$(".tabs").forEach(placeTabIndicator);
 addEventListener("resize", () => $$(".tabs").forEach(placeTabIndicator));
 
 /* =====================================================================
+   Adaptive layout：示例页按自身宽度（容器查询）切换窗口尺寸类别
+   ===================================================================== */
+const adStage = $("#adStage"), adFrame = $("#adFrame"), adWidth = $("#adWidth");
+const AD_TEXT = {
+  compact: ["紧凑", "单窗格；导航放在底部导航栏（navigation bar，3–5 个目的地），FAB 浮在右下角，单手拇指够得着。"],
+  medium: ["中等", "底部导航栏换成左侧的导航轨（navigation rail），FAB 收进导航轨顶部；内容仍是单窗格。"],
+  expanded: ["展开", "列表和详情并排显示（列表-详情布局），点开一封邮件不再跳到新页面。"],
+  wider: ["展开（更宽）", "导航轨可以展开并显示文字标签。M3 Expressive 用这种展开的导航轨取代了导航抽屉。"],
+};
+function layoutAdaptive() {
+  const w = +adWidth.value, k = Math.min(1, adStage.clientWidth / w);
+  adFrame.style.setProperty("--w", w);
+  adFrame.style.setProperty("--k", k.toFixed(4));
+  adStage.style.height = `${Math.ceil(adFrame.offsetHeight * k)}px`;
+  $("#adOut").textContent = `${w}dp`;
+  setSliderFill(adWidth);
+  const mode = w >= 1200 ? "wider" : w >= 840 ? "expanded" : w >= 600 ? "medium" : "compact";
+  const [name, text] = AD_TEXT[mode];
+  $("#adRead").innerHTML = `<b>${w}dp · ${name}</b> → ${text}${k < 1 ? `（按 ${Math.round(k * 100)}% 缩小显示）` : ""}`;
+  $$("#adPresets button").forEach((b) => b.setAttribute("aria-checked", String(+b.dataset.w === w)));
+}
+adWidth.addEventListener("input", layoutAdaptive);
+$("#adPresets").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { adWidth.value = b.dataset.w; layoutAdaptive(); } });
+new ResizeObserver(layoutAdaptive).observe(adStage);
+
+/* =====================================================================
+   实现：导出令牌、对比度表、复制
+   ===================================================================== */
+const TOK_PAIRS = [
+  ["on-primary", "primary"], ["on-primary-container", "primary-container"],
+  ["on-secondary-container", "secondary-container"], ["on-tertiary-container", "tertiary-container"],
+  ["on-error", "error"], ["on-surface", "surface"], ["on-surface-variant", "surface-container-highest"],
+  ["primary", "surface"], ["outline", "surface", 3], ["inverse-on-surface", "inverse-surface"],
+];
+function renderBuild() {
+  const light = schemeFrom(state.seed, false).roles, dark = schemeFrom(state.seed, true).roles;
+  const block = (roles, pad) => Object.entries(roles).map(([k, v]) => `${pad}--md-sys-color-${k}: ${v.hex};`).join("\n");
+  $("#exSeed").textContent = state.seed.toUpperCase();
+  $("#exportCode").textContent = `/* Material 3 颜色令牌 · 种子色 ${state.seed.toUpperCase()}
+   由本页的 LCh 近似算法生成，正式项目请用 Material Theme Builder 复核 */
+:root {
+${block(light, "  ")}
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+${block(dark, "    ")}
+  }
+}`;
+  const cell = (roles, fg, bg, need) => {
+    const r = contrast(roles[fg].hex, roles[bg].hex);
+    return `<td><span class="pair" style="background:${roles[bg].hex};color:${roles[fg].hex}">Aa</span><span class="r${r < need ? " fail" : ""}">${r.toFixed(1)} : 1</span></td>`;
+  };
+  $("#tokBody").innerHTML = TOK_PAIRS.map(([fg, bg, need = 4.5]) =>
+    `<tr><td><code>${fg}</code> / <code>${bg}</code></td><td><code>${light[fg].tone}/${light[bg].tone} · ${dark[fg].tone}/${dark[bg].tone}</code></td>${cell(light, fg, bg, need)}${cell(dark, fg, bg, need)}</tr>`
+  ).join("");
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-copy]"); if (!b) return;
+  const text = $(`#${b.dataset.copy}`).textContent;
+  try { navigator.clipboard.writeText(text).then(() => snack("已复制到剪贴板"), () => snack("复制失败，请手动选择代码")); }
+  catch (_) { snack("复制失败，请手动选择代码"); }
+});
+
+/* =====================================================================
    Boot
    ===================================================================== */
 renderWalls();
 applyScheme();
+layoutAdaptive();
 
 /* 一键复原：清掉本页保存的设置，把表单控件改回默认值（避免浏览器在刷新后恢复它们），再重新载入 */
 $("#resetBtn").addEventListener("click", () => {

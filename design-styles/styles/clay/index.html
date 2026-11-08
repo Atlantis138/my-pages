@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>黏土拟态 · Claymorphism</title>
+<meta name="description" content="用黏土拟态（Claymorphism）写成的一页黏土拟态介绍：三道阴影的原理、从橡皮泥到界面的来历、形色光字动的规则、可以按扁的组件与响应式示例、黏土生成器与弹簧缓动生成器、常见错误与 CSS 实现。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6L6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></symbol>
+    <symbol id="i-line" viewBox="0 0 24 24"><path d="M3 12h18"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z" fill="currentColor"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 17l-5.2 2.7 1-5.9-4.3-4.1 5.9-.8z" fill="currentColor"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10C19.5 15.4 12 20 12 20z" fill="currentColor"/></symbol>
+    <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 21c-4 0-6.5-2.6-6.5-6 0-3.8 3.4-5.6 3.9-9.5 2.6 1.5 4 3.6 4.2 5.7.8-.7 1.3-1.8 1.4-3.1 2 1.6 3.5 4 3.5 6.9 0 3.4-2.5 6-6.5 6z" fill="currentColor"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4.5a3 3 0 0 0 3.5 4M16 6h3.5a3 3 0 0 1-3.5 4M12 13v4M8.5 20h7M10 17h4v3h-4z"/></symbol>
+  </defs>
+</svg>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- ============ nav ============ -->
+<header class="nav clay" style="--r:28px">
+  <a class="ibtn clay press" href="../../#s-clay" aria-label="返回设计风格图鉴" title="返回设计风格图鉴" style="--c:var(--c-lemon)"><svg class="ic"><use href="#i-back"/></svg></a>
+  <p class="brand"><span class="brand-dot clay" aria-hidden="true"></span>Clay <span>· 黏土拟态</span></p>
+  <nav class="nav-links" aria-label="章节">
+    <a href="#principle">原理</a><a href="#origin">来历</a><a href="#language">规则</a><a href="#ui">界面</a><a href="#lab">工坊</a><a href="#use">好与坏</a><a href="#code">实现</a>
+  </nav>
+  <div class="nav-tools">
+    <button class="ibtn clay press" id="calmBtn" type="button" role="switch" aria-checked="false" aria-label="减少弹跳动效" title="减少弹跳动效" style="--c:var(--c-mint)"><svg class="ic"><use href="#i-wave"/></svg></button>
+    <button class="ibtn clay press" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="深色模式" title="深色模式" style="--c:var(--c-blue)"><svg class="ic"><use href="#i-sun"/></svg></button>
+    <button class="ibtn clay press" id="resetBtn" type="button" aria-label="恢复初始状态" title="恢复初始状态：明暗、动效、团子的颜色与所有控件" style="--c:var(--c-pink)"><svg class="ic"><use href="#i-reset"/></svg></button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ hero ============ -->
+<section class="hero" aria-labelledby="h-hero">
+  <span class="blob b1 clay" aria-hidden="true"></span><span class="blob b2 clay" aria-hidden="true"></span><span class="blob b3 clay" aria-hidden="true"></span><span class="blob b4 clay" aria-hidden="true"></span>
+  <div class="hero-text">
+    <p class="kicker">Claymorphism · 2021 —</p>
+    <h1 id="h-hero" class="title"><span class="ch" style="--c:var(--c-pink)">黏</span><span class="ch" style="--c:var(--c-orange)">土</span><span class="ch" style="--c:var(--c-blue)">拟</span><span class="ch" style="--c:var(--c-lav)">态</span></h1>
+    <p class="hero-en">Soft, puffy, squeezable UI</p>
+    <div class="hero-copy clay" style="--r:30px">
+      <p>让每个元素都像一团捏出来的黏土：大圆角，糖果色，外面一层柔和的投影把它托离地面，里面一亮一暗两道内阴影鼓出体积。按下去会扁，松开会弹回来。</p>
+      <p>这一页就是一块块黏土拼起来的。点一点上面的字，再去右边捏一捏团子。</p>
+    </div>
+  </div>
+
+  <div class="mochi-wrap">
+    <div class="mochi-stage" id="mochiStage">
+      <span class="mochi-floor" aria-hidden="true"></span>
+      <button class="mochi" id="mochi" type="button" aria-label="团子。按住往任意方向拖动来拉伸；按空格捏一下；方向键朝一边拉" aria-describedby="mochiRead">
+        <span class="mochi-body" id="mochiBody"><i class="eye l"></i><i class="eye r"></i><i class="blush l"></i><i class="blush r"></i><i class="mouth"></i></span>
+      </button>
+    </div>
+    <p class="mochi-read clay" id="mochiRead" style="--r:999px" aria-live="off">拉伸 <b id="mrA">1.00</b> × 压缩 <b id="mrB">1.00</b> = 体积 <b id="mrV">1.00</b></p>
+    <div class="pots" role="radiogroup" aria-label="团子的颜色" id="pots">
+      <button class="pot clay press" type="button" role="radio" aria-checked="true" data-c="orange" style="--c:var(--c-orange)" aria-label="杏橙"></button>
+      <button class="pot clay press" type="button" role="radio" aria-checked="false" data-c="blue" style="--c:var(--c-blue)" aria-label="云朵蓝"></button>
+      <button class="pot clay press" type="button" role="radio" aria-checked="false" data-c="lav" style="--c:var(--c-lav)" aria-label="薰衣草"></button>
+      <button class="pot clay press" type="button" role="radio" aria-checked="false" data-c="mint" style="--c:var(--c-mint)" aria-label="薄荷"></button>
+      <button class="pot clay press" type="button" role="radio" aria-checked="false" data-c="pink" style="--c:var(--c-pink)" aria-label="樱花粉"></button>
+      <button class="pot clay press" type="button" role="radio" aria-checked="false" data-c="lemon" style="--c:var(--c-lemon)" aria-label="柠檬黄"></button>
+    </div>
+    <p class="hint">按住团子往任意方向拉，松手看它弹回来。换个颜色：高光和暗部都从同一个颜色自动推导。</p>
+  </div>
+</section>
+
+<!-- ============ 01 principle ============ -->
+<section class="sec" id="principle" aria-labelledby="h-principle">
+  <header class="sec-head">
+    <span class="sec-no clay" style="--c:var(--c-orange)" aria-hidden="true">1</span>
+    <div>
+      <p class="kicker">原理</p>
+      <h2 id="h-principle">三道阴影，一块黏土</h2>
+      <p class="lead">黏土感全部来自 <code>box-shadow</code>：一道外投影把元素托起来，一道浅色内阴影在迎光的左上方鼓出高光，一道深色内阴影在背光的右下方压出暗部。再配上一个大圆角和一种自己的颜色。逐项关掉看看。</p>
+    </div>
+  </header>
+
+  <div class="anatomy">
+    <div class="anat-stage clay" style="--r:36px;--c:var(--surface-2)">
+      <div class="anat-piece A-drop A-hl A-sd A-round A-color" id="anat"><b>Hi!</b><span>我是一块黏土</span></div>
+    </div>
+    <fieldset class="anat-ctl clay" style="--r:30px">
+      <legend>逐项开关</legend>
+      <label class="tog"><input type="checkbox" data-part="drop" checked><span class="tog-sw" aria-hidden="true"><i></i></span><span><b>外投影</b><small>偏右下、很柔、带一点葡萄紫：把元素托离地面。</small></span></label>
+      <label class="tog"><input type="checkbox" data-part="hl" checked><span class="tog-sw" aria-hidden="true"><i></i></span><span><b>内高光</b><small>左上方的浅色 inset 阴影：迎光的那一面鼓起来。</small></span></label>
+      <label class="tog"><input type="checkbox" data-part="sd" checked><span class="tog-sw" aria-hidden="true"><i></i></span><span><b>内暗部</b><small>右下方的深色 inset 阴影：背光的那一面沉下去。</small></span></label>
+      <label class="tog"><input type="checkbox" data-part="round" checked><span class="tog-sw" aria-hidden="true"><i></i></span><span><b>大圆角</b><small>圆角越大越像软材料；直角只会像塑料盒。</small></span></label>
+      <label class="tog"><input type="checkbox" data-part="color" checked><span class="tog-sw" aria-hidden="true"><i></i></span><span><b>自己的颜色</b><small>每块黏土有自己的颜色，和背景区分开。</small></span></label>
+    </fieldset>
+    <pre class="code clay-in anat-code" id="anatCode"><code><span class="c-k">.clay</span> {
+  background: <span class="ln" data-part="color"><span class="c-v">#B79CFF</span></span>;
+  border-radius: <span class="ln" data-part="round"><span class="c-v">40px</span></span>;
+  box-shadow:
+<span class="ln" data-part="drop">    <span class="c-v">16px 20px 40px rgb(61 44 92 / .2)</span>,      <span class="c-c">/* 外投影 */</span></span>
+<span class="ln" data-part="hl">    <span class="c-v">inset 10px 10px 20px #E5DDFF</span>,         <span class="c-c">/* 内高光 */</span></span>
+<span class="ln" data-part="sd">    <span class="c-v">inset -10px -10px 20px #937ACF</span>;      <span class="c-c">/* 内暗部 */</span></span>
+}</code></pre>
+    <div class="anat-parts">
+      <figure><div class="part-tile pt-drop"></div><figcaption>只有外投影：一张浮起来的纸片</figcaption></figure>
+      <figure><div class="part-tile pt-inner"></div><figcaption>只有两道内阴影：鼓起来了，但贴在墙上</figcaption></figure>
+      <figure><div class="part-tile pt-all"></div><figcaption>三道合在一起：一团能拿起来的黏土</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 origin ============ -->
+<section class="sec" id="origin" aria-labelledby="h-origin">
+  <header class="sec-head">
+    <span class="sec-no clay" style="--c:var(--c-blue)" aria-hidden="true">2</span>
+    <div>
+      <p class="kicker">来历</p>
+      <h2 id="h-origin">从橡皮泥到界面</h2>
+      <p class="lead">黏土拟态这个名字只有几年历史，但「捏出来的、软软的、会弹的」这种趣味，在黏土、定格动画和民间泥塑里已经很久了。每一段都附了一条落到网页上的启示。</p>
+    </div>
+  </header>
+  <div class="shelf" role="tablist" aria-label="时间轴" id="shelf">
+    <button class="era clay press" type="button" role="tab" id="et0" aria-controls="ep0" aria-selected="true" style="--c:var(--c-lemon)"><b>1897</b><span>橡皮泥</span></button>
+    <button class="era clay press" type="button" role="tab" id="et1" aria-controls="ep1" aria-selected="false" tabindex="-1" style="--c:var(--c-orange)"><b>传统</b><span>民间泥塑</span></button>
+    <button class="era clay press" type="button" role="tab" id="et2" aria-controls="ep2" aria-selected="false" tabindex="-1" style="--c:var(--c-pink)"><b>1950s</b><span>定格动画</span></button>
+    <button class="era clay press" type="button" role="tab" id="et3" aria-controls="ep3" aria-selected="false" tabindex="-1" style="--c:var(--c-lav)"><b>1981</b><span>挤压与拉伸</span></button>
+    <button class="era clay press" type="button" role="tab" id="et4" aria-controls="ep4" aria-selected="false" tabindex="-1" style="--c:var(--c-blue)"><b>2020</b><span>柔软的 3D</span></button>
+    <button class="era clay press" type="button" role="tab" id="et5" aria-controls="ep5" aria-selected="false" tabindex="-1" style="--c:var(--c-mint)"><b>2021</b><span>得名</span></button>
+    <button class="era clay press" type="button" role="tab" id="et6" aria-controls="ep6" aria-selected="false" tabindex="-1" style="--c:var(--c-coral)"><b>2023</b><span>CSS 新工具</span></button>
+  </div>
+  <div class="eras">
+    <article class="era-panel clay" role="tabpanel" id="ep0" aria-labelledby="et0" style="--r:36px">
+      <div class="era-art art-plasticine" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="era-text">
+        <p class="yr">1897 年前后 · 英国巴斯</p>
+        <h3>一块不会干的黏土</h3>
+        <p>美术教师威廉·哈巴特想给学生找一种练雕塑用、放多久都不会变干的材料，调出了油性的造型黏土 Plasticine，后来成了全世界孩子手里的橡皮泥。它柔软、鲜艳、捏坏了可以重来。</p>
+        <p class="lesson"><b>网页启示</b>黏土给人的第一感觉是「可以放心地按」。这种风格天生适合鼓励尝试的界面：新手引导、练习题、游戏化的任务。</p>
+      </div>
+    </article>
+    <article class="era-panel clay" role="tabpanel" id="ep1" aria-labelledby="et1" style="--r:36px" hidden>
+      <div class="era-art art-afu" aria-hidden="true"><span class="afu"><i class="e l"></i><i class="e r"></i><i class="ck l"></i><i class="ck r"></i><i class="m"></i></span></div>
+      <div class="era-text">
+        <p class="yr">明清至今 · 无锡与天津</p>
+        <h3>圆滚滚的民间泥塑</h3>
+        <p>无锡惠山泥人里最有名的「大阿福」，胖脸圆身、色彩明快，是招福的吉祥物；天津的「泥人张」则以写实的彩塑人物闻名。泥塑的造型往往饱满圆润，没有尖角。</p>
+        <p class="lesson"><b>网页启示</b>饱满的圆形自带亲切感。界面里的吉祥物、空状态插画和头像，用圆润的大块面最容易讨人喜欢。</p>
+      </div>
+    </article>
+    <article class="era-panel clay" role="tabpanel" id="ep2" aria-labelledby="et2" style="--r:36px" hidden>
+      <div class="era-art art-stop" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="era-text">
+        <p class="yr">1950 年代 — 1990 年代</p>
+        <h3>一帧一帧捏出来的动画</h3>
+        <p>美国动画师阿特·克洛基在 1950 年代用黏土做出了绿色小人 Gumby；威尔·文顿的工作室把这种动画叫作 Claymation，并凭《Closed Mondays》获得奥斯卡最佳动画短片；英国的阿德曼工作室后来做出了《超级无敌掌门狗》。黏土角色每一帧都被手捏过，形状总在微微「呼吸」。</p>
+        <p class="lesson"><b>网页启示</b>黏土风格的动效可以「有点不完美」：待机时轻轻起伏的吉祥物、加载时被捏扁又弹起的圆点，比机械的匀速旋转更有生命感。</p>
+      </div>
+    </article>
+    <article class="era-panel clay" role="tabpanel" id="ep3" aria-labelledby="et3" style="--r:36px" hidden>
+      <div class="era-art art-squash" aria-hidden="true"><i></i></div>
+      <div class="era-text">
+        <p class="yr">1981</p>
+        <h3>动画的第一条原则：挤压与拉伸</h3>
+        <p>迪士尼动画师弗兰克·托马斯和奥利·约翰斯顿在《生命的幻象》中总结了十二条动画原则，排在第一的就是「挤压与拉伸」：物体落地时被压扁，弹起时被拉长，但体积保持不变。</p>
+        <p class="lesson"><b>网页启示</b>按钮按下时横向变宽、纵向变扁，松手后带一点过冲地弹回，就是在借用这条原则。首屏的团子会实时算出拉伸与压缩的乘积，它始终是 1。</p>
+      </div>
+    </article>
+    <article class="era-panel clay" role="tabpanel" id="ep4" aria-labelledby="et4" style="--r:36px" hidden>
+      <div class="era-art art-3d" aria-hidden="true"><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
+      <div class="era-text">
+        <p class="yr">2020 年前后</p>
+        <h3>柔软的 3D 插画</h3>
+        <p>随着 Blender 等 3D 工具普及，Dribbble 上流行起圆润、哑光、像充气玩具一样的 3D 图标和角色。设计师开始想：界面本身能不能也有这种手感？</p>
+        <p class="lesson"><b>网页启示</b>黏土拟态常和 3D 插画一起出现。界面组件用 CSS 做出体积，插画用 3D 渲染，两者的光源方向要一致：本页统一是左上方。</p>
+      </div>
+    </article>
+    <article class="era-panel clay" role="tabpanel" id="ep5" aria-labelledby="et5" style="--r:36px" hidden>
+      <div class="era-art art-name" aria-hidden="true"><span>Clay</span></div>
+      <div class="era-text">
+        <p class="yr">2021</p>
+        <h3>有了名字：Claymorphism</h3>
+        <p>设计师 Michał Malewicz 把这种风格命名为 Claymorphism，并总结出它的 CSS 配方：一道外投影加两道内阴影。和之前流行的几种「拟态」不同，它的元素有自己的颜色，对比度也好得多，因此能真正用进产品里。</p>
+        <p class="lesson"><b>网页启示</b>它的全部视觉只靠 <code>border-radius</code> 和 <code>box-shadow</code>，没有图片、没有滤镜，任何浏览器都能画，降级成本几乎为零。</p>
+      </div>
+    </article>
+    <article class="era-panel clay" role="tabpanel" id="ep6" aria-labelledby="et6" style="--r:36px" hidden>
+      <div class="era-art art-css" aria-hidden="true"><code>color-mix()</code><code>linear()</code></div>
+      <div class="era-text">
+        <p class="yr">2023</p>
+        <h3>CSS 补齐了最后两块</h3>
+        <p><code>color-mix()</code> 让高光和暗部可以直接从一个底色推导出来，不必再手算三个色值；<code>linear()</code> 缓动函数则能用一串采样点描出真正的弹簧曲线。两者都在 2023 年进入了各主流浏览器。</p>
+        <p class="lesson"><b>网页启示</b>现在一整套黏土组件只需要一个变量 <code>--c</code>：换一个颜色，阴影自动跟着变；按下和松开的回弹用纯 CSS 就能写出来。本页的「工坊」可以生成这两段代码。</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 03 language ============ -->
+<section class="sec" id="language" aria-labelledby="h-language">
+  <header class="sec-head">
+    <span class="sec-no clay" style="--c:var(--c-lav)" aria-hidden="true">3</span>
+    <div>
+      <p class="kicker">视觉规则</p>
+      <h2 id="h-language">形、色、光、字、动</h2>
+      <p class="lead">黏土拟态的规则都很「具体」：圆角给多大，阴影用什么颜色，按下时压扁多少。把这几条定成设计令牌，整套界面就能保持同一种手感。</p>
+    </div>
+  </header>
+
+  <div class="rules">
+    <article class="rule clay" style="--r:32px">
+      <p class="rule-k">形 · Shape</p>
+      <h3>圆角要大，而且要同心</h3>
+      <p>小元素的圆角接近短边的一半，卡片 28–40px。卡片里再套一块时，内圆角 = 外圆角 − 内边距，两条边才平行，否则内块的四角会显得「鼓包」。</p>
+      <div class="nest-demo">
+        <div class="nest clay" id="nestOuter" style="--c:var(--c-blue)"><div class="nest-in clay" id="nestInner" style="--c:var(--surface)"><span id="nestLabel"></span></div></div>
+      </div>
+      <label class="slide"><span>内边距 <output id="nestPadOut"></output></span><input type="range" id="nestPad" min="8" max="36" value="20"></label>
+      <div class="seg clay-in" role="radiogroup" aria-label="内圆角算法" id="nestSeg">
+        <button type="button" role="radio" aria-checked="false" data-m="same">内外一样</button>
+        <button type="button" role="radio" aria-checked="true" data-m="concentric">外圆角 − 内边距</button>
+      </div>
+    </article>
+
+    <article class="rule clay" style="--r:32px">
+      <p class="rule-k">色 · Color</p>
+      <h3>阴影是彩色的</h3>
+      <p>高光和暗部都从元素自己的颜色推导：高光往白色混，暗部往深葡萄紫混，而不是往黑色混。外投影也带一点紫，整页才干净。切到「灰黑阴影」看看区别。</p>
+      <div class="swatch-row" id="swatchRow"></div>
+      <div class="seg clay-in" role="radiogroup" aria-label="阴影颜色" id="shadeSeg">
+        <button type="button" role="radio" aria-checked="true" data-m="tint">同色系阴影</button>
+        <button type="button" role="radio" aria-checked="false" data-m="gray">灰黑阴影</button>
+      </div>
+    </article>
+
+    <article class="rule clay" style="--r:32px">
+      <p class="rule-k">光 · Light</p>
+      <h3>整页只有一盏灯</h3>
+      <p>光从左上方来：高光永远在左上，暗部和投影永远在右下。把三道阴影的偏移写成同一组变量，任何组件都不会「光源打架」。</p>
+      <div class="light-demo">
+        <span class="lamp" aria-hidden="true"></span>
+        <i class="clay" style="--c:var(--c-pink)"></i><i class="clay" style="--c:var(--c-mint);--r:50%"></i><i class="clay" style="--c:var(--c-lemon)"></i>
+      </div>
+    </article>
+
+    <article class="rule clay" style="--r:32px">
+      <p class="rule-k">字 · Type</p>
+      <h3>圆头字体，字重要足</h3>
+      <p>英文用 Fredoka、Nunito 这类圆头字体，标题 600 以上才撑得住鼓鼓的形状；中文标题用粗一档的黑体。糖果色上的文字一律用深葡萄紫，白字在浅色黏土上读不清。</p>
+      <div class="type-demo">
+        <p class="td-big">Squishy 黏糊糊</p>
+        <p class="td-row"><span class="td-chip clay" style="--c:var(--c-lemon)">深字 ✓</span><span class="td-chip clay white" style="--c:var(--c-lemon)">白字 ✗</span><span class="td-chip clay" style="--c:var(--c-mint)">深字 ✓</span><span class="td-chip clay white" style="--c:var(--c-mint)">白字 ✗</span></p>
+      </div>
+    </article>
+  </div>
+
+  <article class="rule clay motion-rule" style="--r:32px">
+    <div class="mr-text">
+      <p class="rule-k">动 · Motion</p>
+      <h3>会弹的才是黏土</h3>
+      <p>同样从左滚到右，三种缓动的手感完全不同。<code>ease</code> 平稳但「硬」；<code>cubic-bezier</code> 只能过冲一次；<code>linear()</code> 可以描出真正的弹簧：冲过头、晃两下、停稳。黏土的按压、开关、弹窗都适合最后一种。</p>
+      <button class="btn clay press" type="button" id="easePlay" style="--c:var(--c-lav)"><svg class="ic"><use href="#i-play"/></svg>滚一次</button>
+    </div>
+    <div class="tracks" id="tracks">
+      <div class="track clay-in"><span class="ball clay" style="--c:var(--c-blue);--ease:ease"></span><code>ease</code></div>
+      <div class="track clay-in"><span class="ball clay" style="--c:var(--c-orange);--ease:cubic-bezier(.34,1.56,.64,1)"></span><code>cubic-bezier(.34, 1.56, .64, 1)</code></div>
+      <div class="track clay-in"><span class="ball clay" id="springBall" style="--c:var(--c-pink)"></span><code>linear(…) 弹簧</code></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 04 ui ============ -->
+<section class="sec" id="ui" aria-labelledby="h-ui">
+  <header class="sec-head">
+    <span class="sec-no clay" style="--c:var(--c-mint)" aria-hidden="true">4</span>
+    <div>
+      <p class="kicker">界面</p>
+      <h2 id="h-ui">一套可以按扁的组件</h2>
+      <p class="lead">黏土组件的关键是「按下有反馈」：按钮被压扁、开关的圆钮像果冻一样滑过去、提示从下面弹出来。下面是一个儿童学单词应用的零件，都可以操作。</p>
+    </div>
+  </header>
+
+  <div class="kit">
+    <div class="kit-card clay">
+      <p class="kit-k">按钮</p>
+      <div class="row">
+        <button class="btn clay press" type="button" style="--c:var(--c-lav)">开始学习</button>
+        <button class="btn clay press" type="button" style="--c:var(--surface)">稍后再说</button>
+      </div>
+      <div class="row">
+        <button class="ibtn big clay press" type="button" aria-label="播放发音" style="--c:var(--c-blue)"><svg class="ic"><use href="#i-sound"/></svg></button>
+        <button class="ibtn big clay press" type="button" aria-label="收藏" style="--c:var(--c-pink)"><svg class="ic"><use href="#i-heart"/></svg></button>
+        <button class="ibtn big clay press" type="button" aria-label="评分" style="--c:var(--c-lemon)"><svg class="ic"><use href="#i-star"/></svg></button>
+        <button class="btn flat" type="button" disabled>已完成</button>
+      </div>
+      <p class="kit-note">按下时 <code>scale(1.06, .88)</code>：横向变宽、纵向变扁，体积大致不变；内阴影同时变浅，像被压实了。禁用的按钮直接「瘪掉」：没有体积、虚线边。</p>
+    </div>
+
+    <form class="kit-card clay" id="signForm" novalidate>
+      <p class="kit-k">表单</p>
+      <label class="field"><span>给自己起个昵称</span><input class="clay-in" type="text" name="nick" required maxlength="12" placeholder="比如：小团子" autocomplete="off" aria-describedby="nickErr"><em class="err" id="nickErr"></em></label>
+      <fieldset class="avatars"><legend>选一个头像颜色</legend>
+        <label><input type="radio" name="av" value="orange" checked><span class="av clay" style="--c:var(--c-orange)"></span><span class="sr">杏橙</span></label>
+        <label><input type="radio" name="av" value="blue"><span class="av clay" style="--c:var(--c-blue)"></span><span class="sr">云朵蓝</span></label>
+        <label><input type="radio" name="av" value="mint"><span class="av clay" style="--c:var(--c-mint)"></span><span class="sr">薄荷</span></label>
+        <label><input type="radio" name="av" value="lav"><span class="av clay" style="--c:var(--c-lav)"></span><span class="sr">薰衣草</span></label>
+      </fieldset>
+      <label class="cbox"><input type="checkbox" checked><span class="cb clay" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>每天提醒我练习</label>
+      <button class="btn clay press" type="submit" style="--c:var(--c-lav)">创建账号</button>
+      <p class="ok-msg" id="signOk" aria-live="polite"></p>
+      <p class="kit-note">输入框是「凹」进去的黏土：只有两道内阴影，没有外投影。出错时边框变成珊瑚红，同时给出文字说明。</p>
+    </form>
+
+    <div class="kit-card clay">
+      <p class="kit-k">开关、滑块、步进器</p>
+      <div class="sw-row"><span id="swl1">背景音乐</span><button class="jelly clay-in" type="button" role="switch" aria-checked="true" aria-labelledby="swl1"><i class="clay"></i></button></div>
+      <div class="sw-row"><span id="swl2">夜间护眼</span><button class="jelly clay-in" type="button" role="switch" aria-checked="false" aria-labelledby="swl2"><i class="clay"></i></button></div>
+      <label class="slide"><span>每日目标 <output id="goalOut">15 个单词</output></span><input type="range" id="goal" min="5" max="40" step="5" value="15"></label>
+      <div class="stepper"><span id="stepLbl">复习轮数</span>
+        <div class="step-ctl" role="group" aria-labelledby="stepLbl">
+          <button class="ibtn clay press" type="button" id="stepDown" aria-label="减少" style="--c:var(--surface)"><svg class="ic"><use href="#i-minus"/></svg></button>
+          <output class="step-val clay-in" id="stepVal" aria-live="polite">3</output>
+          <button class="ibtn clay press" type="button" id="stepUp" aria-label="增加" style="--c:var(--surface)"><svg class="ic"><use href="#i-plus"/></svg></button>
+        </div>
+      </div>
+      <p class="kit-note">开关的圆钮切换时会先拉长再缩回，像一颗果冻滑过轨道。</p>
+    </div>
+
+    <div class="kit-card clay">
+      <p class="kit-k">标签页与进度</p>
+      <div class="ctabs clay-in" role="tablist" aria-label="示例标签页" id="ctabs">
+        <span class="ctab-ind clay" id="ctabInd" aria-hidden="true"></span>
+        <button type="button" role="tab" id="ct1" aria-controls="cp1" aria-selected="true">今天</button>
+        <button type="button" role="tab" id="ct2" aria-controls="cp2" aria-selected="false" tabindex="-1">本周</button>
+        <button type="button" role="tab" id="ct3" aria-controls="cp3" aria-selected="false" tabindex="-1">全部</button>
+      </div>
+      <div class="ctab-panels">
+        <div role="tabpanel" id="cp1" aria-labelledby="ct1"><div class="prog clay-in"><i class="clay" style="--c:var(--c-mint);--p:60%"></i></div><p>今天学了 9 / 15 个单词</p></div>
+        <div role="tabpanel" id="cp2" aria-labelledby="ct2" hidden><div class="prog clay-in"><i class="clay" style="--c:var(--c-orange);--p:82%"></i></div><p>本周完成 82%，再坚持一天</p></div>
+        <div role="tabpanel" id="cp3" aria-labelledby="ct3" hidden><div class="prog clay-in"><i class="clay" style="--c:var(--c-lav);--p:35%"></i></div><p>已掌握 420 / 1200 个单词</p></div>
+      </div>
+      <div class="badges"><span class="badge clay" style="--c:var(--c-coral)"><svg class="ic"><use href="#i-fire"/></svg>连续 12 天</span><span class="badge clay" style="--c:var(--c-lemon)"><svg class="ic"><use href="#i-trophy"/></svg>单词达人</span></div>
+      <p class="kit-note">当前标签是一块会弹着滑过去的黏土。进度条是凹槽里塞了一条软软的黏土。</p>
+    </div>
+
+    <div class="kit-card clay word-card">
+      <p class="kit-k">卡片与提示</p>
+      <article class="wcard clay" style="--c:var(--c-lemon);--r:32px">
+        <span class="fruit" aria-hidden="true"><i></i></span>
+        <div><p class="w-en">apple</p><p class="w-cn">苹果 · 名词</p></div>
+        <button class="ibtn clay press" type="button" aria-label="播放 apple 的发音" style="--c:var(--surface)" id="sayBtn"><svg class="ic"><use href="#i-sound"/></svg></button>
+      </article>
+      <div class="row">
+        <button class="btn clay press" type="button" style="--c:var(--c-mint)" id="rightBtn">我认识</button>
+        <button class="btn clay press" type="button" style="--c:var(--surface)" id="againBtn">再看一次</button>
+      </div>
+      <p class="kit-note">提示从底部弹出，带一点过冲。插画也用同样的三道阴影画成，和组件处在同一个光照里。</p>
+    </div>
+
+    <div class="kit-card clay empty-card">
+      <p class="kit-k">空状态</p>
+      <div class="empty clay-in" id="emptyBox">
+        <span class="mini-mochi" aria-hidden="true"><i></i><i></i><b></b></span>
+        <p class="empty-t">还没有收藏的单词</p>
+        <p class="empty-s">遇到喜欢的单词，点一下爱心就会出现在这里。</p>
+        <button class="btn clay press" type="button" style="--c:var(--c-pink)" id="emptyBtn">去单词库逛逛</button>
+      </div>
+      <p class="kit-note">空状态是黏土风格最能发挥的地方：一个小吉祥物、一句温和的说明和一个明确的下一步，比一行灰字「暂无数据」友好得多。</p>
+    </div>
+  </div>
+
+  <div class="rf clay" style="--r:36px">
+    <div class="rf-head">
+      <h3>响应式：同一个应用，三种宽度</h3>
+      <p>示例页用容器查询按自身宽度切换布局。拖动滑块或点预设，看黏土块怎样重新排队。</p>
+    </div>
+    <div class="rf-ctrl">
+      <div class="seg clay-in" role="group" aria-label="设备宽度预设" id="rfPresets">
+        <button type="button" data-w="375">手机 375</button>
+        <button type="button" data-w="768">平板 768</button>
+        <button type="button" data-w="1200">桌面 1200</button>
+      </div>
+      <label class="slide rf-range"><span>页面宽度 <output id="rfOut"></output></span><input type="range" id="rfWidth" min="320" max="1280" value="1200"></label>
+    </div>
+    <div class="rf-stage clay-in" id="rfStage">
+      <div class="rf-frame" id="rfFrame">
+        <div class="app">
+          <aside class="app-side"><p class="app-logo"><span class="app-mascot"></span>泥泥单词</p><ul><li class="on">今天</li><li>课程</li><li>排行</li><li>我的</li></ul></aside>
+          <header class="app-top"><span class="app-av"></span><div><b>早上好，小团子</b><small>今天也来捏几个单词吧</small></div><span class="app-fire"><svg class="ic"><use href="#i-fire"/></svg>12</span></header>
+          <section class="app-goal"><div class="app-goal-t"><b>今日目标</b><span>9 / 15</span></div><div class="app-prog"><i></i></div><span class="app-mascot big"></span></section>
+          <section class="app-word"><p class="w-en">apple</p><p class="w-cn">苹果</p><span class="app-btn">我认识</span></section>
+          <section class="app-lessons"><b>课程</b><div><span style="--c:var(--c-orange)">水果</span><span style="--c:var(--c-blue)">动物</span><span style="--c:var(--c-mint)">颜色</span><span style="--c:var(--c-pink)">数字</span><span style="--c:var(--c-lav)">家庭</span><span style="--c:var(--c-lemon)">天气</span></div></section>
+          <nav class="app-tab" aria-hidden="true"><span class="on">今天</span><span>课程</span><span>排行</span><span>我的</span></nav>
+        </div>
+      </div>
+    </div>
+    <p class="rf-read" id="rfRead" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- ============ 05 lab ============ -->
+<section class="sec" id="lab" aria-labelledby="h-lab">
+  <header class="sec-head">
+    <span class="sec-no clay" style="--c:var(--c-pink)" aria-hidden="true">5</span>
+    <div>
+      <p class="kicker">动手</p>
+      <h2 id="h-lab">黏土工坊</h2>
+      <p class="lead">两件工具：左边捏一块黏土，拿走它的 CSS；右边调一根弹簧，拿走它的 <code>linear()</code> 缓动。两段代码可以直接组合使用。</p>
+    </div>
+  </header>
+
+  <div class="ws-tabs clay-in" role="tablist" aria-label="工坊工具" id="wsTabs">
+    <button type="button" role="tab" id="wt1" aria-controls="wp1" aria-selected="true">黏土生成器</button>
+    <button type="button" role="tab" id="wt2" aria-controls="wp2" aria-selected="false" tabindex="-1">弹簧缓动生成器</button>
+  </div>
+
+  <div class="ws" role="tabpanel" id="wp1" aria-labelledby="wt1">
+    <div class="ws-ctl clay" style="--r:32px">
+      <div class="ctl"><span class="ctl-l">颜色</span>
+        <div class="dots" role="radiogroup" aria-label="黏土颜色" id="genColors"></div>
+        <label class="cw clay-in" title="自定义颜色"><input type="color" id="genColor" value="#b79cff" aria-label="自定义颜色"></label>
+      </div>
+      <div class="ctl"><span class="ctl-l">形状</span>
+        <div class="seg clay-in" role="radiogroup" aria-label="形状" id="genShape">
+          <button type="button" role="radio" aria-checked="true" data-s="card">卡片</button>
+          <button type="button" role="radio" aria-checked="false" data-s="pill">胶囊</button>
+          <button type="button" role="radio" aria-checked="false" data-s="ball">圆球</button>
+          <button type="button" role="radio" aria-checked="false" data-s="blob">团子</button>
+        </div>
+      </div>
+      <label class="slide"><span>圆角 <output id="gvR"></output></span><input type="range" id="gR" min="8" max="80" value="40"></label>
+      <label class="slide"><span>体积（内阴影） <output id="gvD"></output></span><input type="range" id="gD" min="2" max="24" value="10"></label>
+      <label class="slide"><span>浮起（外投影） <output id="gvL"></output></span><input type="range" id="gL" min="0" max="32" value="16"></label>
+      <label class="slide"><span>高光强度 <output id="gvH"></output></span><input type="range" id="gH" min="0" max="90" value="65"></label>
+      <label class="slide"><span>暗部强度 <output id="gvS"></output></span><input type="range" id="gS" min="0" max="60" value="28"></label>
+    </div>
+    <div class="ws-out">
+      <div class="gen-stage clay-in" id="genStage"><div class="gen-piece" id="genPiece"><span id="genText">Aa 黏土</span></div></div>
+      <p class="meter clay" id="genMeter" style="--r:22px" aria-live="polite"></p>
+      <div class="codebox clay-in">
+        <button class="copy clay press" type="button" data-copy="genCode" style="--c:var(--surface)"><svg class="ic"><use href="#i-copy"/></svg><span>复制</span></button>
+        <pre class="code"><code id="genCode"></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="ws" role="tabpanel" id="wp2" aria-labelledby="wt2" hidden>
+    <div class="ws-ctl clay" style="--r:32px">
+      <label class="slide"><span>刚度 stiffness <output id="svK"></output></span><input type="range" id="sK" min="40" max="500" step="10" value="180"></label>
+      <label class="slide"><span>阻尼 damping <output id="svC"></output></span><input type="range" id="sC" min="4" max="40" value="12"></label>
+      <label class="slide"><span>质量 mass <output id="svM"></output></span><input type="range" id="sM" min="0.5" max="3" step="0.1" value="1"></label>
+      <div class="presets"><span class="ctl-l">预设</span>
+        <div class="row">
+          <button class="chip clay press" type="button" data-k="180" data-c="12" data-m="1" style="--c:var(--c-pink)">果冻</button>
+          <button class="chip clay press" type="button" data-k="300" data-c="26" data-m="1" style="--c:var(--c-mint)">利落</button>
+          <button class="chip clay press" type="button" data-k="90" data-c="9" data-m="1.6" style="--c:var(--c-blue)">慢悠悠</button>
+          <button class="chip clay press" type="button" data-k="420" data-c="14" data-m="0.8" style="--c:var(--c-lemon)">蹦床</button>
+        </div>
+      </div>
+      <button class="btn clay press" type="button" id="springPlay" style="--c:var(--c-lav)"><svg class="ic"><use href="#i-play"/></svg>试一下</button>
+    </div>
+    <div class="ws-out">
+      <div class="spring-stage clay-in">
+        <svg class="spring-plot" id="springPlot" viewBox="0 0 300 140" preserveAspectRatio="none" aria-label="弹簧曲线：横轴是时间，纵轴是位置，虚线是终点" role="img"><line x1="0" x2="300" class="goal-line"/><polyline id="springLine" points=""/></svg>
+        <div class="spring-demo"><span class="sp-ball clay" id="spBall" style="--c:var(--c-orange)"></span><button class="sp-btn clay press" type="button" id="spBtn" style="--c:var(--c-lav)">按我</button></div>
+      </div>
+      <p class="meter clay" id="springMeter" style="--r:22px" aria-live="polite"></p>
+      <div class="codebox clay-in">
+        <button class="copy clay press" type="button" data-copy="springCode" style="--c:var(--surface)"><svg class="ic"><use href="#i-copy"/></svg><span>复制</span></button>
+        <pre class="code"><code id="springCode"></code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 use ============ -->
+<section class="sec" id="use" aria-labelledby="h-use">
+  <header class="sec-head">
+    <span class="sec-no clay" style="--c:var(--c-coral)" aria-hidden="true">6</span>
+    <div>
+      <p class="kicker">好与坏</p>
+      <h2 id="h-use">什么时候用，容易错在哪</h2>
+      <p class="lead">黏土拟态的可读性比大多数「拟态」都好，它真正的风险在气质：可爱、轻松、孩子气。用对了地方让人想一直按；用错了地方显得不够专业。</p>
+    </div>
+  </header>
+  <div class="two">
+    <article class="fit clay" style="--r:32px">
+      <h3><span class="dot clay" style="--c:var(--c-mint)"><svg class="ic"><use href="#i-check"/></svg></span>适合</h3>
+      <ul>
+        <li><b>儿童与教育产品</b>：学单词、练口算、阅读打卡。</li>
+        <li><b>游戏化的任务与奖励</b>：连续打卡、徽章、排行榜。</li>
+        <li><b>品牌吉祥物与营销页</b>：角色、插画和组件共用一种手感。</li>
+        <li><b>引导页与空状态</b>：让第一步和「什么都没有」显得友好。</li>
+      </ul>
+    </article>
+    <article class="fit clay" style="--r:32px">
+      <h3><span class="dot clay" style="--c:var(--c-coral)"><svg class="ic"><use href="#i-x"/></svg></span>慎用</h3>
+      <ul>
+        <li><b>金融、医疗、法律等严肃场景</b>：圆鼓鼓的按钮会削弱信任感。</li>
+        <li><b>信息密集的后台和长表格</b>：每一行都鼓起来，层级就没了。</li>
+        <li><b>几百个元素的长列表</b>：三层大模糊阴影会拖慢滚动。</li>
+        <li><b>需要极简、克制的品牌</b>：糖果色和弹跳动效很难「收」。</li>
+      </ul>
+    </article>
+  </div>
+
+  <h3 class="sub-h">四个常见错误</h3>
+  <div class="mistakes">
+    <article class="mis clay" style="--r:30px">
+      <div class="mis-pair">
+        <figure><div class="mis-stage clay-in"><span class="mp clay gray" style="--c:var(--c-orange)"></span></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-stage clay-in"><span class="mp clay" style="--c:var(--c-orange)"></span></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h4>阴影用灰黑色</h4>
+      <p>半透明黑做暗部，橙色会发脏、发棕。暗部往同色系的深色混，外投影带一点背景的色相。</p>
+    </article>
+    <article class="mis clay" style="--r:30px">
+      <div class="mis-pair">
+        <figure><div class="mis-stage clay-in"><span class="mbtn clay white" style="--c:var(--c-mint)">开始</span></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-stage clay-in"><span class="mbtn clay" style="--c:var(--c-mint)">开始</span></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h4>白字放在糖果色上</h4>
+      <p>薄荷绿上的白字对比度只有 1.5 : 1 左右。糖果色本身很浅，文字要用足够深的颜色，本页统一用葡萄紫。</p>
+    </article>
+    <article class="mis clay" style="--r:30px">
+      <div class="mis-pair">
+        <figure><div class="mis-stage clay-in"><span class="mnest clay" style="--c:var(--c-blue)"><i class="clay same" style="--c:var(--surface)"></i></span></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-stage clay-in"><span class="mnest clay" style="--c:var(--c-blue)"><i class="clay" style="--c:var(--surface)"></i></span></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h4>圆角不同心</h4>
+      <p>内外用同一个圆角，内块的四角会顶出去，看起来像鼓包。内圆角取「外圆角 − 内边距」。</p>
+    </article>
+    <article class="mis clay" style="--r:30px">
+      <div class="mis-pair">
+        <figure><div class="mis-stage clay-in many"><span class="mrow clay" style="--c:var(--c-pink)"></span><span class="mrow clay" style="--c:var(--c-blue)"></span><span class="mrow clay" style="--c:var(--c-lemon)"></span><span class="mrow clay" style="--c:var(--c-mint)"></span></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-stage clay-in many"><span class="mrow plain"></span><span class="mrow plain"></span><span class="mrow clay" style="--c:var(--c-lav)"></span><span class="mrow plain"></span></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h4>每一样东西都鼓起来</h4>
+      <p>所有元素都是彩色黏土，眼睛就不知道该看哪里。只给可交互和最重要的元素体积，其余内容平铺在底色上。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 07 code ============ -->
+<section class="sec" id="code" aria-labelledby="h-code">
+  <header class="sec-head">
+    <span class="sec-no clay" style="--c:var(--c-lemon)" aria-hidden="true">7</span>
+    <div>
+      <p class="kicker">实现</p>
+      <h2 id="h-code">写好它的几个要点</h2>
+      <p class="lead">黏土拟态只用到很老的 CSS：<code>border-radius</code> 和多重 <code>box-shadow</code>。新特性只是让它更好维护。</p>
+    </div>
+  </header>
+  <div class="two code-two">
+    <div class="tips">
+      <div class="tip clay"><b>一个变量管一块黏土</b><p>把底色写成 <code>--c</code>，高光和暗部用 <code>color-mix()</code> 从它推导。换颜色只改一个值，三道阴影一起变。</p></div>
+      <div class="tip clay"><b>按压动画只动 transform</b><p>给 <code>box-shadow</code> 做过渡，每一帧都要重新计算大面积的模糊。按下时主要靠 <code>transform: scale()</code>，阴影的变化尽量小、尽量快。</p></div>
+      <div class="tip clay"><b>别让 overflow 吃掉投影</b><p>外投影画在元素外面。父元素一旦 <code>overflow: hidden</code>，右下角的投影会被整齐地切掉。给容器留出内边距，或者只在需要裁剪的那一层设置。</p></div>
+      <div class="tip clay"><b>焦点环要和圆角一起圆</b><p>现代浏览器的 <code>outline</code> 会跟随 <code>border-radius</code>。用 3px 深色实线加 4px 的间距，在任何糖果色上都看得清。</p></div>
+      <div class="tip clay"><b>尊重「减少动效」</b><p>在 <code>prefers-reduced-motion: reduce</code> 下去掉弹跳与过冲，只保留颜色和阴影的变化。导航栏的波浪按钮可以在本页手动切换这个效果。</p></div>
+      <div class="tip clay"><b>深色版要单独调</b><p>深色底上，暗部要往黑色混得更多、高光要收得更弱，外投影用更深的黑。黏土块本身保持明亮，像夜里的糖果。</p></div>
+    </div>
+    <div class="codebox clay-in big-code">
+      <button class="copy clay press" type="button" data-copy="mainCode" style="--c:var(--surface)"><svg class="ic"><use href="#i-copy"/></svg><span>复制</span></button>
+<pre class="code"><code id="mainCode"><span class="c-k">:root</span> {
+  --ink: <span class="c-v">#3D2C5C</span>;              <span class="c-c">/* 葡萄紫：文字与暗部的方向 */</span>
+  --drop: <span class="c-v">rgb(61 44 92 / .2)</span>;
+  --depth: <span class="c-v">10px</span>;                 <span class="c-c">/* 体积：内阴影的大小 */</span>
+  --lift: <span class="c-v">14px</span>;                  <span class="c-c">/* 浮起：外投影的偏移 */</span>
+  --spring: <span class="c-v">linear(0, .27, .73, 1.03, 1.12, 1.06, .99, .98, 1)</span>;
+}
+<span class="c-k">.clay</span> {
+  --c: <span class="c-v">#B79CFF</span>;
+  background: var(--c);
+  color: var(--ink);
+  border-radius: <span class="c-v">32px</span>;
+  box-shadow:
+    var(--lift) calc(var(--lift) * 1.25) calc(var(--lift) * 2.5) var(--drop),
+    inset var(--depth) var(--depth) calc(var(--depth) * 2)
+      color-mix(in oklab, var(--c), white <span class="c-v">65%</span>),
+    inset calc(var(--depth) * -1) calc(var(--depth) * -1) calc(var(--depth) * 2)
+      color-mix(in oklab, var(--c), var(--ink) <span class="c-v">28%</span>);
+  transition: transform <span class="c-v">.5s</span> var(--spring);
+}
+<span class="c-k">.clay:active</span> {
+  --depth: <span class="c-v">6px</span>; --lift: <span class="c-v">6px</span>;
+  transform: scale(<span class="c-v">1.06, .88</span>);      <span class="c-c">/* 被按扁 */</span>
+  transition-duration: <span class="c-v">.12s</span>;
+}
+<span class="c-k">.clay-in</span> {                      <span class="c-c">/* 凹槽：输入框、轨道 */</span>
+  box-shadow:
+    inset var(--depth) var(--depth) calc(var(--depth) * 2)
+      color-mix(in oklab, var(--c), var(--ink) <span class="c-v">18%</span>),
+    inset calc(var(--depth) * -1) calc(var(--depth) * -1) calc(var(--depth) * 2)
+      color-mix(in oklab, var(--c), white <span class="c-v">70%</span>);
+}
+<span class="c-k">@media (prefers-reduced-motion: reduce)</span> {
+  <span class="c-k">.clay</span> { transition: none; }
+  <span class="c-k">.clay:active</span> { transform: none; }
+}</code></pre>
+    </div>
+  </div>
+
+  <h3 class="sub-h">本页的设计令牌</h3>
+  <div class="tokens clay" style="--r:30px">
+    <table>
+      <caption>对比度按当前明暗模式实时计算。糖果色那几行算的是「葡萄紫文字放在这块黏土上」。</caption>
+      <thead><tr><th scope="col">令牌</th><th scope="col">值</th><th scope="col">用途</th><th scope="col">对比度</th></tr></thead>
+      <tbody id="tokenBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="foot clay" style="--r:30px">
+  <p>本页所有的黏土都只用 <code>border-radius</code> 和 <code>box-shadow</code> 画成，团子、苹果和吉祥物也不例外，没有使用图片。</p>
+  <p>右上角的复原按钮会把明暗、动效、团子的颜色和所有控件恢复到初始状态。</p>
+</footer>
+</main>
+
+<div class="toast clay" id="toast" role="status" aria-live="polite" style="--r:999px"></div>
+</body>
+</html>

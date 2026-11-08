@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>野兽派 · Web Brutalism</title>
+<meta name="description" content="用野兽派（Web Brutalism）写成的一页野兽派介绍：材料诚实、从粗野主义建筑到 brutalistwebsites.com 的来历、规格书、七条规矩与原生组件、去装修实验、常见错误与整站只有几十行的样式表。">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="top" id="top">
+  <a class="back" href="../../#s-brutal">[← 返回图鉴]</a>
+  <p class="logo">WEB BRUTALISM <span>/ 野兽派</span></p>
+  <nav class="toc" aria-label="章节">
+    <a href="#principle">§1 原理</a>
+    <a href="#history">§2 来历</a>
+    <a href="#spec">§3 规格</a>
+    <a href="#rules">§4 界面</a>
+    <a href="#undesign">§5 动手</a>
+    <a href="#use">§6 好与坏</a>
+    <a href="#code">§7 实现</a>
+  </nav>
+  <div class="tools">
+    <button type="button" id="themeBtn" aria-pressed="false">[暗色]</button>
+    <button type="button" id="resetBtn" title="恢复初始状态：明暗、拆掉的样式、去装修实验和所有控件">[复原]</button>
+  </div>
+</header>
+
+<p class="raw-note" id="rawNote" role="status" hidden><strong>你正在看这一页的毛坯：</strong>样式表已经拆掉，剩下的是浏览器默认样式。标题、段落、列表、表格、表单和链接都还能用。<button type="button" class="strip-again">[装回 CSS]</button></p>
+
+<main id="main">
+
+<!-- ============ hero ============ -->
+<section class="hero" aria-labelledby="h-hero">
+  <p class="attn"><b>ATTENTION:</b> 这不是坏掉的网页。</p>
+  <h1 id="h-hero"><span lang="en">THIS PAGE IS MADE OF HTML.</span> <span class="h1-cn">这一页，是用 HTML 做的。</span></h1>
+  <p class="sticker" aria-hidden="true">本站<br>永远<br>施工中</p>
+
+  <div class="hero-grid">
+    <div class="hero-text">
+      <p class="big">野兽派网页（Web Brutalism）不给页面化妆：浏览器默认的字体、蓝色带下划线的链接、生硬的边框、原生的按钮，统统原样留着。</p>
+      <p>它的名字借自 1950 年代的粗野主义建筑：混凝土拆模后不抹灰、不贴面，木模板的纹理直接留在墙上。网页的「混凝土」是 HTML。这一页就按这个思路写成：<b>没有网页字体，没有图片，没有圆角，没有阴影，没有渐变，没有缓动。</b>颜色全部交给浏览器的系统颜色。</p>
+      <p>右边的控制台可以把这一页的样式表整个拆掉，或者把每个 HTML 元素的「模板印痕」标出来。拆掉之后它依然能读、能点、能填表。</p>
+    </div>
+
+    <div class="panel" aria-labelledby="h-panel">
+      <h2 id="h-panel" class="panel-h">CONTROL PANEL / 控制台</h2>
+      <p class="panel-row">
+        <button type="button" class="strip" id="stripBtn" aria-pressed="false">[拆掉全部 CSS]</button>
+        <button type="button" id="formworkBtn" aria-pressed="false">[显示模板印痕]</button>
+      </p>
+      <table class="stats">
+        <caption>本页材料清单（实时统计）</caption>
+        <tbody id="statBody">
+          <tr><th scope="row">HTML</th><td data-stat="html">…</td></tr>
+          <tr><th scope="row">CSS</th><td data-stat="css">…</td></tr>
+          <tr><th scope="row">JavaScript</th><td data-stat="js">…</td></tr>
+          <tr><th scope="row">网页字体</th><td data-stat="fonts">…</td></tr>
+          <tr><th scope="row">图片</th><td data-stat="img">…</td></tr>
+          <tr><th scope="row">HTML 元素</th><td data-stat="dom">…</td></tr>
+          <tr><th scope="row">CSS 规则</th><td data-stat="rules">…</td></tr>
+          <tr><th scope="row">DOMContentLoaded</th><td data-stat="time">…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="marquee" aria-hidden="true"><p><span>★ NO RADIUS ★ NO SHADOW ★ NO GRADIENT ★ NO WEB FONTS ★ NO IMAGES ★ NO EASING ★ 没有圆角 ★ 没有阴影 ★ 没有渐变 ★ 没有网页字体 ★ 没有图片 ★ 没有缓动 </span><span>★ NO RADIUS ★ NO SHADOW ★ NO GRADIENT ★ NO WEB FONTS ★ NO IMAGES ★ NO EASING ★ 没有圆角 ★ 没有阴影 ★ 没有渐变 ★ 没有网页字体 ★ 没有图片 ★ 没有缓动 </span></p></div>
+</section>
+
+<!-- ============ §1 principle ============ -->
+<section class="sec" id="principle" aria-labelledby="h-principle">
+  <header class="sec-head">
+    <p class="num" aria-hidden="true">§1</p>
+    <div>
+      <h2 id="h-principle">材料诚实</h2>
+      <p class="lead">粗野主义建筑最核心的主张是：材料以本来的面目示人，结构一眼看得出来。翻译到网页上，就是让 HTML 做 HTML 该做的事，不用 CSS 和 JavaScript 去假扮别的东西。</p>
+    </div>
+  </header>
+
+  <table class="compare">
+    <caption>建筑与网页的对照</caption>
+    <thead><tr><th scope="col">粗野主义建筑</th><th scope="col">野兽派网页</th></tr></thead>
+    <tbody>
+      <tr><td>裸露的混凝土，不抹灰、不贴面</td><td>浏览器默认样式与系统字体，不加装饰层</td></tr>
+      <tr><td>木模板的纹理留在墙上</td><td>结构直接可见：边框、表格线、<code>&lt;hr&gt;</code>、标签名</td></tr>
+      <tr><td>管道和设备不藏进吊顶</td><td>链接就是带下划线的链接，按钮就是按钮</td></tr>
+      <tr><td>功能决定体量</td><td>内容决定版式，不为「好看」加无关内容</td></tr>
+      <tr><td>大体量、重复的单元</td><td>超大号字、重复的网格单元、粗重的分隔线</td></tr>
+    </tbody>
+  </table>
+
+  <div class="demo-raw">
+    <div class="dr-code">
+      <h3>12 行 HTML，已经是一个网站</h3>
+<pre><code>&lt;h1&gt;我的主页&lt;/h1&gt;
+&lt;p&gt;我做网页，也写字。&lt;a href="#"&gt;最新文章&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;项目&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="#"&gt;一个很小的天气应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#"&gt;用 HTML 写的简历&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;form&gt;
+  &lt;label&gt;邮箱 &lt;input type="email" required&gt;&lt;/label&gt;
+  &lt;button&gt;订阅&lt;/button&gt;
+&lt;/form&gt;
+&lt;hr&gt;&lt;p&gt;&lt;small&gt;最后更新：2026-11-08&lt;/small&gt;&lt;/p&gt;</code></pre>
+    </div>
+    <figure class="dr-out">
+      <iframe title="这 12 行 HTML 的渲染结果" sandbox srcdoc="&lt;meta name=color-scheme content=&quot;light dark&quot;&gt;&lt;h1&gt;我的主页&lt;/h1&gt;&lt;p&gt;我做网页，也写字。&lt;a href=#&gt;最新文章&lt;/a&gt;&lt;/p&gt;&lt;h2&gt;项目&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=#&gt;一个很小的天气应用&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=#&gt;用 HTML 写的简历&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;form&gt;&lt;label&gt;邮箱 &lt;input type=email required&gt;&lt;/label&gt; &lt;button&gt;订阅&lt;/button&gt;&lt;/form&gt;&lt;hr&gt;&lt;p&gt;&lt;small&gt;最后更新：2026-11-08&lt;/small&gt;&lt;/p&gt;"></iframe>
+      <figcaption>↑ 上面这段代码的真实渲染，没有一行 CSS。它能读、能点、能缩放、能打印，屏幕阅读器能读出标题层级，表单会自己检查邮箱格式。野兽派从这里出发，只在必要时往上加东西。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ §2 history ============ -->
+<section class="sec" id="history" aria-labelledby="h-history">
+  <header class="sec-head">
+    <p class="num" aria-hidden="true">§2</p>
+    <div>
+      <h2 id="h-history">从混凝土到超链接</h2>
+      <p class="lead">一张表就够了。左边是建筑，右边是网页，最后一栏是它留给今天的前端的东西。</p>
+    </div>
+  </header>
+  <div class="scroll-x">
+  <table class="timeline">
+    <caption>年表</caption>
+    <thead><tr><th scope="col">年份</th><th scope="col">事件</th><th scope="col">对网页的启示</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1950</th><td>据说瑞典建筑师汉斯·阿斯普伦德用「新粗野主义」(nybrutalism) 戏称同行设计的一座砖砌住宅，这个词后来经英国同行传开。</td><td>名字起初带着玩笑。「野兽派网页」这个称呼也一样，不必把它看得太严肃。</td></tr>
+      <tr><th scope="row">1952</th><td>勒·柯布西耶设计的马赛公寓落成。béton brut（原始混凝土）成了这类建筑的标志，「粗野」一词也与它相关。</td><td>材料就是表面。网页的「材料」是 HTML 元素和浏览器默认样式。</td></tr>
+      <tr><th scope="row">1955</th><td>英国评论家雷纳·班纳姆发表《新粗野主义》，把「结构清楚可读」「材料按本来面目呈现」列为要点。</td><td>对应到网页：语义化的 HTML，以及看得出结构的版式。</td></tr>
+      <tr><th scope="row">1966</th><td>班纳姆出版《新粗野主义：伦理还是美学？》。</td><td>网页上同样有两派：追求坦率、快速、好用的「伦理派」，和只追求「看起来粗糙」的「美学派」。</td></tr>
+      <tr><th scope="row">1982</th><td>伦敦巴比肯艺术中心开幕，所在的巴比肯屋村是粗野主义最大的建筑群之一。</td><td>大体量 + 重复单元。网页里对应的是巨型字和一格一格的重复网格。</td></tr>
+      <tr><th scope="row">1991</th><td>蒂姆·伯纳斯-李上线第一个网站：纯文本、标题和超链接。</td><td>网页一出生就是「野兽派」的：那时还没有 CSS。</td></tr>
+      <tr><th scope="row">1996</th><td>CSS 1 成为 W3C 推荐标准。同一时期，Craigslist 从一个邮件列表起步，网站的样子多年几乎没变。</td><td>「丑」的网站可以很成功：用户要的是信息和速度。</td></tr>
+      <tr><th scope="row">2014</th><td>设计师 Pascal Deville 创建 brutalistwebsites.com，收集刻意「不设计」的网站，「网页野兽派」由此得名。</td><td>它是对千篇一律的模板网站的反叛：同样的大图、同样的三栏卡片。</td></tr>
+      <tr><th scope="row">2017</th><td>史密森夫妇设计的伦敦罗宾汉花园开始拆除，维多利亚与阿尔伯特博物馆保存了其中一段立面。</td><td>粗野建筑常被嫌弃、被拆除；网页倒是反过来，那些「丑」网站往往活得最久。</td></tr>
+      <tr><th scope="row">2018</th><td>开发者 David Bryant Copeland 发布《野兽派网页设计指南》，把这种风格落到可用性上，提出七条规矩。</td><td>本页 §4 就按这七条来组织组件。</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============ §3 spec ============ -->
+<section class="sec" id="spec" aria-labelledby="h-spec">
+  <header class="sec-head">
+    <p class="num" aria-hidden="true">§3</p>
+    <div>
+      <h2 id="h-spec">规格书</h2>
+      <p class="lead">野兽派没有调色板，也没有字体授权。它的「规范」是一组克制：用什么、不用什么。</p>
+    </div>
+  </header>
+
+  <div class="spec-grid">
+    <article class="spec-box">
+      <h3>3.1 字体：系统自带</h3>
+      <p class="f-serif">衬线 Times New Roman / 宋体</p>
+      <p class="f-mono">等宽 Courier New / 等宽字</p>
+      <p class="f-sans">无衬线 Arial / 黑体</p>
+      <p class="note">不下载任何网页字体。你看到的具体字形取决于你的系统：Windows、macOS、安卓上各不相同。这不是缺陷，而是这种风格的一部分。</p>
+    </article>
+
+    <article class="spec-box">
+      <h3>3.2 颜色：交给浏览器</h3>
+      <ul class="chips">
+        <li><span class="chip c-canvas">Canvas</span>底色</li>
+        <li><span class="chip c-text">CanvasText</span>文字</li>
+        <li><span class="chip c-link">LinkText</span>链接</li>
+        <li><span class="chip c-visited">VisitedText</span>访问过</li>
+        <li><span class="chip c-mark">Mark</span>高亮</li>
+        <li><span class="chip c-alert">ALERT</span>错误（唯一自定义色）</li>
+      </ul>
+      <p class="note">这些是 CSS 的系统颜色关键字，由浏览器按明暗模式解析。切到暗色看看，链接蓝会自动变浅。</p>
+    </article>
+
+    <article class="spec-box">
+      <h3>3.3 线：结构，不是装饰</h3>
+      <p class="line l1">1px · 表格与细分隔</p>
+      <p class="line l3">3px · 区块边界、按钮、输入框</p>
+      <p class="line l8">8px · 章节之间</p>
+      <p class="note">只有三种粗细。线条用来标出结构，所以从不做成虚线、渐变或圆头。</p>
+    </article>
+
+    <article class="spec-box">
+      <h3>3.4 尺寸：反差要大</h3>
+      <p class="scale"><span class="s-huge">10</span><span class="s-tiny">: 1 · 最大的字和正文之比</span></p>
+      <p class="note">页面上只有两种字号最显眼：巨大的标题，和正常大小的正文。中间档位越少，越有野兽派的味道。</p>
+    </article>
+
+    <article class="spec-box">
+      <h3>3.5 交互：瞬间反色</h3>
+      <p class="inter"><a href="#spec">悬停这个链接</a> <button type="button">或这个按钮</button></p>
+      <p class="note">悬停时前景色和背景色直接对调，没有过渡。焦点是 4px 的实线加高亮底色，比任何精致的焦点环都清楚。</p>
+    </article>
+
+    <article class="spec-box">
+      <h3>3.6 装饰：只在需要时</h3>
+      <pre class="ascii" aria-hidden="true">+------------------------+
+|  DECORATION BUDGET: 1  |
++------------------------+</pre>
+      <p class="note">允许的装饰本身也是「原材料」：ASCII 字符画、<code>&lt;hr&gt;</code>、一条跑马灯。它们不需要图片，也不需要额外的请求。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ §4 rules / ui ============ -->
+<section class="sec" id="rules" aria-labelledby="h-rules">
+  <header class="sec-head">
+    <p class="num" aria-hidden="true">§4</p>
+    <div>
+      <h2 id="h-rules">七条规矩，一套组件</h2>
+      <p class="lead">Copeland 的《野兽派网页设计指南》把这种风格落到了可用性上。下面按他的七条规矩（意译）逐条给出网页组件。所有组件都是原生 HTML 元素，样式只有边框、字体和反色。</p>
+    </div>
+  </header>
+
+  <ol class="rules">
+    <li class="rule" id="r1">
+      <h3><span class="rn">1</span>内容在任何合理的屏幕上都可读</h3>
+      <p>野兽派的响应式几乎不用写：正文用 <code>max-width: 70ch</code> 限宽，卡片网格用 <code>auto-fit</code> 自动换行，标题用 <code>clamp()</code> 缩放。下面这个示例页<b>一条媒体查询都没有</b>。</p>
+      <div class="rf-ctrl">
+        <span role="group" aria-label="设备宽度预设" id="rfPresets"><button type="button" data-w="375">[手机 375]</button> <button type="button" data-w="768">[平板 768]</button> <button type="button" data-w="1200">[桌面 1200]</button></span>
+        <label class="rf-range">宽度 <output id="rfOut"></output> <input type="range" id="rfWidth" min="320" max="1280" value="1200"></label>
+      </div>
+      <div class="rf-stage" id="rfStage">
+        <div class="rf-frame" id="rfFrame">
+          <div class="mini">
+            <p class="mini-top"><b>THE PLAIN NEWS</b> <span>[首页] [文章] [关于]</span></p>
+            <p class="mini-h">粗糙的网页，结实的内容。</p>
+            <p class="mini-p">这个示例页的全部布局规则只有三条：正文 max-width: 70ch；卡片网格 repeat(auto-fit, minmax(16rem, 1fr))；标题字号 clamp(28px, 9cqi, 96px)。宽度变化时，它自己换行、自己缩放。</p>
+            <div class="mini-grid">
+              <article><b>01</b><p>为什么所有的网站都长得一样？</p></article>
+              <article><b>02</b><p>一个只有 8KB 的个人主页。</p></article>
+              <article><b>03</b><p>表格不是用来排版的，是用来放数据的。</p></article>
+              <article><b>04</b><p>下划线是链接最好的样子。</p></article>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="rf-read" id="rfRead" aria-live="polite"></p>
+    </li>
+
+    <li class="rule" id="r2">
+      <h3><span class="rn">2</span>只有链接和按钮会响应点击</h3>
+      <p>用 <code>&lt;div onclick&gt;</code> 假装的按钮，鼠标能点，键盘却摸不到，屏幕阅读器也不知道它是按钮。先用鼠标点两个都试试，再按 Tab 键走一遍。</p>
+      <div class="r2-demo">
+        <div class="fake-btn" id="fakeBtn">我是一个 div（点我）</div>
+        <button type="button" id="realBtn">我是一个 button（点我）</button>
+      </div>
+      <p class="mono-out" id="r2Out" aria-live="polite">div 被点了 0 次 · button 被按了 0 次（其中 0 次来自键盘）</p>
+    </li>
+
+    <li class="rule" id="r3">
+      <h3><span class="rn">3</span>链接有下划线，按钮看起来像按钮</h3>
+      <div class="r3-demo">
+        <p><a href="#r3">普通链接</a> · <a href="#r3" class="visited-sample">访问过的链接（示意）</a> · <a href="#r3" class="sample-focus">有焦点的链接</a></p>
+        <p class="btns"><button type="button" class="primary">[ 立即购买 ]</button> <button type="button">[ 加入收藏 ]</button> <button type="button" disabled>[ 已售罄 ]</button></p>
+        <nav aria-label="示例导航" class="sample-nav"><a href="#r3" aria-current="page">[首页]</a> <a href="#r3">[文章]</a> <a href="#r3">[关于]</a> <a href="#r3">[RSS]</a></nav>
+      </div>
+      <p class="note">主按钮用反色实底，次按钮只有 3px 边框，禁用的按钮用虚线边加删除线，不只靠变淡。当前导航项用高亮底色，还带 <code>aria-current</code>。</p>
+    </li>
+
+    <li class="rule" id="r4">
+      <h3><span class="rn">4</span>后退键照常工作</h3>
+      <p>下面的标签页没有用一行 JavaScript：每个标签就是一个指向 <code>#id</code> 的链接，CSS 的 <code>:target</code> 决定显示哪一块。点几个标签，再按浏览器的后退键，标签会一个个退回去。</p>
+      <div class="ttabs">
+        <p class="ttab-row"><a href="#t-html" class="ttab" data-for="t-html">HTML</a><a href="#t-css" class="ttab" data-for="t-css">CSS</a><a href="#t-js" class="ttab" data-for="t-js">JavaScript</a></p>
+        <div class="tpanels">
+          <section class="tpanel" id="t-html" aria-label="HTML"><p><b>HTML 是混凝土。</b>结构、语义、链接、表单都在这一层。它必须独立成立：拆掉另外两层，页面依然完整。</p></section>
+          <section class="tpanel" id="t-css" aria-label="CSS"><p><b>CSS 是模板的纹理。</b>野兽派只用它做三件事：定字体、画线、处理反色和焦点。装饰性的属性一律不用。</p></section>
+          <section class="tpanel" id="t-js" aria-label="JavaScript"><p><b>JavaScript 是可选的设备。</b>它只增强，不承重。本页关掉 JS 后，除了统计数字和几个演示，所有内容都还在。</p></section>
+        </div>
+      </div>
+    </li>
+
+    <li class="rule" id="r5">
+      <h3><span class="rn">5</span>内容靠滚动浏览</h3>
+      <p>不做轮播，不劫持滚动，不做横向翻页。信息多的时候用表格和折叠，让用户一眼看完、自己决定看哪里。点表头可以排序。</p>
+      <div class="scroll-x">
+      <table class="sortable" id="sortTable">
+        <caption>八座粗野主义建筑</caption>
+        <thead><tr>
+          <th scope="col" aria-sort="none"><button type="button" data-col="0">建筑</button></th>
+          <th scope="col" aria-sort="none"><button type="button" data-col="1">建筑师</button></th>
+          <th scope="col" aria-sort="none"><button type="button" data-col="2">城市</button></th>
+          <th scope="col" aria-sort="ascending"><button type="button" data-col="3" data-num="1">落成</button></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>马赛公寓</td><td>勒·柯布西耶</td><td>马赛</td><td>1952</td></tr>
+          <tr><td>亨斯坦顿中学</td><td>史密森夫妇</td><td>诺福克</td><td>1954</td></tr>
+          <tr><td>栖息地 67</td><td>摩西·萨夫迪</td><td>蒙特利尔</td><td>1967</td></tr>
+          <tr><td>波士顿市政厅</td><td>Kallmann McKinnell &amp; Knowles</td><td>波士顿</td><td>1968</td></tr>
+          <tr><td>罗宾汉花园</td><td>史密森夫妇</td><td>伦敦</td><td>1972</td></tr>
+          <tr><td>特雷利克塔</td><td>厄诺·戈德芬格</td><td>伦敦</td><td>1972</td></tr>
+          <tr><td>英国国家剧院</td><td>丹尼斯·拉斯登</td><td>伦敦</td><td>1976</td></tr>
+          <tr><td>巴比肯艺术中心</td><td>Chamberlin, Powell &amp; Bon</td><td>伦敦</td><td>1982</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <details>
+        <summary>FAQ：野兽派网页就是「没做完的网页」吗？</summary>
+        <p>不是。没做完的网页是缺东西；野兽派网页是把不需要的东西拿掉。它的每一条边框、每一个下划线都是刻意保留的。</p>
+      </details>
+      <details>
+        <summary>FAQ：为什么用原生的 &lt;details&gt; 做折叠？</summary>
+        <p>它自带键盘操作、展开状态和无障碍语义，浏览器的页内搜索也能搜到折叠里的文字。自己用 div 拼一个，很难做得这么全。</p>
+      </details>
+    </li>
+
+    <li class="rule" id="r6">
+      <h3><span class="rn">6</span>装饰只在需要时出现，不放无关内容</h3>
+      <p>提示、表单和进度条都用原生元素，状态写成文字前缀，而不是只靠颜色或图标。</p>
+      <div class="r6-demo">
+        <p class="alert a-err"><b>ERROR:</b> 付款没有完成。你的卡没有被扣款，请重试。</p>
+        <p class="alert a-note"><b>NOTE:</b> 周日 14:00 起维护一小时。</p>
+        <form class="sub-form" id="subForm">
+          <label>邮箱（必填）<input type="email" name="mail" required placeholder="you@example.com" autocomplete="off"></label>
+          <button type="submit">[订阅]</button>
+          <output id="subOut" aria-live="polite"></output>
+        </form>
+        <p class="meters"><label>上传进度 <progress id="prog" max="100" value="70">70%</progress></label> <button type="button" id="progBtn">[+10%]</button></p>
+        <p><button type="button" id="dlgBtn">[打开对话框]</button></p>
+      </div>
+      <p class="note">表单用浏览器自带的校验；用户填错离开输入框后（<code>:user-invalid</code>），边框变成错误色并加粗。对话框是原生 <code>&lt;dialog&gt;</code>，Esc 可以关闭，焦点会自动回到按钮上。</p>
+    </li>
+
+    <li class="rule" id="r7">
+      <h3><span class="rn">7</span>性能就是功能</h3>
+      <p>不加载用不到的东西，页面自然就快。这一页的全部重量就在首屏的控制台里：<b id="weightLine">正在统计……</b> 没有网页字体、没有图片、没有框架，也没有第三方脚本。</p>
+      <p class="bar" aria-hidden="true"><span id="weightBar"></span></p>
+      <p class="note">上面的条形图按字节数画出 HTML、CSS、JS 三部分的比例。统计的是解压后的原始文件大小。</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ============ §5 un-design ============ -->
+<section class="sec" id="undesign" aria-labelledby="h-undesign">
+  <header class="sec-head">
+    <p class="num" aria-hidden="true">§5</p>
+    <div>
+      <h2 id="h-undesign">去装修</h2>
+      <p class="lead">右边是一张很「模板」的会员卡片：渐变、圆角、阴影、徽章、悬停浮起。把装修项一项项拆掉，看它还剩下什么；再给它加上野兽派的处理。下面的 CSS 就是正在作用于这张卡片的全部代码，字节数实时统计。</p>
+    </div>
+  </header>
+  <div class="ud">
+    <form class="ud-ctl" id="udForm">
+      <fieldset>
+        <legend>装修项（取消勾选来拆掉）</legend>
+        <label><input type="checkbox" data-k="gradient" checked> 渐变 <small data-b="gradient"></small></label>
+        <label><input type="checkbox" data-k="radius" checked> 圆角 <small data-b="radius"></small></label>
+        <label><input type="checkbox" data-k="shadow" checked> 投影 <small data-b="shadow"></small></label>
+        <label><input type="checkbox" data-k="font" checked> 定制字体设置 <small data-b="font"></small></label>
+        <label><input type="checkbox" data-k="motion" checked> 悬停浮起动画 <small data-b="motion"></small></label>
+        <label><input type="checkbox" data-k="badge" checked> 「NEW」徽章 <small data-b="badge"></small></label>
+        <label><input type="checkbox" data-k="icon" checked> 装饰图标 <small data-b="icon"></small></label>
+      </fieldset>
+      <fieldset>
+        <legend>野兽派处理</legend>
+        <label><input type="checkbox" data-k="border"> 3px 实线边框 <small data-b="border"></small></label>
+        <label><input type="checkbox" data-k="invert"> 悬停反色 <small data-b="invert"></small></label>
+        <label><input type="checkbox" data-k="mono"> 等宽字体 <small data-b="mono"></small></label>
+        <label><input type="checkbox" data-k="huge"> 巨型价格 <small data-b="huge"></small></label>
+        <label><input type="checkbox" data-k="mark"> 高亮标题 <small data-b="mark"></small></label>
+      </fieldset>
+      <p class="ud-quick"><button type="button" id="udStrip">[一键拆光]</button> <button type="button" id="udBrutal">[拆光并粗野化]</button></p>
+    </form>
+    <div class="ud-out">
+      <div class="ud-stage">
+        <article id="udCard">
+          <span class="ud-badge">NEW</span>
+          <span class="ud-icon" aria-hidden="true">✦</span>
+          <h3 class="ud-title">Pro 会员</h3>
+          <p class="ud-price">¥28 / 月</p>
+          <p class="ud-desc">无限云端空间，优先客服支持，随时可以取消。</p>
+          <button type="button" class="ud-btn">立即升级</button>
+        </article>
+      </div>
+      <p class="ud-bytes" id="udBytes" aria-live="polite"></p>
+      <div class="codebox">
+        <button type="button" class="copy" data-copy="udCode">[复制]</button>
+        <pre><code id="udCode"></code></pre>
+      </div>
+    </div>
+  </div>
+  <style id="udStyle"></style>
+</section>
+
+<!-- ============ §6 use ============ -->
+<section class="sec" id="use" aria-labelledby="h-use">
+  <header class="sec-head">
+    <p class="num" aria-hidden="true">§6</p>
+    <div>
+      <h2 id="h-use">粗糙 ≠ 难用</h2>
+      <p class="lead">野兽派最常见的失败，是把「不修饰」误解成「不考虑用户」。外表可以粗，可用性不能打折。</p>
+    </div>
+  </header>
+  <div class="fit">
+    <div>
+      <h3>适合</h3>
+      <ul>
+        <li>艺术家、设计师、独立创作者的个人站</li>
+        <li>宣言、活动、实验项目这类「有态度」的页面</li>
+        <li>开发者主页、文档、更新日志</li>
+        <li>独立出版、小众媒体、需要极快加载的信息站</li>
+      </ul>
+    </div>
+    <div>
+      <h3>慎用</h3>
+      <ul>
+        <li>电商、金融、医疗：用户可能以为网站坏了或不可信</li>
+        <li>面向不熟悉网页的人群：他们更依赖熟悉的界面惯例</li>
+        <li>品牌需要「精致、高级」的场合</li>
+        <li>复杂的应用界面：原生控件不够用时，硬撑会更难用</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sub-h">四个常见错误</h3>
+  <div class="mistakes">
+    <article class="mis">
+      <div class="pair">
+        <figure><p class="wrong-lbl">✗ WRONG</p><div class="mis-box"><span class="m-focus none">[ 订阅 ]</span></div></figure>
+        <figure><p class="right-lbl">✓ RIGHT</p><div class="mis-box"><span class="m-focus yes">[ 订阅 ]</span></div></figure>
+      </div>
+      <h4>为了「好看」去掉焦点框</h4>
+      <p><code>outline: none</code> 让键盘用户不知道自己在哪。野兽派的焦点可以很粗野：4px 实线加高亮底色，比默认的还显眼。</p>
+    </article>
+    <article class="mis">
+      <div class="pair">
+        <figure><p class="wrong-lbl">✗ WRONG</p><div class="mis-box light"><span class="m-yellow">有态度的黄字</span></div></figure>
+        <figure><p class="right-lbl">✓ RIGHT</p><div class="mis-box light"><span class="m-onyellow">有态度的黄底</span></div></figure>
+      </div>
+      <h4>用低对比的颜色表达态度</h4>
+      <p>纯黄字放在白底上，对比度只有 1.1 : 1 左右。要用黄色就把它当底色，上面放黑字。</p>
+    </article>
+    <article class="mis">
+      <div class="pair">
+        <figure><p class="wrong-lbl">✗ WRONG</p><div class="mis-box clip"><span class="m-huge">BRUTALISM</span></div></figure>
+        <figure><p class="right-lbl">✓ RIGHT</p><div class="mis-box"><span class="m-huge ok">BRUTALISM</span></div></figure>
+      </div>
+      <h4>巨型字在手机上撑破版面</h4>
+      <p>固定的超大字号在窄屏上会溢出，导致横向滚动。用 <code>clamp()</code> 跟随宽度缩放，再加上 <code>overflow-wrap: anywhere</code> 兜底。</p>
+    </article>
+    <article class="mis">
+      <div class="pair">
+        <figure><p class="wrong-lbl">✗ WRONG</p><div class="mis-box"><span class="m-nav">◐ ⌘ ∆ ✺</span></div></figure>
+        <figure><p class="right-lbl">✓ RIGHT</p><div class="mis-box"><span class="m-nav">[首页] [文章] [关于]</span></div></figure>
+      </div>
+      <h4>谜一样的导航</h4>
+      <p>只用符号当导航很「酷」，但没人知道该点哪个。野兽派的导航就是写清楚的文字链接。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ §7 code ============ -->
+<section class="sec" id="code" aria-labelledby="h-code">
+  <header class="sec-head">
+    <p class="num" aria-hidden="true">§7</p>
+    <div>
+      <h2 id="h-code">整站样式表</h2>
+      <p class="lead">一个野兽派网站的基础样式，二十来行就够了。下面这段可以直接用在任何只有 HTML 的页面上。</p>
+    </div>
+  </header>
+  <div class="code-grid">
+    <div class="codebox">
+      <button type="button" class="copy" data-copy="mainCode">[复制]</button>
+<pre><code id="mainCode">/* 野兽派基础样式：只有这些 */
+:root { color-scheme: light dark; }   /* 深色模式交给浏览器 */
+body {
+  max-width: 70ch; margin: 0 auto; padding: 1rem;
+  font: 1.125rem/1.5 "Times New Roman", Times,
+        "Songti SC", SimSun, serif;
+  background: Canvas; color: CanvasText;   /* 系统颜色 */
+}
+h1 { font-size: clamp(2.5rem, 12vw, 8rem); line-height: .9;
+     overflow-wrap: anywhere; }
+a { color: LinkText; text-decoration-thickness: 2px;
+    text-underline-offset: 3px; }
+a:visited { color: VisitedText; }
+a:hover, button:hover { background: CanvasText; color: Canvas; }
+:focus-visible { outline: 4px solid CanvasText; outline-offset: 2px;
+                 background: Mark; color: MarkText; }
+button, input, select, textarea {
+  font: inherit; color: CanvasText; background: Canvas;
+  border: 3px solid CanvasText; border-radius: 0; padding: .3em .6em;
+}
+hr { border: 0; border-top: 3px solid; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid; padding: .25em .5em; text-align: left; }
+pre, code { font-family: "Courier New", Courier, monospace; }
+img { max-width: 100%; height: auto; }
+@media print { a[href^="http"]::after { content: " (" attr(href) ")"; } }</code></pre>
+    </div>
+    <ol class="tips">
+      <li><b>系统颜色 + color-scheme = 免费的深色模式。</b><code>Canvas</code>、<code>CanvasText</code>、<code>LinkText</code> 由浏览器按明暗解析，在 Windows 的高对比度（强制颜色）模式下也天然正确。本页的 [暗色] 按钮只改了一个属性：<code>color-scheme</code>。</li>
+      <li><b>字体栈写全，以通用族结尾。</b>英文字体后面跟上中文字体，最后写 <code>serif</code> 或 <code>monospace</code>。安卓上没有 Times New Roman，会落到系统衬线体。</li>
+      <li><b>下划线可以更粗野，但别压字。</b><code>text-decoration-thickness</code> 和 <code>text-underline-offset</code> 让下划线更粗、离字更远，中文也不会被划到。</li>
+      <li><b>没有过渡。</b>反色是瞬间的。唯一的动画是跑马灯，开启「减少动效」时它会停下（老旧的 <code>&lt;marquee&gt;</code> 元素已被废弃，用 CSS 动画代替）。</li>
+      <li><b>先拆再装。</b>写样式之前，先确认页面在没有 CSS 时完整可用：标题层级对、表单有 label、链接文字说得清去哪。首屏的 [拆掉全部 CSS] 就是这项检查。</li>
+      <li><b>打印也是一种屏幕。</b>打印时把外链地址印在链接后面，纸上也能「点」。</li>
+    </ol>
+  </div>
+
+  <h3 class="sub-h">本页的设计令牌</h3>
+  <div class="scroll-x">
+  <table class="tokens">
+    <caption>颜色一栏是这些关键字在你的浏览器、当前明暗模式下解析出的实际值，对比度按它计算。</caption>
+    <thead><tr><th scope="col">令牌</th><th scope="col">解析值</th><th scope="col">用途</th><th scope="col">对比度（对 Canvas）</th></tr></thead>
+    <tbody id="tokenBody"></tbody>
+  </table>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <hr>
+  <p>本页没有网页字体、图片、框架或第三方脚本。<span id="footWeight"></span></p>
+  <p class="counter">你已经来过 <b id="visits">000001</b> 次（只记在你自己的浏览器里）· 最后更新：2026-11-08 · <a href="#top">[↑ 回到顶部]</a></p>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <form method="dialog">
+    <h3 id="dlgTitle">DIALOG / 对话框</h3>
+    <p>这是原生的 &lt;dialog&gt;。没有动画，没有毛玻璃，背后是一片斜线。按 Esc 或下面的按钮关闭。</p>
+    <p><button value="ok" class="primary">[ 好的 ]</button> <button value="cancel">[ 取消 ]</button></p>
+  </form>
+</dialog>
+
+<p class="toast" id="toast" role="status" aria-live="polite"></p>
+</body>
+</html>

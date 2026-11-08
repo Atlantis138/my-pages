@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>玻璃拟态 · Glassmorphism</title>
+<meta name="description" content="用玻璃拟态（Glassmorphism）写成的一页玻璃拟态介绍：六层结构、从水晶宫到 Liquid Glass 的来历、厚度与层级规则、玻璃组件与响应式示例、玻璃实验室、常见错误与 CSS 实现。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6L6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M3.5 12h17M12 3.5v17" opacity=".55"/></symbol>
+    <symbol id="i-solid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="currentColor" fill-opacity=".9"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v4h4"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8.5 5v14M15.5 5v14"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 6l-8 6 8 6z" fill="currentColor"/><path d="M6 6v12"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 6l8 6-8 6z" fill="currentColor"/><path d="M18 6v12"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor"/></symbol>
+    <symbol id="i-bt" viewBox="0 0 24 24"><path d="M7 7l10 10-5 4V3l5 4L7 17"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 7h4l10 10h4M3 17h4l10-10h4M18 4l3 3-3 3M18 14l3 3-3 3"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  </defs>
+</svg>
+
+<!-- 整页背景：静止的光斑。玻璃要有东西可模糊，但背景不动，滚动时才不必每帧重新模糊 -->
+<div class="sky" aria-hidden="true"><i class="sky-o s1"></i><i class="sky-o s2"></i><i class="sky-o s3"></i><i class="sky-o s4"></i></div>
+
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- ============ nav：本身就是一条玻璃，正文从它下面滚过 ============ -->
+<header class="nav glass rim">
+  <a class="icon-btn glass" href="../../#s-glass" aria-label="返回设计风格图鉴" title="返回设计风格图鉴"><svg class="ic"><use href="#i-back"/></svg></a>
+  <p class="brand">Glass <span>· 玻璃拟态</span></p>
+  <nav class="nav-links" aria-label="章节">
+    <a href="#principle">原理</a><a href="#origin">来历</a><a href="#language">规则</a><a href="#ui">界面</a><a href="#lab">实验室</a><a href="#use">好与坏</a><a href="#code">实现</a>
+  </nav>
+  <div class="nav-tools">
+    <button class="icon-btn glass" id="solidBtn" type="button" role="switch" aria-checked="false" aria-label="降低透明度" title="降低透明度：所有玻璃改为实色"><svg class="ic"><use href="#i-drop"/></svg></button>
+    <button class="icon-btn glass" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="深色模式" title="深色模式"><svg class="ic"><use href="#i-sun"/></svg></button>
+    <button class="icon-btn glass" id="resetBtn" type="button" aria-label="恢复初始状态" title="恢复初始状态：明暗、透明度、光斑与所有控件"><svg class="ic"><use href="#i-reset"/></svg></button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ hero ============ -->
+<section class="hero scene" id="stage" data-bg="blobs" aria-labelledby="h-hero">
+  <div class="scene-art" aria-hidden="true"><i class="sc-sun"></i><i class="sc-hill h1"></i><i class="sc-hill h2"></i><i class="sc-hill h3"></i><p class="sc-text">GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃 GLASS 玻璃</p></div>
+  <button class="orb" type="button" data-o="0" style="--x:16%;--y:24%" aria-label="粉色光斑：拖动或用方向键移动"></button>
+  <button class="orb" type="button" data-o="1" style="--x:78%;--y:70%" aria-label="蓝色光斑：拖动或用方向键移动"></button>
+  <button class="orb" type="button" data-o="2" style="--x:62%;--y:18%" aria-label="青色光斑：拖动或用方向键移动"></button>
+
+  <div class="hero-grid">
+    <div class="hero-copy glass rim thick">
+      <p class="kicker">Glassmorphism · Frosted UI · 2020 —</p>
+      <h1 id="h-hero">玻璃拟态</h1>
+      <p class="hero-en">Frosted glass for the web</p>
+      <p>一块半透明的面板，把背后的颜色模糊成一片柔光，再用一道细细的亮边勾出轮廓。它让界面分出前后层次，又不把背景完全挡住。这种质感在 2007 年的 Windows Vista 里就出现过，2020 年随 macOS Big Sur 被叫作「玻璃拟态」，2025 年又借苹果的 Liquid Glass 回到聚光灯下。</p>
+      <p>这一页的每一块面板都是真正的 CSS 玻璃。拖动背后的光斑，或换一种背景，看玻璃怎样随背景而变。</p>
+    </div>
+
+    <div class="hero-card glass rim" id="heroCard">
+      <p class="hc-k">这块玻璃的配方</p>
+      <pre class="hc-code"><code id="heroCode"></code></pre>
+      <label class="range"><span>模糊<output id="hvBlur"></output></span><input type="range" id="hBlur" min="0" max="40" value="24"></label>
+      <label class="range"><span>着色<output id="hvTint"></output></span><input type="range" id="hTint" min="0" max="80" value="18"></label>
+      <label class="range"><span>饱和度<output id="hvSat"></output></span><input type="range" id="hSat" min="100" max="250" value="180" step="10"></label>
+      <div class="seg glass-inset" role="radiogroup" aria-label="背后的内容" id="bgSeg">
+        <button type="button" role="radio" aria-checked="true" data-bg="blobs">光斑</button>
+        <button type="button" role="radio" aria-checked="false" data-bg="scene">风景</button>
+        <button type="button" role="radio" aria-checked="false" data-bg="text">文字</button>
+        <button type="button" role="radio" aria-checked="false" data-bg="plain">纯色</button>
+      </div>
+      <p class="hc-note" id="bgNote" aria-live="polite"></p>
+      <button class="btn ghost small" type="button" id="orbShuffle"><svg class="ic"><use href="#i-shuffle"/></svg>重新摆放光斑</button>
+    </div>
+  </div>
+  <p class="hero-hint">拖动光斑到玻璃后面 · 聚焦光斑后可用方向键移动</p>
+</section>
+
+<!-- ============ 01 principle ============ -->
+<section class="sec" id="principle" aria-labelledby="h-principle">
+  <header class="sec-head glass rim">
+    <p class="kicker">01 · 原理</p>
+    <h2 id="h-principle">一块玻璃，六层效果</h2>
+    <p>CSS 里的玻璃不是一个属性，而是几层效果叠起来的。真正关键的只有第一层 <code>backdrop-filter</code>：它处理的是元素<b>背后</b>已经画好的像素，而不是元素自己。其余几层让玻璃有颜色、有质感、有边界。逐层关掉试试，看每一层少了会怎样。</p>
+  </header>
+
+  <div class="layers">
+    <div class="layers-demo scene" data-bg="scene">
+      <div class="scene-art" aria-hidden="true"><i class="sc-sun"></i><i class="sc-hill h1"></i><i class="sc-hill h2"></i><i class="sc-hill h3"></i></div>
+      <div class="pane L-blur L-sat L-tint L-noise L-rim L-shadow" id="pane">
+        <p class="pane-city">大理 · 晴</p>
+        <p class="pane-temp">21°</p>
+        <p class="pane-sub">最高 24° · 最低 13°</p>
+      </div>
+    </div>
+
+    <fieldset class="layer-list glass rim">
+      <legend>逐层开关</legend>
+      <label class="lyr"><input type="checkbox" data-layer="blur" checked><span class="lyr-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span><span class="lyr-t"><b>① 背景模糊</b><small>把背后的内容变成柔光。没有它，只剩一块半透明色块。</small></span></label>
+      <label class="lyr"><input type="checkbox" data-layer="sat" checked><span class="lyr-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span><span class="lyr-t"><b>② 饱和度补偿</b><small>模糊会把颜色混灰；拉高饱和度，色晕才鲜亮。</small></span></label>
+      <label class="lyr"><input type="checkbox" data-layer="tint" checked><span class="lyr-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span><span class="lyr-t"><b>③ 着色层</b><small>决定玻璃的「厚度」，也是文字对比度的保险。</small></span></label>
+      <label class="lyr"><input type="checkbox" data-layer="noise" checked><span class="lyr-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span><span class="lyr-t"><b>④ 噪点</b><small>细微的颗粒让表面像磨砂，也能掩盖渐变色带。</small></span></label>
+      <label class="lyr"><input type="checkbox" data-layer="rim" checked><span class="lyr-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span><span class="lyr-t"><b>⑤ 高光边</b><small>一道亮边勾出轮廓；背景颜色接近时，玻璃靠它才不「消失」。</small></span></label>
+      <label class="lyr"><input type="checkbox" data-layer="shadow" checked><span class="lyr-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span><span class="lyr-t"><b>⑥ 投影</b><small>把面板从背景上托起来，分出前后。</small></span></label>
+    </fieldset>
+
+    <div class="stack-wrap glass rim">
+      <div class="stack-fig" aria-hidden="true">
+        <div class="stack" id="stack">
+          <i class="pl pl-bg" style="--i:0" data-n="背景"></i>
+          <i class="pl pl-blur" data-layer="blur" style="--i:1" data-n="①"></i>
+          <i class="pl pl-sat" data-layer="sat" style="--i:2" data-n="②"></i>
+          <i class="pl pl-tint" data-layer="tint" style="--i:3" data-n="③"></i>
+          <i class="pl pl-noise" data-layer="noise" style="--i:4" data-n="④"></i>
+          <i class="pl pl-rim" data-layer="rim" style="--i:5" data-n="⑤"></i>
+          <i class="pl pl-text" style="--i:6" data-n=""></i>
+        </div>
+      </div>
+      <ol class="stack-legend" aria-label="图层顺序，从上到下">
+        <li><b>内容</b>文字与图标</li>
+        <li data-layer="rim"><b>⑤ 高光边</b>border 与 inset 阴影</li>
+        <li data-layer="noise"><b>④ 噪点</b>background-image</li>
+        <li data-layer="tint"><b>③ 着色</b>background-color</li>
+        <li data-layer="sat"><b>② 饱和度补偿</b>saturate()</li>
+        <li data-layer="blur"><b>① 背景模糊</b>blur()</li>
+        <li><b>背景</b>页面上已经画好的像素</li>
+      </ol>
+      <p class="stack-cap">浏览器先画好背景，再把玻璃覆盖的那块区域模糊、提饱和，然后依次叠上着色、噪点、亮边和文字。投影画在玻璃外面，所以不在这叠图层里。</p>
+    </div>
+
+    <pre class="code glass-inset layer-code" id="layerCode"><code><span class="c-k">.glass</span> {
+<span class="ln" data-layer="blur">  backdrop-filter: <span class="c-v">blur(20px)</span></span><span class="ln" data-layer="sat"> <span class="c-v">saturate(180%)</span></span><span class="ln" data-layer="blur">;</span>
+<span class="ln" data-layer="tint">  background-color: <span class="c-v">rgb(255 255 255 / .18)</span>;</span>
+<span class="ln" data-layer="noise">  background-image: <span class="c-v">url(noise.svg)</span>;       <span class="c-c">/* ≈ 4% 颗粒 */</span></span>
+<span class="ln" data-layer="rim">  border: <span class="c-v">1px solid rgb(255 255 255 / .4)</span>;</span>
+  box-shadow:<span class="ln" data-layer="shadow"> <span class="c-v">0 20px 50px rgb(20 10 60 / .25)</span>,</span>
+<span class="ln" data-layer="rim">              <span class="c-v">inset 0 1px 0 rgb(255 255 255 / .6)</span></span>;
+  border-radius: <span class="c-v">24px</span>;
+}</code></pre>
+  </div>
+</section>
+
+<!-- ============ 02 origin ============ -->
+<section class="sec" id="origin" aria-labelledby="h-origin">
+  <header class="sec-head glass rim">
+    <p class="kicker">02 · 来历</p>
+    <h2 id="h-origin">从玻璃房子到 Liquid Glass</h2>
+    <p>玻璃进入界面，比「玻璃拟态」这个名字早了十几年。每一代系统都在解决同一个问题：怎样让一层浮在另一层上面，又不让人迷路。每个节点下面都附了一条对网页的启示。</p>
+  </header>
+
+  <div class="tl" role="tablist" aria-label="时间轴" id="timeline">
+    <button class="tl-node glass" type="button" role="tab" id="tt0" aria-controls="tp0" aria-selected="false" tabindex="-1"><b>1851</b><span>玻璃建筑</span></button>
+    <button class="tl-node glass" type="button" role="tab" id="tt1" aria-controls="tp1" aria-selected="false" tabindex="-1"><b>2007</b><span>Aero</span></button>
+    <button class="tl-node glass" type="button" role="tab" id="tt2" aria-controls="tp2" aria-selected="false" tabindex="-1"><b>2013</b><span>iOS 7</span></button>
+    <button class="tl-node glass" type="button" role="tab" id="tt3" aria-controls="tp3" aria-selected="false" tabindex="-1"><b>2017</b><span>Acrylic</span></button>
+    <button class="tl-node glass" type="button" role="tab" id="tt4" aria-controls="tp4" aria-selected="true"><b>2020</b><span>命名</span></button>
+    <button class="tl-node glass" type="button" role="tab" id="tt5" aria-controls="tp5" aria-selected="false" tabindex="-1"><b>2021</b><span>Mica</span></button>
+    <button class="tl-node glass" type="button" role="tab" id="tt6" aria-controls="tp6" aria-selected="false" tabindex="-1"><b>2023</b><span>visionOS</span></button>
+    <button class="tl-node glass" type="button" role="tab" id="tt7" aria-controls="tp7" aria-selected="false" tabindex="-1"><b>2025</b><span>Liquid Glass</span></button>
+  </div>
+
+  <div class="tl-panels">
+    <article class="tl-panel glass rim" role="tabpanel" id="tp0" aria-labelledby="tt0" hidden>
+      <div class="tl-text">
+        <p class="yr">1851 — 1926</p>
+        <h3>先有玻璃房子</h3>
+        <p>1851 年，约瑟夫·帕克斯顿用铁和玻璃为伦敦万国博览会搭起水晶宫。1914 年，布鲁诺·陶特在科隆的德意志制造联盟展上建起玻璃馆，献给写下《玻璃建筑》的诗人保罗·舍尔巴特。1926 年落成的包豪斯德绍校舍，工坊楼整面都是玻璃幕墙。玻璃让人看见另一边，同时又把两边隔开。</p>
+        <p class="lesson"><b>网页启示</b>界面里的玻璃也是这样：它告诉用户「后面还有一层」，面板只是暂时浮在上面。</p>
+      </div>
+      <div class="tl-demo demo-arch" aria-hidden="true"><i class="ar-frame"></i><i class="ar-sky"></i></div>
+    </article>
+    <article class="tl-panel glass rim" role="tabpanel" id="tp1" aria-labelledby="tt1" hidden>
+      <div class="tl-text">
+        <p class="yr">2007</p>
+        <h3>Windows Vista 的 Aero Glass</h3>
+        <p>Vista 给窗口边框加上半透明和模糊，再压上一道光泽高光。这个效果依赖新的桌面窗口管理器和显卡加速，入门的 Home Basic 版本干脆没有它。两年后的 Windows 7 延续了 Aero，到 2012 年的 Windows 8 才被扁平的 Metro 取代。</p>
+        <p class="lesson"><b>网页启示</b>玻璃从第一天起就是「有成本」的效果。写玻璃时，先写好它的降级版本。</p>
+      </div>
+      <div class="tl-demo demo-aero" aria-hidden="true"><div class="aero-win"><p class="aero-bar"><span>计算机</span><i></i><i></i><i class="x"></i></p><div class="aero-body"></div></div></div>
+    </article>
+    <article class="tl-panel glass rim" role="tabpanel" id="tp2" aria-labelledby="tt2" hidden>
+      <div class="tl-text">
+        <p class="yr">2013</p>
+        <h3>iOS 7：去掉纹理，留下半透明</h3>
+        <p>iOS 7 抛弃了拟物化的皮革和木纹，却保留并强化了半透明：控制中心和通知中心是一层模糊的薄片，下面的主屏幕隐约可见。用户从一层滑到另一层时，始终知道自己从哪里来。</p>
+        <p class="lesson"><b>网页启示</b>模糊在说「这是临时浮层，底下的内容还在」。抽屉、弹层、工具栏最适合用玻璃。</p>
+      </div>
+      <div class="tl-demo demo-ios" aria-hidden="true"><div class="ios-phone"><div class="ios-apps">
+        <i style="--c:#FF6B6B"></i><i style="--c:#FFD15C"></i><i style="--c:#4CD07D"></i><i style="--c:#4AA3FF"></i><i style="--c:#B57BFF"></i><i style="--c:#FF8FC7"></i><i style="--c:#36D1C4"></i><i style="--c:#FF9F43"></i>
+      </div><div class="ios-cc"><span></span><span></span><span></span><span></span><b></b></div></div></div>
+    </article>
+    <article class="tl-panel glass rim" role="tabpanel" id="tp3" aria-labelledby="tt3" hidden>
+      <div class="tl-text">
+        <p class="yr">2017</p>
+        <h3>Fluent Design 的 Acrylic</h3>
+        <p>微软的 Fluent 设计体系推出 Acrylic（亚克力）材质：背景模糊、一层着色，再叠一层细噪点。噪点让大面积的模糊不至于像塑料，也掩盖了渐变色带。</p>
+        <p class="lesson"><b>网页启示</b>大面积玻璃加一层很淡的噪点，质感立刻更真实。本页的玻璃都叠了一张 SVG 噪点。</p>
+      </div>
+      <div class="tl-demo demo-acrylic" aria-hidden="true"><div class="acr-side"><i></i><i></i><i></i><i></i></div><div class="acr-main"></div></div>
+    </article>
+    <article class="tl-panel glass rim" role="tabpanel" id="tp4" aria-labelledby="tt4">
+      <div class="tl-text">
+        <p class="yr">2020</p>
+        <h3>macOS Big Sur，以及一个名字</h3>
+        <p>Big Sur 把半透明铺满了侧栏、菜单栏和通知中心的小组件。同年，设计师 Michał Malewicz 撰文总结这种风格，Glassmorphism 这个名字随之流行。Dribbble 上涌现出大量「彩色光斑 + 玻璃卡片」的作品。</p>
+        <p class="lesson"><b>网页启示</b>光斑几乎成了标配，因为没有它们玻璃就看不出来。玻璃本身没有颜色，它的美全部借自背景。</p>
+      </div>
+      <div class="tl-demo demo-bigsur" aria-hidden="true"><p class="bs-menu"><i></i><span>Finder</span><span>文件</span><span>编辑</span></p><div class="bs-widgets"><div class="bs-w big"><b>21°</b><span>大理</span></div><div class="bs-w"><i></i></div><div class="bs-w"><i class="r"></i></div></div></div>
+    </article>
+    <article class="tl-panel glass rim" role="tabpanel" id="tp5" aria-labelledby="tt5" hidden>
+      <div class="tl-text">
+        <p class="yr">2021</p>
+        <h3>Windows 11 的 Mica</h3>
+        <p>Mica（云母）材质不再实时模糊窗口背后的内容，而是取一次桌面壁纸的颜色，给窗口底色染上淡淡的色调。效果更克制，也更省电。</p>
+        <p class="lesson"><b>网页启示</b>大面积背景不必用真正的 <code>backdrop-filter</code>。一张预先模糊好的图，或一层带色调的半透明底色，就能得到相近的气质，代价小得多。</p>
+      </div>
+      <div class="tl-demo demo-mica" aria-hidden="true"><div class="mica-win"><p class="mica-bar"><span>设置</span></p><div class="mica-body"><i></i><i></i><i></i></div></div></div>
+    </article>
+    <article class="tl-panel glass rim" role="tabpanel" id="tp6" aria-labelledby="tt6" hidden>
+      <div class="tl-text">
+        <p class="yr">2023</p>
+        <h3>visionOS：悬浮在房间里的玻璃</h3>
+        <p>苹果为 Vision Pro 设计的 visionOS 把玻璃作为窗口的默认材质。窗口悬浮在真实的房间里，玻璃让人既能读内容，又不丢失周围的环境。</p>
+        <p class="lesson"><b>网页启示</b>背景是无法控制的真实世界时，玻璃必须在任何背景下都保证可读。网页也一样：用户的壁纸、图片和视频都可能出现在玻璃后面，要按最坏的情况设计。</p>
+      </div>
+      <div class="tl-demo demo-vision" aria-hidden="true"><div class="vis-win"><b>Hello</b><i></i><i></i></div><div class="vis-bar"></div></div>
+    </article>
+    <article class="tl-panel glass rim" role="tabpanel" id="tp7" aria-labelledby="tt7" hidden>
+      <div class="tl-text">
+        <p class="yr">2025</p>
+        <h3>Liquid Glass：会折射的玻璃</h3>
+        <p>苹果在 2025 年的 WWDC 上发布 Liquid Glass，统一了 iOS 26、macOS Tahoe 26 等系统的界面。它不只是模糊，还像透镜一样折射背后的内容，边缘的高光会随设备移动。发布后它的可读性受到不少批评，iOS 26.1 加入了「着色」选项，让玻璃更不透明。</p>
+        <p class="lesson"><b>网页启示</b>右边这块透镜用 SVG 位移滤镜近似边缘折射，可以拖动。这只是近似实现：把 SVG 滤镜用在 <code>backdrop-filter</code> 上目前只有 Chromium 内核支持，其他浏览器会显示为普通模糊。</p>
+      </div>
+      <div class="tl-demo demo-liquid" id="liquidStage">
+        <p class="lq-bg" aria-hidden="true">Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 Liquid Glass 液态玻璃 </p>
+        <button class="lens" type="button" id="lens" aria-label="透镜：拖动或用方向键移动"></button>
+        <p class="lq-note" id="lqNote"></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 03 language ============ -->
+<section class="sec" id="language" aria-labelledby="h-language">
+  <header class="sec-head glass rim">
+    <p class="kicker">03 · 视觉规则</p>
+    <h2 id="h-language">四条规则</h2>
+    <p>玻璃拟态的规则不多，几乎都围绕一件事：玻璃本身是透明的，它的样子取决于背后有什么。所以设计玻璃，其实是在设计「玻璃与背景的关系」。</p>
+  </header>
+
+  <article class="rule glass rim">
+    <div class="rule-text">
+      <p class="rule-no">规则 1</p>
+      <h3>文字越多，玻璃越厚</h3>
+      <p>模糊越强、着色越浓，玻璃越「厚」，背景越难干扰文字。只放一个图标的按钮可以很薄，一段正文就需要厚玻璃。下面五档厚度借用了苹果 SwiftUI 的材质命名，数值是本页自定的。每档右下角是按当前配色估算的<b>最差</b>文字对比度。</p>
+    </div>
+    <div class="thk-row scene" data-bg="blobs" id="thickRow">
+      <div class="tk" style="--b:6px;--t:.06"><b>Aa</b><span>超薄 ultraThin</span><small>blur 6 · 着色 6%</small><em data-ct></em></div>
+      <div class="tk" style="--b:12px;--t:.16"><b>Aa</b><span>薄 thin</span><small>blur 12 · 着色 16%</small><em data-ct></em></div>
+      <div class="tk" style="--b:20px;--t:.32"><b>Aa</b><span>常规 regular</span><small>blur 20 · 着色 32%</small><em data-ct></em></div>
+      <div class="tk" style="--b:28px;--t:.5"><b>Aa</b><span>厚 thick</span><small>blur 28 · 着色 50%</small><em data-ct></em></div>
+      <div class="tk" style="--b:40px;--t:.68"><b>Aa</b><span>超厚 ultraThick</span><small>blur 40 · 着色 68%</small><em data-ct></em></div>
+    </div>
+  </article>
+
+  <div class="rules-2">
+    <article class="rule glass rim">
+      <p class="rule-no">规则 2</p>
+      <h3>一道光就是边界</h3>
+      <p>玻璃没有颜色，边界全靠一道亮边。比起整圈均匀的 1px 白边，「迎光的一侧亮、背光的一侧暗」的渐变边更像真正的玻璃。在下面的卡片上移动指针，高光会跟着走。</p>
+      <div class="edge scene" data-bg="blobs">
+        <div class="edge-card glass-raw" id="specCard" data-edge="rim"><b>Pro</b><span>高光随指针移动</span></div>
+      </div>
+      <div class="seg glass-inset" role="radiogroup" aria-label="边缘样式" id="edgeSeg">
+        <button type="button" role="radio" aria-checked="false" data-edge="none">无边</button>
+        <button type="button" role="radio" aria-checked="false" data-edge="line">1px 白边</button>
+        <button type="button" role="radio" aria-checked="true" data-edge="rim">渐变高光边</button>
+      </div>
+    </article>
+
+    <article class="rule glass rim">
+      <p class="rule-no">规则 3</p>
+      <h3>背景鲜艳，玻璃中性</h3>
+      <p>颜色来自背后的光斑，玻璃自己只用白或黑着色。模糊会把相邻的颜色混成灰，所以要用 <code>saturate()</code> 把饱和度补回来，这是苹果系统材质的常用手法。</p>
+      <div class="satcmp scene" data-bg="blobs">
+        <div class="sc-pane" style="--f:blur(18px)"><b>只模糊</b><code>blur(18px)</code></div>
+        <div class="sc-pane" style="--f:blur(18px) saturate(200%)"><b>模糊 + 饱和</b><code>saturate(200%)</code></div>
+      </div>
+    </article>
+
+    <article class="rule glass rim">
+      <p class="rule-no">规则 4</p>
+      <h3>越靠近用户，越清楚</h3>
+      <p>层级用三样东西表达：模糊、着色和投影。越上面的层，模糊越强、着色越浓、投影越深。弹窗还要给整个页面再罩一层模糊，把注意力收拢到中间。</p>
+      <div class="depth scene" data-bg="blobs">
+        <div class="dp dp1"><span>卡片 · regular</span></div>
+        <div class="dp dp2"><span>弹出菜单 · thick</span></div>
+        <div class="dp dp3"><span>对话框 · ultraThick</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="mini-rules">
+    <div class="mr glass rim"><b>字</b><p>正文用 400–500 的常规字重，细字体只留给大号数字。模糊背景已经很「软」，文字要稳。</p></div>
+    <div class="mr glass rim"><b>动</b><p>背景可以缓慢流动，玻璃自己少动。不要给 <code>blur()</code> 的半径做动画，那是最贵的一种重绘。</p></div>
+    <div class="mr glass rim"><b>形</b><p>16–28px 的圆角最常见。嵌套时内圆角 = 外圆角 − 内边距，玻璃的边缘才平行。</p></div>
+  </div>
+</section>
+
+<!-- ============ 04 ui ============ -->
+<section class="sec" id="ui" aria-labelledby="h-ui">
+  <header class="sec-head glass rim">
+    <p class="kicker">04 · 界面</p>
+    <h2 id="h-ui">放进网页里</h2>
+    <p>玻璃最适合「浮」起来的东西：导航栏、工具栏、弹层、通知、小组件。主要的行动按钮反而应该用实色，它要从玻璃里跳出来。下面的组件都可以操作。</p>
+  </header>
+
+  <div class="kit">
+    <form class="kit-card glass rim login" id="loginForm" novalidate>
+      <p class="kit-k">表单</p>
+      <h3>登录</h3>
+      <label class="field"><span>邮箱</span><input type="email" name="mail" required placeholder="you@example.com" autocomplete="off" aria-describedby="mailErr"><em class="err" id="mailErr"></em></label>
+      <label class="field"><span>密码</span><input type="password" name="pass" required minlength="6" placeholder="至少 6 位" autocomplete="off" aria-describedby="passErr"><em class="err" id="passErr"></em></label>
+      <label class="check"><input type="checkbox" checked><span class="box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>记住我</label>
+      <button class="btn primary" type="submit">登录</button>
+      <p class="form-ok" id="loginOk" aria-live="polite"></p>
+      <p class="kit-note">输入框是一块更「凹」的玻璃：着色更淡、边框更清楚。焦点环用实色，不靠玻璃的明暗。</p>
+    </form>
+
+    <div class="kit-card glass rim">
+      <p class="kit-k">按钮</p>
+      <div class="btn-row">
+        <button class="btn primary" type="button">立即订阅</button>
+        <button class="btn" type="button">了解更多</button>
+        <button class="btn ghost" type="button">稍后</button>
+      </div>
+      <div class="btn-row">
+        <button class="icon-btn glass" type="button" aria-label="播放"><svg class="ic"><use href="#i-play"/></svg></button>
+        <button class="icon-btn glass" type="button" aria-label="搜索"><svg class="ic"><use href="#i-search"/></svg></button>
+        <button class="icon-btn glass" type="button" aria-label="通知"><svg class="ic"><use href="#i-bell"/></svg></button>
+        <button class="btn" type="button" disabled>已售罄</button>
+      </div>
+      <p class="kit-note">层级：实色主按钮 &gt; 玻璃次按钮 &gt; 透明幽灵按钮。禁用状态降低不透明度的同时加上虚线边，不只靠颜色。</p>
+      <div class="chips" role="group" aria-label="筛选标签" id="chips">
+        <button type="button" class="chip" aria-pressed="true">全部</button>
+        <button type="button" class="chip" aria-pressed="false">设计</button>
+        <button type="button" class="chip" aria-pressed="false">前端</button>
+        <button type="button" class="chip" aria-pressed="false">动效</button>
+      </div>
+      <label class="search-bar"><svg class="ic"><use href="#i-search"/></svg><input type="search" placeholder="搜索文章" aria-label="搜索文章"></label>
+      <p class="kit-note">筛选标签可以多选，选中后变成实色；搜索框是一条胶囊形的薄玻璃，放在图片上也读得清。</p>
+    </div>
+
+    <div class="kit-card glass rim cc">
+      <p class="kit-k">控制中心</p>
+      <div class="cc-grid">
+        <button class="cc-tile" type="button" aria-pressed="true"><svg class="ic"><use href="#i-wifi"/></svg><b>Wi-Fi</b><small>已连接</small></button>
+        <button class="cc-tile" type="button" aria-pressed="false"><svg class="ic"><use href="#i-bt"/></svg><b>蓝牙</b><small>关闭</small></button>
+        <button class="cc-tile" type="button" aria-pressed="false"><svg class="ic"><use href="#i-moon"/></svg><b>勿扰</b><small>关闭</small></button>
+        <button class="cc-tile" type="button" aria-pressed="true"><svg class="ic"><use href="#i-bell"/></svg><b>提醒</b><small>开启</small></button>
+      </div>
+      <label class="range"><span>亮度<output id="vBright">60%</output></span><input type="range" id="bright" min="0" max="100" value="60"></label>
+      <div class="seg glass-inset" role="radiogroup" aria-label="统计周期" id="periodSeg">
+        <button type="button" role="radio" aria-checked="true">日</button>
+        <button type="button" role="radio" aria-checked="false">周</button>
+        <button type="button" role="radio" aria-checked="false">月</button>
+      </div>
+      <p class="kit-note">开启的磁贴换成不透明的强调色，状态不靠透明度的细微差别来表达。</p>
+    </div>
+
+    <div class="kit-card glass rim notif-card">
+      <p class="kit-k">通知</p>
+      <div class="notif-stack" id="notifStack" aria-live="polite"></div>
+      <button class="btn" type="button" id="notifBtn"><svg class="ic"><use href="#i-plus"/></svg>推送一条通知</button>
+      <p class="kit-note">通知层叠时，越早的那条越往后退：缩小、变淡。最多同时显示三条。</p>
+    </div>
+
+    <div class="kit-card glass rim player">
+      <p class="kit-k">媒体卡片</p>
+      <div class="pl-art" aria-hidden="true"><i></i></div>
+      <p class="pl-track"><b>Frosted Morning</b><span>Glass Ensemble · 第 2 首</span></p>
+      <div class="pl-prog" aria-hidden="true"><i id="plFill"></i></div>
+      <div class="pl-ctrl">
+        <button class="icon-btn glass" type="button" aria-label="上一首"><svg class="ic"><use href="#i-prev"/></svg></button>
+        <button class="icon-btn big solid" type="button" id="playBtn" aria-pressed="false" aria-label="播放"><svg class="ic"><use href="#i-play"/></svg></button>
+        <button class="icon-btn glass" type="button" aria-label="下一首"><svg class="ic"><use href="#i-next"/></svg></button>
+      </div>
+      <p class="kit-note">封面本身就是最好的背景：把封面的颜色放大、模糊，铺在卡片后面。</p>
+    </div>
+
+    <div class="kit-card glass rim dlg-card">
+      <p class="kit-k">对话框与标签栏</p>
+      <button class="btn primary" type="button" id="dlgBtn">打开对话框</button>
+      <p class="kit-note">原生 <code>&lt;dialog&gt;</code> 的 <code>::backdrop</code> 伪元素也能加 <code>backdrop-filter</code>，整页在弹窗后面一起变模糊。</p>
+      <nav class="tabbar glass" aria-label="示例标签栏" id="tabbar">
+        <button type="button" aria-current="page"><svg class="ic"><use href="#i-home"/></svg><span>首页</span></button>
+        <button type="button"><svg class="ic"><use href="#i-grid"/></svg><span>发现</span></button>
+        <button type="button"><svg class="ic"><use href="#i-bell"/></svg><span>消息</span></button>
+        <button type="button"><svg class="ic"><use href="#i-user"/></svg><span>我的</span></button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="rf glass rim">
+    <div class="rf-head">
+      <h3>响应式：一个天气应用，三种宽度</h3>
+      <p>示例页用容器查询按自身宽度切换布局。拖动滑块或点预设，看同一套玻璃怎样重新排列。</p>
+    </div>
+    <div class="rf-ctrl">
+      <div class="seg glass-inset" role="group" aria-label="设备宽度预设" id="rfPresets">
+        <button type="button" data-w="375">手机 375</button>
+        <button type="button" data-w="768">平板 768</button>
+        <button type="button" data-w="1200">桌面 1200</button>
+      </div>
+      <label class="range rf-range"><span>页面宽度<output id="rfOut"></output></span><input type="range" id="rfWidth" min="320" max="1280" value="1200"></label>
+    </div>
+    <div class="rf-stage" id="rfStage">
+      <div class="rf-frame" id="rfFrame">
+        <div class="wx">
+          <i class="wx-o a" aria-hidden="true"></i><i class="wx-o b" aria-hidden="true"></i><i class="wx-o c" aria-hidden="true"></i>
+          <aside class="wx-side wx-g">
+            <p class="wx-logo"><svg class="ic"><use href="#i-cloud"/></svg>Skyglass</p>
+            <ul><li class="on">今天</li><li>未来 7 天</li><li>空气质量</li><li>设置</li></ul>
+          </aside>
+          <header class="wx-top wx-g"><b>大理</b><span class="wx-search"><svg class="ic"><use href="#i-search"/></svg>搜索城市</span></header>
+          <section class="wx-now wx-g"><p class="wx-t">21°</p><p>晴转多云 · 体感 20°</p><p class="wx-hl">最高 24° 最低 13°</p></section>
+          <section class="wx-hours wx-g"><p class="wx-h">逐小时</p><ol><li>14时<b>22°</b></li><li>15时<b>22°</b></li><li>16时<b>21°</b></li><li>17时<b>19°</b></li><li>18时<b>17°</b></li><li>19时<b>16°</b></li></ol></section>
+          <section class="wx-week wx-g"><p class="wx-h">未来 7 天</p><ul><li>周一<i style="--a:30%;--b:80%"></i>13° / 24°</li><li>周二<i style="--a:20%;--b:70%"></i>12° / 22°</li><li>周三<i style="--a:35%;--b:90%"></i>14° / 25°</li><li>周四<i style="--a:25%;--b:65%"></i>12° / 21°</li></ul></section>
+          <section class="wx-aqi wx-g"><p class="wx-h">空气质量</p><p class="wx-aqv">32</p><p>优 · 适合户外活动</p></section>
+          <nav class="wx-tab wx-g" aria-hidden="true"><span class="on">今天</span><span>7 天</span><span>空气</span><span>设置</span></nav>
+        </div>
+      </div>
+    </div>
+    <p class="rf-read" id="rfRead" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- ============ 05 lab ============ -->
+<section class="sec" id="lab" aria-labelledby="h-lab">
+  <header class="sec-head glass rim">
+    <p class="kicker">05 · 动手</p>
+    <h2 id="h-lab">玻璃实验室</h2>
+    <p>调出你要的玻璃，复制带降级方案的 CSS。右下角会按「背景里最亮和最暗的颜色」估算文字的最差对比度，提醒你什么时候玻璃太薄。</p>
+  </header>
+  <div class="lab">
+    <div class="lab-ctl glass rim">
+      <div class="ctl-row"><span class="ctl-l">背景</span>
+        <div class="seg glass-inset" role="radiogroup" aria-label="实验室背景" id="labBg">
+          <button type="button" role="radio" aria-checked="true" data-bg="blobs">光斑</button>
+          <button type="button" role="radio" aria-checked="false" data-bg="scene">风景</button>
+          <button type="button" role="radio" aria-checked="false" data-bg="text">文字</button>
+        </div>
+      </div>
+      <div class="ctl-row"><span class="ctl-l">着色</span>
+        <div class="seg glass-inset" role="radiogroup" aria-label="着色颜色" id="labTintC">
+          <button type="button" role="radio" aria-checked="true" data-c="255,255,255">白</button>
+          <button type="button" role="radio" aria-checked="false" data-c="16,14,36">黑</button>
+          <button type="button" role="radio" aria-checked="false" data-c="120,140,255">蓝</button>
+        </div>
+      </div>
+      <div class="ctl-row"><span class="ctl-l">文字</span>
+        <div class="seg glass-inset" role="radiogroup" aria-label="文字颜色" id="labInk">
+          <button type="button" role="radio" aria-checked="true" data-c="#FFFFFF">白字</button>
+          <button type="button" role="radio" aria-checked="false" data-c="#14152B">深字</button>
+        </div>
+      </div>
+      <label class="range"><span>模糊<output id="lvBlur"></output></span><input type="range" id="lBlur" min="0" max="40" value="16"></label>
+      <label class="range"><span>饱和度<output id="lvSat"></output></span><input type="range" id="lSat" min="100" max="250" step="10" value="160"></label>
+      <label class="range"><span>着色不透明度<output id="lvTint"></output></span><input type="range" id="lTint" min="0" max="80" value="16"></label>
+      <label class="range"><span>边框不透明度<output id="lvEdge"></output></span><input type="range" id="lEdge" min="0" max="80" value="35"></label>
+      <label class="range"><span>圆角<output id="lvRad"></output></span><input type="range" id="lRad" min="0" max="40" value="24"></label>
+      <div class="ctl-row checks">
+        <label class="check"><input type="checkbox" id="lNoise" checked><span class="box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>噪点</label>
+        <label class="check"><input type="checkbox" id="lShadow" checked><span class="box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>投影</label>
+      </div>
+    </div>
+    <div class="lab-out">
+      <div class="lab-stage scene" data-bg="blobs" id="labStage">
+        <div class="scene-art" aria-hidden="true"><i class="sc-sun"></i><i class="sc-hill h1"></i><i class="sc-hill h2"></i><i class="sc-hill h3"></i><p class="sc-text">BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊 BLUR 模糊</p></div>
+        <i class="lab-o a" aria-hidden="true"></i><i class="lab-o b" aria-hidden="true"></i><i class="lab-o c" aria-hidden="true"></i>
+        <div class="lab-glass" id="labGlass"><p class="lg-k">Now playing</p><p class="lg-t">Through the Glass</p><p class="lg-s">这是一段需要读清楚的正文</p></div>
+      </div>
+      <p class="lab-meter" id="labMeter" aria-live="polite"></p>
+      <div class="lab-code glass-inset">
+        <button class="copy-btn" type="button" data-copy="labCode"><svg class="ic"><use href="#i-copy"/></svg><span>复制</span></button>
+        <pre class="code"><code id="labCode"></code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 use ============ -->
+<section class="sec" id="use" aria-labelledby="h-use">
+  <header class="sec-head glass rim">
+    <p class="kicker">06 · 好与坏</p>
+    <h2 id="h-use">什么时候用，容易错在哪</h2>
+    <p>玻璃拟态最大的风险是：它的样子不由你决定，而由玻璃背后的内容决定。设计时看着很美的卡片，换一张背景图就可能读不清。</p>
+  </header>
+  <div class="two">
+    <article class="fit glass rim">
+      <h3><span class="dot ok"><svg class="ic"><use href="#i-check"/></svg></span>适合</h3>
+      <ul>
+        <li><b>浮在内容上的东西</b>：导航栏、工具栏、底部标签栏、抽屉。</li>
+        <li><b>叠在图片和视频上的信息</b>：播放器控件、地图上的卡片、相册说明。</li>
+        <li><b>小而独立的组件</b>：天气、音乐、日程小组件。</li>
+        <li><b>科技与产品发布页的首屏</b>：背景可控、文字少、氛围优先。</li>
+      </ul>
+    </article>
+    <article class="fit glass rim">
+      <h3><span class="dot no"><svg class="ic"><use href="#i-x"/></svg></span>慎用</h3>
+      <ul>
+        <li><b>长篇正文和数据表格</b>：背景的明暗起伏会一直干扰阅读。</li>
+        <li><b>背景不受控的地方</b>：用户上传的图片、可换的主题、视频流。</li>
+        <li><b>低端设备为主的产品</b>：大面积模糊会掉帧、发热、耗电。</li>
+        <li><b>整页铺满玻璃</b>：所有东西都半透明，就没有哪一层是「浮起来」的了。</li>
+      </ul>
+    </article>
+  </div>
+
+  <h3 class="sub-h">四个常见错误</h3>
+  <div class="mistakes">
+    <article class="mis glass rim">
+      <div class="mis-pair">
+        <figure><div class="mis-stage plain"><div class="mg">21°</div></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-stage scene" data-bg="blobs"><div class="mg">21°</div></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h4>背后什么都没有</h4>
+      <p>纯色背景上的玻璃只是一块浅色方块，模糊没有东西可模糊。要么给它一个有内容的背景，要么干脆用实色卡片。</p>
+    </article>
+    <article class="mis glass rim">
+      <div class="mis-pair">
+        <figure><div class="mis-stage hot"><div class="mg thin-t">正在播放的歌曲</div></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-stage hot"><div class="mg thick-t">正在播放的歌曲</div></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h4>白字压在亮斑上</h4>
+      <p>光斑漂到文字背后，白字就看不清了。加厚着色（换成深色玻璃），或在文字下面单独垫一层更不透明的底。对比度要按背景最亮的地方算。</p>
+    </article>
+    <article class="mis glass rim">
+      <div class="mis-pair">
+        <figure><div class="mis-stage scene" data-bg="blobs"><div class="mg outer"><div class="mg inner">内层</div></div></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-stage scene" data-bg="blobs"><div class="mg outer"><div class="mg inner-solid">内层</div></div></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h4>玻璃套玻璃</h4>
+      <p>外层带 <code>backdrop-filter</code> 时会成为内层的「背景根」：内层只能把外层已经画好的东西再模糊一遍，多算一次，几乎看不出差别，层级反而更含糊。内层改用半透明的实色，省掉一次模糊，边界也更清楚。</p>
+    </article>
+    <article class="mis glass rim">
+      <div class="mis-pair">
+        <figure><div class="mis-stage scene" data-bg="blobs"><span class="mb glassy">立即购买</span></div><figcaption class="no"><svg class="ic"><use href="#i-x"/></svg>错误</figcaption></figure>
+        <figure><div class="mis-stage scene" data-bg="blobs"><span class="mb solid">立即购买</span></div><figcaption class="ok"><svg class="ic"><use href="#i-check"/></svg>正确</figcaption></figure>
+      </div>
+      <h4>主按钮也做成玻璃</h4>
+      <p>玻璃按钮会和背景融在一起，用户找不到最重要的那个行动。主按钮用不透明的实色，玻璃留给次要操作。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 07 code ============ -->
+<section class="sec" id="code" aria-labelledby="h-code">
+  <header class="sec-head glass rim">
+    <p class="kicker">07 · 实现</p>
+    <h2 id="h-code">写好它的几个要点</h2>
+    <p><code>backdrop-filter</code> 在 2019 年的 Chrome 76、2022 年的 Firefox 103 默认开启，2024 年才成为各主流浏览器都不需要前缀的 Baseline 特性。旧版 Safari 只认 <code>-webkit-</code> 前缀，所以两行都要写。</p>
+  </header>
+
+  <div class="two code-two">
+    <div class="tips">
+      <div class="tip glass rim"><b>先写降级</b><p>用 <code>@supports</code> 判断，不支持时换成更不透明的实色底。注意要同时检测带前缀和不带前缀的写法，否则旧版 Safari 会被误判为不支持。</p></div>
+      <div class="tip glass rim"><b>尊重「降低透明度」</b><p>系统设置里的「降低透明度」可以通过 <code>prefers-reduced-transparency</code> 读到（目前只有部分浏览器支持），同时也照顾 <code>prefers-contrast: more</code>。点右上角的方块按钮看本页的实色版本。</p></div>
+      <div class="tip glass rim"><b>小心「背景根」</b><p>按规范，祖先元素带有 <code>filter</code>、<code>opacity &lt; 1</code>、<code>mask</code>、<code>clip-path</code>、<code>mix-blend-mode</code> 或 <code>backdrop-filter</code> 时，会成为里面玻璃的「背景根」，玻璃只能模糊这个祖先之内的内容。最常见的坑：给玻璃的父元素做淡入动画，模糊在动画期间失效。各浏览器在这一点上的实现还有差异，要实测。</p></div>
+      <div class="tip glass rim"><b>控制面积与层数</b><p>模糊的开销大致和面积、半径成正比，背后的内容一动，玻璃就要逐帧重新计算。本页的整页背景是静止的，只有首屏的光斑在流动。整屏大背景可以学 Mica，用预先模糊的图片代替实时模糊。</p></div>
+      <div class="tip glass rim"><b>渐变边框用遮罩</b><p><code>border-image</code> 不支持圆角。渐变高光边要用一个伪元素：背景铺渐变，再用 <code>mask-composite: exclude</code> 挖掉中间，只留 1px 的边。</p></div>
+    </div>
+    <div class="code-col">
+      <div class="lab-code glass-inset">
+        <button class="copy-btn" type="button" data-copy="mainCode"><svg class="ic"><use href="#i-copy"/></svg><span>复制</span></button>
+<pre class="code"><code id="mainCode"><span class="c-k">:root</span> {
+  --glass-tint: <span class="c-v">rgb(255 255 255 / .2)</span>;
+  --glass-solid: <span class="c-v">rgb(240 240 250 / .94)</span>;
+  --glass-blur: <span class="c-v">20px</span>;
+}
+<span class="c-k">.glass</span> {
+  position: relative;
+  background: var(--glass-tint);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(<span class="c-v">180%</span>);
+          backdrop-filter: blur(var(--glass-blur)) saturate(<span class="c-v">180%</span>);
+  border-radius: <span class="c-v">24px</span>;
+  box-shadow: <span class="c-v">0 20px 50px rgb(20 10 60 / .2)</span>;
+}
+<span class="c-c">/* 渐变高光边：伪元素 + 遮罩挖空 */</span>
+<span class="c-k">.glass::before</span> {
+  content: ""; position: absolute; inset: 0;
+  border-radius: inherit; padding: <span class="c-v">1px</span>;
+  background: linear-gradient(<span class="c-v">135deg</span>,
+    <span class="c-v">rgb(255 255 255 / .8)</span>, <span class="c-v">rgb(255 255 255 / .1) 40%</span>,
+    <span class="c-v">rgb(255 255 255 / .05) 60%</span>, <span class="c-v">rgb(255 255 255 / .4)</span>);
+  -webkit-mask: linear-gradient(#000 0 0) content-box,
+                linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+<span class="c-c">/* 不支持模糊：换成实色 */</span>
+<span class="c-k">@supports not ((backdrop-filter: blur(1px))
+           or (-webkit-backdrop-filter: blur(1px)))</span> {
+  <span class="c-k">.glass</span> { background: var(--glass-solid); }
+}
+<span class="c-c">/* 用户要求降低透明度或提高对比度 */</span>
+<span class="c-k">@media (prefers-reduced-transparency: reduce),
+       (prefers-contrast: more)</span> {
+  <span class="c-k">.glass</span> {
+    background: var(--glass-solid);
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-h">本页的设计令牌</h3>
+  <div class="tokens glass rim">
+    <table>
+      <caption>对比度按当前明暗模式实时计算：文字与「着色层叠加在背景最亮、最暗处」的结果比较，取最差值。</caption>
+      <thead><tr><th scope="col">令牌</th><th scope="col">值</th><th scope="col">用途</th><th scope="col">最差对比度</th></tr></thead>
+      <tbody id="tokenBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="foot glass rim">
+  <p>本页的玻璃全部由 CSS <code>backdrop-filter</code> 绘制，背景光斑是 CSS 渐变，噪点是一段内联 SVG，没有使用图片。</p>
+  <p>右上角的复原按钮会把明暗、透明度、光斑位置和所有控件恢复到初始状态。</p>
+</footer>
+</main>
+
+<dialog class="dlg glass rim" id="dlg" aria-labelledby="dlgTitle">
+  <form method="dialog">
+    <h3 id="dlgTitle">开启通知？</h3>
+    <p>我们会在新文章发布时提醒你。对话框后面的整页内容被 <code>::backdrop</code> 模糊，注意力自然收拢到这里。</p>
+    <div class="btn-row end">
+      <button class="btn ghost" value="cancel">暂不</button>
+      <button class="btn primary" value="ok">开启</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast glass rim" id="toast" role="status" aria-live="polite"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="lq-filter" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feImage id="lqMap" x="0" y="0" width="200" height="132" preserveAspectRatio="none" result="map"/>
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="26" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feGaussianBlur in="d" stdDeviation="0.6"/>
+  </filter>
+</svg>
+</body>
+</html>

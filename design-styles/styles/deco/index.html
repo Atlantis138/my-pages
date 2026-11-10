@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>装饰艺术 · Art Deco</title>
+<meta name="description" content="用装饰艺术风格写成的一页装饰艺术介绍：可换金属的首屏、六步把普通卡片变成装饰艺术、来历与两副面孔、几何母题与金属质感、网页组件与响应式示例、纹样工坊、常见错误与 CSS 实现。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Josefin+Sans:wght@300;400;600&family=Limelight&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@600;900&family=Poiret+One&display=swap">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- ============ 顶栏：中间是一只电梯楼层指示盘 ============ -->
+<header class="bar">
+  <div class="bar-in">
+    <a class="back" href="../../#s-deco"><span aria-hidden="true">◂</span><span class="back-t">图鉴</span></a>
+    <nav class="dial" aria-label="章节（楼层指示盘）" id="dial">
+      <ol>
+        <li style="--i:0"><a href="#principle" title="一层 · 原理" aria-label="一层：原理">I</a></li>
+        <li style="--i:1"><a href="#history" title="二层 · 来历" aria-label="二层：来历">II</a></li>
+        <li style="--i:2"><a href="#language" title="三层 · 语汇" aria-label="三层：语汇">III</a></li>
+        <li style="--i:3"><a href="#ui" title="四层 · 界面" aria-label="四层：界面">IV</a></li>
+        <li style="--i:4"><a href="#lab" title="五层 · 纹样工坊" aria-label="五层：纹样工坊">V</a></li>
+        <li style="--i:5"><a href="#use" title="六层 · 取舍" aria-label="六层：取舍">VI</a></li>
+        <li style="--i:6"><a href="#code" title="七层 · 实现" aria-label="七层：实现">VII</a></li>
+      </ol>
+      <span class="needle" aria-hidden="true"></span>
+    </nav>
+    <div class="tools">
+      <div class="metals" role="radiogroup" aria-label="金属" id="metals">
+        <button type="button" role="radio" data-metal="gold" aria-checked="true" title="香槟金" aria-label="香槟金"></button>
+        <button type="button" role="radio" data-metal="chrome" aria-checked="false" title="铬银" aria-label="铬银"></button>
+        <button type="button" role="radio" data-metal="copper" aria-checked="false" title="玫瑰铜" aria-label="玫瑰铜"></button>
+      </div>
+      <button class="tool" id="themeBtn" type="button" role="switch" aria-checked="false" title="日场 / 夜场"><span aria-hidden="true" class="ico-sun"></span><span class="tool-t">夜场</span></button>
+      <button class="tool" id="resetBtn" type="button" title="恢复初始状态：金属、日夜场、工坊与所有控件"><span aria-hidden="true">↺</span><span class="tool-t">复原</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ 首屏（永远是夜场） ============ -->
+<section class="hero night" id="top" aria-labelledby="h-hero">
+  <div class="hero-burst" aria-hidden="true"></div>
+  <svg class="skyline" viewBox="0 0 800 300" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-width="1.5">
+      <!-- 中央塔楼：层层收进 -->
+      <path d="M340 300V150H360V110H375V76H388V48H400V10M460 300V150H440V110H425V76H412V48H400"/>
+      <path d="M360 150H440M375 110H425M388 76H412"/>
+      <path d="M370 300V160M385 300V160M400 300V120M415 300V160M430 300V160M392 110V84M408 110V84M400 76V52"/>
+      <!-- 两翼 -->
+      <path d="M250 300V200H268V172H286V150H304V172H322V200H340M550 300V200H532V172H514V150H496V172H478V200H460"/>
+      <path d="M268 300V210M286 300V180M304 300V180M322 300V210M532 300V210M514 300V180M496 300V180M478 300V210"/>
+      <path d="M150 300V236H172V216H194V236H216V216H238V236H250M650 300V236H628V216H606V236H584V216H562V236H550"/>
+      <path d="M60 300V262H96V246H132V262H150M740 300V262H704V246H668V262H650M0 300H800"/>
+    </g>
+  </svg>
+  <div class="hero-in">
+    <p class="est"><span lang="fr">Paris</span><i aria-hidden="true">◆</i><span>MCMXXV</span><i aria-hidden="true">◆</i><span lang="en">New York</span><i aria-hidden="true">◆</i><span>上海</span></p>
+    <h1 id="h-hero"><span class="h1-en metal-text" lang="en">Art Deco</span><span class="h1-cn">装饰艺术</span></h1>
+    <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+    <div class="hero-copy">
+      <p>一战结束，机器、摩天楼、爵士乐和电影一起涌来。1925 年巴黎的一场博览会上，设计师给这个新时代找到了一套衣服：<strong>对称的构图、阶梯和放射状的几何形、金属的光泽</strong>。它不反对机器，而是把机器的精确做成了奢华。</p>
+      <p>放到网页上，装饰艺术的做法很具体：内容沿中轴排开，标题用高而窄的大写字母并拉开字距，用细金线画双线框，深色底上只留一种金属色。这一页就是这么做的。</p>
+    </div>
+    <div class="hero-ctl">
+      <fieldset class="metal-pick" id="heroMetals" role="radiogroup" aria-label="金属（首屏）">
+        <legend>换一种金属，全页的线条和高光一起换</legend>
+        <button type="button" role="radio" data-metal="gold" aria-checked="true"><i></i><span>香槟金</span></button>
+        <button type="button" role="radio" data-metal="chrome" aria-checked="false"><i></i><span>铬银</span></button>
+        <button type="button" role="radio" data-metal="copper" aria-checked="false"><i></i><span>玫瑰铜</span></button>
+      </fieldset>
+      <label class="range" for="rays"><span>光芒 <output id="raysOut">24 道</output></span><input type="range" id="rays" min="8" max="48" step="2" value="24"></label>
+    </div>
+    <ol class="directory" aria-label="楼层索引">
+      <li><a href="#principle"><b>I</b>原理</a></li><li><a href="#history"><b>II</b>来历</a></li><li><a href="#language"><b>III</b>语汇</a></li><li><a href="#ui"><b>IV</b>界面</a></li><li><a href="#lab"><b>V</b>工坊</a></li><li><a href="#use"><b>VI</b>取舍</a></li><li><a href="#code"><b>VII</b>实现</a></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ I 原理 ============ -->
+<section class="sec" id="principle" aria-labelledby="h-principle">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true"><span>I</span></p>
+    <h2 id="h-principle">六步，变成装饰艺术</h2>
+    <p class="sec-en" lang="en">The Principle</p>
+    <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+    <p class="sec-lead">装饰艺术不是一种「感觉」，而是六个可以逐条打开的动作。下面是一张最普通的卡片，六个开关各管一条规则。先全部关掉，再一条条打开，看每一步各自贡献了什么。</p>
+  </header>
+  <div class="steps">
+    <div class="steps-ctl">
+      <ul class="step-list" id="stepList">
+        <li><label><input type="checkbox" data-step="1" checked><span><b>对称</b>内容全部居中，沿一条中轴排开</span></label></li>
+        <li><label><input type="checkbox" data-step="2" checked><span><b>字</b>大写、高而窄的字体，字距拉开</span></label></li>
+        <li><label><input type="checkbox" data-step="3" checked><span><b>线</b>两道细线画框，中间用菱形断开横线</span></label></li>
+        <li><label><input type="checkbox" data-step="4" checked><span><b>阶梯</b>把直角切成台阶，顶上加一座三级塔</span></label></li>
+        <li><label><input type="checkbox" data-step="5" checked><span><b>放射</b>背景从底边中点射出光芒</span></label></li>
+        <li><label><input type="checkbox" data-step="6" checked><span><b>金属</b>平涂的金色换成一条有高光的渐变</span></label></li>
+      </ul>
+      <div class="row">
+        <button class="btn sm ghost" type="button" id="stepsOff">全部关掉</button>
+        <button class="btn sm ghost" type="button" id="stepsOn">全部打开</button>
+      </div>
+    </div>
+    <div class="steps-stage night">
+      <div class="demo-card s1 s2 s3 s4 s5 s6" id="demoCard">
+        <span class="dc-zig" aria-hidden="true"></span>
+        <p class="dc-k">Est. 1925</p>
+        <p class="dc-t">The Grand</p>
+        <p class="dc-rule" aria-hidden="true"><span></span><i>◆</i><span></span></p>
+        <p class="dc-p">今晚八点 · 爵士之夜</p>
+        <span class="dc-b">Reserve</span>
+      </div>
+    </div>
+    <pre class="steps-code" aria-live="polite"><code id="stepsCode"></code></pre>
+  </div>
+</section>
+
+<!-- ============ II 来历 ============ -->
+<section class="sec" id="history" aria-labelledby="h-history">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true"><span>II</span></p>
+    <h2 id="h-history">从博览会到摩天楼</h2>
+    <p class="sec-en" lang="en">The History</p>
+    <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+    <p class="sec-lead">它流行于两次世界大战之间的二十年。有意思的是，当时没有人叫它「装饰艺术」，这个名字是四十年后才起的。每一条后面附了它在网页上留下的东西。</p>
+  </header>
+  <ol class="tl">
+    <li><b class="tl-y">1922</b><div><h3>图坦卡蒙墓</h3><p>霍华德·卡特在埃及发现图坦卡蒙的陵墓，欧美掀起一阵埃及热。阶梯金字塔、莲花、黄金配青金石蓝，很快出现在珠宝、影院和大楼门厅里。</p><p class="tl-web">阶梯形和「深色配金」的来源之一。切角按钮、层层收进的标题装饰，都是这座金字塔的后代。</p></div></li>
+    <li><b class="tl-y">1925</b><div><h3>巴黎博览会</h3><p>「国际现代装饰与工业艺术博览会」在巴黎举行，参展规则要求展品必须是现代的，不许仿古。同年四月，菲茨杰拉德的《了不起的盖茨比》出版。</p><p class="tl-web">这是一种为展示和消费而生的风格。它最适合的网页也是「展示」性质的：酒店、餐厅、珠宝、演出、邀请函。</p></div></li>
+    <li><b class="tl-y">1927</b><div><h3>海报与字体</h3><p>卡桑德尔画出《北方快车》海报：火车被压成几条射向远处的直线。同一年保罗·伦纳的 Futura 发行，美国的 Broadway 字体也在这两年问世，几何感的字体成了时代的字。</p><p class="tl-web">今天网页上常用的几何无衬线字体，大多可以追溯到这一批。透视的放射线表示速度，这个手法至今还在用。</p></div></li>
+    <li><b class="tl-y">1929</b><div><h3>上海 · 沙逊大厦</h3><p>外滩的沙逊大厦（今和平饭店）落成，顶上是一座墨绿色的金字塔。此后十年，上海建起大批装饰艺术风格的公寓、影院和舞厅。</p><p class="tl-web">装饰艺术有它的中文传统：老上海的美术字和月份牌。中文标题用粗宋体或美术字、拉开字距，一样成立。</p></div></li>
+    <li><b class="tl-y">1930</b><div><h3>克莱斯勒大厦</h3><p>纽约克莱斯勒大厦落成。不锈钢的尖顶由七层放射状的拱叠成，每层嵌着三角形的窗。次年帝国大厦落成，再次年无线电城音乐厅开幕。</p><p class="tl-web">放射、人字、层叠的拱，三种母题都在这座尖顶上。它们都能用 CSS 渐变画出来，见第三层。</p></div></li>
+    <li><b class="tl-y">1930s</b><div><h3>流线型</h3><p>大萧条之后，昂贵的材料让位给铬、玻璃和胶木。形体变圆，线条变成水平的「速度线」，火车头、收音机和冰箱都长成了这个样子。</p><p class="tl-web">流线型是它更便宜、也更适合界面的一支：胶囊形按钮、水平细线、圆角。</p></div></li>
+    <li><b class="tl-y">1934</b><div><h3>上海 · 国际饭店</h3><p>邬达克设计的国际饭店在上海落成，深色面砖、层层收进的塔楼，落成时是上海最高的建筑。</p><p class="tl-web">竖向的线条加上向上收窄，是「高」的视觉语言。长页面的章节标题可以用同样的办法立起来。</p></div></li>
+    <li><b class="tl-y">1939</b><div><h3>落幕</h3><p>第二次世界大战爆发，奢华失去了土壤。战后的设计转向更朴素、更讲功能的现代主义。</p><p class="tl-web">它始终是「奢侈」的同义词。用在需要朴素和效率的产品上，会显得不合时宜。</p></div></li>
+    <li><b class="tl-y">1966</b><div><h3>迟来的名字</h3><p>巴黎装饰艺术博物馆办了一场回顾展，「Art Déco」这个简称开始流行。1968 年，英国人贝维斯·希利尔出版了以它为名的专著，名字就此固定。</p><p class="tl-web">一种风格往往是回头看时才被命名的。今天我们叫它「盖茨比风」，也是同一回事。</p></div></li>
+    <li><b class="tl-y">2013</b><div><h3>回到屏幕上</h3><p>电影《了不起的盖茨比》上映。此后几年，黑底金线的邀请函、婚礼网站和落地页模板随处可见。</p><p class="tl-web">这一轮流行留下的教训也很清楚：只抄金线和扇形，不管对称和字距，就会像一张廉价的请柬。</p></div></li>
+  </ol>
+
+  <h3 class="sub"><span>两副面孔</span></h3>
+  <p class="sub-lead">同一个名字下面其实有前后两种样子。做网页时先决定要哪一种，不要混用。</p>
+  <div class="faces">
+    <article class="face night">
+      <p class="face-k" lang="en">Zigzag · 1920s</p>
+      <h4>锯齿派</h4>
+      <div class="face-demo zig"><span class="fd-btn">Enter</span></div>
+      <ul><li>直线、锐角、阶梯、放射</li><li>黑、金、象牙白，漆器般的深色底</li><li>竖向构图，强调高度</li></ul>
+      <p class="face-web">适合首屏、邀请函、菜单、品牌站。</p>
+    </article>
+    <article class="face night">
+      <p class="face-k" lang="en">Streamline · 1930s</p>
+      <h4>流线派</h4>
+      <div class="face-demo stream"><span class="fd-btn">Enter</span></div>
+      <ul><li>圆角、胶囊形、水平速度线</li><li>铬银、奶油色、海蓝</li><li>横向构图，强调速度</li></ul>
+      <p class="face-web">适合按钮、导航、播放器这类要反复操作的界面。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ III 视觉语言 ============ -->
+<section class="sec" id="language" aria-labelledby="h-language">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true"><span>III</span></p>
+    <h2 id="h-language">母题、颜色、字、金属</h2>
+    <p class="sec-en" lang="en">The Vocabulary</p>
+    <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+    <p class="sec-lead">装饰艺术的装饰是有限的几样东西反复使用。认得这六个母题，再守住颜色和字的规矩，就不会走样。</p>
+  </header>
+
+  <h3 class="sub"><span>六个母题</span></h3>
+  <p class="sub-lead">下面六块都是纯 CSS 背景，没有图片。每一块都可以在第五层的工坊里调参数、拿代码。</p>
+  <ul class="motifs" id="motifs">
+    <li><div class="motif night" data-motif="sunburst"></div><h4>放射</h4><p>日出、车灯、聚光灯。最有代表性的一个，放在首屏或标题背后。</p></li>
+    <li><div class="motif night" data-motif="steps"></div><h4>阶梯</h4><p>金字塔和摩天楼的轮廓。用来切角、做分隔带。</p></li>
+    <li><div class="motif night" data-motif="chevron"></div><h4>人字</h4><p>一排排箭头，带方向感。适合页脚、侧边和进度。</p></li>
+    <li><div class="motif night" data-motif="scales"></div><h4>扇鳞</h4><p>层层叠起的半圆。适合铺大面积：封面、空状态。</p></li>
+    <li><div class="motif night" data-motif="lattice"></div><h4>菱格</h4><p>交叉的斜线。最安静的一个，可以做正文区的浅底纹。</p></li>
+    <li><div class="motif night" data-motif="speed"></div><h4>速度线</h4><p>三条一组的水平线，属于流线派。适合按钮和标题两侧。</p></li>
+  </ul>
+
+  <div class="lang">
+    <article class="lg">
+      <h3 class="sub"><span>颜色</span></h3>
+      <div class="ratio night" aria-hidden="true"><i style="flex:7">深色底</i><i style="flex:2">象牙</i><i style="flex:1">金</i></div>
+      <p>一块深色底，一种金属，一种象牙白，最多再加一种宝石色。金属色只占一成左右：它是线和点，不是面。本页的比例大致是七成、两成、一成，如上图（这是本页的做法，不是通用标准）。</p>
+      <div class="swatches" id="swatches"></div>
+      <p class="note">点色块复制色值。金属色在深底上的对比度足够写字；到了浅底上就不行，日场里的金属文字换成了一个更深的版本。</p>
+    </article>
+
+    <article class="lg">
+      <h3 class="sub"><span>字</span></h3>
+      <div class="fonts night">
+        <p class="fs1" lang="en">Limelight</p><p class="fs-n">大标题。粗细对比极大，只排一两个词。</p>
+        <p class="fs2" lang="en">Poiret One</p><p class="fs-n">副标题与标签。纤细的几何线条，全大写。</p>
+        <p class="fs3" lang="en">Josefin Sans · 思源黑体</p><p class="fs-n">正文与界面。标题怎么花哨，正文都要平实。</p>
+      </div>
+      <div class="track night">
+        <div class="track-stage"><span class="track-word" id="trackWord">GRAND HOTEL</span></div>
+        <label class="range" for="trackLs"><span>字距 <output id="trackOut">0.40 em</output></span><input type="range" id="trackLs" min="0" max="0.8" step="0.02" value="0.4"></label>
+        <label class="check"><input type="checkbox" id="trackFix"><span>补偿末尾多出的空隙</span></label>
+        <p class="note" id="trackSay" aria-live="polite"></p>
+      </div>
+      <p>拉开字距是这种风格最省事的一招，但有个坑：<code>letter-spacing</code> 会在最后一个字母后面也加上空隙，居中的标题因此偏向左边。上面的竖线是容器的中轴，勾上补偿再看。</p>
+    </article>
+  </div>
+
+  <h3 class="sub"><span>金属是一条渐变</span></h3>
+  <p class="sub-lead">平涂的 <code>#C9A45C</code> 只是土黄色。金属之所以像金属，是因为它同时有高光和暗部。三块牌子用的是同一个色相，区别只在渐变的写法。</p>
+  <ul class="metal-demo night">
+    <li><span class="plate p-flat">Flat</span><b>平涂</b><p>一个颜色。可以做线，做面就发闷。</p></li>
+    <li><span class="plate p-grad">Gradient</span><b>三段渐变</b><p>亮、中、暗自上而下。按钮和徽章够用了。</p></li>
+    <li><span class="plate p-sheen">Sheen</span><b>带高光带</b><p>中间加一道窄的亮带，像打磨过的表面。只用在最重要的一处。</p></li>
+  </ul>
+</section>
+
+<!-- ============ IV 界面 ============ -->
+<section class="sec" id="ui" aria-labelledby="h-ui">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true"><span>IV</span></p>
+    <h2 id="h-ui">放进网页界面</h2>
+    <p class="sec-en" lang="en">The Interface</p>
+    <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+    <p class="sec-lead">做成组件时的分寸是：<strong>框和标题讲排场，内容讲规矩</strong>。字距、金线和切角留给标题、按钮和边框；输入的文字、表格里的数字照常排。下面的组件都可以操作，切换日场和金属时它们会一起变。</p>
+  </header>
+
+  <div class="ui-grid">
+   <div class="ui-col">
+    <div class="ui-box">
+      <p class="ui-k">按钮</p>
+      <div class="row">
+        <button class="btn" type="button">订位</button>
+        <button class="btn ghost" type="button">查看菜单</button>
+        <button class="btn pill" type="button">流线型</button>
+        <button class="btn" type="button" disabled>已满座</button>
+      </div>
+      <p class="ui-note">主按钮四角各切一级台阶，用 <code>clip-path</code> 实现。因为裁切会连焦点环一起切掉，焦点环改画在按钮内侧。按钮文字拉开了字距，所以左边多垫了同样宽的内边距，让文字仍然居中。</p>
+    </div>
+
+    <form class="ui-box" id="uiForm" novalidate>
+      <p class="ui-k">表单</p>
+      <label class="field" id="nameField"><span>姓名</span><input type="text" name="name" autocomplete="off" placeholder="请输入姓名" aria-describedby="nameErr"><em id="nameErr" class="err" aria-live="polite"></em></label>
+      <div class="field"><span id="guestL">人数</span>
+        <div class="stepper" role="group" aria-labelledby="guestL"><button type="button" id="gMinus" aria-label="减少一位">−</button><output id="gOut" aria-live="polite">2</output><button type="button" id="gPlus" aria-label="增加一位">+</button></div>
+      </div>
+      <fieldset class="set"><legend>场次</legend>
+        <label class="radio"><input type="radio" name="slot" value="18" checked><span>18:00</span></label>
+        <label class="radio"><input type="radio" name="slot" value="20"><span>20:00</span></label>
+        <label class="radio"><input type="radio" name="slot" value="22"><span>22:00</span></label>
+      </fieldset>
+      <label class="check"><input type="checkbox" name="window"><span>靠窗的位置</span></label>
+      <div class="row"><button class="btn" type="submit">确认</button><span class="ok" id="formOk" aria-live="polite"></span></div>
+      <p class="ui-note">输入框只有一条底线，标签是小号的宽字距文字。单选是八角形，多选是菱形，选中后填上金属色并出现记号，不只靠颜色区分。</p>
+    </form>
+   </div>
+   <div class="ui-col">
+    <div class="ui-box">
+      <p class="ui-k">酒单 <span>示例数据</span></p>
+      <ul class="menu">
+        <li><span>边车 <i lang="en">Sidecar</i></span><b>¥ 88</b></li>
+        <li><span>法兰西 75 <i lang="en">French 75</i></span><b>¥ 98</b></li>
+        <li><span>蜂之膝 <i lang="en">Bee’s Knees</i></span><b>¥ 78</b></li>
+        <li><span>南方 <i lang="en">Southside</i></span><b>¥ 78</b></li>
+      </ul>
+      <p class="ui-note">名称和价格之间的点线叫导引线，是那个年代菜单的标准做法。实现只要一个弹性盒：中间放一个会伸展的伪元素，画上点状的下边框。</p>
+    </div>
+
+    <div class="ui-box">
+      <p class="ui-k">标签页、分页与标签</p>
+      <div class="tabs" role="tablist" aria-label="示例标签页" id="uiTabs">
+        <button type="button" role="tab" aria-selected="true" aria-controls="tp1" id="tb1">晚餐</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="tp2" id="tb2" tabindex="-1">酒吧</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="tp3" id="tb3" tabindex="-1">演出</button>
+      </div>
+      <div class="tabpanel" role="tabpanel" id="tp1" aria-labelledby="tb1" tabindex="0"><p>每晚 18:00 起，三道式套餐。</p></div>
+      <div class="tabpanel" role="tabpanel" id="tp2" aria-labelledby="tb2" tabindex="0" hidden><p>顶层酒吧，营业至凌晨一点。</p></div>
+      <div class="tabpanel" role="tabpanel" id="tp3" aria-labelledby="tb3" tabindex="0" hidden><p>周五、周六有爵士乐队驻场。</p></div>
+      <nav class="pager" aria-label="示例分页" id="pager"></nav>
+      <div class="chips"><span class="chip">爵士</span><span class="chip">鸡尾酒</span><span class="chip on">今晚</span></div>
+      <p class="ui-note">分页用罗马数字，当前页是一个实心菱形。这是装饰，所以每个页码都另有 <code>aria-label</code> 写明「第几页」。</p>
+    </div>
+
+   </div>
+  </div>
+
+  <div class="ui-wide">
+    <div class="ui-box wide">
+      <p class="ui-k">表格 <span>示例数据</span></p>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <caption class="sr">本周演出（示例数据）</caption>
+          <thead><tr><th scope="col">日期</th><th scope="col">节目</th><th scope="col">厅</th><th scope="col" class="num">开场</th><th scope="col" class="num">票价</th></tr></thead>
+          <tbody>
+            <tr><td>周四</td><th scope="row">午夜爵士四重奏</th><td>金厅</td><td class="num">20:30</td><td class="num">¥ 180</td></tr>
+            <tr><td>周五</td><th scope="row">大乐队之夜</th><td>金厅</td><td class="num">21:00</td><td class="num">¥ 260</td></tr>
+            <tr><td>周六</td><th scope="row">默片配乐：大都会</th><td>银厅</td><td class="num">19:30</td><td class="num">¥ 120</td></tr>
+            <tr><td>周日</td><th scope="row">查尔斯顿舞会</th><td>舞厅</td><td class="num">20:00</td><td class="num">¥ 150</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="ui-note">表头用宽字距的小字，上下各一道双线；数据行只有细线，数字等宽并右对齐。表格里的字距一律不拉开，否则列对不齐，也读得慢。</p>
+    </div>
+
+  </div>
+
+  <div class="ui-grid">
+   <div class="ui-col">
+    <div class="ui-box">
+      <p class="ui-k">开关与进度</p>
+      <label class="switch"><input type="checkbox" role="switch" id="uiSwitch"><span class="sw-track" aria-hidden="true"><i></i></span><span>接收演出预告</span></label>
+      <label class="range" for="uiProg"><span>入座率 <output id="uiProgOut">60%</output></span><input type="range" id="uiProg" min="0" max="100" step="10" value="60"></label>
+      <div class="prog" role="progressbar" aria-label="入座率" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" id="uiProgBar"></div>
+      <p class="ui-note">进度条是十格台阶，一格比一格高。连续的量被切成离散的格子，这是装饰艺术对「精确」的偏爱。</p>
+    </div>
+
+   </div>
+   <div class="ui-col">
+    <div class="ui-box">
+      <p class="ui-k">提示与弹窗</p>
+      <div class="alert"><b>敬告</b><p>今晚的演出将准时开始，迟到的客人请在幕间入场。</p></div>
+      <div class="alert bad" role="note"><b>抱歉</b><p>所选场次已满，请改订其他时间。</p></div>
+      <div class="row"><button class="btn ghost sm" type="button" id="openDlg">打开请柬</button></div>
+      <dialog class="dlg night" id="dlg" aria-labelledby="dlgT">
+        <div class="dlg-fan" aria-hidden="true"></div>
+        <p class="dlg-k" lang="en">You are invited</p>
+        <h4 id="dlgT" class="metal-text">新年晚宴</h4>
+        <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+        <p>十二月三十一日 晚八时<br>顶层金厅 · 着正装</p>
+        <form method="dialog"><button class="btn sm" type="submit">欣然前往</button></form>
+      </dialog>
+      <p class="ui-note">提示的标题是一个两字的词，左右各一条线把它托在中轴上。出错时换成暗红并改用「抱歉」。弹窗用原生 <code>&lt;dialog&gt;</code>。</p>
+    </div>
+   </div>
+  </div>
+
+  <h3 class="sub"><span>响应式：守住中轴，两翼折叠</span></h3>
+  <p class="sub-lead">对称版式变窄时不能简单地把三栏挤成一栏。办法是保住中轴线：中间的主角不动，左右两翼折到它下面；到了手机上，双线框减成单线，字距收紧。拖动宽度看看。</p>
+  <div class="rs-ctl">
+    <div class="seg" role="group" aria-label="设备宽度预设" id="rsPresets">
+      <button type="button" data-w="375">手机 375</button>
+      <button type="button" data-w="768">平板 768</button>
+      <button type="button" data-w="1120">桌面 1120</button>
+    </div>
+    <label class="range" for="rsWidth"><span>页面宽度 <output id="rsOut"></output></span><input type="range" id="rsWidth" min="320" max="1120" step="1" value="1120"></label>
+  </div>
+  <div class="rs-stage" id="rsStage">
+    <div class="rs-frame night" id="rsFrame">
+      <div class="rs-page">
+        <header class="rs-head"><span class="rs-nav l">客房</span><span class="rs-nav l">餐厅</span><b class="metal-text" lang="en">The Grand</b><span class="rs-nav r">演出</span><span class="rs-nav r">订位</span><span class="rs-menu">菜单</span></header>
+        <div class="rs-body">
+          <div class="rs-wing"><p class="rs-wk" lang="en">Rooms</p><p class="rs-wt">客房</p><p class="rs-wp">一百二十间，面向江景。</p></div>
+          <div class="rs-main">
+            <div class="rs-burst" aria-hidden="true"></div>
+            <p class="rs-k" lang="en">Since 1929</p>
+            <h4 class="rs-title metal-text">金色年代</h4>
+            <p class="rs-rule" aria-hidden="true"><span></span><i>◆</i><span></span></p>
+            <p class="rs-p">外滩的夜晚，从顶层酒吧开始。</p>
+            <span class="btn sm rs-btn">订位</span>
+          </div>
+          <div class="rs-wing"><p class="rs-wk" lang="en">Dining</p><p class="rs-wt">餐厅</p><p class="rs-wp">法餐与本帮菜，营业至午夜。</p></div>
+        </div>
+        <div class="rs-foot" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+  <p class="rs-read" id="rsRead" aria-live="polite"></p>
+</section>
+
+<!-- ============ V 动手 ============ -->
+<section class="sec" id="lab" aria-labelledby="h-lab">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true"><span>V</span></p>
+    <h2 id="h-lab">纹样工坊</h2>
+    <p class="sec-en" lang="en">The Workshop</p>
+    <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+    <p class="sec-lead">选一个母题，调尺寸、线宽和浓度，下面的代码会实时更新，复制后就是一段可以直接用的 <code>background</code>。颜色取自你在顶栏选的金属。</p>
+  </header>
+  <div class="lab">
+    <div class="lab-view night">
+      <div class="lab-pat" id="labPat" role="img" aria-label="纹样预览"></div>
+      <div class="lab-card"><div class="lab-card-top" id="labCardTop"></div><p class="lab-card-k" lang="en">Tonight</p><p class="lab-card-t metal-text">爵士之夜</p></div>
+    </div>
+    <div class="lab-ctl">
+      <div class="seg wrap" role="radiogroup" aria-label="母题" id="labMotif">
+        <button type="button" role="radio" data-m="sunburst" aria-checked="true">放射</button>
+        <button type="button" role="radio" data-m="steps" aria-checked="false">阶梯</button>
+        <button type="button" role="radio" data-m="chevron" aria-checked="false">人字</button>
+        <button type="button" role="radio" data-m="scales" aria-checked="false">扇鳞</button>
+        <button type="button" role="radio" data-m="lattice" aria-checked="false">菱格</button>
+        <button type="button" role="radio" data-m="speed" aria-checked="false">速度线</button>
+      </div>
+      <label class="range" for="lbSize"><span>尺寸 <output id="lbSizeOut">40</output></span><input type="range" id="lbSize" min="16" max="96" step="2" value="40"></label>
+      <label class="range" for="lbLine"><span>线宽 <output id="lbLineOut">1.5</output></span><input type="range" id="lbLine" min="1" max="6" step="0.5" value="1.5"></label>
+      <label class="range" for="lbAlpha"><span>浓度 <output id="lbAlphaOut">60%</output></span><input type="range" id="lbAlpha" min="10" max="100" step="5" value="60"></label>
+      <p class="note" id="lbSay" aria-live="polite"></p>
+    </div>
+    <figure class="code lab-code"><figcaption>生成的 CSS<button type="button" class="copy" data-copy="labCode">复制</button></figcaption><pre><code id="labCode"></code></pre></figure>
+  </div>
+</section>
+
+<!-- ============ VI 好与坏 ============ -->
+<section class="sec" id="use" aria-labelledby="h-use">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true"><span>VI</span></p>
+    <h2 id="h-use">什么时候用，容易错在哪</h2>
+    <p class="sec-en" lang="en">The Verdict</p>
+    <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+    <p class="sec-lead">装饰艺术的仪式感很重。用对了地方是隆重，用错了地方是做作。它的错误也大多出在细节上：一条线、一段字距、一点对比度。</p>
+  </header>
+  <div class="fit">
+    <div class="fit-col"><h3>适合</h3><ul><li>酒店、餐厅、酒吧、剧院</li><li>珠宝、腕表、香水等奢侈品</li><li>婚礼、晚宴、颁奖礼的邀请页</li><li>爵士音乐节、电影节、年会专题</li></ul></div>
+    <div class="fit-col warn"><h3>慎用</h3><ul><li>每天要用的工具和后台：仪式感会变成负担</li><li>信息密集的页面：居中和宽字距都不利于快速扫读</li><li>面向儿童或强调亲和的产品：它天生有距离感</li></ul></div>
+  </div>
+
+  <h3 class="sub"><span>六个常见错误</span></h3>
+  <div class="pairs">
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo e1-bad"><span>金色的字写在象牙白上</span></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo e1-good"><span>墨色的字，金色只做线</span></div></div>
+      <p class="pair-say"><b>浅底上用金色写字。</b>香槟金配象牙白的对比度只有约 2 : 1。浅底上文字用墨色，金色退到线和边框；一定要金色文字，就换深底。</p>
+    </div>
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo night e2-bad"><span>GRAND HOTEL</span></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo night e2-good"><span>GRAND HOTEL</span></div></div>
+      <p class="pair-say"><b>拉开字距后忘了补偿。</b>左边的标题比框的中线偏左了半个字距。右边用负的 <code>margin-right</code> 把末尾的空隙收回去，才真正居中。</p>
+    </div>
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo night e3-bad"><b>今晚八点</b><span>演出准时开始，迟到的客人请在幕间入场，敬请留意。</span></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo night e3-good"><b>今晚八点</b><span>演出准时开始，迟到的客人请在幕间入场，敬请留意。</span></div></div>
+      <p class="pair-say"><b>正文也拉开字距、也居中。</b>宽字距和居中只给一两行的标题。超过两行的文字恢复正常字距，左对齐，整块再放到中轴上。</p>
+    </div>
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo night e4-bad"><span>Enter</span></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo night e4-good"><span>Enter</span></div></div>
+      <p class="pair-say"><b>到处都是金色。</b>底纹、边框、填充全用金色，页面就成了一块金砖，重点反而没了。金属色守住一成：一条线、一个标题、一个主按钮。</p>
+    </div>
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo night e5-bad"><span>1925</span></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo night e5-good"><span>1925</span></div></div>
+      <p class="pair-say"><b>细线画得太细、太密。</b>半像素的线在普通屏幕上会发虚，间距两三像素的双线会糊成一条。线宽不小于 1px，两条线之间至少隔 4px。</p>
+    </div>
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo night e6-bad"><b>THE GRAND</b><i></i><span>Reserve</span></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo night e6-good"><b>THE GRAND</b><i></i><span>Reserve</span></div></div>
+      <p class="pair-say"><b>只对称了一半。</b>标题居中，按钮却靠在一边，中轴就断了。对称是全有或全无的：同一个框里的每样东西都落在同一条轴上。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VII 实现 ============ -->
+<section class="sec" id="code" aria-labelledby="h-code">
+  <header class="sec-head">
+    <p class="sec-no" aria-hidden="true"><span>VII</span></p>
+    <h2 id="h-code">用 CSS 写出来</h2>
+    <p class="sec-en" lang="en">The Blueprint</p>
+    <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+    <p class="sec-lead">装饰艺术是最适合 CSS 的历史风格之一：它的形状全是直线、圆弧和重复，正好是渐变、<code>clip-path</code> 和边框能画的东西。整页没有一张图片。</p>
+  </header>
+  <div class="codes">
+    <figure class="code"><figcaption>双线框<button type="button" class="copy" data-copy="c1">复制</button></figcaption><pre><code id="c1">.frame {
+  border: 1px solid var(--metal);
+  outline: 1px solid var(--metal);
+  outline-offset: 5px;       /* 第二道线，不占布局空间 */
+  margin: 6px;               /* 给外面那道线留出位置 */
+}</code></pre></figure>
+    <figure class="code"><figcaption>放射光芒<button type="button" class="copy" data-copy="c2">复制</button></figcaption><pre><code id="c2">.sunburst {
+  background: repeating-conic-gradient(
+    from -90deg at 50% 100%,          /* 从底边中点向上射出 */
+    rgb(201 164 92 / .25) 0 3deg,
+    transparent 3deg 7.5deg);         /* 7.5° 一道，半圆里正好 24 道 */
+}</code></pre></figure>
+    <figure class="code"><figcaption>切角按钮与内侧焦点环<button type="button" class="copy" data-copy="c3">复制</button></figcaption><pre><code id="c3">.btn {
+  --c: 7px;                            /* 台阶的大小 */
+  clip-path: polygon(
+    var(--c) 0, calc(100% - var(--c)) 0, calc(100% - var(--c)) var(--c),
+    100% var(--c), 100% calc(100% - var(--c)),
+    calc(100% - var(--c)) calc(100% - var(--c)), calc(100% - var(--c)) 100%,
+    var(--c) 100%, var(--c) calc(100% - var(--c)),
+    0 calc(100% - var(--c)), 0 var(--c), var(--c) var(--c));
+}
+.btn:focus-visible {                   /* clip-path 会切掉外面的焦点环 */
+  outline: 2px solid currentColor;
+  outline-offset: -6px;
+}</code></pre></figure>
+    <figure class="code"><figcaption>宽字距标题的居中补偿<button type="button" class="copy" data-copy="c4">复制</button></figcaption><pre><code id="c4">.title {
+  text-transform: uppercase;
+  letter-spacing: .4em;
+  margin-right: -.4em;       /* 收回最后一个字后面多出的空隙 */
+}
+/* 按钮里则反过来：左边多垫一个字距 */
+.btn { letter-spacing: .3em; padding: 0 1.4em 0 1.7em; }</code></pre></figure>
+    <figure class="code"><figcaption>金属渐变文字<button type="button" class="copy" data-copy="c5">复制</button></figcaption><pre><code id="c5">.metal-text {
+  background: linear-gradient(180deg,
+    #F0D99A 0%, #C9A45C 45%, #8A6A2C 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+@media (forced-colors: active) {       /* 高对比模式下退回实色 */
+  .metal-text { background: none; color: CanvasText; }
+}</code></pre></figure>
+    <figure class="code"><figcaption>菜单的导引线<button type="button" class="copy" data-copy="c6">复制</button></figcaption><pre><code id="c6">.menu li { display: flex; align-items: baseline; gap: 10px; }
+.menu li::after {              /* 伪元素本来排在最后 */
+  content: ""; order: 1; flex: 1;
+  border-bottom: 2px dotted var(--metal);
+  transform: translateY(-4px);
+}
+.menu li b { order: 2; }       /* 把价格挪到点线后面 */</code></pre></figure>
+  </div>
+
+  <h3 class="sub"><span>容易踩的坑</span></h3>
+  <ul class="pits">
+    <li><b>裁切会吃掉阴影和焦点环。</b><code>clip-path</code> 之外的一切都不显示。焦点环用负的 <code>outline-offset</code> 画在内侧，或者把裁切放在伪元素上。</li>
+    <li><b><code>outline</code> 不占空间。</b>双线框的外线会压到相邻元素上，要用 <code>margin</code> 给它留位置；容器有 <code>overflow: hidden</code> 时它还会被切掉。</li>
+    <li><b>锥形渐变的边缘有锯齿。</b>放射线在低分屏上边缘发毛。把透明度降到 0.3 以下，或在色标之间留 0.2° 的过渡，会柔和很多。</li>
+    <li><b>全大写对中文无效。</b><code>text-transform</code> 只管拉丁字母。中文标题的「排场」靠加粗的宋体和 0.2 – 0.5em 的字距，而且同样需要末尾补偿。</li>
+    <li><b>罗马数字要给读屏软件一个读法。</b>「VII」会被逐个字母读出来。装饰性的编号加 <code>aria-hidden</code>，有意义的加 <code>aria-label</code>。</li>
+    <li><b>渐变文字在高对比模式下会消失。</b><code>color: transparent</code> 加背景裁切，在系统强制配色时背景被去掉，字就不见了。用 <code>forced-colors</code> 媒体查询退回实色。</li>
+  </ul>
+
+  <h3 class="sub"><span>本页的设计令牌</span></h3>
+  <div class="tbl-wrap"><table class="tbl tokens" id="tokColors"><caption>颜色（对比度按当前金属与日夜场实时计算，相对于页面底色）</caption><thead><tr><th scope="col">角色</th><th scope="col">变量</th><th scope="col">色值</th><th scope="col" class="num">对比度</th><th scope="col">用途</th></tr></thead><tbody></tbody></table></div>
+  <div class="tok-2">
+    <div class="tbl-wrap"><table class="tbl tokens"><caption>字阶与字距</caption><thead><tr><th scope="col">变量</th><th scope="col">值</th><th scope="col">用在</th></tr></thead><tbody>
+      <tr><td><code>--t-hero</code></td><td>clamp(52px, 13vw, 168px)</td><td>首屏 Limelight 标题</td></tr>
+      <tr><td><code>--t-h2</code></td><td>clamp(26px, 4vw, 40px)</td><td>章节标题，字距 0.2em</td></tr>
+      <tr><td><code>--t-h3</code></td><td>20px</td><td>小节标题，字距 0.3em</td></tr>
+      <tr><td><code>--t-body</code></td><td>16px / 1.85</td><td>正文，字距 0.02em</td></tr>
+      <tr><td><code>--t-label</code></td><td>13px</td><td>标签与表头，字距 0.3em</td></tr>
+      <tr><td><code>--ls-wide</code></td><td>0.4em</td><td>西文大写小标题</td></tr>
+    </tbody></table></div>
+    <div class="tbl-wrap"><table class="tbl tokens"><caption>间距、线宽与形状</caption><thead><tr><th scope="col">变量</th><th scope="col">值</th><th scope="col">说明</th></tr></thead><tbody>
+      <tr><td><code>--u</code></td><td>8px</td><td>基本单位。间距取 1、2、3、5、8、13 倍</td></tr>
+      <tr><td><code>--w-line</code></td><td>1px</td><td>所有金属线。不用更细的线</td></tr>
+      <tr><td><code>--frame-gap</code></td><td>5px</td><td>双线框两道线的间隔</td></tr>
+      <tr><td><code>--step</code></td><td>7px</td><td>切角台阶的边长</td></tr>
+      <tr><td><code>--ray</code></td><td>7.5deg</td><td>一道光芒的角度（24 道时）</td></tr>
+      <tr><td>圆角</td><td>0，或 999px</td><td>锯齿派不用圆角；流线派用整圆</td></tr>
+    </tbody></table></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot night">
+  <div class="foot-fan" aria-hidden="true"></div>
+  <div class="rule" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+  <p>本页的纹样、建筑轮廓与金属质感全部由 CSS 与 SVG 绘制，没有使用图片。</p>
+  <p>字体：Limelight、Poiret One、Josefin Sans、思源宋体、思源黑体。</p>
+  <p class="foot-fin metal-text" lang="en">Fin</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

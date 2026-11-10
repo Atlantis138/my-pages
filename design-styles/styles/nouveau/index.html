@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>新艺术运动 · Art Nouveau</title>
+<meta name="description" content="用新艺术运动的风格写成的一页新艺术介绍：四季海报、鞭线的解剖、来历与各地的名字、线与色与字与纹样、网页组件与响应式示例、藤蔓画笔、常见错误与 SVG / CSS 实现。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=JetBrains+Mono:wght@400&family=Noto+Serif+SC:wght@400;600;900&display=swap">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- 全页共用的 SVG 部件：像吉马尔的铸铁件一样，画一次，到处拼装 -->
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="an-leaf" d="M0 0C7 -8 7 -21 0 -30C-7 -21 -7 -8 0 0Z"/>
+    <symbol id="an-flo" viewBox="0 0 240 28" overflow="visible">
+      <path d="M2 20C40 20 58 6 88 6S118 22 120 22S150 6 152 6S200 20 238 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M120 24C111 15 111 6 120 1C129 6 129 15 120 24Z" style="fill:var(--leaf)"/>
+      <circle cx="88" cy="6" r="2.6" fill="currentColor"/><circle cx="152" cy="6" r="2.6" fill="currentColor"/>
+    </symbol>
+    <symbol id="an-bloom" viewBox="-12 -12 24 24"><g><path d="M0 0C5 -3 5 -9 0 -11C-5 -9 -5 -3 0 0Z"/><path d="M0 0C5 -3 5 -9 0 -11C-5 -9 -5 -3 0 0Z" transform="rotate(72)"/><path d="M0 0C5 -3 5 -9 0 -11C-5 -9 -5 -3 0 0Z" transform="rotate(144)"/><path d="M0 0C5 -3 5 -9 0 -11C-5 -9 -5 -3 0 0Z" transform="rotate(216)"/><path d="M0 0C5 -3 5 -9 0 -11C-5 -9 -5 -3 0 0Z" transform="rotate(288)"/></g></symbol>
+    <pattern id="an-pat-ginkgo" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M18 35V23M18 23L3 10C7 3 14 3 18 9C22 3 29 3 33 10Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></pattern>
+    <pattern id="an-pat-plume" width="40" height="30" patternUnits="userSpaceOnUse"><path d="M0 30C0 12 9 0 20 0S40 12 40 30M8 30C8 17 13 9 20 9S32 17 32 30" fill="none" stroke="currentColor" stroke-width="1.3"/><ellipse cx="20" cy="22" rx="4.5" ry="6" fill="currentColor"/></pattern>
+    <pattern id="an-pat-wave" width="48" height="24" patternUnits="userSpaceOnUse"><path d="M0 12C8 0 16 0 24 12S40 24 48 12" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="18" r="2" fill="currentColor"/><circle cx="36" cy="6" r="2" fill="currentColor"/></pattern>
+  </defs>
+</svg>
+
+<!-- ============ 顶栏 ============ -->
+<header class="bar">
+  <div class="bar-in">
+    <a class="back" href="../../#s-nouveau"><svg viewBox="-8 -30 16 30" aria-hidden="true"><use href="#an-leaf"/></svg>返回图鉴</a>
+    <nav class="toc" aria-label="章节">
+      <a href="#principle">线</a><a href="#history">来历</a><a href="#language">语言</a><a href="#ui">界面</a><a href="#lab">画笔</a><a href="#use">取舍</a><a href="#code">实现</a>
+    </nav>
+    <div class="tools">
+      <div class="seasons" role="radiogroup" aria-label="季节配色" id="seasons">
+        <button type="button" role="radio" data-season="spring" aria-checked="true" title="春 Printemps">春</button>
+        <button type="button" role="radio" data-season="summer" aria-checked="false" title="夏 Été">夏</button>
+        <button type="button" role="radio" data-season="autumn" aria-checked="false" title="秋 Automne">秋</button>
+        <button type="button" role="radio" data-season="winter" aria-checked="false" title="冬 Hiver">冬</button>
+      </div>
+      <button class="tool" id="themeBtn" type="button" role="switch" aria-checked="false" title="昼夜切换"><span aria-hidden="true" class="moon"></span><span class="tool-t">夜</span></button>
+      <button class="tool" id="resetBtn" type="button" title="恢复初始状态：季节、昼夜、画笔与所有控件"><span aria-hidden="true">↺</span><span class="tool-t">复原</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ 首屏 ============ -->
+<section class="hero" id="top" aria-labelledby="h-hero">
+  <div class="hero-text">
+    <p class="kicker"><span lang="fr">Paris · Bruxelles · Wien</span><span>1890 – 1910</span></p>
+    <h1 id="h-hero"><span class="h1-cn">新艺术</span><span class="h1-en" lang="fr">Art Nouveau</span></h1>
+    <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+    <p class="lede">十九世纪末，工厂已经能把任何东西成批印出来、铸出来，却没有人关心它们好不好看。一群设计师转身去看植物：茎怎样分叉，藤怎样攀爬，花瓣怎样卷起。他们把这些线条用在海报、铁门、灯具和字母上，想让日常用品重新变成艺术。</p>
+    <p class="lede">放到网页上，新艺术等于三样东西：<strong>一条有生命的曲线</strong>、<strong>勾了边的平涂色块</strong>、<strong>把内容请进画框的版式</strong>。这一页就用它们写成。</p>
+    <div class="hero-pick">
+      <p class="pick-k">换一个季节，全页的配色和右边的花会一起换：</p>
+      <div class="pick-row" role="radiogroup" aria-label="季节配色（首屏）" id="heroSeasons">
+        <button type="button" role="radio" data-season="spring" aria-checked="true"><b lang="fr">Printemps</b><span>春</span></button>
+        <button type="button" role="radio" data-season="summer" aria-checked="false"><b lang="fr">Été</b><span>夏</span></button>
+        <button type="button" role="radio" data-season="autumn" aria-checked="false"><b lang="fr">Automne</b><span>秋</span></button>
+        <button type="button" role="radio" data-season="winter" aria-checked="false"><b lang="fr">Hiver</b><span>冬</span></button>
+      </div>
+      <p class="note">四联一组的季节装饰画是这一时期的常见题材，穆夏 1896 年的《四季》最有名。本页的四套颜色是自拟的，并非取自原作。</p>
+    </div>
+  </div>
+  <figure class="hero-art">
+    <svg class="poster" id="poster" viewBox="0 0 400 600" role="img" aria-labelledby="posterT"><title id="posterT">一张新艺术构图的海报：拱形画框里是带光环的花，两侧藤蔓向上生长，底部是字带</title></svg>
+    <figcaption>这张画全部由 SVG 路径生成，没有图片。<button type="button" class="link" id="regrow">再长一次</button></figcaption>
+  </figure>
+</section>
+
+<!-- ============ 1 原理 ============ -->
+<section class="sec" id="principle" aria-labelledby="h-principle">
+  <header class="sec-head">
+    <p class="sec-no" lang="fr">Chapitre I</p>
+    <h2 id="h-principle">一条线的规矩</h2>
+    <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+    <p class="sec-lead">新艺术的全部辨识度都压在一条曲线上。1895 年，慕尼黑的赫尔曼·奥布里斯特绣了一幅仙客来壁挂，一位评论家说它像「抽响的鞭子划出的弧线」，这条线从此被叫作鞭线（<span lang="fr">coup de fouet</span>）。它和普通弧线的区别在于：<strong>曲率是变化的</strong>，起笔舒缓，越走越急，最后猛地收成一个卷。</p>
+  </header>
+
+  <div class="whip">
+    <div class="whip-fig">
+      <svg viewBox="0 0 300 360" id="whipSvg" role="img" aria-label="一条随滑块变化的曲线"><path id="whipPath" class="v-stem" stroke-width="4.5" fill="none"/></svg>
+    </div>
+    <div class="whip-ctl">
+      <label class="range" for="whipT"><span>张力 <output id="whipOut">100</output></span><input type="range" id="whipT" min="0" max="100" value="100" step="1"></label>
+      <p class="whip-say" id="whipSay" aria-live="polite"></p>
+      <ol class="laws">
+        <li><b>曲率要变。</b>圆弧处处一样弯，看起来是机器画的。让曲线一头松一头紧，它才像在生长。在 SVG 里，这意味着用三次贝塞尔（<code>C</code> / <code>S</code>），并把两个控制柄做成一长一短。</li>
+        <li><b>线要有去处。</b>每条线都从某个结构里长出来，又收束到某处：一片叶、一个花苞、一个卷。悬在半空、两头都没有交代的曲线只是涂鸦。</li>
+        <li><b>装饰就是结构。</b>藤蔓同时是边框，花茎同时是分隔线。本页每个标题下面那条线，既是装饰，也是标题与正文之间的分隔。</li>
+      </ol>
+    </div>
+  </div>
+
+  <h3 class="sub">一张海报的五层</h3>
+  <p class="sub-lead">这一时期的海报几乎共用一套构图，它恰好也是一个现成的首屏模板。把指针移到（或点按）条目上，看每一层在哪里。</p>
+  <div class="anat">
+    <svg class="poster poster-s" id="anatPoster" viewBox="0 0 400 600" role="img" aria-label="海报拆解图" data-hl=""></svg>
+    <ol class="layers" id="layers">
+      <li><button type="button" data-hl="frame" aria-pressed="false"><b>画框</b><span>上圆下方的拱形，外面再套一道细线。它把内容和页面隔开，像一扇窗。<em>网页上：</em>首屏主图、卡片封面、头像的外形。</span></button></li>
+      <li><button type="button" data-hl="halo" aria-pressed="false"><b>光环</b><span>主体背后的圆盘，布满放射或镶嵌纹样，把视线锁在中心。<em>网页上：</em>主图后面的一块圆形底色，就足以让无背景的产品图站住。</span></button></li>
+      <li><button type="button" data-hl="figure" aria-pressed="false"><b>主体</b><span>人物或花，用粗轮廓线勾边、颜色平涂，没有明暗过渡。<em>网页上：</em>插画统一用描边加平涂，任何尺寸都清楚。</span></button></li>
+      <li><button type="button" data-hl="border" aria-pressed="false"><b>边饰</b><span>两侧向上生长的藤蔓，左右镜像。大形对称，细节不必对称。<em>网页上：</em>只在宽屏的两侧留白里出现，窄屏直接去掉。</span></button></li>
+      <li><button type="button" data-hl="band" aria-pressed="false"><b>字带</b><span>文字不压在画上，而是收进底部一条有边线的带子里。<em>网页上：</em>标题、按钮和说明都放在纯色底上，保证对比度。</span></button></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 2 来历 ============ -->
+<section class="sec" id="history" aria-labelledby="h-history">
+  <header class="sec-head">
+    <p class="sec-no" lang="fr">Chapitre II</p>
+    <h2 id="h-history">二十年，从盛开到凋谢</h2>
+    <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+    <p class="sec-lead">新艺术只流行了大约二十年。它来得快，是因为印刷和铸造让曲线第一次可以批量复制；它去得也快，是因为这些曲线做起来太贵。每一条后面附了一句它留给网页的话。</p>
+  </header>
+  <ol class="tl">
+    <li><b class="tl-y">1860s – 80s</b><h3>两个源头</h3><p>英国的工艺美术运动（威廉·莫里斯）主张回到手工与自然纹样；同一时期，日本浮世绘版画涌入欧洲，带来了平涂色块、清晰的轮廓线和不对称的构图。</p><p class="tl-web">平涂、勾边、不对称，这三样正好是 SVG 最擅长的：文件小，放多大都不糊。</p></li>
+    <li><b class="tl-y">1893</b><h3>塔塞尔公馆</h3><p>维克多·奥塔在布鲁塞尔建成塔塞尔公馆。楼梯间的铁柱像植物一样在顶端分叉，同样的曲线接着出现在栏杆、墙面和地面的马赛克上。它通常被看作第一座新艺术建筑。</p><p class="tl-web">装饰线应当从结构里长出来：边框、分隔线、进度条，都比凭空贴一朵花更站得住。</p></li>
+    <li><b class="tl-y">1895</b><h3>《吉斯蒙达》</h3><p>1 月 1 日，阿尔丰斯·穆夏为女演员莎拉·伯恩哈特画的戏剧海报贴上巴黎街头：细长的画幅、拱形、光环、字带。这套构图后来被叫作「穆夏风格」。</p><p class="tl-web">一个固定的构图模板反复使用，本身就是品牌。首屏不必每次重新发明。</p></li>
+    <li><b class="tl-y">1895</b><h3>名字的由来</h3><p>12 月，画商齐格弗里德·宾在巴黎开了一家画廊，取名「新艺术之家」（<span lang="fr">Maison de l’Art Nouveau</span>），专卖这类新式的家具和工艺品。风格因这家店得名。</p><p class="tl-web">它从一开始就是商业的、面向日用品的。把它用在商品页和包装上，并不违背它的出身。</p></li>
+    <li><b class="tl-y">1896 – 98</b><h3>德语区的另一支</h3><p>慕尼黑创刊《青年》杂志，这种风格在德语里就叫「青年风格」。1897 年维也纳分离派成立，次年出版会刊《圣春》，版面大量使用方格、直线和留白。</p><p class="tl-web">如果觉得曲线太难驾驭，维也纳和格拉斯哥这一支更容易落在网页网格上：方格打底，只在角上放一点曲线。</p></li>
+    <li><b class="tl-y">1900</b><h3>巴黎世博会与地铁入口</h3><p>世博会让这种风格达到顶峰。同年巴黎地铁通车，赫克托·吉马尔设计的入口用的是预制的铸铁件：同一批灯柱、栏板和标牌，按站点的大小拼出不同的入口。</p><p class="tl-web">这就是组件化。本页所有叶片都是 <code>&lt;defs&gt;</code> 里的同一条路径，用 <code>&lt;use&gt;</code> 摆到各处。</p></li>
+    <li><b class="tl-y">1908 – 14</b><h3>退潮</h3><p>阿道夫·路斯写下《装饰与罪恶》（通常标为 1908 年），把装饰看作浪费。曲线做工昂贵、难以量产也是事实。一战爆发后，这种风格基本结束，让位给更几何、更便宜的样式。</p><p class="tl-web">装饰一直是有成本的。在网页上，成本换成了加载体积、适配工作量和阅读负担，照样要算。</p></li>
+    <li><b class="tl-y">1960s →</b><h3>回来过，也没有走远</h3><p>1960 年代，旧金山的迷幻摇滚海报重新用起新艺术和维也纳分离派的曲线字体。此后它一直活在香氛、茶、酒和巧克力的包装上。</p><p class="tl-web">今天它最合适的位置仍是这些品类的品牌站和活动页，而不是每天要用的工具。</p></li>
+  </ol>
+
+  <h3 class="sub">一种风格，许多名字</h3>
+  <p class="sub-lead">它在各地叫法不同，样子也不完全一样。大致可以分成两支：偏曲线的和偏几何的。</p>
+  <ul class="names">
+    <li><b lang="fr">Art Nouveau</b><i>法国 · 比利时</i><p>最典型的植物曲线。海报、珠宝、铁艺。</p><span class="nm-tag">曲线</span></li>
+    <li><b lang="de">Jugendstil</b><i>德国</i><p>得名于《青年》杂志。前期花草，后期转向抽象的线。</p><span class="nm-tag">曲线</span></li>
+    <li><b lang="ca">Modernisme</b><i>加泰罗尼亚</i><p>高迪的巴特罗之家、米拉之家：整座建筑都是曲面。</p><span class="nm-tag">曲线</span></li>
+    <li><b lang="it">Stile Liberty</b><i>意大利</i><p>得名于伦敦的利伯蒂百货，那里卖这类花布。</p><span class="nm-tag">曲线</span></li>
+    <li><b lang="de">Sezessionsstil</b><i>奥地利</i><p>维也纳分离派。方格、金色、大面积留白。</p><span class="nm-tag geo">几何</span></li>
+    <li><b lang="en">Glasgow Style</b><i>苏格兰</i><p>麦金托什。细长的直线，配一朵极简的玫瑰。</p><span class="nm-tag geo">几何</span></li>
+    <li><b lang="en">Tiffany Style</b><i>美国</i><p>蒂芙尼的彩色玻璃灯：粗铅线勾边，玻璃平涂。</p><span class="nm-tag">曲线</span></li>
+  </ul>
+</section>
+
+<!-- ============ 3 视觉语言 ============ -->
+<section class="sec" id="language" aria-labelledby="h-language">
+  <header class="sec-head">
+    <p class="sec-no" lang="fr">Chapitre III</p>
+    <h2 id="h-language">线、色、字、纹</h2>
+    <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+    <p class="sec-lead">新艺术没有成文的规范，但有四个习惯几乎人人遵守。它们都来自当时的石版印刷：一种颜色一块版，所以颜色少而平；版与版之间容易对不齐，所以用一道深色的轮廓线盖住接缝。</p>
+  </header>
+
+  <div class="lang">
+    <article class="lg" id="lg-line">
+      <h3><i lang="fr">La ligne</i>线：外粗内细</h3>
+      <div class="lg-demo contour">
+        <svg viewBox="-70 -70 140 140" id="contourSvg" role="img" aria-label="一朵用两种线宽勾边的花"></svg>
+        <div class="lg-ctl">
+          <label class="range" for="cOuter"><span>外轮廓 <output id="cOuterOut">4.0 px</output></span><input type="range" id="cOuter" min="0" max="7" step="0.5" value="4"></label>
+          <label class="range" for="cInner"><span>内部线 <output id="cInnerOut">1.2 px</output></span><input type="range" id="cInner" min="0" max="4" step="0.2" value="1.2"></label>
+          <p class="note" id="contourSay" aria-live="polite"></p>
+        </div>
+      </div>
+      <p>整个形体的外轮廓用粗线，内部的花瓣、叶脉用细线，粗细大约差三倍。粗线把形体从背景里「剪」出来，细线只负责交代结构。两种线一样粗，画面就会变平；把外轮廓拖到 0，花会立刻融进背景。</p>
+    </article>
+
+    <article class="lg" id="lg-color">
+      <h3><i lang="fr">La couleur</i>色：少、平、带一点灰</h3>
+      <div class="swatches" id="swatches"></div>
+      <p>一页用四到五种颜色，全部平涂，不用渐变和阴影。颜色都压低了饱和度，像褪过色的印刷品：橄榄绿、赭红、古金，加上羊皮纸的底色。金色只用在线和小面积的点缀上，它在浅底上的对比度不到 3 : 1，不能拿来写字。点色块可以复制色值。</p>
+    </article>
+
+    <article class="lg" id="lg-type">
+      <h3><i lang="fr">La lettre</i>字：标题进画框，正文回到宋体</h3>
+      <div class="lg-demo type-demo">
+        <p class="band"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#an-bloom"/></svg><span lang="fr">Salon des Cent</span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#an-bloom"/></svg></p>
+        <div class="wrap-demo">
+          <span class="medal" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#an-bloom"/></svg></span>
+          <p>当年的字母是画出来的，和画面用同一条线，所以标题总像是从边框里长出来。网页上不必自己画字：标题用一款带书写感的衬线斜体，放进有边线的字带；正文老老实实用宋体。这段文字绕着左边的圆形排开，用的是 <code>shape-outside: circle()</code>，这是让正文也带上一点曲线的最省事的办法。</p>
+        </div>
+      </div>
+      <p>本页的西文标题是 Cormorant Garamond 斜体，中文是思源宋体。真正的新艺术字体（如 1900 年的 Eckmann、1904 年的 Arnold Böcklin）辨识度极高，也极难读，只适合两三个词的招牌。</p>
+    </article>
+
+    <article class="lg" id="lg-pattern">
+      <h3><i lang="fr">Le motif</i>纹：一个单元，无限重复</h3>
+      <div class="lg-demo pat-demo">
+        <svg class="pat-view" id="patView" viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" role="img" aria-label="重复纹样预览"><rect width="320" height="150" fill="url(#an-pat-ginkgo)"/></svg>
+        <div class="seg" role="radiogroup" aria-label="纹样" id="patPick">
+          <button type="button" role="radio" data-pat="ginkgo" aria-checked="true">银杏</button>
+          <button type="button" role="radio" data-pat="plume" aria-checked="false">翎羽</button>
+          <button type="button" role="radio" data-pat="wave" aria-checked="false">水波</button>
+        </div>
+      </div>
+      <p>墙纸和花布是这种风格的发源地之一。纹样的做法是把一个小单元四方连续地铺开。SVG 的 <code>&lt;pattern&gt;</code> 正是为此而设：单元里的线条写成 <code>currentColor</code>，换季节时纹样跟着换色。纹样只做底，对比要低，上面不直接放正文。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 4 界面 ============ -->
+<section class="sec" id="ui" aria-labelledby="h-ui">
+  <header class="sec-head">
+    <p class="sec-no" lang="fr">Chapitre IV</p>
+    <h2 id="h-ui">放进网页界面</h2>
+    <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+    <p class="sec-lead">做成组件时有一条总的分寸：<strong>曲线放在外形上，不放在内容上</strong>。按钮可以是一片叶子，输入框可以有一个拱顶，但里面的文字、数字和点击区域必须和普通组件一样规矩。下面的组件都可以操作。</p>
+  </header>
+
+  <div class="ui-grid">
+    <div class="ui-box">
+      <p class="ui-k">按钮</p>
+      <div class="ui-row">
+        <button class="btn" type="button">预订花束</button>
+        <button class="btn line" type="button">查看花单</button>
+        <button class="btn" type="button" disabled>已售罄</button>
+      </div>
+      <div class="ui-row"><a class="vlink" href="#ui">了解养护方法</a></div>
+      <p class="ui-note">对角各取一个大圆角、一个小圆角，矩形就成了叶片。悬停时两组圆角对调，像叶子翻了个面。文字链接的下划线是一条波浪线，用 <code>text-decoration-style: wavy</code> 一行实现。</p>
+    </div>
+
+    <form class="ui-box" id="uiForm" novalidate>
+      <p class="ui-k">表单</p>
+      <label class="field"><span>收花人</span><input type="text" name="name" autocomplete="off" placeholder="例如：林小姐"></label>
+      <label class="field" id="dateField"><span>送达日期</span><input type="text" name="date" inputmode="numeric" autocomplete="off" placeholder="月 / 日，如 5/20" aria-describedby="dateErr"><em id="dateErr" class="err" aria-live="polite"></em></label>
+      <label class="field"><span>花材</span><select name="kind"><option>鸢尾</option><option>铃兰</option><option>虞美人</option><option>菊</option></select></label>
+      <fieldset class="set"><legend>包装</legend>
+        <label class="radio"><input type="radio" name="wrap" value="paper" checked><span>牛皮纸</span></label>
+        <label class="radio"><input type="radio" name="wrap" value="box"><span>礼盒</span></label>
+      </fieldset>
+      <label class="check"><input type="checkbox" name="card"><span>附一张手写卡片</span></label>
+      <div class="ui-row"><button class="btn" type="submit">提交</button><span class="ok" id="formOk" aria-live="polite"></span></div>
+      <p class="ui-note">输入框只有拱顶和一条底线。勾选框选中后开出一朵五瓣花：花是一张 SVG，用 <code>mask</code> 盖在色块上，所以它的颜色跟着季节走。错误提示同时用文字和颜色表达。</p>
+    </form>
+
+    <div class="ui-box">
+      <p class="ui-k">开关与进度</p>
+      <label class="switch"><input type="checkbox" role="switch" id="uiSwitch"><span class="sw-track" aria-hidden="true"><i></i></span><span>每周自动续订</span></label>
+      <label class="range" for="uiGrow"><span>长势 <output id="uiGrowOut">60%</output></span><input type="range" id="uiGrow" min="0" max="100" value="60"></label>
+      <div class="grow" role="progressbar" aria-label="长势" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" id="uiGrowBar"><i></i></div>
+      <p class="ui-note">开关的滑块是一个花苞，打开后露出金色的花心。进度条的末端做成叶尖，进度向前时像茎在生长。</p>
+    </div>
+
+    <div class="ui-box">
+      <p class="ui-k">标签页与标签</p>
+      <div class="tabs" role="tablist" aria-label="示例标签页" id="uiTabs">
+        <button type="button" role="tab" aria-selected="true" aria-controls="tp1" id="tb1">当季</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="tp2" id="tb2" tabindex="-1">常青</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="tp3" id="tb3" tabindex="-1">干花</button>
+      </div>
+      <div class="tabpanel" role="tabpanel" id="tp1" aria-labelledby="tb1" tabindex="0"><p>鸢尾、芍药、铃兰。四月到六月供应。</p></div>
+      <div class="tabpanel" role="tabpanel" id="tp2" aria-labelledby="tb2" tabindex="0" hidden><p>尤加利、银叶菊、常春藤。全年供应。</p></div>
+      <div class="tabpanel" role="tabpanel" id="tp3" aria-labelledby="tb3" tabindex="0" hidden><p>莲蓬、麦穗、绣球。可保存一年以上。</p></div>
+      <div class="chips"><span class="chip">香氛</span><span class="chip">手作</span><span class="chip on">当季</span><span class="chip">婚礼</span></div>
+      <p class="ui-note">标签页的拱顶和画框是同一个形状。当前页除了换底色，上方还多一个金点，不只靠颜色区分。</p>
+    </div>
+
+    <div class="ui-box wide">
+      <p class="ui-k">表格 <span>示例数据</span></p>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <caption class="sr">花单（示例数据）</caption>
+          <thead><tr><th scope="col">花材</th><th scope="col">花期</th><th scope="col">花语</th><th scope="col" class="num">每枝</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">鸢尾 <i lang="la">Iris</i></th><td>四月 – 五月</td><td>信使</td><td class="num">¥ 18</td></tr>
+            <tr><th scope="row">铃兰 <i lang="la">Convallaria</i></th><td>五月</td><td>幸福归来</td><td class="num">¥ 32</td></tr>
+            <tr><th scope="row">虞美人 <i lang="la">Papaver</i></th><td>五月 – 七月</td><td>安慰</td><td class="num">¥ 12</td></tr>
+            <tr><th scope="row">菊 <i lang="la">Chrysanthemum</i></th><td>九月 – 十一月</td><td>高洁</td><td class="num">¥ 9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="ui-note">表格是这种风格最该克制的地方：只留横向细线，数字用等宽数字并右对齐，装饰只出现在表头上下的双线里。数据区域里不要放任何花纹。</p>
+    </div>
+
+    <div class="ui-box">
+      <p class="ui-k">提示</p>
+      <div class="alert"><svg viewBox="-8 -30 16 30" aria-hidden="true"><use href="#an-leaf"/></svg><p><b>提示</b>母亲节当周的订单请提前三天预订。</p></div>
+      <div class="alert bad" role="note"><svg viewBox="-8 -30 16 30" aria-hidden="true"><use href="#an-leaf"/></svg><p><b>无法配送</b>所选日期已约满，请换一天。</p></div>
+      <p class="ui-note">提示条左侧是一道茎，顶端一片叶。出错时换成赭红，并且有「无法配送」这样的粗体词。</p>
+    </div>
+
+    <div class="ui-box">
+      <p class="ui-k">卡片与弹窗</p>
+      <article class="card">
+        <div class="card-art" aria-hidden="true"><svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><rect width="200" height="120" fill="url(#an-pat-plume)"/></svg></div>
+        <h4>五月花束</h4>
+        <p>鸢尾与铃兰，配尤加利叶。</p>
+        <button class="btn line sm" type="button" id="openDlg">打开请柬</button>
+      </article>
+      <dialog class="dlg" id="dlg" aria-labelledby="dlgT">
+        <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+        <h4 id="dlgT">春日花会</h4>
+        <p>五月十日下午三时，敬请光临。<br>地点：温室二层。</p>
+        <form method="dialog"><button class="btn sm" type="submit">好的</button></form>
+      </dialog>
+      <p class="ui-note">卡片封面是一个拱形窗口，里面铺纹样。弹窗用原生 <code>&lt;dialog&gt;</code>，焦点管理和 Esc 关闭都由浏览器负责，只需要给它画一个拱顶。</p>
+    </div>
+  </div>
+
+  <h3 class="sub">响应式：装饰先退场，内容不动</h3>
+  <p class="sub-lead">曲线和纹样占地方。屏幕变窄时，按「边饰 → 纹样 → 拱形」的顺序一层层去掉，最后只留下一条分隔线和配色。拖动宽度看看。</p>
+  <div class="rs-ctl">
+    <div class="seg" role="group" aria-label="设备宽度预设" id="rsPresets">
+      <button type="button" data-w="375">手机 375</button>
+      <button type="button" data-w="768">平板 768</button>
+      <button type="button" data-w="1120">桌面 1120</button>
+    </div>
+    <label class="range" for="rsWidth"><span>页面宽度 <output id="rsOut"></output></span><input type="range" id="rsWidth" min="320" max="1120" step="1" value="1120"></label>
+  </div>
+  <div class="rs-stage" id="rsStage">
+    <div class="rs-frame" id="rsFrame">
+      <div class="rs-page">
+        <header class="rs-head"><b lang="fr">Maison Flore</b><nav aria-hidden="true"><span>花束</span><span>订阅</span><span>花会</span><span>门店</span></nav><span class="rs-menu">菜单</span></header>
+        <div class="rs-hero">
+          <svg class="rs-vine rs-vl" viewBox="0 0 60 300" aria-hidden="true"><path fill="none" d="M40 300C0 250 55 200 25 150S50 60 15 6"/><use href="#an-leaf" transform="translate(34 232) rotate(-130) scale(.8)"/><use href="#an-leaf" transform="translate(22 178) rotate(-35) scale(.8)"/><use href="#an-leaf" transform="translate(38 104) rotate(-130) scale(.8)"/><use href="#an-leaf" transform="translate(22 52) rotate(-35) scale(.7)"/></svg>
+          <div class="rs-arch" aria-hidden="true"><svg viewBox="0 0 200 240" preserveAspectRatio="xMidYMid slice"><rect width="200" height="240" fill="url(#an-pat-ginkgo)"/></svg></div>
+          <div class="rs-copy">
+            <p class="rs-kick">五月 · 当季</p>
+            <h4 class="rs-title">把春天订回家</h4>
+            <p class="rs-p">每周一束当季鲜花，周五送达。</p>
+            <span class="btn sm rs-btn">开始订阅</span>
+          </div>
+          <svg class="rs-vine rs-vr" viewBox="0 0 60 300" aria-hidden="true"><path fill="none" d="M40 300C0 250 55 200 25 150S50 60 15 6"/><use href="#an-leaf" transform="translate(34 232) rotate(-130) scale(.8)"/><use href="#an-leaf" transform="translate(22 178) rotate(-35) scale(.8)"/><use href="#an-leaf" transform="translate(38 104) rotate(-130) scale(.8)"/><use href="#an-leaf" transform="translate(22 52) rotate(-35) scale(.7)"/></svg>
+        </div>
+        <svg class="flo rs-flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+        <div class="rs-cards">
+          <div class="rs-card"><i></i><b>鸢尾</b><span>¥ 128</span></div>
+          <div class="rs-card"><i></i><b>铃兰</b><span>¥ 168</span></div>
+          <div class="rs-card"><i></i><b>虞美人</b><span>¥ 98</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="rs-read" id="rsRead" aria-live="polite"></p>
+</section>
+
+<!-- ============ 5 动手 ============ -->
+<section class="sec" id="lab" aria-labelledby="h-lab">
+  <header class="sec-head">
+    <p class="sec-no" lang="fr">Chapitre V</p>
+    <h2 id="h-lab">藤蔓画笔</h2>
+    <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+    <p class="sec-lead">在下面的画板上随手拖一笔。松手后，这一笔会被拟合成光滑的贝塞尔曲线，沿途长出叶子，末端收成卷须并开一朵花。画好的藤蔓可以导出成 SVG，直接当分隔线或边饰用。</p>
+  </header>
+  <div class="lab">
+    <div class="lab-stage">
+      <svg id="labSvg" class="lab-svg" role="img" aria-label="藤蔓画板。用指针拖动来画，或使用「随机一枝」按钮。"><g id="labVines"></g><path id="labDraft" class="draft" fill="none"/></svg>
+      <p class="lab-hint" id="labHint">在这里拖动画一笔</p>
+    </div>
+    <div class="lab-ctl">
+      <label class="range" for="lbGap"><span>叶距 <output id="lbGapOut">34</output></span><input type="range" id="lbGap" min="18" max="70" value="34"></label>
+      <label class="range" for="lbW"><span>茎粗 <output id="lbWOut">3.0</output></span><input type="range" id="lbW" min="1.5" max="6" step="0.5" value="3"></label>
+      <fieldset class="set"><legend>末端</legend>
+        <label class="radio"><input type="radio" name="lbEnd" value="flower" checked><span>花</span></label>
+        <label class="radio"><input type="radio" name="lbEnd" value="bud"><span>花苞</span></label>
+        <label class="radio"><input type="radio" name="lbEnd" value="none"><span>无</span></label>
+      </fieldset>
+      <label class="check"><input type="checkbox" id="lbCurl" checked><span>末端收成卷须</span></label>
+      <label class="check"><input type="checkbox" id="lbMirror"><span>左右镜像（做对称边饰）</span></label>
+      <div class="ui-row">
+        <button class="btn sm" type="button" id="lbRandom">随机一枝</button>
+        <button class="btn line sm" type="button" id="lbUndo">撤销</button>
+        <button class="btn line sm" type="button" id="lbClear">清空</button>
+      </div>
+      <div class="ui-row">
+        <button class="btn line sm" type="button" id="lbCopy">复制 SVG</button>
+        <button class="btn line sm" type="button" id="lbSave">下载 SVG</button>
+      </div>
+      <p class="note" id="lbStat" aria-live="polite">画板是空的。</p>
+      <p class="note">拟合用的是 Catmull-Rom 样条转三次贝塞尔，属于简化做法；叶片按固定间距左右交替摆放，没有模拟真实的植物生长。键盘用户可以用「随机一枝」。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 好与坏 ============ -->
+<section class="sec" id="use" aria-labelledby="h-use">
+  <header class="sec-head">
+    <p class="sec-no" lang="fr">Chapitre VI</p>
+    <h2 id="h-use">什么时候用，容易错在哪</h2>
+    <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+    <p class="sec-lead">新艺术装饰强、做工重，它的毛病一百年前就被指出来了：贵、繁、不好读。在网页上这三条依然成立，但都有办法缓解。</p>
+  </header>
+  <div class="fit">
+    <div class="fit-col"><h3>适合</h3><ul><li>花店、茶饮、香氛、美妆、巧克力这类卖感受的品牌</li><li>婚礼、节庆、展览的邀请页和活动页</li><li>手工艺、独立出版、精品酒店、酒庄</li><li>任何内容不多、希望被慢慢看的页面</li></ul></div>
+    <div class="fit-col warn"><h3>慎用</h3><ul><li>后台、仪表盘、文档站：信息密度一高，装饰就成了噪声</li><li>科技与金融产品：柔软的曲线和「精确、可靠」的印象相冲突</li><li>需要快速迭代的产品：每加一个页面都要画新的装饰，成本很高</li></ul></div>
+  </div>
+
+  <h3 class="sub">四个常见错误</h3>
+  <div class="pairs">
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo d1-bad"><svg viewBox="0 0 200 110" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="200" height="110" fill="url(#an-pat-plume)"/></svg><p>纹样铺满整张卡片，正文直接压在花纹上，每个字都要和线条抢。</p></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo d1-good"><svg viewBox="0 0 200 26" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="200" height="26" fill="url(#an-pat-plume)"/></svg><p>纹样收进顶部的一条窄带，正文留在纯色底上。</p></div></div>
+      <p class="pair-say"><b>纹样压住正文。</b>纹样和文字永远分层：纹样在边、在带、在封面，文字在纯色上。</p>
+    </div>
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo d2-bad"><p lang="en">Every weekly bouquet is gathered at dawn and delivered before noon, wrapped in paper.</p></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo d2-good"><p class="t" lang="en">Weekly Bouquet</p><p>每周一束，清晨采收，中午前送达，用牛皮纸包好。</p></div></div>
+      <p class="pair-say"><b>用装饰字体排正文。</b>花体和斜体只给标题和两三个词的招牌，正文退回宋体，字号不小于 16 px。</p>
+    </div>
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo d3-bad"><span class="spin" aria-hidden="true"></span><p>光环一直在转，藤蔓一直在摇。读者的视线被拽走，读不下去。</p></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo d3-good"><svg viewBox="0 0 200 40" aria-hidden="true"><path class="v-stem once" pathLength="1" fill="none" d="M6 30C50 30 60 8 100 8S150 30 194 30"/></svg><button type="button" class="link" id="replayOnce">重播</button><p>进入视野时生长一次，然后静止。</p></div></div>
+      <p class="pair-say"><b>没完没了的动画。</b>生长是一次性的事。动画只在进入时播放一遍，并在系统要求减少动效时完全关闭。</p>
+    </div>
+    <div class="pair">
+      <div class="bad"><span class="mark">误</span><div class="p-demo d4-bad"><span class="lowc">古金色的小字，写在羊皮纸上。</span><p>金色在浅底上的对比度约 2.6 : 1，远低于正文要求的 4.5 : 1。</p></div></div>
+      <div class="good"><span class="mark">正</span><div class="p-demo d4-good"><span class="okc">墨褐色的字，旁边一条金线。</span><p>文字用墨褐（约 11.8 : 1），金色只做线和点。</p></div></div>
+      <p class="pair-say"><b>拿金色写字。</b>柔和的大地色好看，但彼此之间对比很低。文字只用最深的那一色，其余颜色都当装饰。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 实现 ============ -->
+<section class="sec" id="code" aria-labelledby="h-code">
+  <header class="sec-head">
+    <p class="sec-no" lang="fr">Chapitre VII</p>
+    <h2 id="h-code">用 SVG 和 CSS 写出来</h2>
+    <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+    <p class="sec-lead">分工很清楚：<strong>外形交给 CSS，曲线交给 SVG</strong>。拱形、叶片、双线框用几行 CSS 就够；藤蔓、花和纹样用内联 SVG，颜色一律写成 <code>currentColor</code> 或 CSS 变量。</p>
+  </header>
+  <div class="codes">
+    <figure class="code"><figcaption>拱形画框与双线<button type="button" class="copy" data-copy="c1">复制</button></figcaption><pre><code id="c1">.arch {
+  /* 斜杠前是水平半径，后是垂直半径：上半部分成了半个椭圆 */
+  border-radius: 50% 50% 0 0 / 36% 36% 0 0;
+  border: 2px solid var(--leaf);
+  outline: 1px solid var(--gold);
+  outline-offset: 5px;          /* 第二道细线，不占布局空间 */
+  overflow: hidden;
+}</code></pre></figure>
+    <figure class="code"><figcaption>叶片按钮<button type="button" class="copy" data-copy="c2">复制</button></figcaption><pre><code id="c2">.btn {
+  border-radius: 999px 6px 999px 6px;   /* 左上、右下大，另两角小 */
+  transition: border-radius .5s cubic-bezier(.3, .7, .2, 1);
+}
+.btn:hover { border-radius: 6px 999px 6px 999px; }</code></pre></figure>
+    <figure class="code"><figcaption>让藤蔓长出来（只播一次）<button type="button" class="copy" data-copy="c3">复制</button></figcaption><pre><code id="c3">&lt;path class="stem" pathLength="1" d="M6 30C50 30 60 8 100 8S150 30 194 30"/&gt;
+
+.stem {
+  fill: none; stroke: currentColor; stroke-linecap: round;
+  stroke-dasharray: 1;           /* pathLength="1" 把总长归一，不必量路径 */
+  stroke-dashoffset: 1;
+  animation: grow 1.6s ease-out forwards;
+}
+@keyframes grow { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .stem { animation: none; stroke-dashoffset: 0; }
+}</code></pre></figure>
+    <figure class="code"><figcaption>会跟着主题换色的图标<button type="button" class="copy" data-copy="c4">复制</button></figcaption><pre><code id="c4">.check input:checked {
+  background: var(--bloom);      /* 颜色来自变量 */
+  -webkit-mask: url(flower.svg) center / contain no-repeat;
+          mask: url(flower.svg) center / contain no-repeat;   /* 形状来自 SVG */
+}</code></pre></figure>
+    <figure class="code"><figcaption>四方连续纹样<button type="button" class="copy" data-copy="c5">复制</button></figcaption><pre><code id="c5">&lt;pattern id="ginkgo" width="36" height="36" patternUnits="userSpaceOnUse"&gt;
+  &lt;path d="M18 35V23M18 23L3 10C7 3 14 3 18 9C22 3 29 3 33 10Z"
+        fill="none" stroke="currentColor" stroke-width="1.4"/&gt;
+&lt;/pattern&gt;
+&lt;rect width="100%" height="100%" fill="url(#ginkgo)"/&gt;</code></pre></figure>
+    <figure class="code"><figcaption>正文绕着圆形排<button type="button" class="copy" data-copy="c6">复制</button></figcaption><pre><code id="c6">.medal {
+  float: left; width: 96px; aspect-ratio: 1;
+  border-radius: 50%;
+  shape-outside: circle();       /* 文字沿圆弧而不是方框换行 */
+  margin: 4px 16px 4px 0;
+}</code></pre></figure>
+  </div>
+
+  <h3 class="sub">容易踩的坑</h3>
+  <ul class="pits">
+    <li><b>不要用位图花边。</b>PNG 花边放大会糊、换色要重出图。纹样和藤蔓一律用 SVG，线宽加上 <code>vector-effect: non-scaling-stroke</code> 后缩放也不会变粗变细。</li>
+    <li><b>装饰要对读屏软件隐藏。</b>纯装饰的 SVG 加 <code>aria-hidden="true"</code>；有含义的图加 <code>role="img"</code> 和标题。</li>
+    <li><b>拱形会裁掉角上的内容。</b>拱形容器里的文字和按钮要放在下半部分，或者给顶部留出至少半个拱高的内边距。</li>
+    <li><b>曲线的对称用变换来做。</b>右侧藤蔓不必另画一条，把左侧的 <code>scaleX(-1)</code> 即可，改一处两边同步。</li>
+    <li><b>纹样的 <code>currentColor</code> 不跟引用者走。</b><code>&lt;pattern&gt;</code> 里的颜色取自它自己所在的位置，而不是填充它的那个元素。要让纹样换色，把 <code>color</code> 设在定义纹样的那个 <code>&lt;svg&gt;</code> 上。</li>
+    <li><b>内联 SVG 多了会拖慢首屏。</b>重复的部件只定义一次，用 <code>&lt;use&gt;</code> 引用；首屏以外的大幅装饰可以等进入视野再生成。</li>
+    <li><b>深色模式不能简单反色。</b>大地色放到深底上会发灰。本页的夜间配色把每个颜色都重新调亮了一档，见下表。</li>
+  </ul>
+
+  <h3 class="sub">本页的设计令牌</h3>
+  <div class="tbl-wrap"><table class="tbl tokens" id="tokColors"><caption>颜色（对比度按当前季节与昼夜实时计算，相对于页面底色）</caption><thead><tr><th scope="col">角色</th><th scope="col">变量</th><th scope="col">色值</th><th scope="col" class="num">对比度</th><th scope="col">用途</th></tr></thead><tbody></tbody></table></div>
+  <div class="tok-2">
+    <div class="tbl-wrap"><table class="tbl tokens"><caption>字阶</caption><thead><tr><th scope="col">变量</th><th scope="col">大小</th><th scope="col">用在</th></tr></thead><tbody>
+      <tr><td><code>--t-hero</code></td><td>clamp(56px, 11vw, 124px)</td><td>首屏中文标题</td></tr>
+      <tr><td><code>--t-h2</code></td><td>clamp(30px, 4.6vw, 46px)</td><td>章节标题</td></tr>
+      <tr><td><code>--t-h3</code></td><td>22px</td><td>小节标题</td></tr>
+      <tr><td><code>--t-lead</code></td><td>18px / 1.9</td><td>导语</td></tr>
+      <tr><td><code>--t-body</code></td><td>16.5px / 1.9</td><td>正文</td></tr>
+      <tr><td><code>--t-small</code></td><td>14px / 1.7</td><td>注释、标签</td></tr>
+    </tbody></table></div>
+    <div class="tbl-wrap"><table class="tbl tokens"><caption>间距、线宽与圆角</caption><thead><tr><th scope="col">变量</th><th scope="col">值</th><th scope="col">说明</th></tr></thead><tbody>
+      <tr><td><code>--s-1 … --s-7</code></td><td>6 · 10 · 16 · 26 · 42 · 68 · 110 px</td><td>相邻两级约为 1 : 1.618（本页自定）</td></tr>
+      <tr><td><code>--w-hair</code></td><td>1px</td><td>内线、分隔线、第二道框</td></tr>
+      <tr><td><code>--w-line</code></td><td>2px</td><td>画框、输入框底线</td></tr>
+      <tr><td><code>--w-bold</code></td><td>3 – 4px</td><td>藤蔓的茎、插画外轮廓</td></tr>
+      <tr><td><code>--r-leaf</code></td><td>999px 6px 999px 6px</td><td>按钮、标签</td></tr>
+      <tr><td><code>--r-arch</code></td><td>50% 50% 0 0 / 36% 36% 0 0</td><td>画框、卡片封面</td></tr>
+    </tbody></table></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <svg class="flo" viewBox="0 0 240 28" aria-hidden="true"><use href="#an-flo"/></svg>
+  <p>本页的藤蔓、花和纹样全部由 SVG 路径绘制，没有使用图片。字体为 Cormorant Garamond 与思源宋体。</p>
+  <p class="foot-fin" lang="fr">Fin</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

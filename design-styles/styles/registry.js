@@ -9,12 +9,12 @@
  */
 export const STYLES = [
   /* 艺术与印刷源流 */
-  { id: "nouveau" },
+  { id: "nouveau", page: true },
   { id: "bauhaus", page: true },
   { id: "constructivism" },
-  { id: "deco" },
+  { id: "deco", page: true },
   { id: "swiss", page: true },
-  { id: "neochinese" },
+  { id: "neochinese", page: true },
   /* 数字界面范式 */
   { id: "skeuo" },
   { id: "minimal" },

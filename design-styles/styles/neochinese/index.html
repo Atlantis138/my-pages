@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>新中式 · Neo-Chinese Aesthetics</title>
+<meta name="description" content="用新中式风格写成的一页新中式介绍：随节气变化的首屏、计白当黑的疏密演示、五个来处与当代年表、古籍版式与竖排、传统色与字体、网页组件与响应式示例、制印工具、宜忌与 CSS 实现。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;900&family=ZCOOL+XiaoWei&display=swap">
+<link rel="stylesheet" href="page.css">
+<script type="module" src="page.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- 水墨边缘用的 SVG 滤镜：全页只定义一次 -->
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="zh-ink" x="-5%" y="-20%" width="110%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".012 .05" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="26" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="1.6"/>
+    </filter>
+    <filter id="zh-ink-soft" x="-5%" y="-30%" width="110%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency=".008 .03" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="34" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ============ 顶栏 ============ -->
+<header class="bar">
+  <div class="bar-in">
+    <a class="back" href="../../#s-neochinese"><span class="back-seal" aria-hidden="true">返</span>图鉴</a>
+    <nav class="toc" aria-label="章节">
+      <a href="#principle">原理</a><a href="#history">来历</a><a href="#language">语言</a><a href="#ui">界面</a><a href="#lab">制印</a><a href="#use">宜忌</a><a href="#code">实现</a>
+    </nav>
+    <div class="tools">
+      <span class="bar-term" id="barTerm" aria-hidden="true"></span>
+      <button class="tool" id="themeBtn" type="button" role="switch" aria-checked="false" title="昼 / 夜"><span aria-hidden="true" class="ico-moon"></span><span class="tool-t">夜</span></button>
+      <button class="tool" id="resetBtn" type="button" title="恢复初始状态：节气、昼夜、制印与所有控件"><span aria-hidden="true">↺</span><span class="tool-t">复原</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ 首屏 ============ -->
+<section class="hero" id="top" aria-labelledby="h-hero">
+  <svg class="hills" id="hills" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+  <div class="hero-in">
+    <div class="hero-title">
+      <h1 id="h-hero">新中式</h1>
+      <div class="hero-side">
+        <span class="seal">自述</span>
+        <span class="vline" aria-hidden="true"></span>
+        <p class="hero-hou" id="heroHou"></p>
+      </div>
+    </div>
+    <div class="hero-text">
+      <span class="disc" aria-hidden="true"></span>
+      <p class="hero-meta"><span lang="en">Neo-Chinese Aesthetics</span><span>二〇一〇年代至今</span></p>
+      <p class="lede">新中式不是哪个流派的正式名称。它是近十几年中文设计界的一个通称，指<strong>用现代的网格、字体和克制的配色，去表达传统的审美</strong>：宋瓷的素净，文人画的留白，古籍的版式，一方朱红的印。</p>
+      <p class="lede">它在网页上其实只有三件事：大片的空白，一处朱红，几条细线。这一页也只用了这三样。</p>
+      <div class="term" id="term">
+        <p class="term-k">节气</p>
+        <div class="term-row">
+          <button type="button" class="term-btn" id="termPrev" aria-label="上一个节气">‹</button>
+          <p class="term-name" id="termName" aria-live="polite"></p>
+          <button type="button" class="term-btn" id="termNext" aria-label="下一个节气">›</button>
+          <button type="button" class="tlink" id="termToday">回到今日</button>
+        </div>
+        <p class="note" id="termNote"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 壹 原理 ============ -->
+<section class="sec" id="principle" aria-labelledby="h-principle">
+  <header class="sec-head"><p class="sec-no" aria-hidden="true">壹</p><h2 id="h-principle">计白当黑</h2><p class="sec-sub">原理</p></header>
+  <div class="sec-body">
+    <p class="lead">清代书法家邓石如说，字画「疏处可以走马，密处不使透风，常计白以当黑」。意思是：空白不是画剩下的地方，它和墨一样要经营。新中式放到网页上，第一条规矩就是这个。</p>
+
+    <div class="shumi">
+      <div class="shumi-stage" id="shumiStage" data-level="3">
+        <span class="sm-frame" aria-hidden="true"></span>
+        <div class="sm-title"><b>山居</b><span class="seal sm">秋暝</span></div>
+        <p class="sm-poem">空山新雨后</p>
+        <p class="sm-body">一间可以坐下来喝茶的屋子，在山腰，开窗见云。</p>
+        <p class="sm-body2">每日限三席，需提前一日预约。茶席含三款当季茶与一份茶点。</p>
+        <div class="sm-tags"><span>茶席</span><span>住宿</span><span>雅集</span><span>器物</span></div>
+        <span class="sm-btn">立即预约</span>
+        <span class="sm-btn2">了解更多</span>
+        <p class="sm-foot">地址 · 电话 · 营业时间 · 交通 · 须知</p>
+      </div>
+      <div class="shumi-ctl">
+        <label class="range" for="shumi"><span><i>密</i><output id="shumiOut"></output><i>疏</i></span><input type="range" id="shumi" min="0" max="4" step="1" value="3"></label>
+        <p class="shumi-say" id="shumiSay" aria-live="polite"></p>
+        <p class="note">留白不是算出来的比例，而是删出来的：每往右一档，就拿掉几样东西，再把剩下的收拢到一边。</p>
+      </div>
+    </div>
+
+    <ol class="rules">
+      <li><b>留白要有形状</b><p>把内容收拢到一角或一侧，让空白连成一整块。四处均匀地空着，只会显得稀松；一边密、一边空，才有「疏密」。</p></li>
+      <li><b>只点一处朱红</b><p>整屏最多一个高饱和的颜色，面积很小，通常是一方印。它负责把视线带到最要紧的地方，所以不能到处都是。</p></li>
+      <li><b>用线，不用框</b><p>分隔靠一条一像素的细线，或者干脆靠距离。不用阴影，不用色块卡片，圆角不超过两三个像素。</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 贰 来历 ============ -->
+<section class="sec" id="history" aria-labelledby="h-history">
+  <header class="sec-head"><p class="sec-no" aria-hidden="true">贰</p><h2 id="h-history">五个来处</h2><p class="sec-sub">来历</p></header>
+  <div class="sec-body">
+    <p class="lead">「新中式」这个词最早多用在家具和室内设计上，后来才扩展到平面和网页。它没有创始人，也没有宣言，取材却相当固定，大致是下面五处。每一处都给了网页一样具体的东西。</p>
+
+    <ul class="sources">
+      <li>
+        <span class="src-ico i-bowl" aria-hidden="true"></span>
+        <h3>宋瓷</h3>
+        <p>汝窑的天青、定窑的白、龙泉的青，都是一色到底的单色釉，不靠纹饰取胜。</p>
+        <p class="src-web"><b>给网页：</b>配色。一两种低饱和的颜色，大面积平涂，不做渐变。</p>
+      </li>
+      <li>
+        <span class="src-ico i-corner" aria-hidden="true"></span>
+        <h3>文人画</h3>
+        <p>南宋的马远、夏圭喜欢只画一角或半边，人称「马一角，夏半边」，其余全是空的。</p>
+        <p class="src-web"><b>给网页：</b>构图。内容偏在一侧，不对称，空白占大半。</p>
+      </li>
+      <li>
+        <span class="src-ico i-book" aria-hidden="true"></span>
+        <h3>古籍</h3>
+        <p>雕版印刷留下了一整套版式：版框、界行、天头地脚，以及从刻本里演变出来的宋体字。</p>
+        <p class="src-web"><b>给网页：</b>网格与字体。细线分栏、竖排标题、宋体正文。</p>
+      </li>
+      <li>
+        <span class="src-ico i-seal" aria-hidden="true"></span>
+        <h3>篆刻</h3>
+        <p>一幅字画上，印章是唯一的红色。字凸起的叫朱文，字凹下的叫白文；盖在哪里也有讲究。</p>
+        <p class="src-web"><b>给网页：</b>强调色。一小块朱红，用在标记、状态和落款上。</p>
+      </li>
+      <li>
+        <span class="src-ico i-gate" aria-hidden="true"></span>
+        <h3>园林</h3>
+        <p>明代计成在《园冶》里讲「巧于因借，精在体宜」。月洞门和漏窗把远处的景框进来，叫作框景。</p>
+        <p class="src-web"><b>给网页：</b>图片的外形与节奏。用圆形、扇形裁切图片；长页面一屏一景。</p>
+      </li>
+    </ul>
+
+    <h3 class="sub">它是怎样流行起来的</h3>
+    <ol class="tl">
+      <li><b class="tl-y">一九八〇年代起</b><p>靳埭强等香港设计师把水墨、笔触和文房器物放进现代海报，证明传统元素可以和现代版式共处。</p></li>
+      <li><b class="tl-y">二〇〇六</b><p>贝聿铭设计的苏州博物馆新馆开馆：白墙、灰色的石材线条，以墙为纸的片石假山。「新中式」在建筑上有了一个公认的样本。</p></li>
+      <li><b class="tl-y">二〇〇八</b><p>北京奥运会的视觉系统用了祥云纹和印章式的会徽，并把中国红、琉璃黄、青花蓝、玉脂白等整理成一套有名字的色彩系统。</p></li>
+      <li><b class="tl-y">二〇一三起</b><p>故宫陆续推出《胤禛美人图》《韩熙载夜宴图》《每日故宫》等应用，传统题材第一次有了成规模的、做工讲究的数字界面。</p></li>
+      <li><b class="tl-y">二〇一八</b><p>李宁在纽约时装周的发布引出「国潮」一词，茶饮、美妆、文创品牌纷纷跟进，新中式成了消费品的主流视觉之一。</p></li>
+      <li><b class="tl-y">二〇二二</b><p>北京冬奥会开幕式用二十四节气倒计时；同年春晚的舞蹈《只此青绿》让青绿山水的配色家喻户晓。</p></li>
+    </ol>
+    <p class="note tl-note">流行得快也带来了套路化：祥云、仙鹤、烫金、做旧的宣纸纹理被到处套用。怎样避免，见「宜忌」一节。</p>
+  </div>
+</section>
+
+<!-- ============ 叁 视觉语言 ============ -->
+<section class="sec" id="language" aria-labelledby="h-language">
+  <header class="sec-head"><p class="sec-no" aria-hidden="true">叁</p><h2 id="h-language">版、排、色、字</h2><p class="sec-sub">视觉语言</p></header>
+  <div class="sec-body">
+    <p class="lead">新中式看起来随意，其实处处有出处。下面四样是它在网页上最常用到的规矩。</p>
+
+    <h3 class="sub">版：向一页古书借网格</h3>
+    <div class="page-anat">
+      <div class="leaf" id="leaf" data-hl="" role="img" aria-label="一页古籍的版式示意">
+        <span class="lf-tian">天头</span>
+        <div class="lf-frame">
+          <div class="lf-cols"><i></i><i></i><i></i><i></i><i class="lf-xin"><b></b></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <span class="lf-di">地脚</span>
+      </div>
+      <ol class="terms" id="terms">
+        <li><button type="button" data-hl="tian" aria-pressed="false"><b>天头</b><span>版框上方的空白，比下方宽，读书人在这里写批注。<em>网页上：</em>标题上方的留白大于下方；页面的上边距大于下边距。</span></button></li>
+        <li><button type="button" data-hl="di" aria-pressed="false"><b>地脚</b><span>版框下方的空白，窄一些。<em>网页上：</em>一节结束后不必留太多，把空间让给下一节的「天头」。</span></button></li>
+        <li><button type="button" data-hl="frame" aria-pressed="false"><b>版框</b><span>围住正文的框线。外粗内细的双线叫文武边。<em>网页上：</em>内容区的细线边框，一粗一细两道线就够了。</span></button></li>
+        <li><button type="button" data-hl="cols" aria-pressed="false"><b>界行</b><span>行与行之间的细竖线。<em>网页上：</em>栏与栏之间的一像素分隔线，用 <code>column-rule</code> 或边框。</span></button></li>
+        <li><button type="button" data-hl="xin" aria-pressed="false"><b>版心</b><span>一页正中对折的窄条，刻着书名、卷次和页码，中间的「鱼尾」是折页的记号。<em>网页上：</em>一条固定的窄栏，告诉读者现在在哪：本页左侧竖排的章节名就是它。</span></button></li>
+      </ol>
+    </div>
+
+    <h3 class="sub">排：竖排只给短句</h3>
+    <div class="vert">
+      <div class="vert-stage" id="vertStage">
+        <p class="vert-text" id="vertText">立冬，<span class="tcy">11</span>月<span class="tcy">7</span>日。宜<em>煮茶</em>，忌匆忙。<span lang="en">Tea</span> 一盏。</p>
+      </div>
+      <div class="vert-ctl">
+        <fieldset class="set"><legend>方向</legend>
+          <label class="radio"><input type="radio" name="vDir" value="v" checked><span>竖排</span></label>
+          <label class="radio"><input type="radio" name="vDir" value="h"><span>横排</span></label>
+        </fieldset>
+        <label class="check"><input type="checkbox" id="vTcy" checked><span>纵中横：两位数字并成一格</span></label>
+        <label class="check"><input type="checkbox" id="vUp"><span>西文直立，一个字母占一格</span></label>
+        <label class="check"><input type="checkbox" id="vEm" checked><span>着重号</span></label>
+        <pre class="mini-code" aria-live="polite"><code id="vertCode"></code></pre>
+      </div>
+    </div>
+    <p>竖排从右往左读。它很有味道，但网页的滚动方向是上下的，长文竖排会变成横向滚动，谁都不习惯。所以竖排只用在标题、题签、落款这类一两行的短句上，正文仍然横排。竖排里的阿拉伯数字和西文默认是躺倒的：两三位的数字用「纵中横」并成一格，更长的改写成汉字。</p>
+
+    <h3 class="sub">色：一纸、一墨、一朱、一间色</h3>
+    <div class="swatches" id="swatches"></div>
+    <p>纸色和墨色占去九成以上，朱砂只是一个点。第四种颜色叫间色，用来给标题和图形一点温度；本页的间色随节气所在的季节变：春用竹青，夏用石青，秋用赭石，冬用黛蓝。色名取传统颜料和织物的叫法，色值是本页自定的，传统色并没有统一的标准色值。点色块可以复制。</p>
+
+    <h3 class="sub">字：宋体做事，书法题字</h3>
+    <div class="fonts">
+      <div class="font"><p class="f-sample f1">山色有无中</p><p class="f-name">书法体 · 马善政体</p><p class="f-use">只写标题和题签，一次不超过四五个字。笔画粗细悬殊，字一小就糊。</p></div>
+      <div class="font"><p class="f-sample f2">山色有无中</p><p class="f-name">宋体 · 思源宋体</p><p class="f-use">正文、标题、界面都用它。横细竖粗，有刻本的气质，长文也耐读。</p></div>
+      <div class="font"><p class="f-sample f3">山色有无中</p><p class="f-name">宋体加粗 · 字重 900</p><p class="f-use">需要分量又不想用书法体时，用最粗的宋体，字距放宽一些。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 肆 界面 ============ -->
+<section class="sec" id="ui" aria-labelledby="h-ui">
+  <header class="sec-head"><p class="sec-no" aria-hidden="true">肆</p><h2 id="h-ui">落到界面</h2><p class="sec-sub">组件与响应式</p></header>
+  <div class="sec-body">
+    <p class="lead">做成组件时，新中式几乎是在做减法：去掉底色、阴影和圆角，剩下字、线和距离。这样的界面很安静，但也容易让人看不出哪里能点。所以<strong>可以交互的东西必须有一个明确的记号</strong>：一条底线，一块墨色，或者一点朱红。下面的组件都可以操作。</p>
+
+    <div class="ui-grid">
+      <div class="ui-box">
+        <p class="ui-k">按钮与链接</p>
+        <div class="row">
+          <button class="btn" type="button">预约茶席</button>
+          <button class="btn line" type="button">查看茶单</button>
+          <button class="btn" type="button" disabled>今日已满</button>
+        </div>
+        <div class="row"><a class="tlink" href="#ui">了解冲泡方法</a></div>
+        <p class="ui-note">主按钮是一块实心的墨色，方角。次按钮只有一圈细线。文字链接的下面有一条短短的朱线，悬停时拉长到与文字等宽。</p>
+      </div>
+
+      <form class="ui-box" id="uiForm" novalidate>
+        <p class="ui-k">表单</p>
+        <label class="field"><span>称呼</span><input type="text" name="name" autocomplete="off" placeholder="如：陈先生"></label>
+        <label class="field" id="telField"><span>手机</span><input type="tel" name="tel" inputmode="numeric" autocomplete="off" placeholder="十一位手机号" aria-describedby="telErr"><em id="telErr" class="err" aria-live="polite"></em></label>
+        <label class="field"><span>茶席</span><select name="seat"><option>临窗 · 两位</option><option>廊下 · 四位</option><option>茶室 · 六位</option></select></label>
+        <fieldset class="set"><legend>时段</legend>
+          <label class="radio"><input type="radio" name="slot" value="上午" checked><span>上午</span></label>
+          <label class="radio"><input type="radio" name="slot" value="午后"><span>午后</span></label>
+          <label class="radio"><input type="radio" name="slot" value="傍晚"><span>傍晚</span></label>
+        </fieldset>
+        <label class="check"><input type="checkbox" name="quiet"><span>需要安静的位置</span></label>
+        <div class="row"><button class="btn" type="submit">提交</button><span class="ok" id="formOk" aria-live="polite"></span></div>
+        <p class="ui-note">输入框只有一条底线，像界行。勾选框选中后盖上一方小小的朱印，这是表单里唯一的红色。出错时提示文字前有一个「误」字，不只靠颜色。</p>
+      </form>
+
+      <div class="ui-box">
+        <p class="ui-k">标签页</p>
+        <div class="vtabs">
+          <div class="vtablist" role="tablist" aria-label="示例标签页" aria-orientation="vertical" id="uiTabs">
+            <button type="button" role="tab" aria-selected="true" aria-controls="tp1" id="tb1">绿茶</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="tp2" id="tb2" tabindex="-1">乌龙</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="tp3" id="tb3" tabindex="-1">普洱</button>
+          </div>
+          <div class="tabpanel" role="tabpanel" id="tp1" aria-labelledby="tb1" tabindex="0"><p>龙井、碧螺春、太平猴魁。不发酵，重在一个「鲜」字，八十度水冲泡。</p></div>
+          <div class="tabpanel" role="tabpanel" id="tp2" aria-labelledby="tb2" tabindex="0" hidden><p>铁观音、大红袍、凤凰单丛。半发酵，香气高，要用沸水。</p></div>
+          <div class="tabpanel" role="tabpanel" id="tp3" aria-labelledby="tb3" tabindex="0" hidden><p>生普与熟普。后发酵，可以存放多年，越陈越醇。</p></div>
+        </div>
+        <p class="ui-note">标签竖排在右侧，像插在书里的书签。当前的一枚用朱线标出，并且字重加粗。屏幕窄的时候它会改成横排。</p>
+      </div>
+
+      <div class="ui-box">
+        <p class="ui-k">开关、进度与分页</p>
+        <label class="switch"><input type="checkbox" role="switch" id="uiSwitch"><span class="sw-track" aria-hidden="true"><i></i></span><span>新茶上市时提醒我</span></label>
+        <label class="range" for="uiInk"><span><i>出汤</i><output id="uiInkOut">60%</output></span><input type="range" id="uiInk" min="0" max="100" value="60"></label>
+        <div class="ink-bar" role="progressbar" aria-label="出汤" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" id="uiInkBar"><i></i></div>
+        <nav class="pager" aria-label="示例分页" id="pager"></nav>
+        <p class="ui-note">进度条是一笔横画：起笔重，收笔带一点飞白。分页用汉字数字，当前页下面点一个朱点；每个页码另有读屏用的标签。</p>
+      </div>
+
+      <div class="ui-box wide">
+        <p class="ui-k">表格 <span>示例数据</span></p>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <caption class="sr">茶单（示例数据）</caption>
+            <thead><tr><th scope="col">茶名</th><th scope="col">产地</th><th scope="col">类别</th><th scope="col" class="num">年份</th><th scope="col" class="num">每壶</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">明前龙井</th><td>浙江杭州</td><td>绿茶</td><td class="num">2026</td><td class="num">¥ 128</td></tr>
+              <tr><th scope="row">凤凰单丛</th><td>广东潮州</td><td>乌龙</td><td class="num">2025</td><td class="num">¥ 98</td></tr>
+              <tr><th scope="row">正山小种</th><td>福建武夷山</td><td>红茶</td><td class="num">2025</td><td class="num">¥ 88</td></tr>
+              <tr><th scope="row">老班章</th><td>云南勐海</td><td>普洱</td><td class="num">2016</td><td class="num">¥ 268</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="ui-note">表格只有横线，没有竖线和底色，上下各一道稍重的线收边，像版框。数字用等宽数字并右对齐。表格里不用竖排，也不用书法字。</p>
+      </div>
+
+      <div class="ui-box">
+        <p class="ui-k">批注与提示</p>
+        <div class="alert"><b>注</b><p>茶席每场九十分钟，请准时到达。</p></div>
+        <div class="alert bad" role="note"><b>误</b><p>所选时段已满，请另择一日。</p></div>
+        <details class="fold"><summary>为什么水温很重要</summary><p>绿茶的叶子嫩，水太烫会把它烫熟，茶汤发苦；乌龙和普洱叶子老，要沸水才泡得开。</p></details>
+        <p class="ui-note">提示条仿的是书页上的批注：左边一条竖线，线前一个字。折叠内容用原生的 <code>&lt;details&gt;</code>，展开的记号是一个会转向的小三角。</p>
+      </div>
+
+      <div class="ui-box">
+        <p class="ui-k">卡片与标签</p>
+        <article class="card">
+          <div class="card-art" aria-hidden="true"><span></span></div>
+          <div class="card-txt">
+            <h4>半日闲</h4>
+            <p>一席三款茶，配一份茶点。</p>
+            <div class="tags"><span class="tag zhu">当季</span><span class="tag">临窗</span><span class="tag">两位</span></div>
+          </div>
+        </article>
+        <p class="ui-note">卡片没有底色和阴影，靠上方一条线和四周的距离成为一个单元。图片裁成圆形，取的是月洞门的意思。标签里只有「当季」一枚是朱色。</p>
+      </div>
+    </div>
+
+    <h3 class="sub">响应式：先收左右，不收上下</h3>
+    <p>屏幕变窄时，新中式最怕两件事：留白被挤没了，竖排没地方放。本页的处理是：左右的边距可以收，上下的距离尽量不动；竖排的标题在手机上改回横排。拖动宽度看看。</p>
+    <div class="rs-ctl">
+      <div class="seg" role="group" aria-label="设备宽度预设" id="rsPresets">
+        <button type="button" data-w="375">手机 375</button>
+        <button type="button" data-w="768">平板 768</button>
+        <button type="button" data-w="1080">桌面 1080</button>
+      </div>
+      <label class="range" for="rsWidth"><span><i>页面宽度</i><output id="rsOut"></output></span><input type="range" id="rsWidth" min="320" max="1080" step="1" value="1080"></label>
+    </div>
+    <div class="rs-stage" id="rsStage">
+      <div class="rs-frame" id="rsFrame">
+        <div class="rs-page">
+          <header class="rs-head"><b>观山</b><nav aria-hidden="true"><span>茶席</span><span>茶单</span><span>器物</span><span>来访</span></nav><span class="rs-menu">目录</span></header>
+          <div class="rs-hero">
+            <div class="rs-copy">
+              <p class="rs-kick">立冬 · 新到</p>
+              <p class="rs-p">山里的第一场霜之后，老枞水仙到了。每日三席，一席九十分钟。</p>
+              <span class="btn rs-btn">预约茶席</span>
+            </div>
+            <div class="rs-title"><h4>半日闲</h4><span class="seal sm">观山</span></div>
+            <svg class="rs-hills" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120V84C60 70 96 30 150 46C196 60 230 88 290 74C350 60 372 18 430 30C486 42 520 80 600 66V120Z"/><path d="M0 120V100C80 92 130 70 210 84C290 98 340 62 420 76C490 88 540 104 600 96V120Z"/></svg>
+          </div>
+          <div class="rs-list">
+            <div class="rs-item"><b>老枞水仙</b><span>福建武夷山</span><i>¥ 168</i></div>
+            <div class="rs-item"><b>凤凰单丛</b><span>广东潮州</span><i>¥ 98</i></div>
+            <div class="rs-item"><b>明前龙井</b><span>浙江杭州</span><i>¥ 128</i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="rs-read" id="rsRead" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- ============ 伍 动手 ============ -->
+<section class="sec" id="lab" aria-labelledby="h-lab">
+  <header class="sec-head"><p class="sec-no" aria-hidden="true">伍</p><h2 id="h-lab">制一方印</h2><p class="sec-sub">动手</p></header>
+  <div class="sec-body">
+    <p class="lead">印章是新中式里最好用的一个小部件：标记状态、给卡片落款、替代图标。在下面输入一到四个字，选好朱白、形状和字体，刻一方自己的印。刻好可以下载成透明底的图片，也可以复制一段纯 CSS 的写法。</p>
+    <div class="lab">
+      <div class="lab-view">
+        <div class="slip" id="slip" data-pos="foot">
+          <p class="slip-text" id="slipText">山色有无中</p>
+          <canvas class="slip-seal" id="sealCanvas" width="360" height="360" role="img" aria-label="印章预览"></canvas>
+        </div>
+      </div>
+      <div class="lab-ctl">
+        <label class="field"><span>印文（一至四字）</span><input type="text" id="sealText" value="观山" maxlength="4" autocomplete="off"></label>
+        <label class="field"><span>题句（竖排，至多十字）</span><input type="text" id="slipInput" value="山色有无中" maxlength="10" autocomplete="off"></label>
+        <fieldset class="set"><legend>朱白</legend>
+          <label class="radio"><input type="radio" name="sealMode" value="bai" checked><span>白文（红底白字）</span></label>
+          <label class="radio"><input type="radio" name="sealMode" value="zhu"><span>朱文（白底红字）</span></label>
+        </fieldset>
+        <fieldset class="set"><legend>形状</legend>
+          <label class="radio"><input type="radio" name="sealShape" value="square" checked><span>方</span></label>
+          <label class="radio"><input type="radio" name="sealShape" value="round"><span>圆</span></label>
+          <label class="radio"><input type="radio" name="sealShape" value="tall"><span>长</span></label>
+        </fieldset>
+        <fieldset class="set"><legend>字体</legend>
+          <label class="radio"><input type="radio" name="sealFont" value="Ma Shan Zheng" checked><span>书法</span></label>
+          <label class="radio"><input type="radio" name="sealFont" value="Noto Serif SC"><span>宋体</span></label>
+          <label class="radio"><input type="radio" name="sealFont" value="ZCOOL XiaoWei"><span>小薇</span></label>
+        </fieldset>
+        <fieldset class="set"><legend>位置</legend>
+          <label class="radio"><input type="radio" name="sealPos" value="head"><span>引首</span></label>
+          <label class="radio"><input type="radio" name="sealPos" value="foot" checked><span>名款下</span></label>
+          <label class="radio"><input type="radio" name="sealPos" value="corner"><span>压角</span></label>
+        </fieldset>
+        <label class="range" for="sealRough"><span><i>金石气（残破）</i><output id="sealRoughOut">40</output></span><input type="range" id="sealRough" min="0" max="100" value="40"></label>
+        <div class="row">
+          <button class="btn" type="button" id="sealSave">下载 PNG</button>
+          <button class="btn line" type="button" id="sealCss">复制 CSS</button>
+          <button class="btn line" type="button" id="sealAgain">再刻一方</button>
+        </div>
+        <p class="note" id="sealSay" aria-live="polite"></p>
+        <p class="note">四字印按传统从右上起读：右上、右下、左上、左下。残破效果是随机打上去的小缺口，属于示意，并非真实的刻石痕迹。书法字体缺字时会自动换成宋体。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 陆 好与坏 ============ -->
+<section class="sec" id="use" aria-labelledby="h-use">
+  <header class="sec-head"><p class="sec-no" aria-hidden="true">陆</p><h2 id="h-use">宜与忌</h2><p class="sec-sub">取舍</p></header>
+  <div class="sec-body">
+    <p class="lead">新中式的门槛看着低：一张宣纸底、一个毛笔字、一方印，似乎就成了。也正因为这样，它最容易做俗。下面仿照老黄历的写法，列出宜和忌。</p>
+    <div class="almanac">
+      <div class="alm yi"><h3><span>宜</span></h3><ul><li>茶、香、器物、服饰等生活方式品牌</li><li>博物馆、文旅、非遗、古籍数字化</li><li>节气、传统节日的专题页</li><li>内容不多、希望人慢下来看的页面</li></ul></div>
+      <div class="alm ji"><h3><span>忌</span></h3><ul><li>信息密集的后台与工具：留白和竖排都会拖慢操作</li><li>需要强烈促销感的页面：它天生安静，喊不出声</li><li>面向不读中文的用户：竖排、印章和书法都会变成纯装饰</li></ul></div>
+    </div>
+
+    <h3 class="sub">六种常见的做坏</h3>
+    <div class="pairs">
+      <div class="pair">
+        <div class="bad"><span class="mark">忌</span><div class="p-demo g1-bad"><b>国潮盛典</b><i></i><i></i><i></i><span>限时</span><span>钜惠</span></div></div>
+        <div class="good"><span class="mark">宜</span><div class="p-demo g1-good"><b>秋茶上新</b><span class="seal sm">新</span></div></div>
+        <p class="pair-say"><b>堆砌符号。</b>大红、烫金、祥云、好几方印挤在一起，是年货包装，不是新中式。删到只剩一行字和一点朱红。</p>
+      </div>
+      <div class="pair">
+        <div class="bad"><span class="mark">忌</span><div class="p-demo g2-bad"><p>茶席每场九十分钟，请准时到达。场内请保持安静，手机调至静音。未满十二岁的小朋友需由家人陪同。茶具珍贵，请轻拿轻放。</p></div></div>
+        <div class="good"><span class="mark">宜</span><div class="p-demo g2-good"><b>须知</b><p>茶席每场九十分钟，请准时到达。场内请保持安静。</p></div></div>
+        <p class="pair-say"><b>长文竖排。</b>左边的正文竖着排，一屏放不下，只能横向滚动。竖排留给两个字的标题，正文横排。</p>
+      </div>
+      <div class="pair">
+        <div class="bad"><span class="mark">忌</span><div class="p-demo g3-bad"><p>山里的第一场霜之后，老枞水仙到了。每日三席，一席九十分钟，需提前一日预约。</p></div></div>
+        <div class="good"><span class="mark">宜</span><div class="p-demo g3-good"><b>霜后</b><p>山里的第一场霜之后，老枞水仙到了。每日三席。</p></div></div>
+        <p class="pair-say"><b>用书法字体排正文。</b>毛笔字在小字号下笔画粘连，读几行就累。书法只写标题，正文交给宋体。</p>
+      </div>
+      <div class="pair">
+        <div class="bad"><span class="mark">忌</span><div class="p-demo g4-bad"><p>淡淡的灰字，看起来很「高级」，可是在阳光下的手机上几乎看不见。</p></div></div>
+        <div class="good"><span class="mark">宜</span><div class="p-demo g4-good"><p>次要文字用淡墨，仍然读得清。「淡」是相对焦墨而言的。</p></div></div>
+        <p class="pair-say"><b>把「淡」做成看不清。</b>左边的灰字与纸色的对比度约 2 : 1；右边的淡墨约 7 : 1。素雅不等于低对比，正文至少 4.5 : 1。</p>
+      </div>
+      <div class="pair">
+        <div class="bad"><span class="mark">忌</span><div class="p-demo g5-bad"><b>茶</b><span>香</span><span>器</span><span>席</span></div></div>
+        <div class="good"><span class="mark">宜</span><div class="p-demo g5-good"><b>茶</b><span>香</span><span>器</span><span>席</span></div></div>
+        <p class="pair-say"><b>把留白做成平均的空。</b>左边四样东西等距排开，哪里都空，哪里都不透气。右边把它们收到一角，空白连成一片。</p>
+      </div>
+      <div class="pair">
+        <div class="bad"><span class="mark">忌</span><div class="p-demo g6-bad"><b>古韵茶坊</b><p>做旧的纸、卷轴的边、仿古的花框。</p></div></div>
+        <div class="good"><span class="mark">宜</span><div class="p-demo g6-good"><b>观山茶舍</b><p>平涂的纸色，一条细线。</p></div></div>
+        <p class="pair-say"><b>做成仿古。</b>卷轴、做旧纹理、雕花边框是在模仿实物，那是拟物的思路。新中式的「新」，在于只取气质，手法是现代的、平的。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 柒 实现 ============ -->
+<section class="sec" id="code" aria-labelledby="h-code">
+  <header class="sec-head"><p class="sec-no" aria-hidden="true">柒</p><h2 id="h-code">写成代码</h2><p class="sec-sub">实现</p></header>
+  <div class="sec-body">
+    <p class="lead">新中式用到的 CSS 并不多，难处在中文排印的细节：竖排、标点、字体的体积。下面是本页用到的几段关键写法。</p>
+    <div class="codes">
+      <figure class="code"><figcaption>竖排三件套<button type="button" class="copy" data-copy="c1">复制</button></figcaption><pre><code id="c1">.vertical {
+  writing-mode: vertical-rl;       /* 竖排，行从右往左 */
+  text-orientation: mixed;         /* 汉字直立，西文侧躺（默认值） */
+  letter-spacing: .3em;
+  height: 12em;                    /* 竖排容器要有明确的高度 */
+}
+.vertical .tcy {
+  text-combine-upright: all;       /* 纵中横：把 11 并成一格 */
+}</code></pre></figure>
+      <figure class="code"><figcaption>一方印<button type="button" class="copy" data-copy="c2">复制</button></figcaption><pre><code id="c2">.seal {                            /* 白文：红底白字 */
+  display: inline-block;
+  writing-mode: vertical-rl;
+  padding: .28em .22em;
+  background: #B7312C; color: #F3EEE3;
+  font: 1em/1.05 "Ma Shan Zheng", "Noto Serif SC", serif;
+  border-radius: 3px;
+}
+.seal.zhu {                        /* 朱文：白底红字 */
+  background: none; color: #B7312C;
+  box-shadow: inset 0 0 0 2px #B7312C;
+}</code></pre></figure>
+      <figure class="code"><figcaption>水墨远山<button type="button" class="copy" data-copy="c3">复制</button></figcaption><pre><code id="c3">&lt;filter id="ink"&gt;
+  &lt;!-- 噪声把山脊的边缘推得参差，再轻轻模糊，像墨在纸上洇开 --&gt;
+  &lt;feTurbulence type="fractalNoise" baseFrequency=".012 .05" numOctaves="3"/&gt;
+  &lt;feDisplacementMap in="SourceGraphic" scale="26"/&gt;
+  &lt;feGaussianBlur stdDeviation="1.6"/&gt;
+&lt;/filter&gt;
+&lt;path d="M0 420V300C120 240 …Z" fill="#1F1F1F" opacity=".8" filter="url(#ink)"/&gt;</code></pre></figure>
+      <figure class="code"><figcaption>文武边与界行<button type="button" class="copy" data-copy="c4">复制</button></figcaption><pre><code id="c4">.frame {                           /* 外粗内细的双线 */
+  border: 1px solid var(--ink);
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+.columns {                         /* 栏间细线 */
+  columns: 3; column-gap: 2.4em;
+  column-rule: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+}</code></pre></figure>
+      <figure class="code"><figcaption>中文正文的排印<button type="button" class="copy" data-copy="c5">复制</button></figcaption><pre><code id="c5">article {
+  font: 400 17px/1.95 "Noto Serif SC", "Songti SC", serif;
+  text-align: justify;             /* 两端对齐，右边缘整齐 */
+  line-break: strict;              /* 标点不出现在行首 */
+  text-spacing-trim: trim-start;   /* 行首标点挤掉半格（较新的浏览器） */
+  text-autospace: normal;          /* 中西文之间自动留空（较新的浏览器） */
+}
+em {                               /* 着重号：字下加点，不用斜体 */
+  font-style: normal;
+  text-emphasis: filled dot; text-emphasis-position: under right;
+}</code></pre></figure>
+      <figure class="code"><figcaption>书法字体只取用到的字<button type="button" class="copy" data-copy="c6">复制</button></figcaption><pre><code id="c6">&lt;!-- 标题只有三个字，就只请求这三个字的字形 --&gt;
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2
+  ?family=Ma+Shan+Zheng&amp;text=新中式&amp;display=swap"&gt;</code></pre></figure>
+    </div>
+
+    <h3 class="sub">容易踩的坑</h3>
+    <ul class="pits">
+      <li><b>竖排容器没有高度。</b>竖排时文字先向下排，排满容器的高度才换到左边一列。不给高度，所有字会排成一长条。</li>
+      <li><b>竖排溢出的方向是横的。</b>内容超出时出现的是横向滚动条，而且从右向左。这是长文不要竖排的根本原因。</li>
+      <li><b>中文字体很大。</b>一款中文字体动辄几兆。用 Google Fonts 时它会按 <code>unicode-range</code> 切片、按需下载；自己托管就要做子集化，只留用到的字。</li>
+      <li><b>书法字体会缺字。</b>缺的字回退到宋体，夹在毛笔字中间非常显眼。标题文案定稿前先在字体里验证一遍。</li>
+      <li><b>朱红在深色底上会刺眼。</b>夜间模式不能直接沿用同一个红。本页在深色下把文字用的朱色调亮、降了一点饱和，印章的底色则保持不变。</li>
+      <li><b>滤镜不要动。</b><code>feTurbulence</code> 的计算量不小。远山是静态的一次性渲染；给它加上持续的动画，手机会明显发热。</li>
+      <li><b>灰不要用透明度叠出来。</b>用半透明的黑做淡墨，叠在不同底色上深浅会变，对比度没法保证。直接给一个实色。</li>
+      <li><b>别用繁体来「显得古」。</b>简体环境里夹用繁体或异体字，读屏软件和搜索都会受影响，读者也未必认得。气质靠版式，不靠字形。</li>
+    </ul>
+
+    <h3 class="sub">本页的设计令牌</h3>
+    <div class="tbl-wrap"><table class="tbl tokens" id="tokColors"><caption>颜色（对比度按当前节气与昼夜实时计算，相对于纸色）</caption><thead><tr><th scope="col">角色</th><th scope="col">变量</th><th scope="col">色值</th><th scope="col" class="num">对比度</th><th scope="col">用途</th></tr></thead><tbody></tbody></table></div>
+    <div class="tok-2">
+      <div class="tbl-wrap"><table class="tbl tokens"><caption>字阶</caption><thead><tr><th scope="col">变量</th><th scope="col">值</th><th scope="col">用在</th></tr></thead><tbody>
+        <tr><td><code>--t-hero</code></td><td>clamp(84px, 17vw, 220px)</td><td>首屏书法标题</td></tr>
+        <tr><td><code>--t-h2</code></td><td>clamp(30px, 4vw, 44px)</td><td>章节名（竖排）</td></tr>
+        <tr><td><code>--t-h3</code></td><td>21px</td><td>小节标题</td></tr>
+        <tr><td><code>--t-lead</code></td><td>19px / 2</td><td>导语</td></tr>
+        <tr><td><code>--t-body</code></td><td>17px / 1.95</td><td>正文</td></tr>
+        <tr><td><code>--t-small</code></td><td>14px / 1.8</td><td>注释、标签</td></tr>
+      </tbody></table></div>
+      <div class="tbl-wrap"><table class="tbl tokens"><caption>间距、线与形状</caption><thead><tr><th scope="col">变量</th><th scope="col">值</th><th scope="col">说明</th></tr></thead><tbody>
+        <tr><td><code>--tian</code></td><td>clamp(88px, 12vw, 168px)</td><td>每节上方的留白（天头）</td></tr>
+        <tr><td><code>--di</code></td><td>clamp(48px, 6vw, 84px)</td><td>每节下方的留白（地脚），约为天头的一半</td></tr>
+        <tr><td><code>--gap</code></td><td>28px、56px</td><td>段内与段间的距离，只用这两档</td></tr>
+        <tr><td><code>--w-hair</code></td><td>1px</td><td>所有分隔线</td></tr>
+        <tr><td><code>--w-bold</code></td><td>3px</td><td>文武边的外线、表格收边</td></tr>
+        <tr><td>圆角</td><td>0 – 3px</td><td>只有印章和标签有一点圆角</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p class="foot-v">行到水穷处</p>
+  <span class="seal sm">完</span>
+  <p class="foot-n">本页的远山、印章与纹样全部由 SVG、Canvas 与 CSS 绘制，没有使用图片。<br>字体：思源宋体、马善政体、站酷小薇体。</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

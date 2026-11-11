@@ -1,5 +1,5 @@
 import json, numpy as np, matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt, subprocess
-new=json.load(open('../track.json'))
+new=json.load(open('../../data/track.json'))
 old=json.loads(subprocess.check_output(['git','show','8c7a47f:isee3-trajectory/recon/track.json']))
 E=np.array(new['E']).reshape(-1,5); O=np.array(old['E']).reshape(-1,4); Hh=np.array(new['H']).reshape(-1,4); R=np.array(new['R']).reshape(-1,5)
 fig,ax=plt.subplots(2,3,figsize=(21,13))

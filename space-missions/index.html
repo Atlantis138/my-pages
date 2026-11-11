@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>深空航迹 · 航天任务三维轨道图集</title>
+<meta name="description" content="把一次航天任务的整条航迹画在一张可以转动、可以播放的三维图上：ISEE-3 / ICE、卡西尼–惠更斯号。轨迹来自实测星历或官方轨道解。">
+<link rel="icon" href="shared/favicon.svg">
+<script src="shared/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="shared/hub.css">
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="站点导航"><a href="../">‹ My Pages</a></nav>
+  <header class="head">
+    <p class="eyebrow">MISSION TRAJECTORIES · 航天任务三维轨道图集</p>
+    <h1>深空航迹</h1>
+    <p class="lede">把一次航天任务的整条航迹，画在一张可以转动、可以播放的图上。轨迹来自实测星历或官方轨道解，天体按真实的位置和大小绘制；每张图后面都附有数据来源、处理方法，以及与史料逐项对照的检验。</p>
+  </header>
+
+  <main>
+    <ol class="sheets" id="sheets"><li>正在载入任务列表…（本页需要通过 http 访问，直接双击打开时模块无法载入）</li></ol>
+  </main>
+
+  <section class="about" aria-labelledby="h-about">
+    <h2 id="h-about">这些图是怎么做的</h2>
+    <div>
+      <p>每个任务先在各自的 <code>recon/</code> 目录里用脚本处理原始星历：下载、定轨或拼接、抽稀、与史料核对，产出一份几百 KB 的轨道数据。页面载入这份数据后，用一套共用的绘图引擎实时画出来——同一套相机、时间轴、读数和快捷键，所以学会看一张，就会看所有的。</p>
+      <p>源码、数据和处理脚本都在 <a href="https://github.com/Atlantis138/my-pages/tree/main/space-missions" target="_blank" rel="noopener">仓库的 <code>space-missions/</code> 目录</a>里；想加一个新任务，从 <a href="https://github.com/Atlantis138/my-pages/blob/main/space-missions/GUIDE.md" target="_blank" rel="noopener">开发规范</a>开始。</p>
+    </div>
+  </section>
+</div>
+<script type="module" src="shared/hub.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # 轨道数据处理脚本
 
-页面 `../index.html` 由 `cassini.src.html`（版面与文字）、`cassini.js`（绘图与交互）和 `data.json`（轨道数据）拼成：
+页面运行时载入的轨道数据 `../data/cassini.json` 由这里的脚本生成（页面本身不需要构建，见 `space-missions/GUIDE.md`）：
 
 ```
 python3 fetch_all.py       # 从 JPL Horizons 下载巡航段、土星段（10 分钟一点）、九颗卫星、太阳方向、惠更斯号，存入 cache/
@@ -8,11 +8,10 @@ python3 fit_moons.py       # 为每颗卫星逐块拟合进动椭圆 → moonfit
 python3 cands.py           # 用 10 分钟轨迹和卫星模型找出所有可能的近距飞越与近土点 → cache/cands.json、cache/peri10.json
 python3 fetch_windows.py   # 在每次飞越、每个低近土点前后下载 1 分钟一点的数据
 python3 flybys.py          # 精确的最近点时刻、距离、相对速度，以及卫星模型的改正量 → cache/flybys.json
-python3 build.py           # 抽稀轨迹、打包 → data.json
-python3 build_page.py [artifact.html]   # 生成 ../index.html（含 GitHub Pages 需要的 HTML 外壳）；可选再输出一份不带外壳的 Artifact 版本
+python3 build.py           # 抽稀轨迹、打包 → ../data/cassini.json
 ```
 
-需要 `numpy`、`scipy`。Horizons 查询结果缓存在 `cache/`（不入库，首次运行约需 1,000 次查询）。
+脚本都在本目录下运行。需要 `numpy`、`scipy`。Horizons 查询结果缓存在 `cache/`（不入库，首次运行约需 1,000 次查询）。
 
 ## 数据来源
 

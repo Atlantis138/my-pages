@@ -1,5 +1,5 @@
 """Assemble the page's tracks from the node fits (1978–87), JPL Horizons (2014) and an n-body backward
-integration of the JPL 2014 solution (1987–2014). Writes ../track.json and ../model.json."""
+integration of the JPL 2014 solution (1987–2014). Writes ../../data/track.json and ../../data/model.json (the files the page loads)."""
 import pickle, json, sys
 from dyn2 import *
 from jsport import moon_page, earth_h, J78
@@ -199,7 +199,7 @@ print('ICE–Earth at G-Z: %.3f AU'%(np.linalg.norm(state(jd_iso('1985-09-11T11:
 meta=dict(LS=[round(float(x['t']-J78),5) for x in LS], LSalt=[round(float(x['alt']),1) for x in LS], LSv=[round(float(x['v']),3) for x in LS],
           PER=[[round(float(x['t']-J78),4),round(float(x['r']))] for x in PER], T14=round(float(t14ca-J78),5), D14=round(float(d14)),
           TGZ=round(float(tg-J78),5), DGZ=round(float(dg)), THA=round(float(th_-J78),4), DHA=round(float(dh)), TINJ=round(float(T_INJ-J78),4))
-json.dump(dict(E=E,R=Rr,H=Hh,**meta),open('../track.json','w'),separators=(',',':'))
-json.dump(dict(comets=COM),open('../model.json','w'),separators=(',',':'))
-import os; print('track.json bytes',os.path.getsize('../track.json'))
+json.dump(dict(E=E,R=Rr,H=Hh,**meta),open('../../data/track.json','w'),separators=(',',':'))
+json.dump(dict(comets=COM),open('../../data/model.json','w'),separators=(',',':'))
+import os; print('track.json bytes',os.path.getsize('../../data/track.json'))
 pickle.dump(dict(LS=LS,PER=PER),open('events.pkl','wb'))

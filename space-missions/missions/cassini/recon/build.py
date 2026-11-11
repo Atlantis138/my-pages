@@ -1,4 +1,4 @@
-"""Pack Horizons data + fitted models into data.json for the page.
+"""Pack Horizons data + fitted models into ../data/cassini.json for the page.
 Times: days since 1997-10-15 00:00 UT (page epoch).  Positions: km.
 H = heliocentric J2000 ecliptic (cruise);  S = Saturn-centred, Saturn equator (= ring plane)."""
 import numpy as np, json, datetime as dt
@@ -161,5 +161,7 @@ near = np.linalg.norm(Pq - moon_pos('606', Tq), axis=1)
 k = simplify(Tq, Pq, np.maximum(0.3, 0.001 * near)); print('Huygens', len(Tq), '->', len(k))
 out['HY'] = pack(Tq[k], Pq[k])
 out['HYentry'] = dict(t=float(Ht[ie, 0] - JDE), rel=np.round(Ht[ie, 1:4], 1).tolist())
-json.dump(out, open('data.json', 'w'), separators=(',', ':'))
-import os; print('data.json', os.path.getsize('data.json'))
+import os
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'cassini.json')
+json.dump(out, open(OUT, 'w'), separators=(',', ':'))
+print('data/cassini.json', os.path.getsize(OUT))

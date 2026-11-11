@@ -1,4 +1,6 @@
-"""Python ports of the page's own JS ephemerides, so exported points line up with what the page draws."""
+"""Python ports of the page's own JS ephemerides, so exported points line up with what the page draws.
+moon_inertial mirrors moonGeoKm in space-missions/shared/astro.js (same series, same truncation); earth_h mirrors earthHelioAU.
+Change one side and the other must follow."""
 import numpy as np
 from math import *
 LR=[(0,0,1,0,6288774,-20905355),(2,0,-1,0,1274027,-3699111),(2,0,0,0,658314,-2955968),(0,0,2,0,213618,-569925),

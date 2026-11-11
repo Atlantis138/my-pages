@@ -1,0 +1,17 @@
+/* ISEE-3 的主题：灰绿色绘图纸，红笔。图集首页的卡片也用这一组令牌。 */
+.theme-isee3{
+  --paper:#E6ECE5; --sheet:#F3F6F1; --veil:rgba(243,246,241,.78);
+  --ink:#17212B; --ink-2:#4D5B63; --rule:#B8C7BB; --grid:#8FB09A;
+  --pen:#C23A2B; --pen-wash:rgba(194,58,43,.13);
+  --gold:#956511; --blue:#2A5BA5; --green:#257552;
+  --f-display:"Big Shoulders Display","Arial Narrow","Helvetica Neue",sans-serif; --fw-display:900;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+[data-theme="dark"].theme-isee3, [data-theme="dark"] .theme-isee3{
+  --paper:#0D151B; --sheet:#121D25; --veil:rgba(18,29,37,.78);
+  --ink:#DAE4DC; --ink-2:#93A4AB; --rule:#2B3B45; --grid:#3E6553;
+  --pen:#FF7260; --pen-wash:rgba(255,114,96,.16);
+  --gold:#E7B358; --blue:#86AEF5; --green:#5CC694;
+}
+/* 本任务独有：G–Z 彗星用绿色 */
+.theme-isee3 .tag.green{color:var(--green)}

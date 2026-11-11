@@ -1,18 +1,18 @@
 # 轨道重建脚本
 
-页面 `../index.html` 由 `isee3.src.html` 模板加上两份数据生成：
+页面运行时载入的两份数据 `../data/track.json`（轨迹）和 `../data/model.json`（彗星根数）由这里的脚本生成（页面本身不需要构建，见 `space-missions/GUIDE.md`）：
 
 ```
 cd v2
 python3 fit_all.py      # 约 1 分钟：对逐小时星历做稳健的局部定轨，输出 nodes.pkl
-python3 build.py        # 约 1 分钟：拼接轨道、导出 ../track.json 和 ../model.json
-cd ..
-python3 build_page.py [artifact.html]   # 生成 ../index.html（含 GitHub Pages 需要的 HTML 外壳）；可选再输出一份不带外壳的 Artifact 版本
+python3 build.py        # 约 1 分钟：拼接轨道、导出 ../../data/track.json 和 ../../data/model.json
 ```
 
 需要 `numpy`、`scipy`。JPL Horizons 的查询结果缓存在 `v2/cache/`（不入库，首次运行会自动下载）。
 
-## 数据（`data/`）
+页面用来画月球的 Meeus 级数在 `space-missions/shared/astro.js`（`moonGeoKm`），`v2/jsport.py` 是它的 Python 镜像，导出的轨迹点靠它与页面对齐；两边必须一起改。
+
+## 原始数据（`recon/data/`）
 
 - `isee3_dp_ephem.asc`：NSSDC 逐小时 GSE 星历，1978-08-13 至 1987-02-07，48,293 条，含机动标记（`aareadme_isee3_dp_ephem`）。
 - `icetrja.asc`：NSSDC 日心坐标预报，1984—1997，每日一条（`icetrjdy_fmt.txt`）。只用来做交叉检验。

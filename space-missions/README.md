@@ -36,7 +36,3 @@ space-missions/
 node tools/smoke.mjs     # 冒烟测试：所有页面、所有阶段、深浅色、手机宽度（需要 playwright）
 node tools/thumbs.mjs    # 轨道数据变了之后，重新生成首页卡片上的缩略图
 ```
-
-## 旧地址
-
-这两个任务原先是仓库根目录下各自独立的单文件页面（`cassini-mission/`、`isee3-trajectory/`）。那两个地址现在是跳转页，带 `#t=…` 的分享链接仍然有效。

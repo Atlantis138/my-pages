@@ -146,10 +146,10 @@ export function updateLighting(t: number, weather: WeatherState): LightInfo {
   const lampsOn = Math.max(0, Math.min(1, (night - 0.25) / 0.3));
   const late = hour > 0.5 && hour < 5 ? 0.6 : 1;
   const G = U.uGlow.value;
-  G[0].set(1.6, 0.3, 1.5, 0.0035 * lampsOn * late);
-  G[1].set(9.7, 1.25, 0.7, 0.0009 * lampsOn * late);
-  G[2].set(7.3, 2.3, 0.6, 0.0007 * lampsOn * late);
-  G[3].set(24.0, 3.1, 1.2, 0.0012 * lampsOn * late);
+  G[0].set(1.6, 0.3, 1.5, 0.0018 * lampsOn * late);
+  G[1].set(9.7, 1.25, 0.7, 0.0005 * lampsOn * late);
+  G[2].set(7.3, 2.3, 0.6, 0.0004 * lampsOn * late);
+  G[3].set(24.0, 3.1, 1.2, 0.0006 * lampsOn * late);
 
   // 场景平均照度（相对满昼）
   const overcast = weather.cover * (0.35 + 0.65 * weather.stratus);

@@ -8,6 +8,9 @@ attribute float size;
 uniform float uNight;
 uniform float uPixAng;
 varying float vI;
+#ifdef USE_LOGDEPTHBUF
+varying float vFragDepth;
+#endif
 void main() {
   vec3 wp = position;
   vec4 c = viewMatrix * vec4(wp.x, wp.y + wp.x * wp.x * 1.0e-8, wp.z, 1.0);
@@ -20,12 +23,22 @@ void main() {
   // 能量守恒：小于一个像素时降低亮度
   float on = smoothstep(0.25, 0.55, uNight);
   vI = on * size * min(1.0, px * px / (s * s) * 4.0 + 0.15) * exp(-dist / 9000.0);
+#ifdef USE_LOGDEPTHBUF
+  vFragDepth = 1.0 + gl_Position.w;
+#endif
 }
 `;
 
 const FRAG = /* glsl */ `
 varying float vI;
+#ifdef USE_LOGDEPTHBUF
+uniform float logDepthBufFC;
+varying float vFragDepth;
+#endif
 void main() {
+#ifdef USE_LOGDEPTHBUF
+  gl_FragDepth = log2(vFragDepth) * logDepthBufFC * 0.5;
+#endif
   vec2 q = gl_PointCoord - 0.5;
   float r = length(q) * 2.5;
   float core = exp(-r * r * 6.0);

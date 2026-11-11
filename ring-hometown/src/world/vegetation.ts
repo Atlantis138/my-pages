@@ -88,11 +88,12 @@ export function placeTrees(terrain: Terrain, town: TownData, quality: number): T
   };
 
   // ---------- 林地 ----------
-  const density = quality >= 2 ? 1 : quality === 1 ? 0.65 : 0.4;
+  const density = quality >= 2 ? 0.85 : quality === 1 ? 0.6 : 0.38;
+  // 远处（>4.5 km）的林地只靠地形着色器的林冠纹理表现
   const rings: [number, number, number][] = [
-    [0, 1600, 8.5],
-    [1600, 4200, 15],
-    [4200, 9000, 30],
+    [0, 1200, 12],
+    [1200, 2600, 22],
+    [2600, 4500, 36],
   ];
   for (const [r0, r1, sp] of rings) {
     const spacing = sp / Math.sqrt(density);
@@ -115,7 +116,7 @@ export function placeTrees(terrain: Terrain, town: TownData, quality: number): T
         if (blocked(x, z)) continue;
         const ever = vnoise2(x / 90 + 7, z / 90) > 0.55;
         const kind = ever ? (R() < 0.6 ? TREE.PINE : TREE.ROUND) : R() < 0.1 ? TREE.GINKGO : TREE.DECID;
-        const scale = d < 1600 ? 1 : d < 4200 ? 1.35 : 1.9;
+        const scale = d < 1200 ? 1.1 : d < 2600 ? 1.5 : 2.0;
         const h = (kind === TREE.PINE ? 13 + R() * 9 : 10 + R() * 8) * (0.9 + 0.2 * R());
         add(x, z, h * Math.min(scale, 1.3), (kind === TREE.PINE ? 2.6 : 3.6 + R() * 1.8) * scale, kind);
       }
@@ -123,10 +124,11 @@ export function placeTrees(terrain: Terrain, town: TownData, quality: number): T
   }
 
   // ---------- 后山：观察点两侧的树，前方坡面留空 ----------
+  // 观察点四周：东、东南、南三个方向留出视野（看学校、河谷与南墙），树在西、北两侧框景
   const hillTrees: [number, number, number, number][] = [
-    [-6, -15, 9, TREE.ROUND], [5, 17, 8, TREE.DECID], [-16, 9, 11, TREE.PINE], [-14, -24, 12, TREE.PINE],
-    [14, -26, 7, TREE.BLOSSOM], [22, 30, 9, TREE.DECID], [-30, -6, 13, TREE.PINE], [-26, 22, 10, TREE.ROUND],
-    [34, -42, 9, TREE.DECID], [40, 52, 10, TREE.ROUND], [-44, 30, 12, TREE.PINE], [-40, -40, 12, TREE.ROUND],
+    [-6, -15, 9, TREE.ROUND], [-17, 10, 8, TREE.DECID], [-16, -4, 11, TREE.PINE], [-14, -24, 12, TREE.PINE],
+    [12, -27, 7, TREE.BLOSSOM], [-28, 26, 9, TREE.DECID], [-30, -12, 13, TREE.PINE], [-38, 14, 10, TREE.ROUND],
+    [30, -46, 9, TREE.DECID], [-52, 40, 10, TREE.ROUND], [-48, -30, 12, TREE.PINE], [-40, -44, 12, TREE.ROUND],
   ];
   for (const [x, z, h, type] of hillTrees) add(x, z, h, type === TREE.PINE ? 2.4 : 3.4, type, 0.3);
   for (let i = 0; i < 260; i++) {
@@ -136,7 +138,7 @@ export function placeTrees(terrain: Terrain, town: TownData, quality: number): T
     const z = Math.sin(a) * r;
     // 东南方向的坡面（朝学校、朝河）留出视野
     const ang = Math.atan2(z, x);
-    if (ang > -0.75 && ang < 0.9 && r < 260) continue;
+    if (ang > -0.75 && ang < 1.95 && r < 260) continue;
     if (x > 120 && z > -200 && z < 200) continue;
     const h = terrain.height(x, z);
     if (h < -55) continue;

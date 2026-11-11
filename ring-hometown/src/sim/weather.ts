@@ -182,7 +182,7 @@ function autoTarget(t: number): { params: WeatherParams; kind: WeatherKind } {
 }
 
 export class Weather {
-  mode: 'auto' | WeatherKind = 'auto';
+  mode: 'auto' | WeatherKind = 'clear';
   state: WeatherState;
   private target: WeatherParams = presetOf('clear');
   private targetKind: WeatherKind = 'clear';

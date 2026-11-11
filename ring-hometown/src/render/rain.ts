@@ -19,6 +19,9 @@ uniform float uTimeS;
 uniform float uCount;
 varying float vA;
 varying vec2 vUv;
+#ifdef USE_LOGDEPTHBUF
+varying float vFragDepth;
+#endif
 void main() {
   float idx = float(gl_InstanceID);
   // 雨小时只显示一部分雨丝
@@ -41,6 +44,9 @@ void main() {
   vA = show * (1.0 - smoothstep(10.0, 18.0, length(p - c))) * (0.5 + 0.5 * iDrop.w);
   vUv = position.xy;
   gl_Position = projectionMatrix * viewMatrix * vec4(wp, 1.0);
+#ifdef USE_LOGDEPTHBUF
+  vFragDepth = 1.0 + gl_Position.w;
+#endif
 }
 `;
 
@@ -51,7 +57,14 @@ uniform vec3 uAmbSky;
 uniform float uNight;
 varying float vA;
 varying vec2 vUv;
+#ifdef USE_LOGDEPTHBUF
+uniform float logDepthBufFC;
+varying float vFragDepth;
+#endif
 void main() {
+#ifdef USE_LOGDEPTHBUF
+  gl_FragDepth = log2(vFragDepth) * logDepthBufFC * 0.5;
+#endif
   if (vA <= 0.001) discard;
   float a = (1.0 - abs(vUv.x) * 2.0) * smoothstep(-0.5, 0.0, vUv.y) * (1.0 - smoothstep(0.2, 0.5, vUv.y));
   vec3 L = (uMirrorE * 0.06 + uAmbSky * 0.12 + uArchE * 0.15 + vec3(1.0, 0.75, 0.5) * 0.00012 * uNight);

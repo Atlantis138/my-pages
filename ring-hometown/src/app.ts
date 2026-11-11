@@ -94,7 +94,8 @@ export class App {
     p('种树', 0.6);
     await nextFrame();
     const trees = placeTrees(this.terrain, this.town, q);
-    const treeMeshes = createTreeMeshes(trees);
+    console.log(`[init] ${this.town.buildings.length} 栋建筑，${this.town.lamps.length} 盏路灯，${trees.length} 棵树`);
+    const treeMeshes = createTreeMeshes(trees, this.pipe.samples > 0);
     for (const m of treeMeshes) this.pipe.sceneMain.add(m);
     this.pipe.sceneMain.add(createGrass(this.terrain, q));
     p('引水入河、铺轨通车', 0.75);

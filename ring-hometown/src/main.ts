@@ -100,32 +100,6 @@ async function main(): Promise<void> {
   };
   requestAnimationFrame(loop);
   (window as unknown as { app: App }).app = app;
-  // 调试：读出镜群点层的统计
-  (window as unknown as { dumpSpace: () => unknown }).dumpSpace = () => {
-    const rt = app.pipe.spaceRT;
-    const w = rt.width;
-    const h = rt.height;
-    const buf = new Uint16Array(w * h * 4);
-    app.pipe.renderer.readRenderTargetPixels(rt, 0, 0, w, h, buf);
-    let max = 0;
-    let sum = 0;
-    let nz = 0;
-    const f = (u: number) => {
-      const e = (u >> 10) & 31;
-      const m = u & 1023;
-      const sgn = u >> 15 ? -1 : 1;
-      if (e === 0) return sgn * m * Math.pow(2, -24);
-      if (e === 31) return m ? NaN : sgn * Infinity;
-      return sgn * (1 + m / 1024) * Math.pow(2, e - 15);
-    };
-    for (let i = 0; i < w * h; i++) {
-      const v = f(buf[i * 4]);
-      if (v > max || Number.isNaN(v)) max = v;
-      sum += v;
-      if (v > 1e-6) nz++;
-    }
-    return { w, h, max, mean: sum / (w * h), nonzero: nz, center: f(buf[((h >> 1) * w + (w >> 1)) * 4]) };
-  };
 }
 
 main();

@@ -398,12 +398,13 @@ vec3 wallShade(vec3 P, vec3 d, float s, float hourLoc) {
   float rib = smoothstep(0.82, 1.0, abs(sin(u / 22.0 * PI))) * (1.0 - smoothstep(2.0, 8.0, fpk));
   float tier = smoothstep(0.9, 1.0, abs(sin(h / 6.25 * PI))) * (1.0 - smoothstep(0.3, 1.2, fpk / max(abs(d.y), 0.02)));
   float n = vnoise2(vec2(u / 4.0, h / 2.0));
-  vec3 alb = vec3(0.28, 0.29, 0.31) * (0.85 + 0.2 * n) * (1.0 - 0.12 * rib) * (1.0 + 0.1 * tier);
+  vec3 alb = vec3(0.44, 0.45, 0.47) * (0.85 + 0.2 * n) * (1.0 - 0.12 * rib) * (1.0 + 0.1 * tier);
   float di = dayIntensity(hourLoc);
   vec3 E = uDayE * mirrorTint(hourLoc) * di;
   vec3 En = vec3(0.75, 0.82, 1.0) * uArchMax * dayIntensity(hourLoc + 12.0);
   // 垂直壁面只受掠射镜光，主要靠地面反光和天光
-  vec3 c = alb * (E * (0.12 + 0.2 * smoothstep(WALL_H - 2.0, WALL_H, h)) + En * 0.15) / PI;
+  // 墙面朝向环带内侧：受到地面反光与天光（约三成），墙顶一线受镜光直射
+  vec3 c = alb * (E * (0.34 + 0.9 * smoothstep(WALL_H - 1.2, WALL_H, h)) + En * 0.15) / PI;
   // 夜灯：只在三层检修廊道上，稀疏成点；远处按像素足迹取平均
   float lvl = abs(h - 12.5) < 0.25 || abs(h - 25.0) < 0.25 || abs(h - 37.5) < 0.25 ? 1.0 : 0.0;
   float dots = step(0.82, hash12(vec2(floor(u / 0.8), floor(h))));

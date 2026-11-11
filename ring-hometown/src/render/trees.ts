@@ -114,6 +114,7 @@ void main() {
 #endif
 
 #ifdef FRAGMENT
+uniform float uAlphaCut;
 uniform vec4 uSeasonA;
 uniform vec4 uSeasonB;
 uniform vec4 uSeasonC;
@@ -184,7 +185,7 @@ void main() {
     // 叶片法线起伏
     N = normalize(N + (vec3(f2, f1, f2) - 0.5) * 0.7 * (1.0 - farFade));
   }
-  if (alpha < 0.02) discard;
+  if (alpha < uAlphaCut) discard;
 #ifdef SHADOW_PASS
   if (alpha < 0.5) discard;
 #endif
@@ -266,30 +267,30 @@ function instanced(base: BufferGeometry, list: TreeInst[]): InstancedBufferGeome
   return g;
 }
 
-export function treeMaterial(): ShaderMaterial {
+export function treeMaterial(msaa: boolean): ShaderMaterial {
   return new ShaderMaterial({
     vertexShader: '#define VERTEX\n' + common + '\nuniform float uTimeS;\nuniform vec2 uWind;\n' + TREE_GLSL,
     fragmentShader: '#define FRAGMENT\n' + NEAR_HEADER + TREE_GLSL,
-    uniforms: { ...U, ...NU },
+    uniforms: { ...U, ...NU, uAlphaCut: { value: msaa ? 0.02 : 0.5 } },
     side: 2,
-    alphaToCoverage: true,
+    alphaToCoverage: msaa,
   });
 }
 
-export function createTreeMeshes(trees: TreeInst[]): Mesh[] {
+export function createTreeMeshes(trees: TreeInst[], msaa = true): Mesh[] {
   const nearL: TreeInst[] = [];
   const midL: TreeInst[] = [];
   const farL: TreeInst[] = [];
   for (const t of trees) {
     const d = Math.hypot(t.x, t.z);
-    if (d < 420) nearL.push(t);
-    else if (d < 2200) midL.push(t);
+    if (d < 320) nearL.push(t);
+    else if (d < 1800) midL.push(t);
     else farL.push(t);
   }
-  const mat = treeMaterial();
+  const mat = treeMaterial(msaa);
   const out: Mesh[] = [];
-  if (nearL.length) out.push(new Mesh(instanced(buildTreeGeometry(5, 2), nearL), mat));
-  if (midL.length) out.push(new Mesh(instanced(buildTreeGeometry(3, 1), midL), mat));
-  if (farL.length) out.push(new Mesh(instanced(buildTreeGeometry(1, 1), farL), mat));
+  if (nearL.length) out.push(new Mesh(instanced(buildTreeGeometry(5, 1), nearL), mat));
+  if (midL.length) out.push(new Mesh(instanced(buildTreeGeometry(3, 0), midL), mat));
+  if (farL.length) out.push(new Mesh(instanced(buildTreeGeometry(1, 0), farL), mat));
   return out;
 }

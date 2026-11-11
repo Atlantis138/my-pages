@@ -125,10 +125,10 @@ export function initUI(app: App, startHidden: boolean): { update(): void } {
     app.paused = false;
     // 面向东南：南墙上的恒星在右侧，河谷在前方
     app.rig.lookAt(0.62, 0.075, 64);
-    const cd = toDate(ev.peak);
+    const cd = toDate(ev.start);
     const dur = (ev.end - ev.start) * 1440;
     const day = dayRamp(cd.hour) > 0.5 ? '人工白昼' : dayRamp(cd.hour) > 0 ? '镜云调光时' : '深夜';
-    toast(`${kind === 'spring' ? '春照' : '秋照'}：${cd.month} 月 ${cd.day} 日 ${formatClock(cd.hour)}，正值${day}。恒星上缘将越过南墙约 ${dur.toFixed(1)} 分钟（时间放慢到 ×6）`, 6500);
+    toast(`${kind === 'spring' ? '春照' : '秋照'}：${cd.month} 月 ${cd.day} 日 ${formatClock(cd.hour)} 起，正值${day}。恒星上缘将越过南墙约 ${dur.toFixed(1)} 分钟（时间放慢到 ×6）`, 6500);
     refreshButtons();
   };
   mkChip(peekBox, '春照', () => gotoPeek('spring'), '跳到下一次春照：恒星上缘越过南墙', 'warm');
@@ -421,8 +421,10 @@ export function initUI(app: App, startHidden: boolean): { update(): void } {
     let phase: string;
     if (ramp <= 0) phase = '夜 · 对岸光照着河谷';
     else if (ramp >= 1) phase = '白昼 · 镜光自头顶洒下';
-    else if (cd.hour < 12) phase = `镜云渐亮 · 光照 ${Math.round(di * 100)}%`;
-    else phase = `镜云渐暗 · 光照 ${Math.round(di * 100)}%`;
+    else {
+      const pct = di < 0.01 ? '不足 1%' : Math.round(di * 100) + '%';
+      phase = cd.hour < 12 ? `镜云渐亮 · 光照 ${pct}` : `镜云渐暗 · 光照 ${pct}`;
+    }
     phaseEl.textContent = phase;
     const ws = app.weather.state;
     const temp = temperature(t, ws.cover, ws.rain, ws.fogNow);

@@ -25,6 +25,7 @@ import { Post } from './post';
 import { U } from './uniforms';
 
 export function detectReversedDepth(): boolean {
+  if (/[?&]logdepth/.test(location.search)) return false;
   try {
     const c = document.createElement('canvas');
     const gl = c.getContext('webgl2');
@@ -161,7 +162,10 @@ export class Pipeline {
   }
 
   setSize(cssW: number, cssH: number, scale: number): void {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // 内部分辨率上限约 2560×1440，避免高分屏上像素过多
+    const maxPx = 2560 * 1440;
+    if (cssW * cssH * dpr * dpr > maxPx) dpr = Math.sqrt(maxPx / (cssW * cssH));
     const w = Math.max(16, Math.round(cssW * dpr * scale));
     const h = Math.max(16, Math.round(cssH * dpr * scale));
     this.scale = scale;

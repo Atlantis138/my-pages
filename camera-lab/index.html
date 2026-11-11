@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>相机参数实验室</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="在三维街角里动手操作一台模拟相机：光圈、快门、感光度、测光、对焦、景深、白平衡、滤镜与闪光灯，附相机结构拆解、百余条摄影术语与练习任务。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@600;900&display=swap">
+<style>
+/* Layout: 机身式工作台——左边是取景器和像相机顶盖一样的转盘区，右边是参数抽屉；
+   取景需要暗环境，所以整页固定为一套深色（镁合金机身的石墨灰），只有黄铜色作强调，
+   取景器里的绿/橙/红沿用相机的语义色（合焦、警告、溢出）。 */
+:root{
+  --body:#131518; --plate:#1b1e22; --plate-2:#22262b; --well:#0c0d0f;
+  --line:#2d3237; --line-2:#3b4148;
+  --ink:#ece7dc; --ink-2:#a8acb1; --ink-3:#737980;
+  --brass:#e0b25c; --brass-2:#a98546;
+  --ok:#78d690; --warn:#ffa24a; --bad:#ff5b50; --info:#8cc4ff;
+  --scale-4:#e9c75a; --scale-8:#6fb6ff; --scale-16:#ff7a6b;
+  --f-num:"Barlow Condensed","DIN Alternate","Roboto Condensed","Arial Narrow",sans-serif;
+  --f-ui:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  --f-serif:"Noto Serif SC","Songti SC","STSong",serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --r:10px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--body)}
+body{margin:0;background:var(--body);color:var(--ink);font:14px/1.65 var(--f-ui);-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+[hidden]{display:none!important}
+h1,h2,h3{text-wrap:balance}
+
+/* ---------- 顶栏 ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  padding-block:10px;margin:0 -16px;padding-left:16px;padding-right:16px;background:rgba(19,21,24,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:31;background:var(--body)}
+.brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+.brand h1{margin:0;font:900 20px/1.1 var(--f-ui);letter-spacing:.12em}
+.brand span{font:500 12px/1 var(--f-num);letter-spacing:.32em;color:var(--ink-3);text-transform:uppercase;white-space:nowrap}
+.tabs{display:flex;gap:2px;background:var(--well);border:1px solid var(--line);border-radius:999px;padding:3px;margin-left:auto;overflow-x:auto;max-width:100%}
+.tabs button{border:0;background:none;padding:6px 16px;border-radius:999px;color:var(--ink-2);white-space:nowrap;font-weight:500}
+.tabs button[aria-selected="true"]{background:var(--plate-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)}
+.tabs button:hover{color:var(--ink)}
+
+main{padding-block:16px 40px}
+
+/* ---------- 拍摄页 ---------- */
+.shoot{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+.stage{display:flex;flex-direction:column;gap:12px;min-width:0}
+.vf{position:relative;width:100%;aspect-ratio:var(--vf-aspect,1.5);max-width:100%;background:#000;border-radius:var(--r);overflow:hidden;
+  box-shadow:0 0 0 1px var(--line),0 18px 50px rgba(0,0,0,.45);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.vf.drag{cursor:grabbing}
+.vf canvas#vfCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vf-grid{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent calc(33.333% - .5px),rgba(255,255,255,.28) calc(33.333% - .5px),rgba(255,255,255,.28) calc(33.333% + .5px),transparent calc(33.333% + .5px),transparent calc(66.666% - .5px),rgba(255,255,255,.28) calc(66.666% - .5px),rgba(255,255,255,.28) calc(66.666% + .5px),transparent calc(66.666% + .5px)),
+  linear-gradient(0deg,transparent calc(33.333% - .5px),rgba(255,255,255,.28) calc(33.333% - .5px),rgba(255,255,255,.28) calc(33.333% + .5px),transparent calc(33.333% + .5px),transparent calc(66.666% - .5px),rgba(255,255,255,.28) calc(66.666% - .5px),rgba(255,255,255,.28) calc(66.666% + .5px),transparent calc(66.666% + .5px))}
+.af{position:absolute;width:7%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;--c:#fff;
+  background:
+   linear-gradient(var(--c),var(--c)) 0 0/12px 2px no-repeat,linear-gradient(var(--c),var(--c)) 0 0/2px 12px no-repeat,
+   linear-gradient(var(--c),var(--c)) 100% 0/12px 2px no-repeat,linear-gradient(var(--c),var(--c)) 100% 0/2px 12px no-repeat,
+   linear-gradient(var(--c),var(--c)) 0 100%/12px 2px no-repeat,linear-gradient(var(--c),var(--c)) 0 100%/2px 12px no-repeat,
+   linear-gradient(var(--c),var(--c)) 100% 100%/12px 2px no-repeat,linear-gradient(var(--c),var(--c)) 100% 100%/2px 12px no-repeat;
+  filter:drop-shadow(0 0 2px rgba(0,0,0,.8))}
+.af.busy{animation:afb .18s steps(2) infinite}
+.af.ok{--c:var(--ok)}
+.af.fail{--c:var(--bad);animation:afb .3s steps(2) 3}
+.af.spot::after{content:"";position:absolute;left:50%;top:50%;width:46%;aspect-ratio:1;border:1.5px solid rgba(255,255,255,.75);border-radius:50%;transform:translate(-50%,-50%)}
+@keyframes afb{50%{opacity:.25}}
+.histo{position:absolute;right:10px;top:10px;width:150px;height:64px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.18);border-radius:4px;pointer-events:none}
+.vf-top{position:absolute;left:10px;top:9px;right:170px;display:flex;flex-wrap:wrap;gap:6px 10px;font:600 13px/1.2 var(--f-num);letter-spacing:.06em;color:#fff;text-shadow:0 1px 2px #000;pointer-events:none}
+.vf-top .tag{padding:2px 6px;border:1px solid rgba(255,255,255,.35);border-radius:3px}
+.vf-top .w{color:var(--warn);border-color:var(--warn)}
+.vf-info{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;justify-content:center;gap:clamp(8px,2.2vw,26px);padding:26px 12px 8px;
+  background:linear-gradient(transparent,rgba(0,0,0,.78));font:600 clamp(15px,1.9vw,22px)/1 var(--f-num);letter-spacing:.04em;color:#fff;pointer-events:none;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.vf-info .m{padding:1px 6px;border:1.5px solid #fff;border-radius:3px}
+.vf-info .blink{color:var(--warn);animation:afb .5s steps(2) infinite}
+.vf-info small{font-size:.62em;color:#cfd3d6;margin-right:3px;letter-spacing:.08em}
+.meter-scale{display:flex;flex-direction:column;align-items:center;gap:2px}
+.meter-scale svg{display:block;width:clamp(120px,15vw,180px);height:24px;overflow:visible}
+.vf-busy{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.35);pointer-events:none}
+.vf-busy div{display:flex;flex-direction:column;align-items:center;gap:8px;font:600 15px/1.3 var(--f-ui);color:#fff;text-shadow:0 1px 3px #000}
+.vf-busy svg{width:64px;height:64px}
+.vf-hint{position:absolute;left:10px;bottom:64px;font-size:12px;color:rgba(255,255,255,.75);text-shadow:0 1px 2px #000;pointer-events:none;transition:opacity .6s}
+.vf-black{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .05s}
+.vf-black.on{opacity:1;transition:none}
+.vf-err{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--ink-2)}
+
+/* 顶盖：模式转盘 + 三个刻度带 + 快门键 */
+.deck{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr)) auto;gap:10px;align-items:stretch;background:linear-gradient(180deg,#202328,#191b1f);border:1px solid var(--line);border-radius:var(--r);padding:10px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:4px;align-content:center}
+.modes button{width:38px;height:34px;border:1px solid var(--line-2);background:var(--well);border-radius:6px;font:700 18px/1 var(--f-num);color:var(--ink-2)}
+.modes button[aria-checked="true"]{color:#161616;background:var(--brass);border-color:var(--brass)}
+.dial{display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--well);border:1px solid var(--line);border-radius:8px;padding:7px 0 6px}
+.dial-h{display:flex;align-items:baseline;gap:6px;padding:0 10px;min-width:0}
+.dial-h span{font-size:12px;color:var(--ink-2);white-space:nowrap}
+.dial-h b{font:600 24px/1 var(--f-num);font-variant-numeric:tabular-nums;letter-spacing:.02em;margin-left:auto;white-space:nowrap}
+.dial-h i{font:700 10px/1 var(--f-num);letter-spacing:.12em;font-style:normal;color:#161616;background:var(--ink-3);border-radius:3px;padding:2px 4px}
+.dial.auto .dial-h i{background:var(--brass)}
+.dial.blink .dial-h b{color:var(--warn);animation:afb .5s steps(2) infinite}
+.tape{position:relative;height:34px;overflow:hidden;cursor:ew-resize;touch-action:none;outline:none;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
+.tape:focus-visible{box-shadow:inset 0 0 0 2px var(--brass)}
+.tape .rail{position:absolute;left:50%;top:0;height:100%;will-change:transform}
+.tape .tk{position:absolute;bottom:0;width:1px;height:7px;background:var(--ink-3)}
+.tape .tk.maj{height:12px;background:var(--ink-2)}
+.tape .tk span{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font:600 12px/1 var(--f-num);color:var(--ink-2);white-space:nowrap;cursor:pointer}
+.tape .needle{position:absolute;left:50%;bottom:0;width:2px;height:20px;margin-left:-1px;background:var(--brass);border-radius:1px}
+.dial.auto .tape{cursor:default;opacity:.55}
+.trigger{display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center}
+.shutter{width:62px;height:62px;border-radius:50%;border:2px solid #4a4f56;background:radial-gradient(circle at 40% 35%,#d64a3d,#8f2219 70%);box-shadow:0 0 0 5px #2b2f34,0 6px 14px rgba(0,0,0,.5);color:#fff;font:700 13px/1 var(--f-ui);letter-spacing:.1em}
+.shutter:active,.shutter.half{transform:translateY(1px);background:radial-gradient(circle at 40% 35%,#c9433a,#7a1d15 70%)}
+.mini{border:1px solid var(--line-2);background:var(--well);border-radius:6px;padding:3px 8px;font:700 12px/1.2 var(--f-num);letter-spacing:.08em;color:var(--ink-2)}
+.mini[aria-pressed="true"]{color:#161616;background:var(--brass);border-color:var(--brass)}
+
+/* 胶片条 */
+.roll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;min-height:64px;align-items:center}
+.roll .empty{font-size:13px;color:var(--ink-3)}
+.roll button{flex:none;border:1px solid var(--line-2);padding:0;border-radius:5px;overflow:hidden;background:#000;height:60px;position:relative}
+.roll button img{height:100%;display:block}
+.roll button span{position:absolute;left:3px;bottom:2px;font:600 10px/1 var(--f-num);color:#fff;text-shadow:0 1px 2px #000;letter-spacing:.04em}
+
+/* ---------- 侧栏 ---------- */
+.side{display:flex;flex-direction:column;gap:10px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);max-height:calc(100vh - 86px);overflow-y:auto;padding-right:2px;scrollbar-width:thin}
+.panel,.side details{background:var(--plate);border:1px solid var(--line);border-radius:var(--r)}
+.side summary{list-style:none;cursor:pointer;padding:11px 14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.side summary::-webkit-details-marker{display:none}
+.side summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:1.5px solid var(--ink-3);border-bottom:1.5px solid var(--ink-3);transform:rotate(45deg);transition:transform .2s}
+.side details[open] summary::after{transform:rotate(-135deg)}
+.side summary small{font:500 11px/1 var(--f-num);letter-spacing:.2em;color:var(--ink-3);text-transform:uppercase}
+.body{padding:0 14px 14px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;flex-direction:column;gap:6px}
+.row > label,.lab{font-size:12px;color:var(--ink-2);display:flex;justify-content:space-between;gap:8px}
+.lab b{font:600 14px/1.2 var(--f-num);color:var(--ink);letter-spacing:.03em;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chips button{border:1px solid var(--line-2);background:var(--well);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--ink-2)}
+.chips button[aria-pressed="true"]{border-color:var(--brass);color:var(--ink);box-shadow:inset 0 0 0 1px var(--brass)}
+.chips button:hover{color:var(--ink)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--well);border:1px solid var(--line-2);border-radius:7px;padding:2px;gap:2px}
+.seg button{border:0;background:none;border-radius:5px;padding:5px 4px;font-size:13px;color:var(--ink-2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--plate-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)}
+.lenses{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.lenses button{text-align:left;border:1px solid var(--line-2);background:var(--well);border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.lenses button b{font:600 15px/1.15 var(--f-num);letter-spacing:.02em}
+.lenses button span{font-size:11px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lenses button[aria-pressed="true"]{border-color:var(--brass);box-shadow:inset 0 0 0 1px var(--brass)}
+input[type=range]{width:100%;accent-color:var(--brass);margin:0}
+.toggles{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tg{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);cursor:pointer;padding:4px 0}
+.tg input{accent-color:var(--brass);width:16px;height:16px;margin:0}
+.note{font-size:12px;color:var(--ink-3);line-height:1.6}
+.note b{color:var(--ink-2);font-weight:500}
+canvas.diagram{width:100%;display:block;background:var(--well);border:1px solid var(--line);border-radius:8px}
+.iris-row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center}
+.iris-row canvas{width:96px;height:96px}
+
+/* 讲解卡 */
+.explain{padding:14px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg,#22262b,#1b1e22)}
+.explain .eb{display:flex;align-items:center;gap:8px;font:600 11px/1 var(--f-num);letter-spacing:.24em;color:var(--brass);text-transform:uppercase}
+.explain h2{margin:0;font:700 18px/1.3 var(--f-ui)}
+.explain h2 small{font:500 13px var(--f-num);color:var(--ink-3);letter-spacing:.06em;margin-left:6px}
+.explain p{margin:0;color:var(--ink-2);font-size:13.5px}
+.explain p b{color:var(--ink);font-weight:500}
+.formula{font:400 12.5px/1.75 var(--f-mono);background:var(--well);border:1px solid var(--line);border-radius:7px;padding:8px 10px;color:var(--ink);overflow-x:auto;white-space:nowrap}
+.formula em{font-style:normal;color:var(--brass)}
+.formula .c{color:var(--ink-3)}
+.explain .more{align-self:flex-start;border:0;background:none;padding:0;color:var(--brass);font-size:13px}
+.explain .more:hover{text-decoration:underline}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:13px}
+.kv dt{color:var(--ink-3)}
+.kv dd{margin:0;font:500 14px/1.5 var(--f-num);letter-spacing:.03em;font-variant-numeric:tabular-nums}
+
+/* ---------- 回放 ---------- */
+.playback{position:fixed;inset:0;z-index:60;background:rgba(8,9,10,.94);display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;
+  padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(16px,env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.pb-view{position:relative;min-width:0;min-height:0;display:grid;place-items:center;overflow:hidden;border-radius:8px;background:#000;cursor:zoom-in}
+.pb-view.zoom{cursor:grab;place-items:start}
+.pb-view canvas{max-width:100%;max-height:100%;display:block}
+.pb-view.zoom canvas{max-width:none;max-height:none}
+.pb-blink{position:absolute;pointer-events:none;animation:afb .6s steps(2) infinite}
+.pb-side{display:flex;flex-direction:column;gap:12px;overflow-y:auto;min-width:0}
+.pb-side h2{margin:0;font:700 17px/1.3 var(--f-ui)}
+.pb-bar{display:flex;flex-wrap:wrap;gap:6px}
+.pb-bar a,.pb-bar button{border:1px solid var(--line-2);background:var(--plate-2);border-radius:7px;padding:5px 10px;font-size:12.5px;color:var(--ink);text-decoration:none}
+.pb-bar button[aria-pressed="true"]{border-color:var(--brass);color:var(--brass)}
+.pb-bar .close{margin-left:auto}
+.exif{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:13px;background:var(--plate);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.exif dt{color:var(--ink-3)}
+.exif dd{margin:0;font:500 14px/1.45 var(--f-num);letter-spacing:.03em;font-variant-numeric:tabular-nums;min-width:0}
+.crit{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.crit li{font-size:13px;line-height:1.55;padding:7px 10px 7px 12px;border-radius:7px;background:var(--plate);border-left:3px solid var(--ink-3);color:var(--ink-2)}
+.crit li.good{border-left-color:var(--ok)}
+.crit li.warn{border-left-color:var(--warn)}
+.crit li.bad{border-left-color:var(--bad)}
+.crit li.task{border-left-color:var(--brass);color:var(--ink)}
+.crit li b{color:var(--ink);font-weight:500}
+canvas#pbHist{width:100%;height:90px;background:var(--well);border:1px solid var(--line);border-radius:8px}
+
+/* ---------- 相机结构 ---------- */
+.anat{display:grid;grid-template-columns:240px minmax(0,1fr) 340px;gap:16px;align-items:start}
+.anat-stage{position:relative;aspect-ratio:4/3;max-width:100%;border-radius:var(--r);overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#2a2e34,#121417 70%);border:1px solid var(--line);touch-action:none}
+.anat-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hotspots{position:absolute;inset:0;pointer-events:none}
+.hs{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;border:0;padding:0;background:none;display:flex;align-items:center;gap:6px}
+.hs i{width:20px;height:20px;border-radius:50%;background:rgba(224,178,92,.25);border:1.5px solid var(--brass);display:grid;place-items:center;font:700 11px/1 var(--f-num);font-style:normal;color:var(--brass);box-shadow:0 0 0 4px rgba(224,178,92,.12)}
+.hs span{font-size:12px;background:rgba(12,13,15,.82);border:1px solid var(--line-2);padding:2px 7px;border-radius:4px;white-space:nowrap;color:var(--ink);opacity:0;transform:translateX(-4px);transition:.15s;pointer-events:none}
+.hs:hover span,.hs:focus-visible span,.hs.on span{opacity:1;transform:none}
+.hs.on i{background:var(--brass);color:#161616}
+.hs.hide{opacity:.0;pointer-events:none}
+.anat-tools{position:absolute;left:10px;bottom:10px;display:flex;gap:6px;flex-wrap:wrap}
+.anat-tools button{border:1px solid var(--line-2);background:rgba(12,13,15,.75);border-radius:999px;padding:5px 12px;font-size:13px}
+.anat-tools button[aria-pressed="true"]{border-color:var(--brass);color:var(--brass)}
+.parts{display:flex;flex-direction:column;gap:12px}
+.parts h3{margin:0 0 4px;font:600 11px/1 var(--f-num);letter-spacing:.24em;color:var(--ink-3);text-transform:uppercase}
+.parts ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.parts li button{width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:6px;color:var(--ink-2);display:flex;gap:8px;align-items:baseline}
+.parts li button i{font:600 11px/1 var(--f-num);font-style:normal;color:var(--ink-3);width:16px}
+.parts li button:hover{background:var(--plate);color:var(--ink)}
+.parts li button[aria-current="true"]{background:var(--plate-2);color:var(--ink)}
+.part-card{background:var(--plate);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px}
+.part-card h2{margin:0;font:900 22px/1.25 var(--f-serif)}
+.part-card h2 small{display:block;font:500 13px/1.4 var(--f-num);letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;margin-top:2px}
+.part-card p{margin:0;color:var(--ink-2)}
+.part-card p b{color:var(--ink);font-weight:500}
+
+/* ---------- 词典 ---------- */
+.terms-head{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.terms-head h2{margin:0;font:900 clamp(26px,4vw,38px)/1.15 var(--f-serif);letter-spacing:.04em}
+.terms-head p{margin:0;color:var(--ink-2);max-width:68ch}
+.search{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search input{flex:1 1 260px;min-width:0;background:var(--well);border:1px solid var(--line-2);border-radius:8px;padding:9px 12px}
+.search .count{font:500 13px var(--f-num);color:var(--ink-3);letter-spacing:.06em}
+.terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(330px,100%),1fr));gap:10px;align-items:start}
+.term{background:var(--plate);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.term > button{width:100%;text-align:left;border:0;background:none;padding:12px 14px;display:flex;flex-direction:column;gap:3px}
+.term .tt{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.term .tt b{font:700 17px/1.3 var(--f-serif)}
+.term .tt em{font:500 13px/1.3 var(--f-num);letter-spacing:.06em;color:var(--ink-3);font-style:normal}
+.term .tt .cat{margin-left:auto;font-size:11px;color:var(--brass-2);border:1px solid #4a3d24;border-radius:999px;padding:1px 8px}
+.term .sd{color:var(--ink-2);font-size:13.5px}
+.term .full{padding:0 14px 14px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.term .full p{margin:0;color:var(--ink-2);font-size:13.5px}
+.term .full p b{color:var(--ink);font-weight:500}
+.term .full .try{align-self:flex-start;border:1px solid var(--brass);background:none;color:var(--brass);border-radius:999px;padding:4px 12px;font-size:13px}
+.term .full .try:hover{background:var(--brass);color:#161616}
+.term .rel{display:flex;flex-wrap:wrap;gap:4px;font-size:12px;color:var(--ink-3);align-items:center}
+.term .rel button{border:0;background:var(--well);border-radius:4px;padding:1px 7px;color:var(--ink-2);font-size:12px}
+.term.flash{animation:fl 1.6s}
+@keyframes fl{0%,40%{box-shadow:0 0 0 2px var(--brass)}}
+
+/* ---------- 练习 ---------- */
+.tasks-head{margin-bottom:16px;display:flex;flex-direction:column;gap:8px}
+.tasks-head h2{margin:0;font:900 clamp(26px,4vw,38px)/1.15 var(--f-serif);letter-spacing:.04em}
+.tasks-head p{margin:0;color:var(--ink-2);max-width:70ch}
+.progress{display:flex;align-items:center;gap:10px;font:600 14px var(--f-num);letter-spacing:.06em;color:var(--ink-2)}
+.progress i{flex:0 1 240px;height:6px;border-radius:3px;background:var(--well);overflow:hidden;display:block}
+.progress i b{display:block;height:100%;background:var(--brass);border-radius:3px}
+.tasks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:10px}
+.task{background:var(--plate);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:8px}
+.task header{display:flex;align-items:center;gap:10px}
+.task header i{font:700 20px/1 var(--f-num);color:var(--ink-3);font-style:normal;width:26px}
+.task h3{margin:0;font:700 16px/1.35 var(--f-ui)}
+.task .st{margin-left:auto;font-size:12px;border-radius:999px;padding:2px 9px;border:1px solid var(--line-2);color:var(--ink-3);white-space:nowrap}
+.task.done .st{border-color:var(--ok);color:var(--ok)}
+.task.active{border-color:var(--brass)}
+.task p{margin:0;color:var(--ink-2);font-size:13.5px}
+.task ul{margin:0;padding-left:18px;color:var(--ink-3);font-size:13px}
+.task button.go{margin-top:auto;align-self:flex-start;border:1px solid var(--brass);background:none;color:var(--brass);border-radius:999px;padding:4px 14px;font-size:13px}
+.task button.go:hover{background:var(--brass);color:#161616}
+.taskbar{display:flex;align-items:center;gap:10px;background:var(--plate);border:1px solid var(--brass-2);border-radius:var(--r);padding:8px 12px;font-size:13px;color:var(--ink-2)}
+.taskbar b{color:var(--ink);font-weight:500}
+.taskbar button{margin-left:auto;border:0;background:none;color:var(--ink-3);font-size:13px}
+
+.toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);z-index:80;background:var(--plate-2);border:1px solid var(--line-2);border-radius:999px;padding:8px 18px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast.good{border-color:var(--ok)}
+footer.foot{margin-top:28px;font-size:12px;color:var(--ink-3);line-height:1.7;max-width:80ch}
+footer.foot a{color:var(--ink-2)}
+
+@media (max-width:1180px){
+  .shoot{grid-template-columns:minmax(0,1fr) 330px}
+  .anat{grid-template-columns:200px minmax(0,1fr)}
+  .anat .part-card{grid-column:1/-1}
+}
+@media (max-width:980px){
+  .shoot{grid-template-columns:minmax(0,1fr)}
+  .side{position:static;max-height:none;overflow:visible}
+  .deck{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .modes{grid-column:1/-1;grid-template-columns:repeat(4,1fr)}
+  .modes button{width:auto}
+  .trigger{grid-column:1/-1;flex-direction:row;justify-content:center;gap:14px}
+  .playback{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1.2fr) minmax(0,1fr)}
+  .anat{grid-template-columns:minmax(0,1fr)}
+  .parts{order:3}
+  .parts ul{flex-direction:row;flex-wrap:wrap}
+  .vf-top{right:10px;top:84px}
+  .histo{width:120px;height:52px}
+  .vf-hint{display:none}
+}
+@media (max-width:520px){
+  .brand span{display:none}
+  .tabs{margin-left:0;width:100%}
+  .tabs button{flex:1;padding:6px 8px}
+  .vf-info{gap:8px;font-size:14px;padding-top:18px}
+  .histo{width:84px;height:38px;right:6px;top:6px}
+  .meter-scale svg{width:110px}
+  .vf-top{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>相机参数实验室</h1><span>Exposure · Optics · Color</span></div>
+  <nav class="tabs" role="tablist" aria-label="页面">
+    <button role="tab" data-tab="shoot" aria-selected="true">取景拍摄</button>
+    <button role="tab" data-tab="body" aria-selected="false">相机结构</button>
+    <button role="tab" data-tab="terms" aria-selected="false">术语词典</button>
+    <button role="tab" data-tab="tasks" aria-selected="false">练习任务</button>
+  </nav>
+</header>
+
+<main>
+<!-- ================= 取景拍摄 ================= -->
+<section id="tab-shoot" class="shoot" role="tabpanel">
+  <div class="stage">
+    <div id="taskbar" class="taskbar" hidden></div>
+    <div class="vf" id="vf">
+      <canvas id="vfCanvas" aria-label="取景器：实时取景画面"></canvas>
+      <div class="vf-grid" id="vfGrid"></div>
+      <div class="af" id="afBox"></div>
+      <canvas class="histo" id="histo" width="300" height="128"></canvas>
+      <div class="vf-top" id="vfTop"></div>
+      <div class="vf-info" id="vfInfo"></div>
+      <div class="vf-hint" id="vfHint">拖动画面转动相机 · 点一下设置对焦点 · 空格键拍摄</div>
+      <div class="vf-black" id="vfBlack"></div>
+      <div class="vf-busy" id="vfBusy" hidden><div><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="4"/><circle id="busyArc" cx="32" cy="32" r="27" fill="none" stroke="#e0b25c" stroke-width="4" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="169.6" transform="rotate(-90 32 32)"/></svg><span id="busyText">曝光中</span></div></div>
+    </div>
+
+    <div class="deck" id="deck">
+      <div class="modes" role="radiogroup" aria-label="曝光模式" id="modes">
+        <button role="radio" data-mode="P" aria-checked="false" title="程序自动">P</button>
+        <button role="radio" data-mode="A" aria-checked="true" title="光圈优先">A</button>
+        <button role="radio" data-mode="S" aria-checked="false" title="快门优先">S</button>
+        <button role="radio" data-mode="M" aria-checked="false" title="手动">M</button>
+      </div>
+      <div class="dial" id="dS"><div class="dial-h"><span>快门</span><i>AUTO</i><b id="vS"></b></div><div class="tape" id="tS"></div></div>
+      <div class="dial" id="dA"><div class="dial-h"><span>光圈</span><i>AUTO</i><b id="vA"></b></div><div class="tape" id="tA"></div></div>
+      <div class="dial" id="dI"><div class="dial-h"><span>ISO</span><i>AUTO</i><b id="vI"></b></div><div class="tape" id="tI"></div></div>
+      <div class="dial" id="dC"><div class="dial-h"><span>曝光补偿</span><i>M 档无效</i><b id="vC"></b></div><div class="tape" id="tC"></div></div>
+      <div class="trigger">
+        <button class="shutter" id="btnShutter" aria-label="快门：按住对焦，松开拍摄">拍摄</button>
+        <div style="display:flex;gap:5px">
+          <button class="mini" id="btnAEL" aria-pressed="false" title="曝光锁定">AE-L</button>
+          <button class="mini" id="btnAF" title="自动对焦（半按快门）">AF</button>
+        </div>
+      </div>
+    </div>
+    <div class="roll" id="roll"><span class="empty">拍下的照片会出现在这里，点开可查看 EXIF、直方图和自动点评。</span></div>
+  </div>
+
+  <aside class="side" aria-label="相机设置">
+    <section class="panel explain" id="explain" aria-live="polite"></section>
+
+    <details open>
+      <summary>光线与机位 <small>Scene</small></summary>
+      <div class="body">
+        <div class="row"><div class="lab">光线</div><div class="chips" id="presetChips"></div><div class="note" id="presetNote"></div></div>
+        <div class="row"><label for="camZ">机位：前后移动 <b id="camZv"></b></label><input type="range" id="camZ" min="-3" max="8" step="0.1" value="0"></div>
+        <div class="row"><div class="lab">持机方式</div><div class="seg" id="supportSeg"><button data-v="hand">手持</button><button data-v="tripod">三脚架</button><button data-v="pan">追焦骑车人</button></div></div>
+        <div class="toggles"><label class="tg"><input type="checkbox" id="ibis" checked> 机身防抖 5 档</label><label class="tg"><input type="checkbox" id="low"> 低机位 0.6 m</label></div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>镜头与对焦 <small>Lens · AF</small></summary>
+      <div class="body">
+        <div class="lenses" id="lensList"></div>
+        <div class="row" id="zoomRow"><label for="zoom">焦距 <b id="zoomV"></b></label><input type="range" id="zoom" min="0" max="1000" value="0"></div>
+        <div class="row"><div class="lab">对焦模式</div><div class="seg" id="afSeg"><button data-v="AF-S">AF-S 单次</button><button data-v="AF-C">AF-C 连续</button><button data-v="MF">MF 手动</button></div></div>
+        <div class="row" id="mfRow"><label for="mf">对焦距离 <b id="mfV"></b></label><input type="range" id="mf" min="0" max="1000" value="500"></div>
+        <canvas class="diagram" id="dofCanvas" width="680" height="190" aria-label="景深示意：对焦距离、景深范围与画面中各物体的距离"></canvas>
+        <div class="iris-row"><canvas id="irisCanvas" width="192" height="192" aria-label="光圈叶片形状"></canvas><div class="note" id="irisNote"></div></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>测光与辅助显示 <small>Metering</small></summary>
+      <div class="body">
+        <div class="row"><div class="lab">测光模式</div><div class="seg" id="meterSeg"><button data-v="eval">评价</button><button data-v="center">中央重点</button><button data-v="spot">点测光</button></div></div>
+        <div class="toggles">
+          <label class="tg"><input type="checkbox" id="autoISO"> 自动 ISO</label>
+          <label class="tg"><input type="checkbox" id="zebra"> 斑马纹</label>
+          <label class="tg"><input type="checkbox" id="histoT" checked> 直方图</label>
+          <label class="tg"><input type="checkbox" id="gridT" checked> 三分线</label>
+          <label class="tg"><input type="checkbox" id="peakT" checked> 峰值对焦（MF）</label>
+          <label class="tg"><input type="checkbox" id="soundT" checked> 快门声</label>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>白平衡与照片风格 <small>Color</small></summary>
+      <div class="body">
+        <div class="row"><div class="lab">白平衡</div><div class="chips" id="wbChips"></div></div>
+        <div class="row" id="kRow"><label for="kel">色温 <b id="kelV"></b></label><input type="range" id="kel" min="2500" max="10000" step="100" value="5500"></div>
+        <div class="row"><label for="tint">色调偏移（绿 ← → 品红）<b id="tintV"></b></label><input type="range" id="tint" min="-9" max="9" step="1" value="0"></div>
+        <div class="row"><div class="lab">照片风格</div><div class="chips" id="styleChips"></div></div>
+        <div class="row"><div class="lab">高 ISO 降噪</div><div class="seg" id="nrSeg"><button data-v="off">关</button><button data-v="std">标准</button><button data-v="high">强</button></div></div>
+        <label class="tg"><input type="checkbox" id="lensCorr" checked> 镜头校正（暗角、畸变）</label>
+      </div>
+    </details>
+
+    <details>
+      <summary>传感器 · 滤镜 · 闪光灯 <small>Body</small></summary>
+      <div class="body">
+        <div class="row"><div class="lab">传感器尺寸</div><div class="chips" id="sensorChips"></div><div class="note" id="sensorNote"></div></div>
+        <div class="row"><div class="lab">镜头前的滤镜</div><div class="chips" id="filterChips"></div></div>
+        <div class="row"><div class="lab">闪光灯 <span>GN 36 · 同步 1/250</span></div><div class="seg" id="flashSeg"><button data-v="off">关闭</button><button data-v="ttl">TTL 自动</button><button data-v="manual">手动</button></div></div>
+        <div class="row" id="flashPowRow"><label for="flashPow">手动输出 <b id="flashPowV"></b></label><input type="range" id="flashPow" min="0" max="7" step="1" value="2"></div>
+        <div class="row" id="flashCompRow"><label for="flashComp">闪光补偿 <b id="flashCompV"></b></label><input type="range" id="flashComp" min="-9" max="9" step="1" value="0"></div>
+        <div class="toggles"><label class="tg"><input type="checkbox" id="rear"> 后帘同步</label><label class="tg"><input type="checkbox" id="hss"> 高速同步</label></div>
+        <p class="note">实时取景看不到闪光效果，按下快门后才知道——和真相机一样。</p>
+      </div>
+    </details>
+  </aside>
+</section>
+
+<!-- ================= 相机结构 ================= -->
+<section id="tab-body" class="anat" role="tabpanel" hidden>
+  <nav class="parts" id="partList" aria-label="部件"></nav>
+  <div class="anat-stage" id="anatStage">
+    <canvas id="anatCanvas" aria-label="相机三维模型，拖动旋转、滚轮缩放"></canvas>
+    <div class="hotspots" id="hotspots"></div>
+    <div class="anat-tools">
+      <button id="btnExplode" aria-pressed="false">拆开镜头</button>
+      <button id="btnRays" aria-pressed="false">显示光路</button>
+      <button id="btnSpin" aria-pressed="true">自动旋转</button>
+    </div>
+  </div>
+  <article class="part-card" id="partCard"></article>
+</section>
+
+<!-- ================= 术语词典 ================= -->
+<section id="tab-terms" role="tabpanel" hidden>
+  <div class="terms-head">
+    <h2>摄影术语词典</h2>
+    <p>从曝光三要素到闪光同步，学摄影、用相机时会碰到的参数和名词都在这里。带「在相机上试试」的词条，会把左侧那台相机直接调到能看出效果的设置。</p>
+    <div class="search"><input id="q" type="search" placeholder="搜索：光圈、超焦距、ND、bokeh……" aria-label="搜索术语"><span class="count" id="qCount"></span></div>
+    <div class="chips" id="catChips"></div>
+  </div>
+  <div class="terms" id="termList"></div>
+</section>
+
+<!-- ================= 练习 ================= -->
+<section id="tab-tasks" role="tabpanel" hidden>
+  <div class="tasks-head">
+    <h2>练习任务</h2>
+    <p>每个任务对应一种真实的拍摄情境。点「开始」会切换到相应的光线，然后由你自己调参数、构图、对焦并按下快门；照片拍完后会自动检查是否达成，并说明原因。</p>
+    <div class="progress" id="taskProgress"></div>
+  </div>
+  <div class="tasks" id="taskList"></div>
+</section>
+
+<footer class="foot">成像模型：景深按薄透镜弥散圆公式逐像素计算，曝光按 EV = log₂(N²/t) − log₂(ISO/100)，噪点按光子散粒噪声与读出噪声叠加，运动模糊、车灯轨迹与手抖由曝光时间内数百个子帧累加得到。数值是教学用的近似，和任何具体机型都不完全一致。<a href="../">← 返回作品合集</a></footer>
+</main>
+
+<div class="playback" id="playback" role="dialog" aria-modal="true" aria-label="照片回放" hidden>
+  <div class="pb-view" id="pbView"></div>
+  <div class="pb-side">
+    <div class="pb-bar">
+      <button id="pbBlink" aria-pressed="false">高光警告</button>
+      <button id="pbZoom" aria-pressed="false">100% 查看</button>
+      <a id="pbSave" download="photo.jpg" href="#">保存 JPG</a>
+      <button class="close" id="pbClose">关闭（Esc）</button>
+    </div>
+    <h2 id="pbTitle"></h2>
+    <canvas id="pbHist" width="680" height="180"></canvas>
+    <dl class="exif" id="pbExif"></dl>
+    <ul class="crit" id="pbCrit"></ul>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="js/optics.js"></script>
+<script src="js/world.js"></script>
+<script src="js/pipeline.js"></script>
+<script src="js/glossary.js"></script>
+<script src="js/model.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

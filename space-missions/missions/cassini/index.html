@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="zh-CN" class="theme-cassini" data-mission="cassini">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>卡西尼–惠更斯号 · 深空航迹</title>
+<meta name="description" content="交互式三维轨迹图：卡西尼–惠更斯号 1997—2017 年的全程，从金星、地球、木星借力，到 294 圈土星轨道、惠更斯号登陆泰坦和最后坠入土星；轨道取自 JPL 最终重建解。">
+<link rel="icon" href="../../shared/favicon.svg">
+<script src="../../shared/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@600;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;900&display=swap">
+<link rel="stylesheet" href="../../shared/mission.css">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <main class="bench">
+    <header class="mast">
+      <p class="eyebrow">NASA / ESA / ASI · CASSINI–HUYGENS · <b>1997—2017</b></p>
+      <h1><span class="h1-id">Cassini</span><span class="h1-zh">–惠更斯号</span></h1>
+      <p class="lede">它先借金星、金星、地球、木星四次引力，飞了近七年才到土星；随后在土星轨道上转了 294 圈，靠 127 次飞越泰坦一次次改变轨道，把着陆器惠更斯号送上泰坦，发现恩克拉多斯喷出的海水，最后穿进土星与光环之间的缝隙，坠入土星大气。</p>
+    </header>
+    <section class="plot" id="plot" aria-label="卡西尼号三维轨迹图"></section>
+
+    <section class="log" id="log" aria-label="飞行日志">
+      <div class="legend">
+        <h2>怎么读这张图</h2>
+        <div class="key">
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--pen)" stroke-width="2.4" stroke-linecap="round"/></svg><span>当前这一圈（巡航段为已飞过的路径）</span>
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--pen)" stroke-width="1" opacity=".4"/></svg><span>本阶段早先的轨道</span>
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--ink-2)" stroke-width="1.1" opacity=".55"/></svg><span>本阶段还没飞到的部分</span>
+          <svg viewBox="0 0 42 14" aria-hidden="true"><circle cx="9" cy="7" r="3.6" fill="var(--titan)"/><circle cx="21" cy="7" r="3.6" fill="var(--encel)"/><circle cx="33" cy="7" r="3.6" fill="var(--moon)"/></svg><span>飞越<span class="t-titan">泰坦</span>、<span class="t-encel">恩克拉多斯</span>、<span class="t-moon">其他卫星</span>的位置；空心为尚未发生</span>
+        </div>
+        <p>前四段用<strong>日心黄道坐标系</strong>：太阳在中心，同心圆是到太阳的等距线。到了土星换成<strong>土星环平面坐标系</strong>：土星在中心，网格就是光环所在的赤道面，坐标轴不随时间转动，所以一年年飞下来的轨道会叠成一朵花。格距随缩放变化，以图左上角的比例尺为准。惠更斯号到达泰坦前的最后几小时，画的是它相对泰坦的路径。</p>
+      </div>
+
+      <article class="ch" data-seg="launch" id="ch-launch">
+        <div class="ch-head"><span class="ch-num">01</span><span>1997.10.15 — 1999.01</span></div>
+        <h2>发射，先朝太阳飞</h2>
+        <p>1997 年 10 月 15 日 08:43 UT，大力神 IVB/半人马座火箭从卡纳维拉尔角 40 号发射台升空。卡西尼号连同欧洲的惠更斯号着陆器和 3,132 kg 推进剂，发射质量 5,712 kg，是迄今最大、最重的行星际探测器之一。</p>
+        <p>这么重的航天器，当时最强的火箭也没法直接送到土星。设计者让它先在内太阳系绕两圈，依次借金星、金星、地球、木星的引力加速，这条路线简称 VVEJGA。第一站是金星：1998 年 4 月 26 日，它从金星上空 284 km 处掠过。12 月 3 日，主发动机点火约 88 分钟，速度改变约 450 m/s，把它送上第二次与金星相会的轨道。</p>
+        <dl><dt>发射质量</dt><dd>5,712 kg</dd><dt>第一次金星借力</dt><dd id="dV1">1998-04-26 · 284 km</dd><dt>深空机动</dt><dd>1998-12-03 · 约 450 m/s</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="launch">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="V1">看金星借力</button></div>
+      </article>
+
+      <article class="ch" data-seg="earth" id="ch-earth">
+        <div class="ch-head"><span class="ch-num">02</span><span>1999.01 — 1999.09</span></div>
+        <h2>第二次金星，然后是地球</h2>
+        <p>1999 年 6 月 24 日，卡西尼号第二次掠过金星。不到两个月后的 8 月 18 日 03:28 UT，它以 19 km/s 的相对速度从地球上空约 1,170 km 处飞过，这一次之后它的日心速度从 35.4 km/s 升到 38.8 km/s，足以飞向木星。</p>
+        <p>卡西尼号的电力来自三台放射性同位素温差发电机，装有约 33 kg 钚-238。发射前后一直有人抗议，担心它在地球借力时失控坠入大气、撒下钚；NASA 的环境评估把这种事故的概率估在百万分之一以下。为此飞控团队特意把瞄准点放在离地球较远处，逐步修正才收紧到最终高度。</p>
+        <dl><dt>第二次金星借力</dt><dd id="dV2">1999-06-24 · 623 km</dd><dt>地球借力</dt><dd id="dE">1999-08-18 03:28 UT · 1,171 km</dd><dt>日心速度</dt><dd>35.4 → 38.8 km/s（前后两天）</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="earth">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="V2">看第二次金星借力</button><button class="goto sm" type="button" data-jump="E">看地球借力</button></div>
+      </article>
+
+      <article class="ch" data-seg="jupiter" id="ch-jupiter">
+        <div class="ch-head"><span class="ch-num">03</span><span>1999.09 — 2001.06</span></div>
+        <h2>小行星与木星</h2>
+        <p>穿过小行星带时，卡西尼号在 2000 年 1 月 23 日从小行星 2685 Masursky 旁约 150 万 km 处经过，拍下的只是一个直径十几公里的小光点。</p>
+        <p>2000 年 12 月 30 日，它从约 980 万 km 外经过木星，木星引力把它的航向弯向土星。当时伽利略号正在木星轨道上工作，两者联合观测了半年：一个在外面看木星磁层的全貌，一个在磁层里测量。卡西尼号拍了约 26,000 张木星照片，拼出了当时最精细的木星全球彩色图像。</p>
+        <dl><dt>Masursky</dt><dd id="dMas">2000-01-23 · 约 150 万 km</dd><dt>木星最近点</dt><dd id="dJ">2000-12-30 · 距木星中心约 979 万 km</dd><dt>木星照片</dt><dd>约 26,000 张</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="jupiter">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="J">看木星借力</button></div>
+      </article>
+
+      <article class="ch" data-seg="cruise" id="ch-cruise">
+        <div class="ch-head"><span class="ch-num">04</span><span>2001.07 — 2004.05</span></div>
+        <h2>三年巡航，顺手检验广义相对论</h2>
+        <p>从木星到土星，是三年多无事的滑行。2002 年 6 至 7 月，从地球看去卡西尼号几乎正好在太阳背后，无线电信号要贴着太阳边缘经过。广义相对论预言，太阳引力会让信号略微变慢；意大利团队用卡西尼号的 X 和 Ka 双波段链路测出这一效应，与理论吻合到十万分之二，比之前的测量精确了约 50 倍。</p>
+        <p>2004 年初，土星在相机里一天天变大。6 月初，成像团队在照片里认出两颗以前没见过的小卫星，后来命名为 Methone 和 Pallene。</p>
+        <dl><dt>相对论检验</dt><dd>γ − 1 = (2.1 ± 2.3) × 10⁻⁵</dd><dt>到达土星时</dt><dd>距太阳约 9.04 AU</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="cruise">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="GR">看太阳合日</button></div>
+      </article>
+
+      <article class="ch" data-seg="arrival" id="ch-arrival">
+        <div class="ch-head"><span class="ch-num">05</span><span>2004.05 — 2004.07</span></div>
+        <h2>先看菲比，再进轨道</h2>
+        <p>到土星的前三周，卡西尼号于 6 月 11 日从土卫九菲比上空约 2,070 km 处飞过。菲比在离土星约 1,300 万 km 的逆行轨道上，表面漆黑、坑坑洼洼，很可能是从更远的外太阳系被俘获来的。</p>
+        <p>7 月 1 日 00:46 UT，卡西尼号从 F 环与 G 环之间穿过环平面，用 4 m 的高增益天线朝前挡住尘粒。01:12 UT 主发动机点火 96 分钟，减速 626 m/s，02:38 UT 掠过离土星云顶约 2 万 km 的最近点，04:33 UT 从环的另一侧再次穿出。它成了第一个进入土星轨道的航天器。</p>
+        <dl><dt>菲比</dt><dd id="dPh">2004-06-11 · 2,068 km</dd><dt>入轨点火</dt><dd>96 min · 626 m/s</dd><dt>穿过环平面</dt><dd id="dSOIX">距土星中心约 15.8 万 km</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="arrival">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="PH">看菲比</button><button class="goto sm" type="button" data-jump="SOI">看入轨</button></div>
+      </article>
+
+      <article class="ch" data-seg="huygens" id="ch-huygens">
+        <div class="ch-head"><span class="ch-num">06</span><span>2004.07 — 2005.01</span></div>
+        <h2>把惠更斯号送上泰坦</h2>
+        <p>泰坦（土卫六）比水星还大，裹着一层比地球还厚的橙色雾霾，可见光照片看不到地面。2004 年 10 月 26 日的第一次近距飞越（TA，1,174 km）里，雷达和红外相机第一次透过雾霾看到了它的表面。</p>
+        <p>12 月 25 日 02:00 UT，卡西尼号把惠更斯号弹出，让它独自滑行 20 天。2005 年 1 月 14 日 09:06 UT，惠更斯号在 1,270 km 高处进入泰坦大气，打开降落伞下降了两个半小时，约 11:38 UT 落在一片潮湿的平原上。卡西尼号此时在 6 万 km 外中继，惠更斯号落地后又传回了 72 分钟数据，直到卡西尼号落到它的地平线以下。这是人类第一次在外太阳系的天体上着陆。</p>
+        <p>惠更斯号拍到了河道般的沟谷和圆润的冰块，测得地表 −179 °C、1.47 个大气压。两个接收频道之一因指令遗漏没有打开，测风实验的数据丢了，后来靠地面射电望远镜追踪信号的多普勒频移补了回来。</p>
+        <dl><dt>弹出</dt><dd>2004-12-25 02:00 UT</dd><dt>进入大气</dt><dd>2005-01-14 09:06 UT</dd><dt>着陆</dt><dd>约 11:38 UT</dd><dt>地表</dt><dd>93.7 K · 1,467 hPa</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="huygens">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="HY">看惠更斯号到达</button></div>
+      </article>
+
+      <article class="ch" data-seg="prime" id="ch-prime">
+        <div class="ch-head"><span class="ch-num">07</span><span>2005.01 — 2008.06</span></div>
+        <h2>主任务：用泰坦当方向盘</h2>
+        <p>卡西尼号携带的推进剂只够做小修正，真正改变轨道的是泰坦。每次贴近泰坦飞过，轨道的周期、朝向或倾角都会被大幅改变，飞控团队据此一圈圈规划下一次飞越，再顺路安排其他卫星。四年里它绕土星 76 圈，飞越泰坦 45 次。</p>
+        <p>2005 年，磁强计发现恩克拉多斯（土卫二）附近的磁场被什么东西扰动；7 月 14 日卡西尼号从它南半球上空 169 km 飞过，穿过了一团水汽，11 月的照片证实那是从南极“虎纹”裂缝里喷出的冰粒和水汽。2006 年 7 月，雷达在泰坦北极看到了大片湖泊，里面是液态甲烷和乙烷。2006 年起它几次把轨道倾角抬高（2008 年一度超过 70°），从高处俯瞰光环和两极；2007 年 9 月 10 日飞越了一半黑一半白的伊阿珀托斯（土卫八）。</p>
+        <dl><dt>近土点</dt><dd>76 次（本图数据）</dd><dt>泰坦飞越</dt><dd>TA 到 T44，共 45 次</dd><dt>恩克拉多斯</dt><dd>E0 到 E3，共 4 次</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="prime">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="E2">看 E2 穿过羽流</button><button class="goto sm" type="button" data-jump="IA">看伊阿珀托斯</button></div>
+      </article>
+
+      <article class="ch" data-seg="equinox" id="ch-equinox">
+        <div class="ch-head"><span class="ch-num">08</span><span>2008.07 — 2010.09</span></div>
+        <h2>春分任务</h2>
+        <p>主任务结束时探测器状况良好，NASA 把任务延长了两年多，正好赶上 2009 年 8 月 11 日的土星春分。这一天太阳正好照在环平面上，光环几乎变暗，任何凸出环面的结构都会拖出长长的影子：B 环外缘有高达 2.5 km 的“山峰”，A 环里有被小卫星搅出的螺旋桨状结构。</p>
+        <p>这两年里卡西尼号 8 次飞越恩克拉多斯，最低只有 25 km，直接穿进羽流取样；还近距离看了瑞亚（土卫五），在它周围测到稀薄的氧和二氧化碳。</p>
+        <dl><dt>近土点</dt><dd>63 次（本图数据）</dd><dt>泰坦飞越</dt><dd>T45 到 T72，共 28 次</dd><dt>恩克拉多斯</dt><dd>E4 到 E11，共 8 次</dd><dt>土星春分</dt><dd>2009-08-11</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="equinox">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="E5">看 E5（25 km）</button><button class="goto sm" type="button" data-jump="EQ">看春分</button></div>
+      </article>
+
+      <article class="ch" data-seg="solstice" id="ch-solstice">
+        <div class="ch-head"><span class="ch-num">09</span><span>2010.09 — 2016.11</span></div>
+        <h2>至日任务：看完半个季节</h2>
+        <p>第二次延长一口气排到 2017 年土星北半球夏至，让卡西尼号第一次看完土星从冬到夏的半个季节（土星一年约等于地球 29.5 年）。2010 年 12 月，北半球冒出一场大风暴，两个月内绕了土星一圈。北极的六边形急流随季节入夏，颜色从蓝变成金黄。</p>
+        <p>2013 年 7 月 19 日，卡西尼号躲进土星的影子里，逆光拍下光环，画面角落里有一个小亮点：地球。2015 年，科学家根据恩克拉多斯的轻微摆动断定冰壳下是一片全球海洋，又在羽流里找到了热液活动的迹象。10 月 28 日的 E21 是最深的一次羽流穿越，离南极表面不到 50 km。</p>
+        <dl><dt>近土点</dt><dd>135 次（本图数据）</dd><dt>泰坦飞越</dt><dd>T73 到 T126，共 54 次</dd><dt>恩克拉多斯</dt><dd>E12 到 E22，共 11 次</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="solstice">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="E21">看 E21</button><button class="goto sm" type="button" data-jump="SMILE">看“地球微笑”</button></div>
+      </article>
+
+      <article class="ch" data-seg="grazing" id="ch-grazing">
+        <div class="ch-head"><span class="ch-num">10</span><span>2016.11.30 — 2017.04.22</span></div>
+        <h2>擦着 F 环飞</h2>
+        <p>推进剂快用完了。为了最后几个月，泰坦把轨道倾角抬到 63.7°，近土点放到 F 环外侧约 7,000 到 10,000 km 处。接下来的 20 圈，每周一次掠过光环外缘，拍到了光环最清晰的照片，还近距离看到了环里的小卫星：像飞碟的潘、在环缝里推出波纹的达佛涅斯。</p>
+        <dl><dt>轨道</dt><dd>20 圈 · 周期约 7 天</dd><dt>轨道倾角</dt><dd>63.7°</dd><dt>近土点</dt><dd id="dRG">距土星中心约 15 万 km</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="grazing">在图上看这一段 →</button></div>
+      </article>
+
+      <article class="ch" data-seg="finale" id="ch-finale">
+        <div class="ch-head"><span class="ch-num">11</span><span>2017.04.22 — 09.15</span></div>
+        <h2>大结局：穿过光环，坠入土星</h2>
+        <p>2017 年 4 月 22 日，第 127 次也是最后一次近距飞越泰坦（T126，约 980 km），把近土点移到光环内侧。4 月 26 日 09:00 UT，卡西尼号第一次从土星云顶与 D 环之间约 2,400 km 宽的缝隙穿过，又一次把天线朝前当盾牌。这样的穿越一共 22 次，每 6.5 天一次。它测出光环的质量只有土卫一的四成，说明光环可能只有一千万到一亿年历史；还测得土星磁场几乎完全对称于自转轴。</p>
+        <p>为什么不让它继续飞？推进剂快耗尽了，失控的探测器将来可能撞上恩克拉多斯或泰坦，把地球微生物带到可能有生命的地方。9 月 11 日，最后一次远距离经过泰坦，把它推上撞向土星的轨道。9 月 15 日 10:31 UT，卡西尼号进入土星大气，推进器全力维持天线指向地球，一分钟后信号中断；83 分钟后的 11:55 UT，地球收到了它最后的信号。</p>
+        <dl><dt>环内穿越</dt><dd>22 次</dd><dt>穿越处</dt><dd id="dGF">距土星中心 6.2—6.4 万 km</dd><dt>进入大气</dt><dd>2017-09-15 10:31 UT</dd><dt>地球收到最后信号</dt><dd>11:55 UT</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="finale">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="GF1">看第一次穿越</button><button class="goto sm" type="button" data-jump="END">看最后一刻</button></div>
+      </article>
+    </section>
+  </main>
+
+  <section class="section" aria-labelledby="h-num">
+    <div class="sec-head">
+      <h2 id="h-num"><span class="kicker">BY THE NUMBERS</span>二十年的账本</h2>
+      <p>卡西尼–惠更斯号由 NASA、欧洲空间局和意大利航天局合作，27 个国家的科学家参与。下面是 NASA 在任务结束时公布的总数。</p>
+    </div>
+    <div class="figures">
+      <div class="fig"><b>20<small>年</small></b><span>1997 年发射，在土星轨道上工作 13 年</span></div>
+      <div class="fig"><b>294</b><span>圈土星轨道，最短一圈约 6.4 天</span></div>
+      <div class="fig"><b>162</b><span>次定向卫星飞越：泰坦 127 次，恩克拉多斯 23 次，其他 12 次</span></div>
+      <div class="fig"><b>79<small>亿 km</small></b><span>发射以来飞过的总路程</span></div>
+      <div class="fig"><b>453,048</b><span>张照片</span></div>
+      <div class="fig"><b>635<small>GB</small></b><span>科学数据</span></div>
+      <div class="fig"><b>6<small>颗</small></b><span>新发现并命名的卫星</span></div>
+      <div class="fig"><b>3,948</b><span>篇科学论文（截至 2017 年 9 月）</span></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="h-tour">
+    <div class="sec-head">
+      <h2 id="h-tour"><span class="kicker">THE TOUR</span>一圈圈改出来的轨道</h2>
+      <div>
+        <p>一次泰坦飞越能让卡西尼号的速度方向偏转几百米每秒，相当于发动机烧掉数百公斤推进剂。设计团队先排好泰坦飞越的序列，让每次飞越都把探测器送到下一次飞越的位置，再在这条链上插入其他卫星。下图每个点是一圈轨道：上图是轨道倾角，下图是近土点离土星中心的距离。倾角抬高是为了看光环和两极，回到赤道面是为了飞越其他卫星。</p>
+      </div>
+    </div>
+    <div class="profile" id="profile">
+      <div class="prof-top">
+        <div class="prof-legend"><span><i class="ln" style="background:var(--pen)"></i>每圈的轨道参数</span><span><i style="background:var(--titan)"></i>泰坦飞越</span><span><i style="background:var(--encel)"></i>恩克拉多斯飞越</span><span><i style="background:var(--moon)"></i>其他卫星</span></div>
+        <span class="prof-hint">指向查看每一圈，点击在三维图里跳到该时刻；竖线是三维图现在的位置</span>
+      </div>
+      <div class="prof-wrap"><svg class="prof-svg" id="profSvg" role="img" aria-label="卡西尼号每圈轨道的倾角和近土点距离随时间变化"></svg></div>
+      <div class="prof-tip" id="profTip" hidden></div>
+      <details class="prof-table"><summary>以表格查看全部 293 个近土点（点一行即跳到那一圈）</summary><div class="tbl" id="profTable"></div></details>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="h-moons">
+    <div class="sec-head">
+      <h2 id="h-moons"><span class="kicker">THE MOONS</span>九颗卫星</h2>
+      <p>土星已知的卫星已超过 270 颗，卡西尼号近距离看过的主要是下面这几颗。每张卡片里的飞越次数和最近距离，都是从 JPL 最终轨道解和卫星星历里算出来的（泰坦计入全部 127 次定向飞越，含 TC 那次 6 万 km 的中继；恩克拉多斯计入距表面 5,000 km 以内的 23 次；其余卫星只计距表面 10,000 km 以内的飞越）。按钮会把三维图跳到最近的那次飞越，并把镜头锁定在这颗卫星上。</p>
+    </div>
+    <div class="moons" id="moons"></div>
+  </section>
+
+  <section class="section" aria-labelledby="h-finds">
+    <div class="sec-head">
+      <h2 id="h-finds"><span class="kicker">DISCOVERIES</span>它带回来的发现</h2>
+      <p>二十年里卡西尼号改写了人们对土星系统的许多认识。这里挑出其中最重要的几项。</p>
+    </div>
+    <div class="finds">
+      <div class="find"><span class="where t-encel">ENCELADUS</span><span class="yr">2005 · 2015 · 2017</span><h3>冰壳下有海，海底可能有热泉</h3><p>南极四条“虎纹”裂缝持续喷出水汽和冰粒，形成上百道喷流，还补给了土星的 E 环。卡西尼号穿过羽流，测到盐、二氧化硅微粒、有机物和氢分子；加上卫星的摆动幅度，科学家断定冰壳下是全球性的咸水海洋，海底可能正在进行类似地球深海热泉的反应。</p></div>
+      <div class="find"><span class="where t-titan">TITAN</span><span class="yr">2006 — 2016</span><h3>另一个有雨、有河、有海的世界</h3><p>泰坦的“水循环”用的是甲烷和乙烷：北极有数百个湖泊和三片大海，最大的克拉肯海比里海还大，丽姬亚海深约 160 米；赤道是成片的有机物沙丘。卫星的潮汐变形说明，冰壳下也藏着一片液态水海洋。</p></div>
+      <div class="find"><span class="where t-gold">RINGS</span><span class="yr">2009 · 2017</span><h3>光环比恐龙还年轻？</h3><p>大结局期间，卡西尼号在光环和土星之间测引力，算出光环总质量只有土卫一的约 40%。这么轻的光环被陨尘弄脏的速度很快，而它看上去仍然很亮，所以它可能只有一千万到一亿年历史。春分时的影子则揭示了环里高达数公里的垂直结构和小卫星搅出的“螺旋桨”。</p></div>
+      <div class="find"><span class="where t-gold">SATURN</span><span class="yr">2006 — 2017</span><h3>六边形急流与季节风暴</h3><p>北极的六边形急流每边比地球直径还长，卡西尼号看着它随北半球入夏由蓝变金。2010 年底爆发的大白斑风暴持续了约 200 天。它还看到了土星极光、闪电，以及从光环落向土星的“环雨”。</p></div>
+      <div class="find"><span class="where t-gold">SATURN</span><span class="yr">2017 · 2019</span><h3>一天多长</h3><p>土星没有固体表面，磁场又几乎对称于自转轴，过去连它一天多长都定不下来。科学家用光环里被土星内部振荡激起的波纹反推，得出一天约 10 小时 33 分 38 秒。</p></div>
+      <div class="find"><span class="where t-moon">ICY MOONS</span><span class="yr">2004 — 2017</span><h3>各不相同的小世界</h3><p>伊阿珀托斯一半黑一半白，赤道上有一道 20 km 高的山脊；许珀里翁像一块海绵；瑞亚有稀薄的氧大气；弥玛斯表面温度分布像“吃豆人”。卡西尼号还新发现了 6 颗卫星，并在环里看到了正在形成的小天体。</p></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="h-craft">
+    <div class="craft">
+      <figure class="craft-fig">
+        <canvas id="craft" aria-label="卡西尼号外形示意，可拖动旋转" role="img"></canvas>
+        <div class="craft-labels" id="craftLabels" aria-hidden="true"></div>
+        <span class="spin">拖动旋转</span>
+        <figcaption>磁强计杆（11 m）和三根射电天线（各 10 m）截短示意；细节从简</figcaption>
+      </figure>
+      <div class="craft-text">
+        <h2 id="h-craft"><span class="kicker">THE SPACECRAFT</span>飞行器</h2>
+        <p>卡西尼号是三轴稳定的探测器，高约 6.8 m，顶上是意大利航天局提供的 4 m 高增益天线，在光环附近还兼作防尘盾。中段是两个大推进剂贮箱，底部是两台 445 N 主发动机（一台备份）。土星附近的阳光只有地球附近的百分之一，太阳能电池不够用，所以它靠三台放射性同位素温差发电机供电。仪器固定在机身上，拍照时要转动整个探测器，因此拍照和向地球传数据通常不能同时进行。</p>
+        <dl class="spec">
+          <dt>高 × 宽</dt><dd>约 6.8 × 4 m</dd>
+          <dt>发射质量</dt><dd>5,712 kg <em>（含推进剂 3,132 kg、惠更斯号约 320 kg）</em></dd>
+          <dt>电源</dt><dd>3 台 RTG · 885 W → 633 W <em>（发射时 → 任务结束时）</em></dd>
+          <dt>主发动机</dt><dd>2 × 445 N</dd>
+          <dt>天线</dt><dd>4 m 高增益天线</dd>
+          <dt>科学仪器</dt><dd>12 台 <em>（另有惠更斯号 6 台）</em></dd>
+          <dt>任务总费用</dt><dd>约 32.6 亿美元 <em>（NASA、ESA、ASI 合计）</em></dd>
+        </dl>
+      </div>
+    </div>
+    <div class="inst">
+      <h3>卡西尼号的 12 台仪器</h3>
+      <div><b>ISS</b><span>成像科学子系统<small>窄角和广角两台相机</small></span></div>
+      <div><b>VIMS</b><span>可见光与红外成像光谱仪<small>透过泰坦雾霾的几个“窗口”看地面</small></span></div>
+      <div><b>CIRS</b><span>复合红外光谱仪<small>测温度和大气成分</small></span></div>
+      <div><b>UVIS</b><span>紫外成像光谱仪<small>观测羽流对恒星光的吸收</small></span></div>
+      <div><b>RADAR</b><span>雷达<small>借高增益天线成像，发现了泰坦的湖海</small></span></div>
+      <div><b>RSS</b><span>无线电科学<small>测引力场、掩星、相对论检验</small></span></div>
+      <div><b>MAG</b><span>磁强计<small>装在 11 m 长杆的中段和末端</small></span></div>
+      <div><b>CAPS</b><span>等离子体光谱仪</span></div>
+      <div><b>CDA</b><span>宇宙尘埃分析仪<small>在 E 环和羽流里捕到盐和二氧化硅</small></span></div>
+      <div><b>INMS</b><span>离子与中性粒子质谱仪<small>最后一刻还在采样土星大气</small></span></div>
+      <div><b>MIMI</b><span>磁层成像仪</span></div>
+      <div><b>RPWS</b><span>射电与等离子体波<small>三根 10 m 天线，录下了土星的“射电声”</small></span></div>
+      <h3>惠更斯号的 6 台仪器</h3>
+      <div><b>HASI</b><span>大气结构仪<small>温度、气压、闪电</small></span></div>
+      <div><b>DISR</b><span>下降成像与光谱辐射计<small>拍下了着陆全过程</small></span></div>
+      <div><b>GCMS</b><span>气相色谱质谱仪<small>测大气和地表成分</small></span></div>
+      <div><b>ACP</b><span>气溶胶收集与热解器</span></div>
+      <div><b>DWE</b><span>多普勒测风实验<small>机上数据丢失，由地面射电望远镜补救</small></span></div>
+      <div><b>SSP</b><span>表面科学包<small>测得着陆点是湿软的“沙地”</small></span></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="h-heirs">
+    <div class="sec-head">
+      <h2 id="h-heirs"><span class="kicker">LEGACY</span>后来者</h2>
+      <p>卡西尼号发现的海洋世界改变了外太阳系探测的重点：从“看看那里有什么”，变成“那里能不能住”。</p>
+    </div>
+    <div class="heirs">
+      <div class="heir"><span class="yr">2023 · ESA</span><b>JUICE</b><span>前往木星，研究木卫三等冰卫星的地下海洋</span></div>
+      <div class="heir"><span class="yr">2024 · NASA</span><b>Europa Clipper</b><span>多次飞越木卫二，评估冰下海洋的宜居性</span></div>
+      <div class="heir"><span class="yr">2028 · NASA</span><b>Dragonfly</b><span>计划发射的旋翼飞行器，2034 年前后到达泰坦，在沙丘与撞击坑之间飞行</span></div>
+      <div class="heir"><span class="yr">提议中 · NASA</span><b>Enceladus Orbilander</b><span>美国行星科学十年规划推荐的旗舰任务：先绕恩克拉多斯飞行，再降落在羽流下方</span></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div>
+      <h2>关于这张图</h2>
+      <p>全部轨道取自 JPL Horizons 中卡西尼号（编号 -82）的最终事后重建轨道：巡航段为日心坐标，土星段以土星为中心、以土星赤道面（环平面）为基准。土星段先取 10 分钟一点，再在每次近距离飞越和每个低近土点前后补上 1 分钟一点的数据，然后按“与真实轨迹偏差不超过当地距离的 0.2%”抽稀，约 78 万个点留下 2.5 万个。惠更斯号的轨迹取 Horizons 中的 -150，最后几小时为 ESA/JPL 在 2005 年 1 月给出的预报下降轨迹。</p>
+      <p>九颗卫星的位置是我按年（许珀里翁每 16 天、菲比每 90 天）拟合的进动椭圆，与 Horizons 星历最多相差：恩克拉多斯、泰坦 100 km 以内，特提斯、狄俄涅约 110 km，瑞亚 160 km，弥玛斯 700 km，伊阿珀托斯 1,200 km，许珀里翁 1,500 km，菲比 2,600 km。每次近距飞越前后半天，再叠加由真实星历算出的改正量，所以飞越时卡西尼号与卫星的相对位置与 JPL 星历一致。行星位置用 JPL 公布的近似轨道根数，木星、土星另加改正表，金星、地球、木星在借力前后同样叠加改正。</p>
+      <p>由此算出的数值与史料吻合：飞越泰坦正好 127 次（TA、TB、TC、T3 到 T126，其中 TC 为惠更斯号中继时的 6 万 km），飞越恩克拉多斯离表面 5,000 km 以内正好 23 次；入轨时于 00:46 UT 在距土星中心 15.8 万 km 处穿过环平面，近土点距云顶 19,960 km；惠更斯号 09:06 UT 到达 1,270 km 高度；T126 距泰坦表面 980 km（史料 979 km）。少数数值与当年公布的略有出入，如第二次金星借力（603 km，当年公布 623 km）、地球借力（1,178 km，公布 1,171 km）、E21（46 km，公布 49 km），差别来自后来更精确的事后轨道和卫星半径的取值。</p>
+      <p>天体拉近后为真实大小，远景时为了看得见画成固定的最小尺寸；光环各环带的半径取常用值。处理脚本在仓库的 <a href="https://github.com/Atlantis138/my-pages/tree/main/space-missions/missions/cassini/recon" target="_blank" rel="noopener"><code>missions/cassini/recon/</code></a> 目录里。</p>
+    </div>
+    <div>
+      <h2>资料来源</h2>
+      <ul class="sources">
+        <li><a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank" rel="noopener">JPL Horizons · 卡西尼号 -82 最终重建轨道、惠更斯号 -150、行星与土星卫星星历</a></li>
+        <li><a href="https://science.nasa.gov/mission/cassini/quick-facts" target="_blank" rel="noopener">NASA Science · Cassini Quick Facts</a></li>
+        <li><a href="https://science.nasa.gov/resource/cassini-huygens-by-the-numbers/" target="_blank" rel="noopener">NASA Science · Cassini-Huygens by the Numbers</a></li>
+        <li><a href="https://science.nasa.gov/mission/cassini/grand-finale/cassini-end-of-mission-timeline" target="_blank" rel="noopener">NASA Science · Cassini End of Mission Timeline</a></li>
+        <li><a href="https://sci.esa.int/web/cassini-huygens/-/approach-and-arrival-at-saturn" target="_blank" rel="noopener">ESA · Approach and arrival at Saturn</a></li>
+        <li><a href="https://esa.int/Science_Exploration/Space_Science/Cassini-Huygens/Cassini_spacecraft" target="_blank" rel="noopener">ESA · Cassini spacecraft</a></li>
+        <li><a href="https://sci.esa.int/web/cassini-huygens/-/12007-cassini-huygens-deep-space-manoeuvre-completed" target="_blank" rel="noopener">ESA · 1998 年深空机动</a></li>
+        <li><a href="https://www.nature.com/articles/nature01997" target="_blank" rel="noopener">Bertotti, Iess &amp; Tortora 2003 · Nature 425, 374（相对论检验）</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Cassini%E2%80%93Huygens" target="_blank" rel="noopener">Wikipedia · Cassini–Huygens</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Huygens_(spacecraft)" target="_blank" rel="noopener">Wikipedia · Huygens (spacecraft)</a></li>
+        <li><a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener">JPL · Approximate Positions of the Planets（行星近似根数）</a></li>
+      </ul>
+    </div>
+  </footer>
+</div>
+
+<script type="module" src="mission.js"></script>
+</body>
+</html>

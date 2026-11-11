@@ -1,0 +1,16 @@
+/* 模板任务的主题。复制后把 template 换成任务 id，再换一套纸色、笔色和一对字体。
+   每个颜色都要有浅色、深色两个值；会用作文字的颜色在 --sheet 上的对比度不低于 4.5:1。 */
+.theme-template{
+  --paper:#ECE9E1; --sheet:#F6F4EE; --veil:rgba(246,244,238,.8);
+  --ink:#1F1D1A; --ink-2:#5E5A52; --rule:#CFC9BA; --grid:#B3AC98;
+  --pen:#B4401F; --pen-wash:rgba(180,64,31,.13);
+  --gold:#8A6818; --blue:#2D5FA6;
+  --f-display:"Barlow Condensed","Arial Narrow",sans-serif; --fw-display:800;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+[data-theme="dark"].theme-template, [data-theme="dark"] .theme-template{
+  --paper:#12110F; --sheet:#1A1916; --veil:rgba(26,25,22,.8);
+  --ink:#E6E2D8; --ink-2:#A19C90; --rule:#34312B; --grid:#5A5547;
+  --pen:#FF8A5C; --pen-wash:rgba(255,138,92,.16);
+  --gold:#E0B865; --blue:#8AB0F2;
+}

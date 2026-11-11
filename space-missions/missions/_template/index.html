@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN" class="theme-template" data-mission="template">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>模板任务 · 深空航迹</title>
+<meta name="description" content="深空航迹的任务模板：一条虚构的地火转移轨道，用来演示共享引擎的约定。">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../../shared/favicon.svg">
+<script src="../../shared/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;900&display=swap">
+<link rel="stylesheet" href="../../shared/mission.css">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <main class="bench">
+    <header class="mast">
+      <p class="eyebrow">机构 · 任务代号 · <b>起—止年份</b></p>
+      <h1><span class="h1-id">Template</span><span class="h1-zh">模板任务</span></h1>
+      <p class="lede">这是一个虚构的任务，只用来演示页面骨架：一艘探测器沿霍曼转移轨道从地球飞到火星。真实任务在这里用三四句话讲清它去了哪里、怎么去的、为什么值得看。</p>
+    </header>
+    <section class="plot" id="plot" aria-label="模板任务三维轨迹图"></section>
+
+    <section class="log" id="log" aria-label="飞行日志">
+      <div class="legend">
+        <h2>怎么读这张图</h2>
+        <div class="key">
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--pen)" stroke-width="2.4" stroke-linecap="round"/></svg><span>已经飞过的路径</span>
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--ink-2)" stroke-width="1.1" opacity=".55"/></svg><span>还没飞到的部分</span>
+        </div>
+        <p>全程用<strong>日心黄道坐标系</strong>：太阳在中心，同心圆是到太阳的等距线。格距随缩放变化，以图左上角的比例尺为准。</p>
+        <!-- 操作说明和快捷键由 shared/player.js 自动接在这里 -->
+      </div>
+
+      <article class="ch" data-seg="cruise" id="ch-cruise">
+        <div class="ch-head"><span class="ch-num">01</span><span>起 — 止日期</span></div>
+        <h2>地火转移</h2>
+        <p>每一章对应时间轴上的一个阶段：一两段正文，讲这一段发生了什么、为什么这样飞。滚到这一章时，左边的图会自动跳到这个阶段。</p>
+        <dl><dt>数据项</dt><dd>数值 · 单位</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="cruise">在图上看这一段 →</button></div>
+      </article>
+
+      <article class="ch" data-seg="arrival" id="ch-arrival">
+        <div class="ch-head"><span class="ch-num">02</span><span>起 — 止日期</span></div>
+        <h2>到达火星</h2>
+        <p>阶段可以有自己的机位：这一段的镜头会在到达前慢慢推近火星。</p>
+        <div class="gotos"><button class="goto" type="button" data-seg="arrival">在图上看这一段 →</button></div>
+      </article>
+    </section>
+  </main>
+
+  <section class="section" aria-labelledby="h-num">
+    <div class="sec-head">
+      <h2 id="h-num"><span class="kicker">BY THE NUMBERS</span>几个数字</h2>
+      <p>专题版块依次是：数字、任务特有的专题、飞行器、后来者，最后是「关于这张图」和资料来源。</p>
+    </div>
+    <div class="figures">
+      <div class="fig"><b>259<small>天</small></b><span>霍曼转移的飞行时间</span></div>
+      <div class="fig"><b>1.52<small>AU</small></b><span>火星到太阳的平均距离</span></div>
+      <div class="fig"><b>26<small>个月</small></b><span>两次发射窗口的间隔</span></div>
+      <div class="fig"><b>0<small>km</small></b><span>这个任务真实飞过的路程</span></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div>
+      <h2>关于这张图</h2>
+      <p>交代轨道数据从哪里来、怎么处理、与史料对照的结果，以及哪些地方做了简化。本页的轨道是按开普勒方程算出的转移椭圆，行星位置取 JPL 的近似根数。</p>
+    </div>
+    <div>
+      <h2>资料来源</h2>
+      <ul class="sources">
+        <li><a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener">JPL · Approximate Positions of the Planets</a></li>
+      </ul>
+    </div>
+  </footer>
+</div>
+
+<script type="module" src="mission.js"></script>
+</body>
+</html>

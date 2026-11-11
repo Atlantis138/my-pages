@@ -2,7 +2,7 @@
 (inertial, from a uniform resample of the final positions) with the gravity model."""
 import json
 from dyn2 import *
-E=np.array(json.load(open('../track.json'))['E']).reshape(-1,5)
+E=np.array(json.load(open('../../data/track.json'))['E']).reshape(-1,5)
 t=E[:,0]+2443509.5
 from scipy.interpolate import interp1d
 f=interp1d(t,E[:,1:4],axis=0)

@@ -1,0 +1,72 @@
+/* 卡西尼–惠更斯号的主题：淡紫色绘图纸，洋红笔。图集首页的卡片也用这一组令牌。 */
+.theme-cassini{
+  --paper:#E9E8EF; --sheet:#F5F4F8; --veil:rgba(245,244,248,.8);
+  --ink:#191A2C; --ink-2:#56596F; --rule:#C6C5D5; --grid:#A4A1C4;
+  --pen:#C0245C; --pen-wash:rgba(192,36,92,.12);
+  --gold:#8F681B; --blue:#2E5CA8;
+  /* 本任务独有：三类卫星。带 -ink 的用于文字（对比度更高），不带的用于图上的点和线 */
+  --titan:#EB6834; --encel:#2A78D6; --moon:#1BAF7A;
+  --titan-ink:#B14716; --encel-ink:#2563B4; --moon-ink:#0E7F55;
+  --f-display:"Saira Extra Condensed","Arial Narrow","Roboto Condensed",sans-serif; --fw-display:800;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --craft-ar:4/5;
+}
+[data-theme="dark"].theme-cassini, [data-theme="dark"] .theme-cassini{
+  --paper:#0E0F1C; --sheet:#14162A; --veil:rgba(20,22,42,.8);
+  --ink:#E3E2EF; --ink-2:#9C9DBA; --rule:#2C2E4A; --grid:#45487A;
+  --pen:#FF5C93; --pen-wash:rgba(255,92,147,.16);
+  --gold:#E2B860; --blue:#86A8F0;
+  --titan:#D95926; --encel:#3987E5; --moon:#199E70;
+  --titan-ink:#F08A5A; --encel-ink:#7FB0F5; --moon-ink:#4CCB98;
+}
+.theme-cassini .tag.titan, .theme-cassini .t-titan{color:var(--titan-ink)}
+.theme-cassini .tag.encel, .theme-cassini .t-encel{color:var(--encel-ink)}
+.theme-cassini .tag.moon, .theme-cassini .t-moon{color:var(--moon-ink)}
+
+/* ---------- 本任务独有的版块 ---------- */
+/* 轨道剖面图：每圈的倾角与近土点 */
+.profile{border:1.5px solid var(--ink); background:var(--sheet); padding:14px 14px 10px; position:relative}
+.prof-top{display:flex; flex-wrap:wrap; gap:8px 22px; align-items:center; justify-content:space-between; padding:0 2px 8px}
+.prof-legend{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; color:var(--ink-2)}
+.prof-legend i{display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; vertical-align:0}
+.prof-legend .ln{width:18px; height:2px; border-radius:0; vertical-align:3px}
+.prof-hint{font:500 11.5px var(--f-mono); color:var(--ink-2)}
+.prof-svg{width:100%; display:block; overflow:visible}
+.prof-svg text{font-family:var(--f-mono); font-size:11px; fill:var(--ink-2)}
+.prof-svg .ttl{font-family:var(--f-text); font-size:12.5px; fill:var(--ink); font-weight:600}
+.prof-svg .ph{font-family:var(--f-text); font-size:11.5px; fill:var(--ink-2)}
+.prof-tip{position:absolute; pointer-events:none; background:var(--ink); color:var(--sheet); font:500 11.5px/1.5 var(--f-mono); padding:6px 9px; white-space:nowrap; z-index:3}
+.prof-tip b{font-family:var(--f-text); font-weight:600}
+.prof-wrap{overflow-x:auto}
+.prof-table{margin-top:10px; font-size:13px}
+.prof-table summary{cursor:pointer; font:500 12px var(--f-mono); color:var(--ink-2)}
+.prof-table .tbl{max-height:320px; overflow:auto; margin-top:8px; border-top:1px solid var(--rule)}
+.prof-table table{border-collapse:collapse; width:100%; font:500 12px var(--f-mono); font-variant-numeric:tabular-nums}
+.prof-table th, .prof-table td{padding:4px 10px; text-align:right; border-bottom:1px solid var(--rule); white-space:nowrap}
+.prof-table th{position:sticky; top:0; background:var(--sheet); color:var(--ink-2); font-weight:500; font-family:var(--f-text)}
+.prof-table td:first-child, .prof-table th:first-child{text-align:left}
+.prof-table tbody tr{cursor:pointer}
+.prof-table tbody tr:hover{background:var(--pen-wash)}
+
+/* 卫星卡片 */
+.moons{display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:0; border-top:1.5px solid var(--ink)}
+.mcard{grid-column:span 4; padding:20px 18px 22px 0; border-bottom:1px solid var(--rule); display:grid; gap:8px; align-content:start; min-width:0}
+.mcard.big{grid-column:span 6; padding-right:28px}
+.mcard.mid{grid-column:span 3}
+.mcard .mh{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.mcard h3{font-size:22px; font-weight:900}
+.mcard.big h3{font-size:27px}
+.mcard .en{font:600 15px var(--f-display); letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2)}
+.mcard .stats{display:flex; flex-wrap:wrap; gap:2px 14px; font:500 12px var(--f-mono); color:var(--ink-2); font-variant-numeric:tabular-nums}
+.mcard p{font-size:14.5px; line-height:1.8}
+.mcard .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:2px}
+
+@media (max-width:1100px){
+  .moons{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mcard, .mcard.big, .mcard.mid{grid-column:span 1; padding-right:22px}
+  .mcard:last-child{grid-column:1/-1}
+}
+@media (max-width:560px){
+  .moons{grid-template-columns:minmax(0,1fr)}
+  .mcard, .mcard.big, .mcard.mid{padding-right:0}
+}

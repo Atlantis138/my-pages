@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-CN" class="theme-isee3" data-mission="isee3">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ISEE-3 · 深空航迹</title>
+<meta name="description" content="交互式三维轨迹图：ISEE-3 / ICE 从日地 L1 晕轨道、磁尾巡游、五次月球借力到飞越 Giacobini–Zinner 彗星的全程，地月段由实测坐标重建。">
+<link rel="icon" href="../../shared/favicon.svg">
+<script src="../../shared/theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;900&display=swap">
+<link rel="stylesheet" href="../../shared/mission.css">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <main class="bench">
+    <header class="mast">
+      <p class="eyebrow">NASA / ESA · ISEE-3 → ICE · EXPLORER 59 · <b>1978—2014</b></p>
+      <h1><span class="h1-id">ISEE-3</span><span class="h1-zh">的航迹</span></h1>
+      <p class="lede">第一个进入日地 L1 晕轨道的航天器。它在 1982—83 年借 15 次轨道机动和 5 次月球引力，穿过地球背后的磁尾，再被月球甩向太阳轨道，1985 年改名 ICE，成为第一个飞越彗星的航天器。这条路线常被称为航天史上最复杂的轨道之一。</p>
+    </header>
+    <section class="plot" id="plot" aria-label="ISEE-3 三维轨迹图"></section>
+
+    <section class="log" id="log" aria-label="飞行日志">
+      <div class="legend">
+        <h2>怎么读这张图</h2>
+        <div class="key">
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--pen)" stroke-width="2.4" stroke-linecap="round"/></svg><span>已经飞过的路径</span>
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--ink-2)" stroke-width="1.1" opacity=".55"/></svg><span>还没飞到的部分</span>
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="7" x2="41" y2="7" stroke="var(--blue)" stroke-width="1.2" stroke-dasharray="4 4"/></svg><span>月球轨道</span>
+          <svg viewBox="0 0 42 14" aria-hidden="true"><line x1="1" y1="9" x2="41" y2="9" stroke="var(--pen)" stroke-width="1.6"/><circle cx="18" cy="9" r="4" fill="none" stroke="var(--blue)" stroke-width="1.4"/><circle cx="18" cy="9" r="1.4" fill="var(--blue)"/><text x="26" y="6" font-size="8.5" font-family="var(--f-mono)" fill="var(--ink)">5</text></svg><span>第几次月球借力</span>
+        </div>
+        <p>地月段用<strong>日地旋转坐标系</strong>：坐标轴跟着地球绕太阳转，太阳永远在左边，地球固定在中心，晕轨道和磁尾的形状才看得清。1984 年以后换成<strong>日心黄道坐标系</strong>：太阳在中心，同心圆是到太阳的等距线。格距随缩放变化，以图左上角的比例尺为准。</p>
+      </div>
+
+      <article class="ch" data-seg="launch" id="ch-launch">
+        <div class="ch-head"><span class="ch-num">01</span><span>1978.08.12 — 11.20</span></div>
+        <h2>发射，然后朝太阳飞去</h2>
+        <p>1978 年 8 月 12 日 15:12 UT，Thor-Delta 2914 火箭从卡纳维拉尔角 17B 发射台升空。ISEE-3 没有留在地球轨道上，而是朝太阳方向飞了约 100 天，11 月 20 日抵达约 150 万公里外的日地第一拉格朗日点（L1）。</p>
+        <dl><dt>发射质量</dt><dd>479 kg</dd><dt>目的地</dt><dd>日地 L1 · 距地球约 150 万 km</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="launch">在图上看这一段 →</button></div>
+      </article>
+
+      <article class="ch" data-seg="halo" id="ch-halo">
+        <div class="ch-head"><span class="ch-num">02</span><span>1978.11.20 — 1982.06.10</span></div>
+        <h2>第一条晕轨道</h2>
+        <p>L1 位于地球和太阳之间，探测器放在那里能始终挡在地球前方迎着太阳风。麻烦在于从地球看过去，L1 正好落在太阳圆面上，太阳的射电噪声会盖住探测器的信号。</p>
+        <p>Robert Farquhar 在 1969 年的博士论文里提出让航天器绕 L1 转圈：从地球上看，它在太阳周围画出一圈光晕，他称之为晕轨道（halo orbit）。ISEE-3 是第一个真正飞上这种轨道的航天器。它在这里连续测量迎面吹来的太阳风，能比地球附近的卫星提前约一小时察觉太阳扰动。</p>
+        <dl><dt>轨道振幅</dt><dd>约 66.5 万 × 11 万 km</dd><dt>绕行周期</dt><dd>约半年一圈</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="halo">在图上看这一段 →</button></div>
+      </article>
+
+      <article class="ch" data-seg="tail" id="ch-tail">
+        <div class="ch-head"><span class="ch-num">03</span><span>1982.06.10 — 1983.12</span></div>
+        <h2>穿行地球磁尾</h2>
+        <p>主任务完成后，Farquhar 提出把 ISEE-3 挪到地球背面。1982 年 6 月 10 日的点火并没有让它立刻离开：它又在 L1 附近漂了三个多月，10 月 17 日才从约 65 个地球半径处掠过地球，进入被太阳风拉长的磁尾，1983 年 2 月初第一次深入到 L2 附近。同年 8 月，NASA 批准在磁尾勘测之后让它去追一颗彗星。</p>
+        <p>磁尾始终背对太阳，而探测器的轨道朝向会随地球公转慢慢偏开。为了把远地点留在磁尾里，飞控团队反复借月球引力调整轨道朝向：1983 年 3 月 30 日和 4 月 23 日一对，9 月 27 日和 10 月 21 日又一对。这种成对的“双月球借力”出自 Farquhar 的构想。每一对之间，它都绕地球转了一圈多，两次贴近到 8 到 11 个地球半径。</p>
+        <p>两对借力之间是一段长达五个月的远磁尾巡游：1983 年 6 月 30 日，它到达离地球最远的 237 个地球半径（约 151 万 km）。ISEE-3 由此成为第一个勘测 80 到 240 个地球半径之间磁尾的航天器，还记录到一个巨大的等离子团（plasmoid）。</p>
+        <dl><dt>轨道机动</dt><dd>15 次（离开晕轨道至逃逸）</dd><dt>月球借力</dt><dd>5 次</dd><dt>磁尾最远处</dt><dd>237 R⊕</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="tail">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="LS1">看第 1 次月球借力</button><button class="goto sm" type="button" data-jump="FAR">看磁尾最远处</button></div>
+      </article>
+
+      <article class="ch" data-seg="escape" id="ch-escape">
+        <div class="ch-head"><span class="ch-num">04</span><span>1983.12.22</span></div>
+        <h2>最后一次借力</h2>
+        <p>第五次月球借力是整条路线的出口。1983 年 12 月 22 日 18:44 UT，ISEE-3 以每秒 2.7 km 的速度从月面上空 119.4 km 处掠过，这是它离月球最近的一次。月球引力把它甩出地月系统，送上一条绕太阳、比地球略快的轨道。随后它改名为国际彗星探测器（International Cometary Explorer，ICE）。</p>
+        <dl><dt>近月高度</dt><dd>119.4 km（本图重建：119 km）</dd><dt>近月时刻</dt><dd>1983-12-22 18:44 UT</dd><dt>新名字</dt><dd>ICE</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="escape">在图上看这一段 →</button></div>
+      </article>
+
+      <article class="ch" data-seg="gz" id="ch-gz">
+        <div class="ch-head"><span class="ch-num">05</span><span>1984 — 1985.09.11</span></div>
+        <h2>第一次飞越彗星</h2>
+        <p>ICE 绕太阳一圈约 355 天，比地球短十天，于是一年年跑到地球前面。1985 年 9 月 11 日 11:02 UT，它在距地球约 0.47 AU 处穿过 Giacobini–Zinner 彗星的等离子体彗尾，离彗核 7,862 km，成为第一个近距离探测彗星的航天器，比欧洲的乔托号抵达哈雷彗星早了半年。</p>
+        <p>相遇点选在彗星轨道穿过黄道面的地方。彗星轨道倾角约 32°，而 ICE 几乎贴着黄道飞，两者只有在交点附近才可能碰面。ICE 没有相机，它带回的是彗尾里的粒子、磁场和等离子体波数据。</p>
+        <dl><dt>距彗核</dt><dd>7,862 km</dd><dt>相对速度</dt><dd>约 21 km/s</dd><dt>距地球</dt><dd>约 0.47 AU</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="gz">在图上看这一段 →</button></div>
+      </article>
+
+      <article class="ch" data-seg="halley" id="ch-halley">
+        <div class="ch-head"><span class="ch-num">06</span><span>1985.10 — 1986.04</span></div>
+        <h2>哈雷舰队的上游哨兵</h2>
+        <p>1986 年哈雷彗星回归，苏联的维加 1 号、2 号，日本的彗星号、先驱号和欧洲的乔托号组成了“哈雷舰队”。ICE 在 3 月下旬从太阳和哈雷彗星之间穿过，最近时距彗核约 2,800 万 km，在上游测量正要吹向彗星的太阳风。</p>
+        <dl><dt>最近距离</dt><dd>约 2,800 万 km</dd><dt>任务</dt><dd>太阳风上游监测</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="halley">在图上看这一段 →</button></div>
+      </article>
+
+      <article class="ch" data-seg="drift" id="ch-drift">
+        <div class="ch-head"><span class="ch-num">07</span><span>1986 — 2014</span></div>
+        <h2>绕太阳三十年</h2>
+        <p>1986 年的几次变轨把 ICE 瞄准了 2014 年 8 月的一次月球交会。此后它每年比地球多跑十来度，一圈圈拉开距离，绕到太阳另一侧，再从后面追上地球。NASA 在 1997 年 5 月 5 日停止运行，只让发射机留着载波。2008 年 9 月 18 日，深空网重新找到它，13 台仪器里有 12 台还在工作。</p>
+        <dl><dt>停止运行</dt><dd>1997-05-05</dd><dt>重新找到</dt><dd>2008-09-18</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="drift">在图上看这一段 →</button></div>
+      </article>
+
+      <article class="ch" data-seg="return" id="ch-return">
+        <div class="ch-head"><span class="ch-num">08</span><span>2014.05 — 2014.09.16</span></div>
+        <h2>一次民间重启</h2>
+        <p>2014 年，一支民间团队（ISEE-3 Reboot Project）通过众筹筹到近 16 万美元，并于 5 月获得 NASA 许可。他们用软件无线电和阿雷西博射电望远镜在 5 月 29 日恢复了双向通信；7 月 2 日，推进器在 27 年后第一次点火。</p>
+        <p>7 月 8 日的长时间点火原计划改变 7 m/s，实际只得到约 0.15 m/s，推进剂箱的氮气增压剂看来已经耗尽，让它回到 L1 继续工作的计划只好作罢。8 月 10 日，ICE 从月球背面飞过（NASA 当时公布距月面约 15,600 km，JPL 事后解算为 19:18 UT、距月心约 18,400 km），被甩向黄道面北侧，继续绕太阳运行。9 月 16 日之后再没有收到它的信号。按轨道推算，它会在 2031 年前后再次经过地球附近。</p>
+        <dl><dt>恢复通信</dt><dd>2014-05-29</dd><dt>飞越月球</dt><dd>距月面约 15,600 km</dd><dt>失去联系</dt><dd>2014-09-16</dd></dl>
+        <div class="gotos"><button class="goto" type="button" data-seg="return">在图上看这一段 →</button><button class="goto sm" type="button" data-jump="EARTH14">看掠过地球</button></div>
+      </article>
+    </section>
+  </main>
+
+  <section class="section" aria-labelledby="h-why">
+    <div class="sec-head">
+      <h2 id="h-why"><span class="kicker">BY THE NUMBERS</span>复杂在哪里</h2>
+      <p>这条路线由一串环环相扣的事件组成。每一次月球借力都必须在指定的日子、以指定的高度和方向掠过月球，才能把飞船送到下一次借力的起点；上一步差一点，下一步就对不上。从离开晕轨道到逃离地月系统的一年半里，飞控团队用 15 次轨道机动把五次借力串成了一条线。晕轨道、月球借力和双月球借力后来都成了深空任务的常规手段。</p>
+    </div>
+    <div class="figures" data-cols="6">
+      <div class="fig"><b>15</b><span>次轨道机动，1982—83 年离开晕轨道到逃逸</span></div>
+      <div class="fig"><b>5</b><span>次月球借力，最后一次把它甩出地月系统</span></div>
+      <div class="fig"><b>237<small>R⊕</small></b><span>磁尾最远处，约 151 万 km</span></div>
+      <div class="fig"><b>119.4<small>km</small></b><span>最后一次掠过月面的高度</span></div>
+      <div class="fig"><b>7,862<small>km</small></b><span>穿过 G–Z 彗尾时与彗核的距离</span></div>
+      <div class="fig"><b>36<small>年</small></b><span>从 1978 年发射到 2014 年最后失联</span></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="h-craft">
+    <div class="craft">
+      <figure class="craft-fig">
+        <canvas id="craft" aria-label="ISEE-3 外形示意，按真实转速自旋" role="img"></canvas>
+        <span class="spin">19.76 rpm · 真实转速</span>
+        <figcaption>线天线实际展开跨度 91 m，图中截短</figcaption>
+      </figure>
+      <div class="craft-text">
+        <h2 id="h-craft"><span class="kicker">THE SPACECRAFT</span>飞行器</h2>
+        <p>ISEE 是 NASA 与欧洲空间局合作的三星计划。ISEE-1 和 ISEE-2 在地球轨道上编队飞行，ISEE-3 则被派到上游的 L1，先一步测量吹向地球的太阳风。它是一个贴满太阳能电池的扁圆柱，绕垂直于黄道面的轴自旋，没有相机。</p>
+        <dl class="spec">
+          <dt>尺寸</dt><dd>1.77 × 1.58 m</dd>
+          <dt>发射质量</dt><dd>479 kg <em>（干重 390 kg）</em></dd>
+          <dt>功率</dt><dd>173 W</dd>
+          <dt>自旋</dt><dd>19.76 rpm <em>（自旋轴垂直于黄道面）</em></dd>
+          <dt>天线</dt><dd>4 根线天线，展开跨度 91 m</dd>
+          <dt>发射机</dt><dd>5 W</dd>
+          <dt>科学仪器</dt><dd>13 台</dd>
+          <dt>数据率</dt><dd>2,048 → 64 bit/s <em>（1991 年）</em></dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="h-heirs">
+    <div class="sec-head">
+      <h2 id="h-heirs"><span class="kicker">LEGACY</span>后来者</h2>
+      <p>Farquhar 在 2001 年回顾这次飞行时，列出了一串沿用晕轨道和月球借力的后续任务。</p>
+    </div>
+    <div class="heirs">
+      <div class="heir"><span class="yr">1990 · 日本</span><b>HITEN</b><span>多次月球借力</span></div>
+      <div class="heir"><span class="yr">1992 · 日本 / NASA</span><b>GEOTAIL</b><span>双月球借力巡游磁尾</span></div>
+      <div class="heir"><span class="yr">1994 · NASA</span><b>WIND</b><span>月球借力，后进驻 L1</span></div>
+      <div class="heir"><span class="yr">1995 · ESA / NASA</span><b>SOHO</b><span>日地 L1 晕轨道</span></div>
+      <div class="heir"><span class="yr">1997 · NASA</span><b>ACE</b><span>日地 L1 附近的环绕轨道</span></div>
+      <div class="heir"><span class="yr">2001 · NASA</span><b>WMAP</b><span>借月球引力前往 L2</span></div>
+      <div class="heir"><span class="yr">2001 · NASA</span><b>GENESIS</b><span>L1 晕轨道上采集太阳风</span></div>
+      <div class="heir"><span class="yr">2021 · NASA / ESA / CSA</span><b>JWST</b><span>即当年的 NGST，日地 L2 晕轨道</span></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div>
+      <h2>关于这张图</h2>
+      <p>1978 年 8 月到 1987 年 2 月的轨道来自 NASA 空间物理数据中心保存的 ISEE-3 逐小时星历（约 4.8 万个 GSE 位置）。我在包含太阳、地球、月球引力的模型里，每隔 6 到 12 小时用前后一天的数据做一次稳健的局部定轨，再把相邻的弹道段平滑拼接；太阳和月球位置取自 JPL DE 星历。原始文件有两处系统误差，已经改正：每年 1 月初的 7 到 12 天里，坐标系整体错转了 0.25°（1981、1985 年为 0.77°），像是当年处理时日期算差了；1978 年 9 月还混进了另一份轨道解。GSE 坐标轴另有约 20″ 的系统偏差，由第 5 次借力前后的数据确定。</p>
+      <p>几项独立检验都与史料吻合：只用借力前或只用借力后的数据定轨，推得的第 5 次借力都在 18:44 UT、月面以上约 120 km（史料 119.4 km）；磁尾最远处为 1983 年 6 月 30 日的 237 个地球半径；与 JPL 的彗星星历比较，ICE 于 1985 年 9 月 11 日 11:02 UT 最接近 G–Z 彗核，1986 年 3 月 25 日距哈雷彗星 2,810 万 km。</p>
+      <p>1987 年以后没有公开的定轨数据。我把 JPL 对 2014 年轨道的事后解（ICE，编号 -111）在含八大行星和月球的引力模型里向前反推，到 1987 年 2 月与 NSSDC 星历只差约 9 万 km（0.0006 AU），说明这 27 年间它基本在无动力飞行；1987—2014 年就取这条反推轨道。NSSDC 另有一份 1984—1997 年的日心坐标预报，与之相差约 0.01 AU。2014 年的地月段直接取 JPL Horizons。彗星轨道取 JPL 在相遇时刻的密切根数。</p>
+      <p>图中的距离和速度读数来自上述重建。轨道按真实位置绘制；天体拉近后为真实大小，远景时为了看得见，画成固定的最小尺寸。重建脚本和原始数据在仓库的 <a href="https://github.com/Atlantis138/my-pages/tree/main/space-missions/missions/isee3/recon" target="_blank" rel="noopener"><code>missions/isee3/recon/</code></a> 目录里。</p>
+    </div>
+    <div>
+      <h2>资料来源</h2>
+      <ul class="sources">
+        <li><a href="https://science.nasa.gov/mission/isee-3-ice" target="_blank" rel="noopener">NASA Science · ISEE-3/ICE</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/International_Cometary_Explorer" target="_blank" rel="noopener">Wikipedia · International Cometary Explorer</a></li>
+        <li><a href="https://pds-ppi.igpp.ucla.edu/volume/HAL_0025/DOCUMENT/ESA_1066/ICE.TXT" target="_blank" rel="noopener">NASA PDS · ICE 任务说明（ESA SP-1066）</a></li>
+        <li><a href="https://link.springer.com/doi/10.1007/BF03546336" target="_blank" rel="noopener">Farquhar 2001 · The Flight of ISEE-3/ICE</a></li>
+        <li><a href="https://ross.aoe.vt.edu/books/cds270/270_5a.pdf" target="_blank" rel="noopener">Koon, Lo, Marsden, Ross · 晕轨道振幅</a></li>
+        <li><a href="https://directory.eoportal.org/web/eoportal/satellite-missions/i/isee-3" target="_blank" rel="noopener">eoPortal · ISEE-3/ICE</a></li>
+        <li><a href="https://www.ion.org/awards/2001-Tycho-Brahe-Farquhar.cfm" target="_blank" rel="noopener">ION · 2001 Tycho Brahe Award（Farquhar）</a></li>
+        <li><a href="https://www.planetary.org/articles/20140606-decades-silence-isee" target="_blank" rel="noopener">The Planetary Society · 2014 年恢复通信</a></li>
+        <li><a href="https://cdaweb.gsfc.nasa.gov/pub/data/isee/isee3/magnetic_fields/1min_ascii_extracted/1min_1978_1983/" target="_blank" rel="noopener">NASA SPDF · ISEE-3 1 分钟磁场数据（含 GSE 坐标）</a></li>
+        <li><a href="https://cdaweb.gsfc.nasa.gov/pub/data/isee/isee3/traj/" target="_blank" rel="noopener">NASA SPDF · ISEE-3/ICE 逐小时星历（1978—1987）与日心坐标</a></li>
+        <li><a href="https://ssd.jpl.nasa.gov/horizons/" target="_blank" rel="noopener">JPL Horizons · ICE 2014 年轨道解（-111）、DE 星历、21P 与 1P 彗星轨道</a></li>
+      </ul>
+    </div>
+  </footer>
+</div>
+
+<script type="module" src="mission.js"></script>
+</body>
+</html>

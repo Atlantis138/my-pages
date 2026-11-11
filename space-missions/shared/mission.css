@@ -1,0 +1,271 @@
+/* 任务页的公共样式。
+   版式是一张绘图桌：左边钉着实时的三维轨迹图，右边的页边是飞行日志；往下是数字、专题、飞行器、后来者和数据说明。
+   颜色和字体全部走令牌，由各任务的 theme.css 在 .theme-<id> 上给出（见 ../GUIDE.md「主题」）：
+     纸面  --paper --sheet --veil --ink --ink-2 --rule --grid
+     笔色  --pen --pen-wash（探测器、当前阶段、强调）
+     天体  --gold（太阳、巨行星） --blue（地球），其余由任务自己加
+     字体  --f-display --fw-display --f-mono；正文 --f-text 全站统一 */
+:root{
+  --f-text:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
+  --fw-display:800;
+  padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+}
+:root[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--f-text); font-size:16px; line-height:1.78;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1480px; margin:0 auto}
+h1,h2,h3{text-wrap:balance; margin:0}
+p{margin:0}
+a{color:inherit; text-decoration-color:var(--rule); text-underline-offset:3px}
+a:hover{text-decoration-color:var(--pen)}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--pen); outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+.t-pen{color:var(--pen)} .t-gold{color:var(--gold)} .t-blue{color:var(--blue)}
+kbd{font:500 11px/1.5 var(--f-mono); border:1px solid var(--rule); border-bottom-width:2px; padding:0 4px; margin:0 1px; background:var(--sheet); white-space:nowrap}
+code{font-family:var(--f-mono); font-size:.9em}
+
+/* ---------- 页首：导航 + 标题 ---------- */
+.mast{grid-area:head; display:grid; gap:14px; padding-block:6px 24px; border-bottom:1.5px solid var(--ink); margin-bottom:22px}
+.crumbs{display:flex; align-items:center; flex-wrap:wrap; gap:4px 16px; font:500 12px/1.4 var(--f-mono); letter-spacing:.04em; color:var(--ink-2); padding-bottom:10px; border-bottom:1px solid var(--rule)}
+.crumbs a{text-decoration:none}
+.crumbs a:hover{color:var(--pen)}
+.crumbs .home{font:600 13px var(--f-text); letter-spacing:.08em; color:var(--ink)}
+.crumbs .home::before{content:"‹ "; color:var(--ink-2)}
+.crumbs .sib{display:flex; gap:16px; margin-left:auto}
+.theme-btn{border:1px solid var(--rule); background:transparent; padding:2px 8px; font:500 11.5px var(--f-mono); color:var(--ink-2); cursor:pointer}
+.theme-btn:hover{border-color:var(--ink); color:var(--ink)}
+.eyebrow{font-family:var(--f-mono); font-size:12px; letter-spacing:.14em; color:var(--ink-2)}
+.eyebrow b{color:var(--pen); font-weight:600}
+h1{display:flex; align-items:baseline; gap:.16em; flex-wrap:wrap; line-height:.85}
+.h1-id{font-family:var(--f-display); font-weight:var(--fw-display); font-size:clamp(74px,7.8vw,128px); letter-spacing:.005em; text-transform:uppercase}
+.h1-zh{font-family:var(--f-text); font-weight:900; font-size:clamp(29px,2.8vw,42px)}
+.lede{font-size:16.5px; line-height:1.8; max-width:36em}
+
+/* ---------- 绘图桌：图 + 日志 ---------- */
+.bench{display:grid; grid-template-columns:minmax(0,1.75fr) minmax(300px,1fr); grid-template-areas:"plot head" "plot log"; grid-template-rows:auto 1fr; gap:0 34px; padding-block:16px 56px}
+.plot{grid-area:plot; align-self:start;
+  position:sticky; top:calc(env(safe-area-inset-top,0px) + 12px);
+  height:calc(100svh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  min-height:510px; max-height:910px; display:flex; flex-direction:column; gap:10px; z-index:2;
+}
+.sheet{position:relative; flex:1; min-height:0; background:var(--sheet); border:1.5px solid var(--ink); overflow:hidden; touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none}
+.sheet.dragging{cursor:grabbing}
+.sheet canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+.tags{position:absolute; inset:0; pointer-events:none}
+.tag{position:absolute; left:0; top:0; white-space:nowrap; font:500 11.5px/1.25 var(--f-mono); color:var(--ink); background:var(--veil); padding:1px 4px}
+.tag.zh{font-family:var(--f-text); font-weight:600; font-size:12px}
+.tag.sc{color:var(--pen); font-weight:600; font-size:12.5px}
+.tag.faint{color:var(--ink-2)}
+.tag.blue{color:var(--blue)}
+.tag.gold{color:var(--gold)}
+
+.corner{position:absolute; pointer-events:none; display:flex; flex-direction:column; gap:6px}
+.corner.tl{left:14px; top:12px; max-width:min(52%,390px)}
+.corner.tr{right:14px; top:10px; align-items:flex-end; text-align:right}
+.corner.bl{left:14px; bottom:12px}
+.corner.br{right:12px; bottom:12px; flex-direction:row; pointer-events:auto}
+.frame-name{font:600 12px/1.3 var(--f-mono); letter-spacing:.12em; text-transform:uppercase}
+.frame-name em{font-style:normal}
+.frame-name span{font-family:var(--f-text); letter-spacing:.04em; text-transform:none; font-size:13px}
+.frame-sub{font-size:12.5px; line-height:1.5; color:var(--ink-2)}
+.scalebar{display:flex; align-items:center; gap:8px; font:500 11px var(--f-mono); color:var(--ink-2)}
+.scalebar i{display:block; height:7px; border:1.5px solid var(--ink); border-top:0}
+.stamp-date{font:var(--fw-display) clamp(31px,3.45vw,47px)/.93 var(--f-display); letter-spacing:.025em; font-variant-numeric:tabular-nums}
+.stamp-time{font:600 13px/1.2 var(--f-mono); letter-spacing:.06em; color:var(--ink-2); font-variant-numeric:tabular-nums; margin-top:-2px}
+.stamp-phase{font:600 12px/1.3 var(--f-mono); letter-spacing:.1em; color:var(--pen)}
+.stamp-phase span{font-family:var(--f-text); letter-spacing:.02em}
+.note{margin-top:4px; background:var(--veil); border-left:2px solid var(--pen); padding:6px 10px 7px; font-size:13.5px; line-height:1.55}
+.note small{display:block; font:500 11px/1.4 var(--f-mono); color:var(--ink-2); letter-spacing:.06em}
+.readouts{display:grid; grid-template-columns:auto auto; gap:2px 14px; margin:0; font:500 12px/1.5 var(--f-mono); background:var(--veil); padding:6px 9px; font-variant-numeric:tabular-nums}
+.readouts dt{color:var(--ink-2); font-family:var(--f-text); font-size:12.5px}
+.readouts dd{margin:0; text-align:right; font-weight:600}
+.readouts .model{grid-column:1/-1; font-size:10.5px; color:var(--ink-2); letter-spacing:.05em}
+.tool{
+  height:34px; min-width:34px; padding:0 10px; border:1.5px solid var(--ink); background:var(--sheet);
+  font:500 12px var(--f-mono); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px;
+}
+.tool + .tool{margin-left:-1.5px}
+.tool:hover{background:var(--paper)}
+.tool[aria-pressed="true"]{background:var(--ink); color:var(--sheet)}
+.tool svg{width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.6}
+.fallback{position:absolute; inset:0; display:grid; place-items:center; margin:0; padding:24px; text-align:center; font-size:14px; line-height:1.8; color:var(--ink-2); pointer-events:none}
+.lockchip{position:absolute; left:50%; bottom:12px; transform:translateX(-50%); pointer-events:auto; display:flex; align-items:center; gap:8px; background:var(--ink); color:var(--sheet); font:500 12px var(--f-mono); padding:5px 6px 5px 11px}
+.lockchip button{border:0; background:transparent; color:inherit; cursor:pointer; font:600 12px var(--f-mono); padding:0 4px}
+.lockchip span{font-family:var(--f-text)}
+
+/* 全屏（占满窗口） */
+.plot.expanded{position:fixed; inset:0; top:0; height:auto; min-height:0; max-height:none; margin:0; z-index:60; background:var(--paper); align-self:stretch; justify-self:stretch;
+  padding:max(10px, env(safe-area-inset-top,0px)) max(10px, env(safe-area-inset-right,0px)) max(10px, env(safe-area-inset-bottom,0px)) max(10px, env(safe-area-inset-left,0px))}
+body.has-expanded{overflow:hidden}
+
+/* 播放键 + 时间轴 */
+.deck{display:flex; gap:10px; align-items:stretch}
+.play{width:56px; flex:none; border:1.5px solid var(--ink); background:var(--ink); color:var(--sheet); cursor:pointer; display:grid; place-items:center}
+.play:hover{background:var(--pen); border-color:var(--pen)}
+.play svg{width:18px; height:18px; fill:currentColor}
+.step{width:30px; flex:none; border:1.5px solid var(--ink); background:var(--sheet); cursor:pointer; display:grid; place-items:center; padding:0}
+.step svg{width:12px; height:12px; fill:currentColor}
+.step:hover, .rate:hover{background:var(--paper)}
+.play + .step, .step + .play{margin-left:-11.5px}
+.rate{width:44px; flex:none; border:1.5px solid var(--ink); background:var(--sheet); cursor:pointer; font:600 12px var(--f-mono); font-variant-numeric:tabular-nums; padding:0}
+.tip{position:absolute; bottom:calc(100% + 9px); left:0; transform:translateX(-50%); background:var(--ink); color:var(--sheet); font:500 11.5px/1.4 var(--f-mono); padding:4px 8px; white-space:nowrap; pointer-events:none; z-index:4}
+.tip span{display:block; font-family:var(--f-text); font-size:12px}
+.tip::after{content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:var(--ink)}
+.track{position:relative; flex:1; min-width:0; height:60px; border:1.5px solid var(--ink); background:var(--sheet); cursor:pointer; touch-action:none; user-select:none; -webkit-user-select:none}
+.bands{position:absolute; inset:0; display:flex}
+.band{position:relative; border-right:1px solid var(--rule); min-width:0; overflow:hidden; padding:5px 0 0 6px}
+.band:last-child{border-right:0}
+.band b{display:block; font:600 12px/1.25 var(--f-text); white-space:nowrap}
+.band span{display:block; font:500 10.5px/1.3 var(--f-mono); color:var(--ink-2); white-space:nowrap; letter-spacing:.03em}
+.band.on b{color:var(--pen)}
+.fill{position:absolute; left:0; top:0; bottom:0; background:var(--pen-wash); pointer-events:none}
+/* 下排：事件（重要事件更高更深）；上排：每一次飞越，颜色随天体 */
+.ticks{position:absolute; left:0; right:0; bottom:0; height:9px; pointer-events:none}
+.ticks i{position:absolute; bottom:0; width:1.5px; height:6px; background:var(--ink-2); transform:translateX(-50%)}
+.ticks i.key{height:9px; background:var(--ink)}
+.fticks{position:absolute; left:0; right:0; bottom:10px; height:6px; pointer-events:none}
+.fticks i{position:absolute; bottom:0; width:1px; height:6px; transform:translateX(-50%); opacity:.85}
+.thumb{position:absolute; top:-6px; bottom:-6px; width:2px; margin-left:-1px; background:var(--pen); pointer-events:none}
+.thumb::before{content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--pen)}
+.track:focus-visible{outline-offset:3px}
+
+/* ---------- 飞行日志 ---------- */
+.log{grid-area:log; display:flex; flex-direction:column; min-width:0}
+.legend{padding:4px 0 26px; display:grid; gap:12px; font-size:14.5px; line-height:1.7}
+.legend h2{font-size:15px; font-weight:900; letter-spacing:.04em}
+.key{display:grid; grid-template-columns:42px minmax(0,1fr); gap:6px 12px; align-items:center}
+.key svg{width:42px; height:14px; overflow:visible}
+.legend .hint{font-size:13.5px; color:var(--ink-2)}
+.ch{padding:26px 0 30px; border-top:1px solid var(--rule); display:grid; gap:12px; scroll-margin-top:24px}
+.ch-head{display:flex; align-items:baseline; gap:12px; font:500 12px var(--f-mono); color:var(--ink-2); letter-spacing:.06em}
+.ch-num{font:var(--fw-display) 27px/1 var(--f-display); color:var(--ink); letter-spacing:.025em}
+.ch.active .ch-num{color:var(--pen)}
+.ch h2{font-size:clamp(21px,1.9vw,25px); font-weight:900; line-height:1.35}
+.ch p{font-size:15.5px; line-height:1.85; max-width:34em}
+.ch dl{margin:2px 0 0; display:grid; grid-template-columns:auto minmax(0,1fr); gap:3px 16px; font-size:13.5px; border-top:1px dashed var(--rule); padding-top:10px}
+.ch dt{color:var(--ink-2)}
+.ch dd{margin:0; font-family:var(--f-mono); font-weight:500; font-variant-numeric:tabular-nums}
+.gotos{display:flex; flex-wrap:wrap; gap:8px}
+.goto{justify-self:start; border:1.5px solid var(--ink); background:transparent; padding:5px 12px; font:500 12px var(--f-mono); letter-spacing:.04em; cursor:pointer}
+.goto:hover{background:var(--ink); color:var(--sheet)}
+.ch.active .goto{border-color:var(--pen); color:var(--pen)}
+.ch.active .goto:hover{background:var(--pen); color:var(--sheet)}
+.goto.sm{padding:3px 9px; font-size:11.5px; border-width:1px}
+.ch.active .goto.sm{border-color:var(--ink); color:var(--ink)}
+.ch.active .goto.sm:hover{background:var(--ink); color:var(--sheet)}
+
+/* ---------- 专题版块 ---------- */
+.section{padding-block:56px 8px}
+.sec-head{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:12px 48px; align-items:end; padding-bottom:22px}
+.sec-head h2, .craft-text h2{font-size:clamp(28px,3vw,40px); font-weight:900; line-height:1.2}
+.sec-head p{font-size:16px; max-width:42em}
+.sec-head p + p{margin-top:10px}
+.kicker{display:block; font:500 12px var(--f-mono); letter-spacing:.14em; color:var(--ink-2); margin-bottom:8px}
+
+/* 数字：一排大数。data-cols 为宽屏时的列数（4 或 6）；格线用投影画，任意个数都能排 */
+.figures{--cols:4; --fig-size:clamp(40px,3.8vw,58px); display:grid; grid-template-columns:repeat(var(--cols),minmax(0,1fr)); border-block:1.5px solid var(--ink); overflow:hidden}
+.figures[data-cols="6"]{--cols:6; --fig-size:clamp(36px,3.4vw,50px)}
+.fig{padding:18px 16px 20px; box-shadow:1px 0 0 var(--rule), 0 1px 0 var(--rule); display:grid; gap:6px; align-content:start}
+.fig b{font:var(--fw-display) var(--fig-size)/.93 var(--f-display); font-variant-numeric:tabular-nums; letter-spacing:.015em}
+.fig b small{font-size:.5em; margin-left:3px; font-weight:600}
+.fig span{font-size:13.5px; line-height:1.6; color:var(--ink-2)}
+
+/* 发现：三栏短文 */
+.finds{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 36px; border-top:1.5px solid var(--ink)}
+.find{padding:18px 0 20px; border-bottom:1px solid var(--rule); display:grid; gap:6px; align-content:start; min-width:0}
+.find .yr{font:500 12px var(--f-mono); color:var(--ink-2); letter-spacing:.04em}
+.find h3{font-size:18px; font-weight:900; line-height:1.4}
+.find p{font-size:14.5px; line-height:1.8}
+.find .where{font:600 11px var(--f-mono); letter-spacing:.12em; text-transform:uppercase}
+
+/* 飞行器：示意图 + 规格表 + 仪器清单 */
+.craft{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.25fr); gap:32px 56px; align-items:start}
+.craft-fig{position:relative; aspect-ratio:var(--craft-ar,1/1); max-width:min(100%,480px); width:100%; background:var(--sheet); border:1.5px solid var(--ink); margin:0}
+.craft-fig canvas{position:absolute; inset:0; width:100%; height:100%}
+.craft-fig canvas[data-drag]{touch-action:pan-y; cursor:grab}
+.craft-fig figcaption{position:absolute; left:12px; right:12px; bottom:10px; font:500 11px/1.5 var(--f-mono); color:var(--ink-2)}
+.craft-fig .spin{position:absolute; left:12px; top:10px; font:600 12px var(--f-mono); color:var(--pen); letter-spacing:.06em}
+.craft-labels{position:absolute; inset:0; pointer-events:none}
+.craft-labels span{position:absolute; left:0; top:0; font:600 11.5px/1.2 var(--f-text); background:var(--veil); padding:1px 4px; white-space:nowrap}
+.craft-text{display:grid; gap:18px; min-width:0}
+.craft-text p{max-width:38em}
+.spec{display:grid; grid-template-columns:auto minmax(0,1fr); gap:0 24px; margin:0; font-size:15px}
+.spec dt, .spec dd{padding:9px 0; border-bottom:1px solid var(--rule); margin:0}
+.spec dt{color:var(--ink-2)}
+.spec dd{font-family:var(--f-mono); font-weight:500; font-size:14px}
+.spec dd em{font-style:normal; font-family:var(--f-text); color:var(--ink-2); font-size:13.5px}
+.inst{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 28px; border-top:1.5px solid var(--ink); margin-top:28px}
+.inst h3{grid-column:1/-1; font-size:15px; font-weight:900; padding:14px 0 4px}
+.inst div{display:grid; grid-template-columns:62px minmax(0,1fr); gap:10px; padding:8px 0; border-bottom:1px solid var(--rule); font-size:14px; line-height:1.6; min-width:0}
+.inst b{font:600 12.5px var(--f-mono); padding-top:2px}
+.inst small{display:block; color:var(--ink-2); font-size:13px}
+
+/* 后来者 */
+.heirs{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-top:1.5px solid var(--ink)}
+.heir{padding:16px 16px 20px 0; border-bottom:1px solid var(--rule); display:grid; gap:4px; align-content:start}
+.heir .yr{font:500 12px var(--f-mono); color:var(--ink-2)}
+.heir b{font:var(--fw-display) 28px/1.04 var(--f-display); letter-spacing:.025em; text-transform:uppercase}
+.heir span{font-size:14px; line-height:1.6}
+
+/* 页脚：关于这张图 + 资料来源 */
+.foot{padding-block:56px 64px; display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:28px 56px; border-top:1.5px solid var(--ink); margin-top:56px}
+.foot h2{font-size:17px; font-weight:900; margin-bottom:10px}
+.foot p{font-size:14.5px; line-height:1.85; color:var(--ink-2); max-width:44em}
+.foot p + p{margin-top:10px}
+.sources{margin:0; padding:0; list-style:none; display:grid; gap:8px; font-size:14px; line-height:1.55}
+.sources li{padding-left:16px; position:relative}
+.sources li::before{content:"—"; position:absolute; left:0; color:var(--ink-2)}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width:1100px){
+  .figures{--cols:2}
+  .figures[data-cols="6"]{--cols:3}
+  .heirs, .finds{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  .mast{padding-block:14px 16px; margin-bottom:0; border-bottom:0}
+  .bench{grid-template-columns:minmax(0,1fr); grid-template-areas:"head" "plot" "log"; grid-template-rows:auto auto auto; gap:0; padding-top:8px}
+  .h1-id{font-size:clamp(64px,20vw,100px)}
+  .plot{top:env(safe-area-inset-top,0px); height:59svh; min-height:370px; max-height:630px; background:var(--paper); padding-block:8px; gap:8px; margin-inline:-4px; padding-inline:4px}
+  .corner.tl{max-width:62%}
+  .frame-sub, .frame-name em{display:none}
+  .stamp-date{font-size:31px}
+  .readouts dt:nth-of-type(n+4), .readouts dd:nth-of-type(n+4){display:none}
+  .tool.wide-only{display:none}
+  .step{width:28px}
+  .rate{width:38px; font-size:11px}
+  .note{font-size:12.5px; padding:5px 8px}
+  .readouts{font-size:11px; padding:4px 7px}
+  .readouts dt{font-size:11.5px}
+  .track{height:51px}
+  .band{padding:4px 0 0 4px}
+  .band span{display:none}
+  .band b{font-size:11px}
+  .track.dense .band{padding-left:3px}
+  .track.dense .band b{font-size:10.5px}
+  .play{width:46px}
+  .log{padding-top:18px}
+  .sec-head, .craft, .foot{grid-template-columns:minmax(0,1fr)}
+  .inst{grid-template-columns:minmax(0,1fr)}
+  .lockchip{bottom:54px; right:12px; left:auto; top:auto; transform:none}
+}
+@media (max-width:560px){
+  .figures, .figures[data-cols="6"]{--cols:2}
+  .heirs, .finds{grid-template-columns:minmax(0,1fr)}
+  .stamp-date{font-size:28px}
+  .band b{font-size:10px; letter-spacing:-.02em}
+  .track.dense .band b{font-size:9.5px; letter-spacing:-.03em}
+  .readouts .model{display:none}
+  .corner.br .tool{padding:0 7px}
+  .readouts dt:nth-of-type(n+3), .readouts dd:nth-of-type(n+3){display:none}
+  .readouts .rs{display:none}
+}
